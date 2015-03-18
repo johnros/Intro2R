@@ -111,10 +111,11 @@ library(magrittr)
 ```
 
 ```{r}
-x %>% var() # Instead of 
-x %>% hist()  
-x %>% mean() %>% round(2) %>% runif  
+x <- rbinom(n=1000, size=10, prob=0.5)
 
+x %>% var() # Instead of var(x)
+x %>% hist()  # Instead of hist(x)
+x %>% mean() %>% round(2) %>% add(10) 
 ```
 
 This example clearly demonstrates the benefits (from http://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html)
@@ -139,62 +140,80 @@ car_data <-
 
 
 
-########---------------- Variable creation and manipulation --------------------########
-
+# Variable creation and manipulation 
+```{r}
 c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21)
 10:21 							
 seq(from=10, to=21, by=1) 							
 seq(from=10, to=21, by=2) 								
 x<-c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21) 	
 x
+```
 
-# (~~~~) Non standard assignments (We will not be using them in this lifetime)
+
+Non standard assignments
+```{r}
 c(1,2,3) ->y ; y
 assign('y', c(1,2,3) ); y
 assign('y', c(1,2,3), env=.GlobalEnv )
+```
 
-# You can assign AFTER the computation is finished:
+
+You can assign AFTER the computation is finished:
+```{r}
 c(1,2,3)
 y<- .Last.value 
 y
+```
 
-# Operations usually work element-wise:
+
+Operations usually work element-wise:
+```{r}
 x+2     
 x*2    
 x^2    
 sqrt(x)  
 log(x)   
+```
 
 
 
-####---------------- Simple plotting ----------------------####
+
+# Simple plotting 
+```{r}
 x<- 1:100; y<- 3+sin(x) # Create arbitrary data
 plot(x, y) # x,y syntax  						
 plot(y~x) # y~x syntax (I like better)
-# Control plot appearance:   
+```
+
+Control plot appearance:   
+```{r}
 plot(y~x, type='l', main='Plotting a connected line')
 plot(y~x, type='h', main='Sticks plot', xlab='Insert x axis label', ylab='Insert y axis label')
 plot(y~x, pch=3)
 plot(y~x, pch=10, type='p', col='blue', cex=4)
 abline(3, 0.002)
-example(plot)
+```
 
+```{r, eval=FALSE}
+example(plot)
 ?plot
 help(package='graphics')
+```
+
+When your plotting gets serious, move to ggplot2 and ggvis as soon as possible.
 
 
-# When your plotting gets serious, move to ggplot2 and ggvis as soon as possible.
-
-
-####------------------ Data frame Manipulation ---------------####
-
+# Data frame Manipulation 
+```{r}
 class(x) # R (high) level representation of an object.
-mode(x) # C (low) level representation of an object.
+mode(x) 
 typeof(x) 
+```
 
-length(x) 								
 
-# Create and checkout your first data frame:
+Create and checkout your first data frame:
+```{r}
 x<- 1:100; y<- 3+sin(x) 
 frame1 <- data.frame(x=x, sin=y)	
 frame1
@@ -205,6 +224,8 @@ dim(frame1)
 dim(x)
 length(frame1)
 str(frame1) # the inner structure of an object
+```
+
 
 ## Exctraction functions (will work on ANY object):
 # single element:
