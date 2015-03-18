@@ -228,14 +228,21 @@ str(frame1) # the inner structure of an object
 
 
 ## Exctraction functions (will work on ANY object):
-# single element:
+single element:
+```{r}
 frame1[1, 2]    						
 frame1[2, 1]     						
-# Exctract column by index:
+```
+
+Exctract column by index:
+```{r}
 frame1[1, ]      						
 t(frame1[, 1])   						
 dim(t(frame1))  						
-# Exctract column by name:
+```
+
+Exctract column by name:
+```{r}
 names(frame1)   						
 frame1[, 'sin']
 dim(frame1[, 'sin'])
@@ -248,9 +255,12 @@ frame1$sin
 subset(frame1, select=sin)
 subset(frame1, select=2)
 subset(frame1, select=c(2,0))
+```
 
-## Sanity conservation notice ####
-# Note the difference between [] and [[]] exctraction!
+
+__Sanity conservation notice__
+Note the difference between [] and [[]] exctraction!
+```{r}
 a <- frame1[1]
 b <- frame1[[1]]
 a==b 
@@ -260,27 +270,32 @@ class(b)
 # Causes different behaviour:
 a[1]
 b[1]
+```
 
-# More about extraction: http://adv-r.had.co.nz/Subsetting.html
+More about extraction: http://adv-r.had.co.nz/Subsetting.html
 
 
 ## dplyr package extension:
-# Very fast, fun and clarifies coding. 
-# Install the package:
-install.packages(dplyr)
-# Free an afternoon and go to:
-# https://github.com/justmarkham/dplyr-tutorial/blob/master/dplyr-tutorial.Rmd
+Very fast, fun and clarifies coding. 
+Install the package:
+```{r}
+install.packages('dplyr')
+```
+Now free an afternoon and go to:
+https://github.com/justmarkham/dplyr-tutorial/blob/master/dplyr-tutorial.Rmd
 
 
 
-
-# (~~~~) Arrays generalize matrices to higher dimension:
+## Arrays 
+Arrays generalize matrices to higher dimension:
+```{r}
 x<- array(1:24, dim=c(6,4) )
 x[6,4]
 x<- array(1:24, dim=c(6,2,2) )
 x[6,2,2] 
 x<- array(1:24, dim=c(2,3,2,2) )
 x[2,3,2,2] 
+```
 
 
 
@@ -288,37 +303,48 @@ x[2,3,2,2]
 
 
 
-####--------------------- Data Import---------------------------####
-# For a complete review see:
-# http://cran.r-project.org/doc/manuals/R-data.html
-# or 
-# "Import and Export Manual" in help.start()
 
-# Note!
-# R is portable over platforms but path specification differs.
-# This means import functions are *platform depedant*.
-
-### Import from WEB ###
-tirgul1 <- read.table('http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets/bone.data') # This is the main importing work-horse.
+# Data Import
+For a complete review see:
+http://cran.r-project.org/doc/manuals/R-data.html
+or  "Import and Export Manual" in help.start()
 
 
-# Always look at the imported result!
-View(tirgul1)
+### Import from WEB 
+`read.table()` is the main importing workhorse.
+```{r}
 URL <- 'http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets/bone.data'
+tirgul1 <- read.table(URL)
+```
+
+Always look at the imported result!
+```{r}
+View(tirgul1)
+# hmmm... header interpreted as data. Fix with header=TRUE:
 tirgul1 <- read.table(URL, header = TRUE) 
 View(tirgul1)
+```
 
 
+### Import .csv files
+Let's write a simple file so that we have something to import:
+```{r}
+(temp.file.name <- tempfile())
+View(airquality)
+write.csv(x = airquality, file = temp.file.name)
+```
+
+Now let's import:
+```{r}
+# my.data<- read.csv(file='/home/jonathan/Projects/...')
+my.data<- read.csv(file=temp.file.name)
+View(my.data)
+```
+
+__Note__: Under MS Windows(R) you might want need \\ instead of /
 
 
-### Import .csv files ###
-# Under Unix/Linux
-my.data<- read.csv(file='/home/jonathan/Projects/...')
-# Under MS Windows
-my.data<- read.csv(file='C:\\Documents and Settings\\Jonathan\\My Documents\\R Workshop\\what women want.csv') #Notice the double escapes!
-
-
-### Imprt .txt files ###
+### Imprt .txt files
 my.data<- read.table(file='C:\\Documents and Settings\\Jonathan\\My Documents\\...') # Tries to guess the seperator.
 my.data<- read.delim(file='C:\\Documents and Settings\\Jonathan\\My Documents\\...') # Tab delimited.
 #!!! If you care about your sanity, see ?read.table before starting imports !!!#
