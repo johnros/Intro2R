@@ -104,13 +104,38 @@ rm(x) # remove variable
 For more information on distributions see http://cran.r-project.org/web/views/Distributions.html
 
 
-## magrittr: A slightly different style. Much better for nested expressions!
+# Piping for better style and readability
+```{r}
 install.packages('magrittr') # download a package extension.
 library(magrittr)
+```
 
-x %>% mean() %>% round(2) %>% runif  
-x %>% var()
+```{r}
+x %>% var() # Instead of 
 x %>% hist()  
+x %>% mean() %>% round(2) %>% runif  
+
+```
+
+This example clearly demonstrates the benefits (from http://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html)
+```{r}
+# Old style
+car_data <- 
+  transform(aggregate(. ~ cyl, 
+                      data = subset(mtcars, hp > 100), 
+                      FUN = function(x) round(mean(x, 2))), 
+            kpl = mpg*0.4251)
+
+
+# magrittr style
+car_data <- 
+  mtcars %>%
+  subset(hp > 100) %>%
+  aggregate(. ~ cyl, data = ., FUN = . %>% mean %>% round(2)) %>%
+  transform(kpl = mpg %>% multiply_by(0.4251)) %>%
+  print
+```
+
 
 
 
