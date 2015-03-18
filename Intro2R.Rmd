@@ -341,7 +341,7 @@ my.data<- read.csv(file=temp.file.name)
 View(my.data)
 ```
 
-__Note__: Under MS Windows(R) you might want need '\\' instead of '/'
+__Note__: Under MS Windows(R) you might want need '\\\' instead of '/'
 
 
 ### Imprt .txt files
