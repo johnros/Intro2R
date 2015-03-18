@@ -11,7 +11,8 @@ output: html_document
 - ctrl+return to run lines from editor.
 - ctrl+alt+j to navigate between sections
 - tab for autocompletion
-
+- ctrl+1 to skip to editor. 
+- ctrl+2 to skip to console.
 
 
 
@@ -106,7 +107,7 @@ For more information on distributions see http://cran.r-project.org/web/views/Di
 
 # Piping for better style and readability
 ```{r}
-install.packages('magrittr') # download a package extension.
+# install.packages('magrittr')
 library(magrittr)
 ```
 
@@ -279,7 +280,7 @@ More about extraction: http://adv-r.had.co.nz/Subsetting.html
 Very fast, fun and clarifies coding. 
 Install the package:
 ```{r}
-install.packages('dplyr')
+# install.packages('dplyr')
 ```
 Now free an afternoon and go to:
 https://github.com/justmarkham/dplyr-tutorial/blob/master/dplyr-tutorial.Rmd
@@ -345,29 +346,43 @@ __Note__: Under MS Windows(R) you might want need '\\\' instead of '/'
 
 
 ### Imprt .txt files
-my.data<- read.table(file='C:\\Documents and Settings\\Jonathan\\My Documents\\...') # Tries to guess the seperator.
-my.data<- read.delim(file='C:\\Documents and Settings\\Jonathan\\My Documents\\...') # Tab delimited.
-#!!! If you care about your sanity, see ?read.table before starting imports !!!#
+Tries to guess the seperator
+```{r, eval=FALSE}
+my.data<- read.table(file='C:\\Documents and Settings\\Jonathan\\My Documents\\...') #
+```
+Specifies the seperator explicitly
+```{r, eval=FALSE}
+my.data<- read.delim(file='C:\\Documents and Settings\\Jonathan\\My Documents\\...') 
+```
+If you care about your sanity, see ?read.table before starting imports.
 
 
-### (~~~~) Writing Data to files ###
+### Writing Data to files
 
+Get and set the current directory:
+```{r, eval=FALSE}
 getwd() #What is the working directory?
 setwd() #Setting the working directory in Linux
+```
 
+```{r}
 write.csv(x=tirgul1, file='/tmp/tirgul1.csv') #
-# see ?write.table for details.
+```
 
-### .XLS files ###
-# Strongly recommended to convert to .csv
-# If you still insist see:
-# http://cran.r-project.org/doc/manuals/R-data.html#Reading-Excel-spreadsheets
+See ?write.table for details.
+
+### .XLS files 
+Strongly recommended to convert to .csv
+If you still insist see:
+http://cran.r-project.org/doc/manuals/R-data.html#Reading-Excel-spreadsheets
 
 
-### Massive files ###
-# Better store as matrices and not data.frames.
-# scan() is faster then read.table() but less convenient:
-# Create the example data:
+### Massive files 
+Better store as matrices and not data.frames.
+`scan()` is faster than `read.table()` but less convenient:
+
+Create the example data:
+```{r}
 cols<- 1e3
 # Note: On Windoes you might neet to change /tmp/A.txt to /temp/A.txt 
 rnorm(cols^2) %>%
@@ -377,19 +392,21 @@ rnorm(cols^2) %>%
 system.time(A<- read.table('/tmp/A.txt', header=F))
 system.time(A <- scan(file='/tmp/A.txt', n = cols^2) %>%
               matrix(ncol=cols, byrow = TRUE))
-# On Linux/Mac differences are less notable.
+
 file.remove('/tmp/A.txt') 
+```
 
-# This matter will be revisited in the last class.
-
-
-
-### (~~~~) SUPER MASSIVE FILES ###
-# R can connect to all databases. 
+This matter will be revisited in the last class.
 
 
 
-####--------------------- Importing some real life data (from the WEB)----------------####
+### Databases:
+R can connect to all databases. 
+
+
+
+### Importing some real life data (from the WEB)
+```{r}
 names(tirgul1)
 tirgul1 %>% head
 tirgul1 %>% tail
@@ -398,6 +415,8 @@ length(tirgul1)
 # R can be object oriented (read about S3 and S4 if interested. But, not worth it.).
 class(tirgul1[, 1]); class(tirgul1[, 2]); class(tirgul1[, 3]); class(tirgul1[, 4])
 summary(tirgul1)
+```
+
 
 # Matrix is more efficient. But can store only a single class.
 tirgul.matrix <- as.matrix(tirgul1)  
@@ -751,22 +770,29 @@ cast(melted.data, age+id~variable)
 
 cast(melted.data)
 
-####-------------Fancy Plotting ------------####
+### Fancy Plotting 
+```{r}
 library(ggplot2)
+URL <- 'http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets/bone.data'
+bone <- read.table(URL, header = TRUE)
 qplot(spnbmd, data=bone)
 qplot(x=gender, y=spnbmd, data=bone, geom='boxplot')
 qplot(spnbmd, data=bone, geom='histogram')+ facet_wrap(~gender)
 qplot(spnbmd, data=bone, geom='density')+ facet_wrap(~gender)
 qplot(spnbmd, data=bone)+ geom_density(col='red', size=1)+ facet_wrap(~gender)
 qplot(spnbmd, data=bone, fill=gender, geom='density', alpha=1)
+```
 
-#Notice data is usually in *Long* format
+Notice data is usually in *Long* format
 
-# Diamonds example (Taken from Wickham's web site: http://had.co.nz/stat405/)
+Diamonds example (Taken from Wickham's web site: http://had.co.nz/stat405/)
+```{r}
 ?diamonds
 dim(diamonds)
 head(diamonds)
+```
 
+```{r}
 qplot(carat, data = diamonds)
 qplot(carat, data = diamonds, binwidth = 1)
 qplot(carat, data = diamonds, binwidth = 0.1)
@@ -785,16 +811,19 @@ qplot(table, price, data = diamonds, geom="boxplot",group = round(table))
 qplot(carat, price, data = diamonds)
 qplot(carat, price, data = diamonds, alpha = I(1/10))
 
-
 qplot(carat, price, data = diamonds, geom = "bin2d", main='Count Heatmap')
 qplot(carat, price, data = diamonds, geom = "hex")
 qplot(carat, price, data = diamonds) + geom_smooth()
+```
 
-## For more information on ggplot2 see http://had.co.nz/ggplot2 
+
+
+
+For more information on ggplot2 see http://had.co.nz/ggplot2 
 
 
 ####-------------Interactive Plotting ------------####
-install.packages("iplots")
+# install.packages("iplots")
 library(iplots)
 
 data(iris)
