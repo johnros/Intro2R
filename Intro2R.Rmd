@@ -82,19 +82,26 @@ x <- rbinom(n=1000, size=10, prob=0.5) # Asignments into a variable named "x"
 
 Print contents:
 ```{r}
-x # Show the content of "x"
-print(x) # The same
+x 
+print(x) 
 ```
 
-
+Asign and print:
+```{r}
 (x <- rbinom(n=1000, size=10, prob=0.5))  # Assign and print.
+```
 
+Operate on the object
+```{r}
 mean(x)  
 var(x)  
 hist(x)  
 rm(x) # remove variable
+```
 
-# For more information on distributions see http://cran.r-project.org/web/views/Distributions.html
+
+
+For more information on distributions see http://cran.r-project.org/web/views/Distributions.html
 
 
 ## magrittr: A slightly different style. Much better for nested expressions!
