@@ -15,40 +15,34 @@ output: html_document
 
 
 
-########------------- Simple calculator ---------------------#######
+# Simple calculator
+```{r}
 10+5
-
-
 70*81
-
 2**4
 2^4
-
 log(10)       					
 log(16, 2)    					
 log(1000, 10)   				
+```
 
 
 # Controlling output format:
+```{r}
 round(log(10)) 
 signif(log(10))		
 prettyNum(log(10), digits=5)
 format(log(10), digits=4, scientific=T, justify='right')
+```
 
 
 
-########---------------- Probability calculator --------------------########
+
+# Probability calculator 
+Wish you knew this when you did Intro To Probability class?
+```{r}
 dbinom(x=3, size=10, prob=0.5) 	# For X~B(n=10, p=0.5) returns P(X=3)
 dbinom(3, 10, 0.5)
-
-?dbinom # Get help on a particular function
-help(dbinom)
-
-
-??binomial
-help.search('dbinom') # Search for a keyword in the help. 
-help.start() # Different manuals
-
 
 pbinom(q=3, size=10, prob=0.5) # For X~B(n=10, p=0.5) returns P(X<=3) 	
 dbinom(x=0, size=10, prob=0.5)+dbinom(x=1, size=10, prob=0.5)+dbinom(x=2, size=10, prob=0.5)+dbinom(x=3, size=10, prob=0.5) # Same as previous
@@ -58,16 +52,40 @@ qbinom(p=0.1718, size=10, prob=0.5) # For X~B(n=10, p=0.5) returns k such that P
 rbinom(n=1, size=10, prob=0.5) 	
 rbinom(n=10, size=10, prob=0.5)
 rbinom(n=100, size=10, prob=0.5)
+```
+
+# Getting help
+Get help for a particular function.
+```{r, eval=FALSE}
+?dbinom 
+help(dbinom)
+```
+
+Search local help files for a particular string.
+```{r, eval=FALSE}
+??binomial
+help.search('dbinom') 
+```
+
+Load a menu with several important manuals:
+```{r, eval=FALSE}
+help.start() 
+```
 
 
-
-## Variable asignment:
-# Asignments into a variable named "x"
+# Variable asignment:
+Asignments into a variable named "x":
+```{r}
 x = rbinom(n=1000, size=10, prob=0.5) # Works. Bad style.
 x <- rbinom(n=1000, size=10, prob=0.5) # Asignments into a variable named "x"
+```
 
+Print contents:
+```{r}
 x # Show the content of "x"
 print(x) # The same
+```
+
 
 (x <- rbinom(n=1000, size=10, prob=0.5))  # Assign and print.
 
