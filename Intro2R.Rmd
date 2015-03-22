@@ -1818,19 +1818,21 @@ cloud(likelis~mu*sigma, data=xyz)
 
 
 
-####----- How does a t distribution look like?-----------####
-
+### How does a t distribution look like?
+```{r}
 curve(dnorm(x), -5, 5, lwd=3, lty=2)
 df<-1;curve(dt(x, df), col=df, add=T)
 df<-2;curve(dt(x, df), col=df, add=T)
 df<-5;curve(dt(x, df), col=df, add=T)
 df<-10;curve(dt(x, df), col=df, add=T)
 df<-100;curve(dt(x, df), col=df, add=T)
+```
 
 
-### CI Simulations ###
-# This code creates samples,  computes the CI of the expectancy assuming unknown variance and checks how
-# many CIs have captured the real expectancy.
+
+### CI Simulations 
+This code creates samples,  computes the CI of the expectancy assuming unknown variance and checks how many CIs have captured the real expectation.
+```{r}
 
 reps<-100
 samples<-matrix(rnorm(30*reps, 170, 10), ncol=30) # creating samples
@@ -1856,6 +1858,7 @@ lines(x=as.vector(t(CIs)), y=rep(seq(1:n), each=3));abline(v=170)
 table(CIs[, 1]<170)*(CIs[, 2]>170)
 
 oks<-factor((CIs[, 1]<170)*(CIs[, 2]>170));levels(oks)<-c('Missed', 'Got it!');table(oks)
+```
 
 
 
@@ -1866,7 +1869,8 @@ oks<-factor((CIs[, 1]<170)*(CIs[, 2]>170));levels(oks)<-c('Missed', 'Got it!');t
 
 
 
-####---------------- Manipulating Strings    -----------------------------####
+# Strings    
+```{r}
 print("Hello\n") 	# Wrong!
 show("Hello\n") 	# Wrong!
 cat("Hello\n")		# Right!
@@ -1948,6 +1952,10 @@ gsub(" +", " ", s)  # Remove multiple spaces and replace them by single spaces
 s <- "foo bar baz"
 sub(pattern=" ", replacement="", s) # sub() only replaces first occurance.
 gsub("  ", " ", s)
+```
+
+
+If you use strings often, try the stringr package.
 
 
 
