@@ -6,6 +6,8 @@ output: html_document
 
 ---
 # Preliminaries:
+- If you are working alone, consider starting with "An Introduction to R" here:
+http://cran.r-project.org/manuals.html 
 - Make sure you use RStudio.
 - alt+shift+k for RStudio keyboard shortcuts.
 - ctrl+return to run lines from editor.
@@ -919,8 +921,12 @@ Note: For more powerfull interactive plotting try:
 2. JMP (expensive)
 3. Ggobi and Rggobi (open source)
 
-####---------------- Robustness of *location* Summaries------------####
 
+
+# Summary statistics
+
+## Robustness of _location_ Summaries
+```{r}
 x<- rnorm(11)
 last.observations<- seq(1,1000,by=100)
 means<- numeric(length=0)
@@ -938,10 +944,12 @@ with(expanded.data, boxplot(x~y, xlab='Last Observation'))
 lines(means~last.observations, lty=2, lwd=3, col='red')
 lines(medians~last.observations, lty=3, lwd=3, col='brown')
 lines(mean05~last.observations, lty=4, lwd=3, col='blue')
+```
 
 
-####----------------Spread & Symmetry Summaries---------------####
 
+## Spread & Symmetry Summaries
+```{r}
 x1<-rnorm(1000, 100, 50)
 x2<-rexp(1000, 1/100)
 x3<-rgamma(1000, 3, 1/30)
@@ -953,55 +961,31 @@ plot(density(x3));#abline(v=100, lty=2);abline(v=0, lty=2)
 plot(density(x4));#abline(v=100, lty=2);abline(v=0, lty=2)
 
 boxplot(x1, x2, x3, x4, ylim=c(-100, 400))
+```
 
-####-------------- Measures of spread-----------------------#### 
+
+###  Measures of spread
+```{r}
 cat('SD=', sqrt(var(x1)), 'MAD=', mad(x1), 'IQR=', IQR(x1), '\n') 
 cat('SD=', sqrt(var(x2)), 'MAD=', mad(x2), 'IQR=', IQR(x2), '\n') 
 cat('SD=', sqrt(var(x3)), 'MAD=', mad(x3), 'IQR=', IQR(x3), '\n') 
 cat('SD=', sqrt(var(x4)), 'MAD=', mad(x4), 'IQR=', IQR(x4), '\n') 
-
-#### (~~~~)-------------------- Symmetry Function ------------------####
-my.symetry<-function(x, i) { 
-    x<-sort(x)
-    n<-length(x)
-    mean(c(x[i], x[n-i+1])) - median(x) #A functions returns the last evaluation unless asked otherwise
-    }
-my.symetry(x1, 2)    
-
-my.spread<-function(x, i) { 
-    x<-sort(x)
-    n<-length(x)
-    -0.5*(c(x[i]-x[n-i+1]))
-    }
-
-n<-floor(length(x1)/2)
-y1<-rep(0, n) 								
-y1.1<-rep(0, n)
-for (i in 1:n ) {   y1[i]<-my.symetry(x1, i)  }
-for (i in 1:n ) {   y1.1[i]<-my.spread(x1, i)  }
-
-par(mfrow=c(3, 1));plot(y1);abline(h=0)
-plot(y1 / y1.1);abline(h=0);abline(v=n/2)
-plot(density(x1));par(mfrow=c(1, 1))
-
-n<-floor(length(x4)/2);y4<-rep(0, n)
-for (i in 1:n ) {   y4[i]<-my.symetry(x4, i)  }
-par(mfrow=c(2, 1));plot(y4);plot(density(x4));par(mfrow=c(1, 1))
+```
 
 
-
-####---------------- Yule Skewness measure------------------####
+### Measures of Skewness 
+Yule
+```{r}
 boxplot(x1, x2, x3)
 boxplot(x1, x2, x3, x4)
 
 yule<-function(x) { (mean(c(quantile(x, 0.25), quantile(x, 0.75))-median(x))) / ( IQR(x)/2 ) } 
 
 yule(x1);yule(x2);yule(x3);yule(x4)
+```
 
-
-
-
-####-----------------Pearson Skewness Measure----------------####
+Pearson
+```{r}
 pearson<- function(x) {
 	m<-mean(x)
 	nom<-sum((x-m)^3)
@@ -1013,9 +997,11 @@ pearson(x1)
 pearson(x2)
 pearson(x3)
 pearson(x4)
+```
 
-####------------- Sensitivity Function--------------------####
 
+### Sensitivity Function
+```{r}
 (new.obs<- -1000:1000)
 mean.sensitivity<- rep(0,length(new.obs))
 median.sensitivity<- rep(0,length(new.obs))
@@ -1056,45 +1042,23 @@ legend(locator(1), legend=c('SD','MAD','IQR'), lty=c(1,2,3))
 r<-0.05
 plot(pearson.sensitivity~new.obs,ylim=c(-r,r),type='l')
 lines(yule.sensitivity~new.obs, lty=2)
+```
 
-####----------------Univariate transformations-------------------------####
+
+### Univariate transformations
+```{r}
 (periods<-c(rnorm(500, 15),rnorm(100, 10)))
 (cells<-10*2^periods)
 
 hist(cells); rug(cells)
 hist(log(cells)); rug(log(cells))
-
-
-
-#### (~~~~)------------The Power Family Transforms-----------------####
-curve(log, 0,10, xlim=c(0,10), ylim=c(0,15), col='red') # The Log transformations
-abline(v=0);abline(h=0);
-
-ps<- c(-2,-3/2,-1,-2/3,-1/2,1/2,2/3,1,3/2,2) # Selected powers
-for (p in ps){
-	p.trans<- function(x) (x^p - 1) / p
-	curve(p.trans, 0, 10, add=T)
-}
-
-hist(x3)
-transformed.x3<- matrix(0, ncol=length(ps), nrow=length(x3))
-for (i in seq_along(ps)){
-	p<- ps[i]
-	transformed.x3[,i]<- (x3^p - 1) / p
-}
-
-apply(transformed.x3, 2, pearson)
-apply(transformed.x3, 2, yule)
-
-colnames(transformed.x3)<- paste(round(ps,2))
-boxplot(transformed.x3)
-boxplot(transformed.x3,ylim=c(0,100))
+```
 
 
 
 
-########------------Normal Distribution---------------------########
-
+# Normal Distribution
+```{r}
 
 
 #The Standard normal distribution (a.k.a. Gaussian)
@@ -1155,12 +1119,13 @@ sums<-apply(generating, 1, sum);sums
 length(sums)
 
 par(mfrow=c(1, 2));hist(rgeom(1000, 0.3), main='Original Geometric Distribution');hist(sums, main='Distribution of sum');par(mfrow=c(1, 1))
+```
 
 
 
+## The empirical law 
+```{r}
 
-
-#### The empirical law ####
 # Generate data:
 some.data<- rnorm(1000)
 hist(some.data, probability=TRUE)
@@ -1175,11 +1140,11 @@ abline(v=some.mean+c(-1,1)*some.sd, col='red', lwd=3)
 table(some.data < some.mean-some.sd)
 prop.table(table(some.data < some.mean-some.sd))
 prop.table(table(some.data > some.mean+some.sd))
+```
 
 
-
-#### The QQ plot ####
-
+# The QQ plot 
+```{r}
 mystery.2<-function(y) {
   n<-length(y)
   y<-sort(y)
@@ -1252,15 +1217,16 @@ n<-10;p<-0.05
 curve(pbinom(x, n, p), 0, n, type='S', ylim=c(0, 1)) # The Commulative binomial probaility function
 curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red')
 curve(dbinom(x, n, p), 0, n, type='h', ylim=c(0, 1))
+```
 
 
 
 
 
-####-----------*Simultanous* analysis of multiple *continous* data vectors -----####
+# _Simultanous_ analysis of multiple *continous* data vectors 
 
-
-####----------------Scatter plots----------------####
+## Scatter plots
+```{r}
 
 # Sine function
 x<-seq(-pi, pi, 0.01)
@@ -1289,13 +1255,18 @@ ozone<-read.table('http://www-stat.stanford.edu/~tibs/ElemStatLearn/datasets/ozo
 names(ozone)
 
 plot(ozone)
+```
 
-####----------- 3D plotting (windows only) -------------####
-install.packages('rgl')
+### 3D plotting (windows only) 
+```{r}
+# install.packages('rgl')
 library(rgl)
 plot3d(ozone[, 1:3]) 
+```
 
-####------- Plotting a surface ----####
+
+### Plotting a surface 
+```{r}
 x<-seq(0, 1, 0.01)
 y<-seq(0, 1, 0.01)
 xy.grid<-expand.grid(x, y)
@@ -1303,23 +1274,30 @@ func1<-function(mesh) exp(mesh[, 1]+mesh[, 2])
 z<-func1(xy.grid)
 xyz<-data.frame(xy.grid, z)
 plot3d(xyz, xlab='x', ylab='y')  
+```
 
 
+For interacting with plots try the RGGobi package.
 
-# For interacting with plots try the RGGobi package.
 
+#  Fitting a linear function 
+```{r}
 
-####---------------- Fitting a linear function --------------------####
+```
 
 # Well behaved data 
+```{r}
 x<-1:100
 a<-2
 b<-3.5
 sigma<-10
 y<-a+b*x+rnorm(100, 0, sigma)
 plot(y~x)
+```
+
                         
-####---------- Ordinary Least Squares -----------####
+## Ordinary Least Squares 
+```{r}
 ols.line<-function(x, y){
     sxy<-sum( (x-mean(x) ) * (y-mean(y) ) )    
     sxx<-sum( (x-mean(x)) ^ 2 )
@@ -1333,9 +1311,13 @@ abline(ols$intercept, ols$slope, lty=2, lwd=3)
 predictions = ols$intercept + ols$slope * x
 residuals<- y - predictions
 plot(residuals) ; abline(h=0)
+```
 
 
-####--------------- Robust regression-----------------####
+
+## Robust regression
+```{r}
+
 rline  <- function(x, y)
 {
   ind<- is.na(x) | is.na(y)
@@ -1376,7 +1358,11 @@ robust.ill<-rline(x, y)
 abline(robust.ill$intercept, robust.ill$slope, col='red')
 legend(x=60,y=-200, lty=1, legend=c('Real', 'OLS line', 'Robust Line'), col=c('blue', 'brown', 'red'), lwd=c(3, 1, 1))
 
-####------- How are the intercept and slope related? (Simulation Study)----####
+```
+
+
+### How are the intercept and slope related? (Simulation Study)
+```{r}
 x<-1:100
 a<-2
 b<-3.5
@@ -1393,10 +1379,14 @@ for (i in 1:iterations){
 ind<- as.numeric((retries[, 1]>0) & (retries[, 2]>0))+1
 plot(retries, xlab='Deviation from real slope', ylab='Deviation from real intercept', pch=ind)     
 abline(v=0);abline(h=0)
+```
 
 
 
-####--------- What is a high correlation?---------------####
+
+### What is a high correlation?
+```{r}
+
 samples<- 100
 x <- 1:samples
 a <- 2
@@ -1415,9 +1405,12 @@ for (i in 1:iterations){
 hist(correlations, xlim=c(-1,1))
 rug(correlations)
 abline(v=initial.correlation)
+```
 
 
-####  Extrapolation  ####
+###  Extrapolation  
+```{r}
+
 x<-runif(1000)*5
 y<-exp(x)+rnorm(1000)
 plot(y~x, main='Whole relation')
@@ -1442,8 +1435,10 @@ plot(y~exp(x))
 plot(log(y)~x)
 plot(log(y)~log(x))
 
+```
 
-######## Intuition: Pearson's correlation is the *OLS* slope if dealing with *standardized* variables. ######
+#### Intuition: Pearson's correlation is the *OLS* slope if dealing with *standardized* variables. 
+```{r}
 
 x<-1:100;cat('Old X average=', mean(x), '. Old X Variance=', var(x), '\n')
 a<-2 ; b<-3.5 ; sigma<-10
@@ -1458,12 +1453,12 @@ ols.line(x.stan, y.stan) # Calculating the slope in Z-score scale
 cor(x.stan, y.stan) # Calculating the correlation coef of the Z-scores  #MatLab: corrcoef
 cor(x, y) # The cor coef in the original scale is the same as the slope in Z-score scale!
 
-
-
-
+```
 
 
 ## Multivariate linear regression ##
+```{r}
+
 library(rgl)
 
 xy.grid <- data.frame(x1=runif(10000), x2=runif(10000))
@@ -1480,10 +1475,12 @@ z<-func1(xy.grid, a0=5, a1=1, a2=3, 11);xyz=data.frame(xy.grid, z);plot3d(xyz, x
 
 z<-func1(xy.grid, a0=5, a1=1, a2=3, .4);xyz=data.frame(xy.grid, z);plot3d(xyz, xlab='x1', ylab='x2')
 lm(z~., xyz) #Solves the system "prediction=(X'X)^-1 X'y"
+```
 
 
-######  Linearizing Transformations and Examining Residuals######
-## See also http://www.gapminder.org/
+####  Linearizing Transformations and Examining Residuals
+See also http://www.gapminder.org/
+```{r}
 
 ## Log example #1:
 x<-runif(1000)*5
@@ -1530,21 +1527,27 @@ compute.R2<- function(x,y){
 }
 compute.R2(x,y);cor(x,y)^2
 compute.R2(exp(x),y);cor(exp(x),y)^2
+```
 
 ## Distribution of y|x:
-# Judging by the QQplot: Y|x~N( a+b*exp(x), sigma_e^2)
-# sigma_e^2 = (1-R^2) * sigma_y^2
-# What is your guess of the next value of y?
-# What is your guess of the range of 68% of values of y?  
+Judging by the QQplot: Y|x~N( a+b*exp(x), sigma_e^2)
+sigma_e^2 = (1-R^2) * sigma_y^2
+What is your guess of the next value of y?
+What is your guess of the range of 68% of values of y?  
+ 
+```{r}
 plot(y~x, cex=0.2, xlim=c(0,3), ylim=c(0,10))
 points(predicted.y~x, col='red', cex=0.2)
 R2<- compute.R2(exp(x),y)
 sigma.epsilon<- sqrt( (1-R2)* var(y))
 segments(x, predicted.y-sigma.epsilon, x,  predicted.y+sigma.epsilon, col='lightgrey', cex=0.2)
+```
 
 
 
-#### Log Linear Model ####
+### Log Linear Model 
+```{r}
+
 x<- runif(100)
 a<- 2
 b<- 3.5
@@ -1565,11 +1568,14 @@ plot(resids.2~x);abline(0,0)
 resids.2.2<- log(y) - log(preds.2)
 plot(resids.2.2~x);abline(0,0)
 
-## Q: What is this good for?!?
-## A: Prediction intervals! (amongst others)
+```
+ Q: What is this good for?!?
+ A: Prediction intervals! (amongst others)
 
 
-# In linear scale:
+In linear scale
+```{r}
+
 R2<- compute.R2(x=x,y=log(y))
 sigma.epsilon<- sqrt( (1-R2)* var(log(y)))
 plot(log(y)~x);points(log(preds.2) ~ x, col='red')
@@ -1577,18 +1583,19 @@ segments(x, log(preds.2)-sigma.epsilon, x,  log(preds.2)+sigma.epsilon, col='dar
 # In exp() scale:
 plot(y~x); points(preds.2 ~ x, col='red')
 segments(x, exp(log(preds.2)-sigma.epsilon), x,  exp(log(preds.2)+sigma.epsilon), col='darkgreen', cex=0.2)
+```
 
 
 
 
 
-#### Log-Log Model ####
+### Log-Log Model
+```{r}
 x<- runif(100)
 a<- 2
 b<- 3.5
 y<- exp(a + b * log(x)+rnorm(100, sd=1))
 plot(y~x)
-
 
 ols.line.1<- ols.line(x=x, y=y)
 predict.1<- ols.line.1$intercept + ols.line.1$slope * x
@@ -1615,19 +1622,25 @@ sigma.epsilon<- sqrt( (1-R2)* var(log(y)))
 plot(y~x); points(predict.4 ~ x, col='red')
 segments(x, exp(log(predict.4)-sigma.epsilon), x,  exp(log(predict.4)+sigma.epsilon), col='darkgreen', cex=0.2)
 
-# Interpreting a log-log model:
-# b is the *percent* change in y, for a percent change in x!
-# Why? 
+```
+
+
+
+Interpreting a log-log model:
+b is the *percent* change in y, for a percent change in x!
+Why? 
+```{r}
 e.y<- expression(exp(a)*x**b)
 D(e.y,'x')
-# So dy/y = b d/x Hurray!
+```
+So dy/y = b d/x Hurray!
 
 
 
 
 
-
-#### Varying Variance (heteroskedasticity) ####
+### Varying Variance (heteroskedasticity) 
+```{r}
 x<- runif(100, max=2*pi)
 a<- 2
 b<- 3.5
@@ -1636,7 +1649,6 @@ plot(sds~x)
 y<- a + b * x + rnorm(100, sd=sds)
 plot(y~x)
 
-
 ols.line.1<- ols.line(x=x, y=y)
 predict.1<- ols.line.1$intercept + ols.line.1$slope * x
 plot(y~x); points(predict.1~x, col='red')
@@ -1644,24 +1656,20 @@ plot(y~x); points(predict.1~x, col='red')
 sigma.epsilon<- sqrt( (1-R2)* var(y))
 segments(x, predict.1-sigma.epsilon, x,  predict.1+sigma.epsilon, col='darkgreen', cex=0.2)
 
+```
 
 
-
-
-
-####---------------------- The rest is *not* needed for introductory courses----------------------####
-# - For programming in R  (not data analysis)  see http://zoonek2.free.fr/UNIX/48_R/02.html -----####
-
-
-####-------- Bootstrapping ------------####
-heights<-read.table('D:\\John.Ros\\Projects\\Intro 2 stats\\Exercises 2008\\heights.txt')[, 1]
+### Bootstrapping 
+```{r}
+heights<-read.table('heights.txt')[, 1]
 
 heights.sample<-sample(heights, 100, replace=T)
+```
 
-# Estimateing the variance and MSE of different expectancy estimators
-# True variance= 225
-# True variance of the mean
-
+Estimateing the variance and MSE of different expectancy estimators
+True variance= 225
+True variance of the mean
+```{r}
 B<-10000
 means=NULL
 medians=NULL
@@ -1675,25 +1683,36 @@ for (i in 1:B) {
 
 n<-length(heights.sample)
 population.variance<-sum( (heights.sample-mean(heights.sample))^2  ) / (n-1)
-# The variance of the mean using theoretical considerations
+```
+
+The variance of the mean using theoretical considerations
+```{r}
 population.variance/n 
+```
 
-# The variance of the mean estimated using the BootStrap
+The variance of the mean estimated using the BootStrap
+```{r}
 boot.mean.variance<-sum( (means-mean(means))^2  ) / (B-1);boot.mean.variance
+
 # The MSE of the mean estimated using the BootStrap
-boot.mean.MSE<-sum( (means-mean(heights.sample))^2  ) / (B-1) ;boot.mean.MSE
+boot.mean.MSE<-sum( (means-mean(heights.sample))^2  ) / (B-1) 
+boot.mean.MSE
 
-cat('True variance of the mean=2.55 
-Unbiased estimator=', population.variance/n, 
-'\n', 'BootStrap estimation=', boot.mean.variance, '\n')
+cat('True variance of the mean=2.55 Unbiased estimator=', population.variance/n, '\n', 'BootStrap estimation=', boot.mean.variance, '\n')
+```
 
-# The variance of the median estimated using the BootStrap
+
+
+The variance of the median estimated using the BootStrap
+```{r}
 boot.median.variance<-sum( (medians-mean(medians))^2  ) / (B-1) ;boot.median.variance
 boot.median.bias<-mean(medians)-median(heights.sample);boot.median.bias
 boot.median.variance + boot.median.bias^2
 # The MSE of the median estimated using the BootStrap
 boot.median.MSE<-sum( (medians-median(heights.sample))^2  ) / (B-1);boot.median.MSE 
+```
 
+```{r}
 # The variance of the trimmed mean estimated using the BootStrap
 boot.trim.variance<-sum( (alpha.trims-mean(alpha.trims))^2  ) / (B-1);boot.trim.variance
 boot.trim.bias<-mean(alpha.trims)-mean(heights.sample, trim=0.1);boot.trim.bias
@@ -1705,8 +1724,11 @@ cat('BootStrap mean MSE=', boot.mean.MSE,
 	'\n BootStrap median MSE=', boot.median.MSE, 
 	'\n BootStrap trimmed mean MSE=', boot.trim.MSE, 
 	'\n')
+```
 
-# Is the bootstrap a good estimator of the MSE ? Let's try it on the median:
+
+Is the bootstrap a good estimator of the MSE ? Let's try it on the median:
+```{r}
 B<-10000
 means<-NULL
 medians<-NULL
@@ -1727,12 +1749,14 @@ median.MSE<-sum( (medians-175)^2  ) / (B-1);median.MSE
 
 cat('BootStrap median MSE estimation=', boot.median.MSE, 
 '\n Simulation MSE estimation=', median.MSE, '\n')
+```
 
 
 
 
-####---------- Maximum likelihood estimation ------####
-heights<-read.table('D:\\John.Ros\\Projects\\Intro 2 stats\\Exercises 2008\\heights.txt')[, 1]
+
+## Maximum likelihood estimation 
+```{r}
 cat('Expectancy of heights in Vatican is ', round(mean(heights), 2), '\n')
 
 heights.sample<-sample(heights, 100, replace=T) # Sampling from the Vatican population
@@ -1761,11 +1785,12 @@ for (j in 1:10) {
     for (i in 1:n) likelis[i]<-log.norm.like(mus[i], 15, heights.sample)    
     lines(likelis~mus, col=j)    
 }
+```
 
-
-# What if we don't know the variance?
+ What if we don't know the variance?
+ 
+```{r}
 library(rgl)
-heights<-read.table('D:\\John.Ros\\Projects\\Intro 2 stats\\Exercises 2008\\heights.txt')[, 1]
 heights.sample<-sample(heights, 100, replace=T)
 
 log.norm.like<-function(mu, sigma, data) -sum( (data-mu)^2 ) / (2*sigma^2) - n/2 * log(2*pi*sigma^2)
@@ -1789,6 +1814,8 @@ contour(mus, sigmas, likelis.2, nlevels=200)
 library(lattice)
 wireframe(likelis~mu*sigma, data=xyz)
 cloud(likelis~mu*sigma, data=xyz)
+```
+
 
 
 ####----- How does a t distribution look like?-----------####
