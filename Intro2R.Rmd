@@ -418,15 +418,18 @@ summary(tirgul1)
 ```
 
 
-# Matrix is more efficient. But can store only a single class.
+Matrix is more efficient than data frames. But can store only a single class of vectors.
+```{r}
 tirgul.matrix <- as.matrix(tirgul1)  
 tirgul.matrix
 class(tirgul.matrix)
 class(tirgul.matrix[, 1]); class(tirgul.matrix[, 2]); class(tirgul.matrix[, 3]); class(tirgul.matrix[, 4])
 sapply(tirgul.matrix, class)  # mapping functions. much more efficient. 
 summary(tirgul.matrix)
+```
 
-# (~~~~) ------------ Operations within data objects (very usefull!)------------#### 
+## Operations within data objects (very usefull!)
+```{r}
 plot(tirgul1$gender)
 with(tirgul1, plot(gender) ) # Same opration. Different syntax.
 tirgul1$gender %>% plot() # Notice the autom-completion as of RStudio 0.99 (in preview)
@@ -434,17 +437,23 @@ tirgul1$gender %>% plot() # Notice the autom-completion as of RStudio 0.99 (in p
 mean(tirgul1$age)
 with(tirgul1, mean(age) ) # Same opration. Different syntax.
 tirgul1$age %>% mean() # Notice the autom-completion as of RStudio 0.99 (in preview)
+```
 
 
-# tirgul1$age <- tirgul1$age * 365
+```{r}
+tirgul1$age <- tirgul1$age * 365
 tirgul1<- transform(tirgul1, age=age*365 )  #Age in days
 with(tirgul1, mean(age) )
 tirgul1<- transform(tirgul1, age=age/365 )  #Does this revert back to years?
 with(tirgul1, mean(age) )
-# But deprecated by dplyr
+```
+
+Then again, many of these fnuctions are replaced by more friendly functions in the dplyr package.
 
 
-####--------------------------- Sorting -----------------------------#### 
+
+# Sorting 
+```{r}
 (x<- c(20, 11, 13, 23, 7, 4))
 (y<- sort(x))
 (ord<- order(x))
@@ -456,61 +465,81 @@ identical(y[ranks] , x) # Compares two objects
 xz<- data.frame(x,z)
 sort(xz)
 xz[ord,] # Sorting a data frame using one column
+```
 
 
-#######------------------------ Looping --------------------------########
-# For a crash course in R programming (not only data analysis) try:   #
-# http://zoonek2.free.fr/UNIX/48_R/02.html                            #
 
-# The usual for(), while(), repeat() will work.
 
+#  Looping 
+For a crash course in R programming (not only data analysis) try:   
+http://adv-r.had.co.nz/                            
+
+## The usual for(), while(), repeat() 
+```{r}
 for (i in 1:100){
     print(i)
     }
+```
 
 
+```{r}
 for (helloeveryone in seq(10, 100, by=2) ){
     print(helloeveryone)
     }
+```
+
 
     
-#(~~~~)--------------- Recursion (very slow in R) -------------------####
+# Recursion
+Typically very slow due to memory management issues.
+
+```{r}
 fib<-function(n) {
     if (n < 2) fn<-1 
     else fn<-Recall(n - 1) + Recall(n - 2) 
     return(fn)
 } 
 fib(30)
+```
 
 
 
 
 
-####---------------- Where are my objects?--------------------------------####
+
+# Where are my objects?
+```{r}
 ls() #Lists all available objects
 ls(pattern='x')
 ls(pattern='[0-9]') # Search using regular expressions
 ls(pattern='[A-Z]')
+```
 
-# ctrl+8 in RStudio.
+ctrl+8 in RStudio.
 
-# What are the available environments?
+## What are the available environments?
+```{r}
 search() # This is the search hirarchy of called objects.
-# When you start serious programming in R, read this:
-# http://adv-r.had.co.nz/Environments.html
+```
+
+When you start serious programming in R, read this:
+http://adv-r.had.co.nz/Environments.html
 
 
 
 
-####---------------- Exploring Categorical Data  --------------------####
-
+#  Exploring Categorical Data  
+```{r}
 gender<-c(rep('Boy', 10), rep('Girl', 12))
 drink<-c(rep('Coke', 5), rep('Sprite', 3), rep('Coffee', 6), rep('Tea', 7), rep('Water', 1))  
 class(gender);class(drink)
 table1<-table(gender, drink) 
 table1										
+```
 
-#Marginals
+
+Margins
+```{r}
 table(gender) 
 table(drink)
 dotchart(as.matrix(table(gender)))
@@ -547,8 +576,13 @@ barplot(prop.table(table1, 1)['Boy', ], main='Boys');barplot(prop.table(table1, 
 par(mfrow=c(2, 3)) 
 pie(prop.table(table1, 1)[, 'Coffee'], main='Coffee');pie(prop.table(table1, 1)[, 'Coke'], main='Coke');  
 pie(prop.table(table1, 1)[, 'Sprite'], main='Sprite');pie(prop.table(table1, 1)[, 'Tea'], main='Tea');    
-pie(prop.table(table1, 1)[, 'Water'], main='Water');                                                   
+pie(prop.table(table1, 1)[, 'Water'], main='Water');                                     
+
 par(mfrow=c(1, 1))   
+```
+
+              
+
 
 barplot(table1)
 barplot(prop.table(table1, 1))
