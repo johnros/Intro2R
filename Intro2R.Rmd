@@ -579,9 +579,6 @@ pie(prop.table(table1, 1)[, 'Sprite'], main='Sprite');pie(prop.table(table1, 1)[
 pie(prop.table(table1, 1)[, 'Water'], main='Water');                                     
 
 par(mfrow=c(1, 1))   
-```
-
-              
 
 
 barplot(table1)
@@ -589,21 +586,26 @@ barplot(prop.table(table1, 1))
 barplot(prop.table(table1, 2))
 barplot(t(prop.table(table1, 1)), legend.text=T)
 
+```
+
+              
+Using the ggplot2 package
+```{r}
 library(ggplot2)
 qplot(gender, data=data1, geom='bar', fill=drink )
 qplot(gender, data=data1, geom='bar' ) + facet_grid(~drink)
 qplot(drink, data=data1, geom='bar' ) + facet_grid(~gender)
 
 gender<-factor(gender);drink=factor(drink) 
+```
 
 
 
 
+#  Exploring Continous Variables 
 
-
-####------------- Exploring Continous Variables -----------------------####
-
-# Manual Histogram
+Manual Histogram
+```{r}
 x<-c(-2.44, -1.70,  -1.45,  -1.27,  -1.25,  -1.12,  -1.10,  -1.05,  -1.01,  -0.50,  -0.33,  -0.12,  -0.01,   0.24,   0.51,   0.80,   1.04,   1.15,   1.28,   1.77)
 stripchart(x)
 x<- c(rnorm(500),rnorm(300,3))
@@ -612,8 +614,11 @@ hist(x, prob=T,main='')	## Disjoint window histogram
 rug(x)
 lines(density(x, kernel='rectangular', bw=0.1), main='') ## Simple moving average with width 1 
 title(expression(W(t)==ifelse(abs(t)<=0.5, 1, 0))) 
+```
 
-# Varying smoothing window width:
+
+Varying smoothing window width:
+```{r}
 x<-c(-2.44, -1.70,  -1.45,  -1.27,  -1.25,  -1.12,  -1.10,  -1.05,  -1.01,  -0.50,  -0.33,  -0.12,  -0.01,   0.24,   0.51,   0.80,   1.04,   1.15,   1.28,   1.77)
 plot(density(x, kernel='rectangular', adjust=0.01), main='') 
 plot(density(x, kernel='rectangular', adjust=100), main='') 
@@ -621,10 +626,13 @@ plot(density(x, kernel='rectangular', adjust=1), main='')
 plot(density(x, kernel='rectangular', adjust=1), main='') 
 
 lines(density(x), main='')# Defaut uses a Gaussian "sliding window". 
-rug(x)
+rug(x) # always add the raw data at the margins!
+```
+
 
                                                 
-# Generating and exploring normal data
+Generating and exploring normal data
+```{r}
 sample1<-rnorm(100) 							
 table(sample1) 									
 barplot(table(sample1)) 						
@@ -635,8 +643,11 @@ hist(sample1, freq=T, main='Counts')
 hist(sample1, freq=F, main='Frequencies') 	
 lines(density(sample1))                  	
 rug(sample1)
+```
 
-# Introducing the Boxplot:
+
+## The Boxplot
+```{r}
 boxplot(sample1)	
 text(x=1.3, y=c(-0.6195636, 0.2581893, 0.7848411), labels=c('Quartile 1', 'Median', 'Quartile 3'))
 abline(h=qnorm(0.25), col='red') 
@@ -651,18 +662,25 @@ boxplot(giantSample, range=2)
 boxplot(giantSample, range=3) # Too few outliers :-(
 boxplot(giantSample, range=2.5) # Good distance of fences :-)
 par(mfrow=c(1,1))
+```
 
 
-# Several different visualisations:
+
+Several different visualisations:
+```{r}
 sample2<-rnorm(1000)     
 stem(sample2)          
 hist(sample2)          
 plot(density(sample2))  
 rug(sample2)
+```
 
 
-# True data 
-bone<-read.table('http://www-stat.stanford.edu/~tibs/ElemStatLearn/datasets/bone.data', header=T)
+
+True data 
+```{r}
+URL <- 'http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets/bone.data'
+bone <- read.table(URL, header = TRUE)
 names(bone)
 summary(bone) 			
 stripchart(bone['age'])
@@ -688,9 +706,10 @@ boxplot(bone[!ind, 'age'], main='Female')
 par(mfrow=c(1, 1))
 boxplot(bone$age~bone$gender)
 with(bone, boxplot(spnbmd~gender))
+```
 
-# -----------Playing with graphical parameters-----------####
-
+## Graphical parameters
+```{r}
 attach(bone) 
 stripchart(age)
 stripchart(age~gender)
@@ -757,9 +776,12 @@ points(locator(3),pch=10, cex=4)
 plot(density(age[males]), main='Male', xlim=c(9,26)) 
 points(density(age[!males]), main='Female', xlim=c(9,26), bg='red') 
 points(locator(6),pch=c('a','b','c'))
+```
 
 
-#Integer data
+
+# Integer data
+```{r}
 r.age<-round(age)
 plot(density(r.age))
 rug(r.age)
@@ -767,18 +789,27 @@ plot(density(r.age, from=9))
 rug(jitter(r.age))
 hist(r.age)
 rug(jitter(r.age))
+```
 
 
-#(~~~~) -----------------------Reshaping Data------------------####
-#Plotting in wide format is hard
+
+# Reshaping Data
+
+## Long vs. Wide format
+
+Plotting in wide format is hard
+```{r}
 wide.data<-data.frame(id=1:4, age=c(40,50,60,50), dose1=c(1,2,1,2),dose2=c(2,1,2,1), dose4=c(3,3,3,3))
 wide.data
 
 plot(dose1~age, data=wide.data, ylim=range(c(dose1,dose2,dose4)), ylab='')
 points(dose2~age, data=wide.data, pch=2)
 points(dose4~age, data=wide.data, pch=3)
+```
 
-#Ploting in long format is easy
+
+Ploting in long format is easy
+```{r}
 (dose.type<-c(
 		rep('dose1', length(wide.data$dose1)),
 		rep('dose2', length(wide.data$dose2)),
@@ -790,21 +821,36 @@ points(dose4~age, data=wide.data, pch=3)
 long.data<-data.frame(long.id, long.age, dose.type, dose)
 
 plot(dose~long.age, data=long.data, pch=as.numeric(dose.type))
+```
 
-# Helpful Functions for reshaping:
+
+## Reshaping data
+With base package
+```{r}
 stack(data.frame(wide.data$dose1,wide.data$dose2,wide.data$dose4))
 
 reshape(wide.data, varying=list(c("dose1","dose2","dose4")), direction="long", idvar=c("id","age"), v.names="dose")
 reshape(wide.data, varying=list(c("dose1","dose2","dose4")), direction="long", idvar="id", timevar="age", v.names="dose")
+```
 
+With respahe package
+```{r}
 # melt() is much more confortable then reshape( )
 library(reshape)
 melted.data<- melt(data=wide.data, id.vars=c("id","age") )
 cast(melted.data, age+id~variable)
 
 cast(melted.data)
+```
 
-### Fancy Plotting 
+
+With tidyr package (recommended)
+```{r}
+# TODO
+```
+
+
+# Fancy Plotting 
 ```{r}
 library(ggplot2)
 URL <- 'http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets/bone.data'
@@ -851,12 +897,11 @@ qplot(carat, price, data = diamonds) + geom_smooth()
 ```
 
 
-
-
 For more information on ggplot2 see http://had.co.nz/ggplot2 
 
 
-####-------------Interactive Plotting ------------####
+# Interactive Plotting 
+```{r}
 # install.packages("iplots")
 library(iplots)
 
@@ -866,11 +911,13 @@ iplot(Sepal.Width,Petal.Width)
 iplot(Sepal.Width/Sepal.Length, Species)
 ihist(iris$Sepal.Width)
 ibar(Species)
+```
 
-## Note: For more powerfull interactive plotting try:
-# 1. Mondrian (open source)
-# 2. JMP (expensive)
-# 3. Ggobi and Rggobi (open source)
+
+Note: For more powerfull interactive plotting try:
+1. Mondrian (open source)
+2. JMP (expensive)
+3. Ggobi and Rggobi (open source)
 
 ####---------------- Robustness of *location* Summaries------------####
 
