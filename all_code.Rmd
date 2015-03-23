@@ -38,6 +38,16 @@ log(1000, 10)
 ```
 
 
+## Controlling output format:
+```{r}
+round(log(10))  # typically most useful
+
+signif(log(10))		
+prettyNum(log(10), digits=5)
+format(log(10), digits=4, scientific=T, justify='right')
+```
+
+
 ## Probability calculator 
 Wish you knew this when you did Intro To Probability class?
 ```{r}
@@ -421,6 +431,17 @@ setdiff(df2, df1)
 
 Leaving dplyr for now...
 
+### Arrays 
+Arrays generalize matrices to higher dimension:
+```{r}
+x<- array(1:24, dim=c(6,4) )
+x[6,4]
+x<- array(1:24, dim=c(6,2,2) )
+x[6,2,2] 
+x<- array(1:24, dim=c(2,3,2,2) )
+x[2,3,2,2] 
+```
+
 
 ## Data Import and export 
 For a complete review see:
@@ -640,6 +661,12 @@ ls(pattern='[A-Z]')
 
 ctrl+8 in RStudio.
 
+### What are the available environments?
+```{r}
+search() # This is the search hirarchy of called objects.
+```
+When you start serious programming in R, read this:
+http://adv-r.had.co.nz/Environments.html
 
 
 
@@ -660,11 +687,71 @@ table1
 ```
 
 
+Margins
+```{r}
+table(gender) 
+table(drink)
+dotchart(as.matrix(table(gender)))
+dotchart(as.matrix(table(drink)))
+
+barplot(table1, legend.text=T)    			
+barplot(t(table1), legend.text=T)    		
+
+plot(table1, main="Frequency Bar Chart", sub="Notice columns width is also propostional to counts!")
+plot(t(table1))
+
+data1<-data.frame(gender, drink)
+plot(data1) 
+plot(gender~drink) #Will not work
+plot(gender, drink) #Will not work
+
+gender.n<-apply(table1, 1, sum) 		
+gender.n
+drink.n<-apply(table1, 2, sum)     		
+drink.n
+
+apply(table1, 2, '/', gender.n)   		
+apply(table1, 1, '/', drink.n)     		
+
+apropos('table')        
+margin.table(table1, 2)  
+prop.table(table1, 1)    
+prop.table(table1, 2)     
+
+par(mfrow=c(1, 2))
+pie(prop.table(table1, 1)['Boy', ], main='Drinks given Boys')   
+pie(prop.table(table1, 1)['Girl', ], main='Drinks given Girls') 
+barplot(prop.table(table1, 1)['Boy', ], main='Boys');barplot(prop.table(table1, 1)['Girl', ], main='Girls') 
+par(mfrow=c(2, 3)) 
+pie(prop.table(table1, 1)[, 'Coffee'], main='Coffee');pie(prop.table(table1, 1)[, 'Coke'], main='Coke');  
+pie(prop.table(table1, 1)[, 'Sprite'], main='Sprite');pie(prop.table(table1, 1)[, 'Tea'], main='Tea');    
+pie(prop.table(table1, 1)[, 'Water'], main='Water');                                     
+
+par(mfrow=c(1, 1))   
+
+
+barplot(table1)
+barplot(prop.table(table1, 1))
+barplot(prop.table(table1, 2))
+barplot(t(prop.table(table1, 1)), legend.text=T)
+
+```
+
               
+Using the ggplot2 package
+```{r}
+library(ggplot2)
+qplot(gender, data=data1, geom='bar', fill=drink )
+qplot(gender, data=data1, geom='bar' ) + facet_grid(~drink)
+qplot(drink, data=data1, geom='bar' ) + facet_grid(~gender)
+
+gender<-factor(gender);drink=factor(drink) 
+```
+
 
 ##  Exploring Continous Variables 
 
-Histogram
+Manual Histogram
 ```{r}
 x <- c(-2.44, -1.70,  -1.45,  -1.27,  -1.25,  -1.12,  -1.10,  -1.05,  -1.01,  -0.50,  -0.33,  -0.12,  -0.01,   0.24,   0.51,   0.80,   1.04,   1.15,   1.28,   1.77)
 stripchart(x)
@@ -682,7 +769,7 @@ title(expression(W(t)==ifelse(abs(t)<=0.5, 1, 0)))
                                                 
 Generating and exploring normal data
 ```{r}
-sample1 <- rnorm(100) 							
+sample1<-rnorm(100) 							
 table(sample1) 									
 barplot(table(sample1)) 						
 stem(sample1) 
@@ -879,6 +966,24 @@ I will now try to avoid this manual reshaping.
 
 ### Reshaping data
 
+#### base package
+```{r}
+stack(data.frame(wide.data$dose1,wide.data$dose2,wide.data$dose4))
+
+reshape(wide.data, varying=list(c("dose1","dose2","dose4")), direction="long", idvar=c("id","age"), v.names="dose")
+reshape(wide.data, varying=list(c("dose1","dose2","dose4")), direction="long", idvar="id", timevar="age", v.names="dose")
+```
+
+#### respahe package
+```{r}
+# melt() is much more confortable then reshape( )
+library(reshape)
+melted.data<- melt(data=wide.data, id.vars=c("id","age") )
+cast(melted.data, age+id~variable)
+
+cast(melted.data)
+```
+
 
 #### tidyr package
 This is the package I recommend if you cannot reshape manually.
@@ -967,6 +1072,244 @@ qplot(carat, price, data = diamonds) + geom_smooth()
 
 For more information on ggplot2 see http://had.co.nz/ggplot2 
 
+### Interactive Plotting 
+```{r}
+# install.packages("iplots")
+library(iplots)
+data(iris)
+attach(iris) 
+```
+
+
+The folllowing plots are interconnected in that selecting points in one of them, selects the points in all.
+```{r}
+iplot(Sepal.Width, Petal.Width)
+iplot(Sepal.Width/Sepal.Length, Species)
+ihist(iris$Sepal.Width)
+ibar(Species)
+```
+
+Note: For more powerfull interactive plotting try:
+1. [Mondrian](http://en.wikipedia.org/wiki/Mondrian_%28software%29) (open source)
+2. [JMP](http://www.jmp.com/en_us/home.html) (expensive)
+3. Ggobi and [Rggobi](http://cran.r-project.org/web/packages/rggobi/index.html) (open source)
+
+
+
+## Location Summaries
+Examine the robustness of several location summaries
+```{r}
+# Generate data:
+x<- rnorm(11)
+last.observations<- seq(1, 1000, by=100)
+
+# Compute location for the many different samples
+means<- numeric(length=0)
+medians<- numeric(length=0)
+mean05<- numeric(length=0)
+for (y in last.observations){
+	all.data<- c(x,y)
+	means<- c(means, mean(all.data))
+	medians<- c(medians, median(all.data))
+	mean05<- c(mean05, mean(all.data, trim=0.1))	
+}
+
+expanded.data<- expand.grid(x=x, y=last.observations)
+with(expanded.data, boxplot(x~y, xlab='Last Observation'))
+lines(means~last.observations, lty=2, lwd=3, col='red')
+lines(medians~last.observations, lty=3, lwd=3, col='brown')
+lines(mean05~last.observations, lty=4, lwd=3, col='blue')
+```
+
+
+## Spread & Symmetry Summaries
+```{r}
+x1<- rnorm(1000, 100, 50)
+x2<- rexp(1000, 1/100)
+x3<- rgamma(1000, 3, 1/30)
+x4<- rf(1000, 100, 1)/100
+
+plot(density(x1));#abline(v=100, lty=2);abline(v=0, lty=2)
+plot(density(x2));#abline(v=100, lty=2);abline(v=0, lty=2)
+plot(density(x3));#abline(v=100, lty=2);abline(v=0, lty=2)
+plot(density(x4));#abline(v=100, lty=2);abline(v=0, lty=2)
+
+boxplot(x1, x2, x3, x4, ylim=c(-100, 400))
+```
+
+###  Measures of spread
+```{r}
+cat('SD=', sqrt(var(x1)), 'MAD=', mad(x1), 'IQR=', IQR(x1), '\n') 
+cat('SD=', sqrt(var(x2)), 'MAD=', mad(x2), 'IQR=', IQR(x2), '\n') 
+cat('SD=', sqrt(var(x3)), 'MAD=', mad(x3), 'IQR=', IQR(x3), '\n') 
+cat('SD=', sqrt(var(x4)), 'MAD=', mad(x4), 'IQR=', IQR(x4), '\n') 
+```
+
+### Measures of Skewness 
+
+Yule
+```{r}
+boxplot(x1, x2, x3)
+boxplot(x1, x2, x3, x4)
+
+yule<-function(x) { 
+  (mean(c(quantile(x, 0.25), quantile(x, 0.75))-median(x))) / ( IQR(x)/2 ) 
+  } 
+
+yule(x1);yule(x2);yule(x3);yule(x4)
+```
+
+Pearson
+```{r}
+pearson<- function(x) {
+	m<-mean(x)
+	nom<-sum((x-m)^3)
+	denom<- sum( (x-m)^2)^(3/2)
+	return(nom/denom)	
+}
+
+pearson(x1)
+pearson(x2)
+pearson(x3)
+pearson(x4)
+```
+
+The sensitivity function captures the sensitivity of a summary to the value of a single observation (``hypothesis stability'' in machine learning).
+```{r}
+(new.obs<- -1000:1000)
+mean.sensitivity<- rep(0,length(new.obs))
+median.sensitivity<- rep(0,length(new.obs))
+alpha.t.sensitivity<- rep(0,length(new.obs))
+sd.sensitivity<- rep(0,length(new.obs))
+mad.sensitivity<- rep(0,length(new.obs))
+iqr.sensitivity<- rep(0,length(new.obs))
+pearson.sensitivity<- rep(0,length(new.obs))
+yule.sensitivity<- rep(0,length(new.obs))
+
+for (i in seq_along(new.obs)){
+	temp.data<- c(x1,new.obs[i])
+
+	mean.sensitivity[i]<- mean(temp.data)
+	median.sensitivity[i]<- median(temp.data)
+	alpha.t.sensitivity[i]<- mean(temp.data, trim=0.1)
+	pearson.sensitivity[i]<- pearson(temp.data)
+	yule.sensitivity[i]<- yule(temp.data)
+	sd.sensitivity[i]<- sd(temp.data)
+	mad.sensitivity[i]<- mad(temp.data)
+	iqr.sensitivity[i]<- IQR(temp.data)
+}
+
+plot(mean.sensitivity~new.obs, type='l')
+lines(median.sensitivity~new.obs, lty=2)
+lines(alpha.t.sensitivity~new.obs, lty=3)
+legend(locator(1), legend=c('Mean','Meadian','Alpha Trimmed'), lty=c(1,2,3))
+abline(v=median(x1),lty=5)
+abline(v=quantile(x1,0.1),lty=6)
+abline(v=quantile(x1,0.9),lty=6)
+
+
+plot(sd.sensitivity~new.obs,type='l',ylim=c(40,80))
+lines(mad.sensitivity~new.obs,lty=2)
+lines(iqr.sensitivity~new.obs,type='l',lty=3)
+legend(locator(1), legend=c('SD','MAD','IQR'), lty=c(1,2,3))
+
+r<-0.05
+plot(pearson.sensitivity~new.obs,ylim=c(-r,r),type='l')
+lines(yule.sensitivity~new.obs, lty=2)
+```
+
+
+## Univariate transformations
+```{r}
+(periods <- c(rnorm(500, 15),rnorm(100, 10)))
+(cells<-10*2^periods)
+
+hist(cells); rug(cells)
+hist(log(cells)); rug(log(cells))
+```
+
+
+
+
+
+
+# The Normal Distribution
+```{r}
+# The Standard normal distribution (a.k.a. Gaussian) PDF
+mu<-0;sd<-1;
+curve(dnorm(x, mean=mu, sd=sd), -5, 5, ylim=c(0, 1), col='red');abline(v=mu)  
+
+
+#Non standard normal distribution
+mu<-0; sd<-0.5; curve(dnorm(x, mean=mu, sd=sd), add=T);abline(v=mu)
+mu<-1; sd<-2; curve(dnorm(x, mean=mu, sd=sd), add=T)
+mu<--2; sd<-.2; curve(dnorm(x, mean=mu, sd=sd), add=T)
+
+# CDFs of scaled Gaussians
+curve(pnorm(x, 0, 1), -4, 4, main='Commulative Standard Normal');abline(v=0);abline(0.5, 0, lty=2)
+curve(pnorm(x, 0, 1), -10, 10, main='Commulative Standard Normal'); abline(v=0);abline(0.5, 0, lty=2)
+curve(pnorm(x, 0, 3), -10, 10, add=T, col='red')
+curve(pnorm(x, 0, 5), -10, 10, add=T, col='blue')
+
+# CDF of translated Gaussians
+curve(pnorm(x, 0, 1), -10, 10, main='Commulative Standard Normal'); abline(v=0); abline(0.5, 0, lty=2)
+curve(pnorm(x, -1, 1), -10, 10, add=T, col='red')
+curve(pnorm(x, 1, 1), -10, 10, add=T, col='blue')
+legend(x=-7, y=0.8, legend=c(expression(mu==0), expression(mu==1), expression(mu==-1)), lty=1, col=c('black', 'blue', 'red'))
+
+## Commulative density function (CDF)
+pnorm(0, mean=0, sd=1) 
+pnorm(1.5, mean=0, sd=1)
+pnorm(510, mean=500, sd=11)
+
+## Inverse commulative density function a.k.a. Quantile Function
+qnorm(0.2, mean=0, sd=1)  
+qnorm(0.5, mean=0, sd=1)
+qnorm(0.975, mean=10, sd=7)
+
+## Probability density function
+dnorm(0, mean=0, sd=1) 
+
+```
+
+Demonstrating the CLT
+```{r}
+# The normal approximation of the binomial distribution
+n<-100;p<-0.5
+curve(dbinom(x, n, p), 0, n, type='h', ylim=c(0, 1)) 
+curve(pbinom(x, n, p), 0, n, type='S', ylim=c(0, 1))# Binomial CDF
+curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red') # Gaussian approximation
+
+n<-1000;p<-0.5
+curve(pbinom(x, n, p), 0, n, type='s', ylim=c(0, 1)) # The Commulative binomial probaility function
+curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red')
+
+n<-10;p<-0.5
+curve(pbinom(x, n, p), 0, n, type='S', ylim=c(0, 1)) # The Commulative binomial probaility function
+curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red')
+
+n<-10;p<-0.05
+curve(pbinom(x, n, p), 0, n, type='S', ylim=c(0, 1)) # The Commulative binomial probaility function
+curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red')
+curve(dbinom(x, n, p), 0, n, type='h', ylim=c(0, 1))
+
+
+
+# Now with a geometric population
+rgeom(100, 0.3) 
+hist(rgeom(1000, 0.3))
+generating <- matrix(0, ncol=100, nrow=1000)
+
+for (i in 1:1000) generating[i, ] <- rgeom(100, 0.3)
+image(generating)
+
+sums<-apply(generating, 1, sum);sums 
+length(sums)
+
+par(mfrow=c(1, 2)); hist(rgeom(1000, 0.3), main='Original Geometric Distribution'); hist(sums, main='Distribution of sum'); par(mfrow=c(1, 1))
+```
+
+
 
 ## The QQ plot 
 A simple and efficient tool to compare between distributions.
@@ -1013,6 +1356,35 @@ qq.uniform(normals.2);abline(0, 1)
 
 
 
+
+
+
+
+# Checking the normal approximation of the binomial distribution with a qqplot.
+n<-10;p<-0.2; binom.data=rbinom(100, n, p); mystery.2(binom.data);abline(0, 1)
+n<-10;p<-0.5;binom.data=rbinom(100, n, p); mystery.2(binom.data);abline(0, 1)
+n<-100;p<-0.5;binom.data<-rbinom(100, n, p); mystery.2(binom.data);abline(0, 1)
+n<-1000;p<-0.5;binom.data<-rbinom(100, n, p); mystery.2(binom.data);abline(0, 1)
+
+
+# Theoretical example
+n<-100; p<-0.5
+curve(dbinom(x, n, p), 0, n, type='h', ylim=c(0, 1))
+curve(pbinom(x, n, p), 0, n, type='S', ylim=c(0, 1)) # The Commulative binomial probaility function
+curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red')
+
+n<-1000;p<-0.5
+curve(pbinom(x, n, p), 0, n, type='s', ylim=c(0, 1)) # The Commulative binomial probaility function
+curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red')
+
+n<-10;p<-0.5
+curve(pbinom(x, n, p), 0, n, type='S', ylim=c(0, 1)) # The Commulative binomial probaility function
+curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red')
+
+n<-10;p<-0.05
+curve(pbinom(x, n, p), 0, n, type='S', ylim=c(0, 1)) # The Commulative binomial probaility function
+curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red')
+curve(dbinom(x, n, p), 0, n, type='h', ylim=c(0, 1))
 ```
 
 
@@ -1066,8 +1438,8 @@ plot3d(ozone[, 1:3])
 ```{r}
 x<-seq(0, 1, 0.01)
 y<-seq(0, 1, 0.01)
-xy.grid <- expand.grid(x, y)
-func1 <- function(mesh) exp(mesh[, 1]+mesh[, 2])
+xy.grid<-expand.grid(x, y)
+func1<-function(mesh) exp(mesh[, 1]+mesh[, 2])
 z<-func1(xy.grid)
 xyz<-data.frame(xy.grid, z)
 plot3d(xyz, xlab='x', ylab='y')  
@@ -1104,6 +1476,93 @@ residuals<- y - predictions
 plot(residuals) ; abline(h=0)
 ```
 
+### Robust regression
+```{r}
+rline  <- function(x, y)
+{
+  ind<- is.na(x) | is.na(y)
+	x<- x[!ind]
+	y<- y[!ind]
+	o <- order(x)  #The permutation  that will sort x the into ascending order. 
+	x <- sort(x)   #The sorted x vector
+	y <- y[o]      #The sorted y vector
+	n <- length(x) #The length of the dataset
+	n3 <- round(n/3)
+	xb <- median(x[c(1:n3)]) #The median of the x of the lower part
+	yb <- median(y[c(1:n3)]) #The median of the y of the lower part
+	xt <- median(x[c((n - n3 + 1):n)]) #The median of the x of the upper part
+	yt <- median(y[c((n - n3 + 1):n)]) #The median of the y of the upper part
+	b1 <- (yt-yb)/(xt-xb) # Calculating the slope
+	b0 <- mean(yt, yb)-b1*mean(xt, xb) # Calculating the (temporary) intercept
+	pred <- b0 + b1 * x    
+	mr <- median(y - pred) #The adjustment to the median of the initial residuals
+	b0 <- b0 + mr          #The "adjusted" intercept
+	pred <- b0 + b1 * x    #The final predictions
+	resid <- y - pred      #The final errors
+	return(list(intercept=b0,  slope=b1,  pred=pred,  resid=resid,  x=x,  xb=xb,  yb=yb,  xt=xt,  yt=yt))
+}
+
+# Robust regression with well behaved data
+robust <- rline(x, y)
+robust$intercept ; robust$slope
+plot(y~x)
+abline(robust$intercept, robust$slope, col='red', lwd=3, lty=2)
+
+# Robust regression with ill behaved data
+y <- a + b*x+rbinom(100, 1, 0.1)*(rbinom(100, 1, 0.5)-0.5)*10000
+plot(y~x, ylim=c(-1, 1)*5000) ; abline(a, b, col='blue', lwd=3, lty=5)
+
+plot(y~x, ylim=c(-1, 1)*500) ; abline(a, b, col='blue', lwd=3, lty=5)
+ols.ill <- ols.line(x, y); ols.ill
+abline(ols.ill$intercept, ols.ill$slope, col='brown')
+robust.ill<-rline(x, y)
+abline(robust.ill$intercept, robust.ill$slope, col='red')
+legend(x=60,y=-200, lty=1, legend=c('Real', 'OLS line', 'Robust Line'), col=c('blue', 'brown', 'red'), lwd=c(3, 1, 1))
+```
+
+### How are the intercept and slope related? 
+This little simulation demonstrated that if the data is not centered, then a correlation is to be expected between slope and intercept.
+```{r}
+x<-1:100
+a<-2
+b<-3.5
+sigma<-10
+iterations<-100
+retries <- matrix(0, 2*iterations, ncol=2)
+for (i in 1:iterations){
+    y<-a+b*x+rnorm(100, 0, sigma)
+    temp.robust<-rline(x, y)  
+    retries[i, 1]<-temp.robust$slope-b        
+    retries[i, 2]<-temp.robust$intercept-a
+}
+
+ind<- as.numeric((retries[, 1]>0) & (retries[, 2]>0))+1
+plot(retries, xlab='Deviation from real slope', ylab='Deviation from real intercept', pch=ind)     
+abline(v=0);abline(h=0)
+```
+
+### What is a high correlation?
+```{r}
+samples<- 100
+x <- 1:samples
+a <- 2
+b <- 3.5
+sigma <- 500
+y <- a+b*x+rnorm(samples, 0, sigma)
+(initial.correlation<- cor(y,x))
+
+# Permute the data and compute the correlation:
+iterations<-1000
+correlations<- rep(NA, iterations)
+for (i in 1:iterations){
+  ind<- sample(length(y))
+  correlations[i] <- cor(y[ind], x)
+}
+hist(correlations, xlim=c(-1,1))
+rug(correlations)
+abline(v=initial.correlation)
+```
+
 ### Dangers of Extrapolation  
 ```{r}
 x<-runif(1000)*5
@@ -1131,6 +1590,23 @@ plot(log(y)~x)
 plot(log(y)~log(x))
 ```
 
+### Intuition underlying Pearson's correlation 
+It is actually the *OLS* slope if dealing with *standardized* variables.
+```{r}
+x<-1:100;cat('Old X average=', mean(x), '. Old X Variance=', var(x), '\n')
+a<-2 ; b<-3.5 ; sigma<-10
+y<-a+b*x+rnorm(100, 0, sigma);cat('Old Y average=', mean(y), '. Old Y Variance=', var(y), '\n')
+plot(y~x)
+
+x.stan <- (x-mean(x))/sqrt(var(x));cat('New X average=', mean(x.stan), '. New X variance=', var(x.stan), '\n')
+y.stan<-(y-mean(y))/sqrt(var(y));cat('New Y average=', round(mean(y.stan), 2), '. New Y variance=', var(y.stan), '\n')
+plot(y~x, cex=0.5);points(y.stan~x.stan, col='red')
+
+ols.line(x.stan, y.stan) # Calculating the slope in Z-score scale
+cor(x.stan, y.stan) # Calculating the correlation coef of the Z-scores  #MatLab: corrcoef
+cor(x, y) # The cor coef in the original scale is the same as the slope in Z-score scale!
+```
+
 ### Multivariate linear regression 
 ```{r}
 # install.packages('rgl')
@@ -1156,6 +1632,299 @@ z<-func1(xy.grid, a0=5, a1=1, a2=3, .4); xyz=data.frame(xy.grid, z); plot3d(xyz,
 lm(z~., xyz) # Solves the system "prediction=(X'X)^-1 X'y"
 ```
 
+
+### Linearizing Transformations and Examining Residuals
+See also http://www.gapminder.org/
+```{r}
+## Log example #1:
+x<-runif(1000)*5
+y<-exp(x)+rnorm(1000)
+plot(y~x, main='Whole relation')
+rect(xleft=0, ybottom=-5, xright=2, ytop=10)
+plot(y~x, main='Local relation', cex=0.5, xlim=c(0, 2), ylim=c(-5, 10));abline(v=2, lty=3)
+ind<-x<=2;ind
+ols.interpolating<-ols.line(x[ind], y[ind]);ols.interpolating
+abline(ols.interpolating$intercept ,  ols.interpolating$slope, col='red')
+plot(y~x, main='Whole relation')
+abline(ols.interpolating$intercept ,  ols.interpolating$slope, col='red')
+abline(v=2, lty=3)
+
+yResiduals<- y - (ols.interpolating$intercept+ols.interpolating$slope * x)
+par(mfrow=c(1,1))
+plot(y~x, main='Local relation; scatter', cex=0.5, xlim=c(0, 2), ylim=c(-5, 10)); abline(v=2, lty=3);
+abline(ols.interpolating$intercept ,  ols.interpolating$slope, col='red')
+plot(yResiduals ~x, main='Local relation; residuals', cex=0.5, xlim=c(0, 2), ylim=c(-5, 10)); abline(0,0) 
+# Note: Non linearity is easier to spot when inspecting residuals!
+
+par(mfrow=c(1,1))
+new.line<- ols.line(exp(x[ind]), y[ind]) # transforming x:
+predicted.y<- new.line$intercept+new.line$slope * exp(x)
+yResiduals2<- y - (predicted.y)
+plot(yResiduals2 ~x, main='Local relation', cex=0.5, xlim=c(0, 2), ylim=c(-5, 10));abline(0,0) # Residuals look much better!
+plot(y~x)
+points(predicted.y~x, col='red', cex=0.5)
+
+
+# Now inspect normality of residuals:
+qqnorm(yResiduals); qqline(yResiduals)
+qqnorm(yResiduals2); qqline(yResiduals2)
+par(mfrow=c(1,1))
+
+# Has R^2 improved?
+compute.R2<- function(x,y){
+	new.line<- ols.line(x, y)
+	Residuals<- y - (new.line$intercept+new.line$slope * x)
+	SSR<- sum(Residuals^2)
+	SST<- sum((y-mean(y))^2)
+	R2<- 1-SSR/SST
+	return(R2)
+}
+compute.R2(x,y);cor(x,y)^2
+compute.R2(exp(x),y);cor(exp(x),y)^2
+```
+
+### Distribution of y|x:
+Judging by the QQplot: $Y|x \sim \mathcal{N}( a+b*exp(x), \sigma_e^2)$
+and $\sigma_e^2 = (1-R^2) * \sigma_y^2$.
+What is your guess of the next value of y?
+What is your guess of the range of 68% of values of y?  
+ 
+```{r}
+plot(y~x, cex=0.2, xlim=c(0,3), ylim=c(0,10))
+points(predicted.y~x, col='red', cex=0.2)
+R2<- compute.R2(exp(x),y)
+sigma.epsilon<- sqrt( (1-R2)* var(y))
+segments(x, predicted.y-sigma.epsilon, x,  predicted.y+sigma.epsilon, col='lightgrey', cex=0.2)
+```
+
+### Log Linear Model 
+```{r}
+x<- runif(100)
+a<- 2
+b<- 3.5
+y<- exp(a+b*x+rnorm(100,sd=0.2))
+plot(y~x)
+
+line.1<- ols.line(y=y,x=exp(x))
+preds.1<- line.1$intercept + line.1$slope * exp(x)
+resids.1<- y-preds.1
+plot(y~x);points(preds.1 ~ x, col='red')
+plot(resids.1~x);abline(0,0)
+
+line.2<- ols.line(y=log(y),x=x)
+preds.2<- exp(line.2$intercept + line.2$slope * x)
+plot(y~x);points(preds.2 ~ x, col='red')
+resids.2<- y - preds.2
+plot(resids.2~x);abline(0,0)
+resids.2.2<- log(y) - log(preds.2)
+plot(resids.2.2~x);abline(0,0)
+
+```
+Q: What is this good for?!?
+A: Prediction intervals! (amongst others)
+
+
+In linear scale
+```{r}
+R2<- compute.R2(x=x,y=log(y))
+sigma.epsilon<- sqrt( (1-R2)* var(log(y)))
+plot(log(y)~x);points(log(preds.2) ~ x, col='red')
+segments(x, log(preds.2)-sigma.epsilon, x,  log(preds.2)+sigma.epsilon, col='darkgreen', cex=0.2)
+# In exp() scale:
+plot(y~x); points(preds.2 ~ x, col='red')
+segments(x, exp(log(preds.2)-sigma.epsilon), x,  exp(log(preds.2)+sigma.epsilon), col='darkgreen', cex=0.2)
+```
+
+### Log-Log Model
+```{r}
+x<- runif(100)
+a<- 2
+b<- 3.5
+y<- exp(a + b * log(x)+rnorm(100, sd=1))
+plot(y~x)
+
+ols.line.1<- ols.line(x=x, y=y)
+predict.1<- ols.line.1$intercept + ols.line.1$slope * x
+plot(y~x); points(predict.1~x, col='red')
+
+ols.line.2<- ols.line(x=exp(x), y=y)
+predict.2<- ols.line.2$intercept + ols.line.2$slope * exp(x)
+plot(y~x); points(predict.2~x, col='red')
+
+ols.line.3<- ols.line(x=x, y=log(y))
+predict.3<- exp(ols.line.3$intercept + ols.line.3$slope * x)
+plot(y~x); points(predict.3~x, col='red')
+plot(log(y)~x);points(log(predict.3) ~ x, col='red')
+
+
+ols.line.4<- ols.line(x=log(x), y=log(y))
+predict.4<- exp(ols.line.4$intercept + ols.line.4$slope * log(x))
+plot(y~x); points(predict.4~x, col='red')
+plot(log(y)~x);points(log(predict.4) ~ x, col='red')
+plot(log(y)~log(x))
+
+(R2<- compute.R2(x=log(x),y=log(y)))
+sigma.epsilon<- sqrt( (1-R2)* var(log(y)))
+plot(y~x); points(predict.4 ~ x, col='red')
+segments(x, exp(log(predict.4)-sigma.epsilon), x,  exp(log(predict.4)+sigma.epsilon), col='darkgreen', cex=0.2)
+```
+
+
+
+Interpreting a log-log model:
+b is the *percent* change in y, for a percent change in x!
+Why? 
+```{r}
+e.y<- expression(exp(a)*x**b)
+D(e.y,'x')
+```
+So $\Delta y/y = b \Delta x/x$ Hurray!
+
+### Varying Variance (heteroskedasticity) 
+```{r}
+x<- runif(100, max=2*pi)
+a<- 2
+b<- 3.5
+sds<- 1+sin(x)
+plot(sds~x)
+y<- a + b * x + rnorm(100, sd=sds)
+plot(y~x)
+
+ols.line.1<- ols.line(x=x, y=y)
+predict.1<- ols.line.1$intercept + ols.line.1$slope * x
+plot(y~x); points(predict.1~x, col='red')
+(R2<- compute.R2(x,y))
+sigma.epsilon<- sqrt( (1-R2)* var(y))
+segments(x, predict.1-sigma.epsilon, x,  predict.1+sigma.epsilon, col='darkgreen', cex=0.2)
+
+```
+
+
+
+# Random methods
+
+## Bootstrapping 
+```{r}
+heights<-read.table('heights.txt')[, 1]
+
+heights.sample<-sample(heights, 100, replace=T)
+```
+
+Estimateing the variance and MSE of different expectancy estimators
+True variance= 225
+True variance of the mean
+```{r}
+B<-10000
+means=NULL
+medians=NULL
+alpha.trims<-NULL
+for (i in 1:B) {
+    boot.sample<-sample(heights.sample, replace=T)
+    means<-c(means, mean(boot.sample))
+    medians<-c(medians, median(boot.sample))
+    alpha.trims<-c(alpha.trims, mean(boot.sample, trim=0.1))    
+}
+
+n<-length(heights.sample)
+population.variance<-sum( (heights.sample-mean(heights.sample))^2  ) / (n-1)
+```
+
+The variance of the mean using theoretical considerations
+```{r}
+population.variance/n 
+```
+
+The variance of the mean estimated using the BootStrap
+```{r}
+boot.mean.variance<-sum( (means-mean(means))^2  ) / (B-1);boot.mean.variance
+
+# The MSE of the mean estimated using the BootStrap
+boot.mean.MSE<-sum( (means-mean(heights.sample))^2  ) / (B-1) 
+boot.mean.MSE
+
+cat('True variance of the mean=2.55 Unbiased estimator=', population.variance/n, '\n', 'BootStrap estimation=', boot.mean.variance, '\n')
+```
+
+
+
+The variance of the median estimated using the BootStrap
+```{r}
+boot.median.variance<-sum( (medians-mean(medians))^2  ) / (B-1) ;boot.median.variance
+boot.median.bias<-mean(medians)-median(heights.sample);boot.median.bias
+boot.median.variance + boot.median.bias^2
+# The MSE of the median estimated using the BootStrap
+boot.median.MSE<-sum( (medians-median(heights.sample))^2  ) / (B-1);boot.median.MSE 
+```
+
+```{r}
+# The variance of the trimmed mean estimated using the BootStrap
+boot.trim.variance<-sum( (alpha.trims-mean(alpha.trims))^2  ) / (B-1);boot.trim.variance
+boot.trim.bias<-mean(alpha.trims)-mean(heights.sample, trim=0.1);boot.trim.bias
+boot.trim.variance + boot.trim.bias^2
+# The MSE of the trimmed mean estimated using the BootStrap
+boot.trim.MSE<-sum( (alpha.trims-mean(heights.sample, trim=0.1))^2  ) / (B-1);boot.trims.MSE 
+
+cat('BootStrap mean MSE=', boot.mean.MSE,
+	'\n BootStrap median MSE=', boot.median.MSE, 
+	'\n BootStrap trimmed mean MSE=', boot.trim.MSE, 
+	'\n')
+```
+
+
+Is the bootstrap a good estimator of the MSE ? Let's try it on the median:
+```{r}
+B<-10000
+means<-NULL
+medians<-NULL
+alpha.trims<-NULL
+
+for (i in 1:B) {
+    # This time I sample from the population and not the sample!
+    sample<-sample(heights, 100, replace=T) 
+    means<-c(means, mean(sample))
+    medians<-c(medians, median(sample))
+    alpha.trims<-c(alpha.trims, mean(sample, trim=0.1))    
+}
+
+median.variance<-sum( (medians-mean(medians))^2  ) / (B-1) ;median.variance
+median.bias<-mean(medians)-175;median.bias
+median.variance+median.bias^2
+median.MSE<-sum( (medians-175)^2  ) / (B-1);median.MSE 
+
+cat('BootStrap median MSE estimation=', boot.median.MSE, 
+'\n Simulation MSE estimation=', median.MSE, '\n')
+```
+
+
+## CI Simulations 
+This code creates samples,  computes the CI of the expectancy assuming unknown variance and checks how many CIs have captured the real expectation.
+```{r}
+
+reps<-100
+samples<-matrix(rnorm(30*reps, 170, 10), ncol=30) # creating samples
+
+my.ci<-function(sample, alpha) {
+    n<-length(sample)
+    y<-mean(sample)
+    s<-sqrt( sum( (sample-y)^2  ) / (n-1)    )
+    c<-qt(1-alpha/2, n-1)
+    return( c( y-s/sqrt(n)*c, y+s/sqrt(n)*c  ))
+} # defining the expectancy CI assuming unknown variance
+
+n<-dim(samples)[1]
+CIs<-matrix(0, ncol=2, nrow=n);CIs # Just preparing the array to hold the data.
+alpha<-0.1
+for (i in 1:n) CIs[i, ]<-my.ci(samples[i, ], alpha) #Calculating CIs for each sample
+CIs;CIs<-cbind(CIs, rep(NA, n))
+
+plot(NULL, xlim=c(min(CIs[, 1:2]), max(CIs[, 1:2])), ylim=c(1, n), xlab='Interval', ylab='Sample')
+lines(x=as.vector(t(CIs)), y=rep(seq(1:n), each=3));abline(v=170)
+
+(CIs[, 1]<170)*(CIs[, 2]>170) # How many CI's actually contain the true expectancy?
+table(CIs[, 1]<170)*(CIs[, 2]>170)
+
+oks<-factor((CIs[, 1]<170)*(CIs[, 2]>170));levels(oks)<-c('Missed', 'Got it!');table(oks)
+```
 
 
 
