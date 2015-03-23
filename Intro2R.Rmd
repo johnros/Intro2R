@@ -145,7 +145,7 @@ car_data <-
 ```
 
 
-# Variable creation and manipulation 
+# Vector creation and manipulation 
 ```{r}
 c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21)
 10:21 							
@@ -236,7 +236,7 @@ str(frame1) # the inner structure of an object
 attributes(frame1) # get the objec's meta data
 ```
 
-## Exctraction  (will work on ANY object):
+## Exctraction:
 single element:
 ```{r}
 frame1[1, 2]    						
