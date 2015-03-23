@@ -9,13 +9,13 @@ output: html_document
 - If you are working alone, consider starting with "An Introduction to R" here:
 http://cran.r-project.org/manuals.html 
 - Make sure you use RStudio.
-- alt+shift+k for RStudio keyboard shortcuts.
 - ctrl+return to run lines from editor.
+- alt+shift+k for RStudio keyboard shortcuts.
 - ctrl+alt+j to navigate between sections
 - tab for autocompletion
 - ctrl+1 to skip to editor. 
 - ctrl+2 to skip to console.
-
+- ctrl+8 to skip to the environment list.
 
 
 # Simple calculator
@@ -103,7 +103,6 @@ rm(x) # remove variable
 ```
 
 
-
 For more information on distributions see http://cran.r-project.org/web/views/Distributions.html
 
 
@@ -123,7 +122,7 @@ x %>% mean() %>% round(2) %>% add(10)
 
 This example clearly demonstrates the benefits (from http://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html)
 ```{r}
-# Old style
+# Functional (onion) style
 car_data <- 
   transform(aggregate(. ~ cyl, 
                       data = subset(mtcars, hp > 100), 
@@ -149,7 +148,7 @@ c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21)
 10:21 							
 seq(from=10, to=21, by=1) 							
 seq(from=10, to=21, by=2) 								
-x<-c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21) 	
+x <- c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21) 	
 x
 ```
 
@@ -198,6 +197,7 @@ plot(y~x, pch=10, type='p', col='blue', cex=4)
 abline(3, 0.002)
 ```
 
+Available plotting options
 ```{r, eval=FALSE}
 example(plot)
 ?plot
@@ -209,35 +209,36 @@ When your plotting gets serious, move to ggplot2 and ggvis as soon as possible.
 
 # Data frame Manipulation 
 ```{r}
+x<- 1:100; y<- 3+sin(x) 
 class(x) # R (high) level representation of an object.
 mode(x) 
 typeof(x) 
 ```
 
 
-Create and checkout your first data frame:
+Create and checkout your first data frame
 ```{r}
-x<- 1:100; y<- 3+sin(x) 
 frame1 <- data.frame(x=x, sin=y)	
 frame1
 frame1 %>% head() # just print the beginning
 frame1 %>% View() # Excel-like view (never edit!)
-class(frame1)
-dim(frame1) 							
+class(frame1) # the object is of type data.frame
+dim(frame1)  							
 dim(x)
 length(frame1)
 str(frame1) # the inner structure of an object
+attributes(frame1) # get the objec's meta data
 ```
 
 
-## Exctraction functions (will work on ANY object):
+## Exctraction  (will work on ANY object):
 single element:
 ```{r}
 frame1[1, 2]    						
 frame1[2, 1]     						
 ```
 
-Exctract column by index:
+Exctract _column_ by index:
 ```{r}
 frame1[1, ]      						
 t(frame1[, 1])   						
@@ -248,26 +249,31 @@ Exctract column by name:
 ```{r}
 names(frame1)   						
 frame1[, 'sin']
-dim(frame1[, 'sin'])
-frame1['sin']
-dim(frame1['sin'])
-frame1[, 2]
-frame1[2]
-frame1[2, ]
+dim(frame1[, 'sin'])  # extract as a vector. no dim attribute.
+frame1['sin'] 
+dim(frame1['sin']) # extract as a data.frame. has dim attribute.
+frame1[, 2] %>% class
+frame1[2] %>% class
+frame1[2, ] # extract a row
 frame1$sin
-subset(frame1, select=sin)
+```
+
+`subset()` does the same
+```{r}
+subset(frame1, select=sin) 
 subset(frame1, select=2)
 subset(frame1, select=c(2,0))
 ```
 
 
-__Sanity conservation notice__
-Note the difference between [] and [[]] exctraction!
+Sanity conservation notice!
+Always think if you want to extract a vector or a frame:
+- Note the difference between `[]` and `[[]]` exctraction!
+- Note the difference between `frame[,1]` and `frame[1]`.
 ```{r}
 a <- frame1[1]
 b <- frame1[[1]]
-a==b 
-# Seems identical. But not really:
+a==b # Seems identical. But not really:
 class(a)
 class(b)
 # Causes different behaviour:
@@ -279,13 +285,159 @@ More about extraction: http://adv-r.had.co.nz/Subsetting.html
 
 
 ## dplyr package extension:
-Very fast, fun and clarifies coding. 
+`dplyr` makes the manupilation of data.frames a breeze.
+It is very fast, and straightforward 
+
 Install the package:
 ```{r}
 # install.packages('dplyr')
 ```
-Now free an afternoon and go to:
+
+Following examples taken from:
 https://github.com/justmarkham/dplyr-tutorial/blob/master/dplyr-tutorial.Rmd
+```{r}
+# install.packages('nycflights13')
+library(nycflights13)
+dim(flights)
+View(flights)
+names(flights)
+class(flights) # a tbl_df is an extension of the data.frame class
+library(dplyr) # calling dplyr
+
+filter(flights, month == 1, day == 1) #dplyr style
+flights[flights$month == 1 & flights$day == 1, ] # old style
+flights %>% filter(month == 1, day == 1) # dplyr with magrittr style (yes!)
+
+filter(flights, month == 1 | month == 2)
+slice(flights, 1:10) # selects rows
+arrange(flights, year, month, day) # sort
+arrange(flights, desc(arr_delay)) # sort descending
+select(flights, year, month, day) # select columns
+select(flights, year:day) # select column range
+select(flights, -(year:day)) # drop columns
+rename(flights, tail_num = tailnum) # rename variables
+# add a new computed colume
+mutate(flights,
+  gain = arr_delay - dep_delay,
+  speed = distance / air_time * 60)
+# you can refer to columns just created!
+mutate(flights,
+  gain = arr_delay - dep_delay,
+  gain_per_hour = gain / (air_time / 60)
+)
+# keep only new variables
+transmute(flights,
+  gain = arr_delay - dep_delay,
+  gain_per_hour = gain / (air_time / 60)
+)
+# simple statistics
+summarise(flights,
+  delay = mean(dep_delay, na.rm = TRUE))
+
+sample_n(flights, 10) # random subsample
+sample_frac(flights, 0.01) # random subsample
+```
+
+Subgroup operations
+```{r}
+by_tailnum <- group_by(flights, tailnum)
+by_tailnum %>% class # a groupping object
+delay <- summarise(by_tailnum,
+  count = n(),
+  avg.dist = mean(distance, na.rm = TRUE),
+  avg.delay = mean(arr_delay, na.rm = TRUE))
+delay <- filter(delay, count > 20, dist < 2000)
+View(delay)
+
+destinations <- group_by(flights, dest)
+summarise(destinations,
+  planes = n_distinct(tailnum),
+  flights = n()
+)
+
+# Grouping works in a hirarchy. summarise() peels outer layer.
+daily <- group_by(flights, year, month, day)
+(per_day   <- summarise(daily, flights = n()))
+(per_month <- summarise(per_day, flights = sum(flights)))
+(per_year  <- summarise(per_month, flights = sum(flights)))
+```
+
+
+
+Piping operatons
+```{r}
+# Old style
+a1 <- group_by(flights, year, month, day)
+a2 <- select(a1, arr_delay, dep_delay)
+a3 <- summarise(a2,
+  arr = mean(arr_delay, na.rm = TRUE),
+  dep = mean(dep_delay, na.rm = TRUE))
+a4 <- filter(a3, arr > 30 | dep > 30)
+
+# New style
+flights %>%
+  group_by(year, month, day) %>%
+  select(arr_delay, dep_delay) %>%
+  summarise(
+    arr = mean(arr_delay, na.rm = TRUE),
+    dep = mean(dep_delay, na.rm = TRUE)
+  ) %>%
+  filter(arr > 30 | dep > 30)
+```
+
+
+Two table operations
+```{r}
+airlines %>% View
+flights2 <- flights %>% select(year:day, hour, origin, dest, tailnum, carrier)
+flights2 %>% left_join(airlines) # join on left table with automatic matching.
+
+flights2 %>% left_join(weather)
+
+flights2 %>% left_join(planes, by = "tailnum") # with named matching
+
+flights2 %>% left_join(airports, c("dest" = "faa"))
+
+flights2 %>% left_join(airports, c("origin" = "faa"))
+```
+
+Types of join
+```{r}
+(df1 <- data_frame(x = c(1, 2), y = 2:1))
+(df2 <- data_frame(x = c(1, 3), a = 10, b = "a"))
+
+df1 %>% inner_join(df2) # SELECT * FROM x JOIN y ON x.a = y.a
+
+df1 %>% left_join(df2) # SELECT * FROM x LEFT JOIN y ON x.a = y.a
+
+df1 %>% right_join(df2) # SELECT * FROM x RIGHT JOIN y ON x.a = y.a
+df2 %>% left_join(df1) 
+
+df1 %>% full_join(df2) # SELECT * FROM x FULL JOIN y ON x.a = y.a
+
+# return only unmatched cases
+flights %>%
+  anti_join(planes, by = "tailnum") %>% 
+  count(tailnum, sort = TRUE) 
+# SELECT * FROM x WHERE NOT EXISTS (SELECT 1 FROM y WHERE x.a = y.a)
+
+df1 %>% semi_join(df2, by = "x")  # SELECT * FROM x WHERE EXISTS (SELECT 1 FROM y WHERE x.a = y.a)
+```
+
+Set operations
+```{r}
+(df1 <- data_frame(x = 1:2, y = c(1L, 1L)))
+(df2 <- data_frame(x = 1:2, y = 1:2))
+
+intersect(df1, df2) # SELECT * FROM x INTERSECT SELECT * FROM y
+
+union(df1, df2) # SELECT * FROM x UNION SELECT * FROM y
+
+setdiff(df1, df2) # SELECT * FROM x EXCEPT SELECT * FROM y
+
+setdiff(df2, df1)
+
+```
 
 
 
