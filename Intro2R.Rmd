@@ -374,32 +374,13 @@ daily <- group_by(flights, year, month, day)
 
 
 
-Piping and dplyr
-```{r}
-# Old style
-a1 <- group_by(flights, year, month, day)
-a2 <- select(a1, arr_delay, dep_delay)
-a3 <- summarise(a2,
-  arr = mean(arr_delay, na.rm = TRUE),
-  dep = mean(dep_delay, na.rm = TRUE))
-a4 <- filter(a3, arr > 30 | dep > 30)
-
-# New style
-flights %>%
-  group_by(year, month, day) %>%
-  select(arr_delay, dep_delay) %>%
-  summarise(
-    arr = mean(arr_delay, na.rm = TRUE),
-    dep = mean(dep_delay, na.rm = TRUE)
-  ) %>%
-  filter(arr > 30 | dep > 30)
-```
 
 
 Two table operations
 ```{r}
 airlines %>% View
 flights2 <- flights %>% select(year:day, hour, origin, dest, tailnum, carrier)
+
 flights2 %>% left_join(airlines) # join on left table with automatic matching.
 
 flights2 %>% left_join(weather)
