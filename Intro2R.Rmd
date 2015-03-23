@@ -466,8 +466,8 @@ View(tirgul1)
 ### Import .csv files
 Let's write a simple file so that we have something to import:
 ```{r}
-(temp.file.name <- tempfile()) # get an arbitrary file name
 View(airquality) #  examine the data to export
+(temp.file.name <- tempfile()) # get an arbitrary file name
 write.csv(x = airquality, file = temp.file.name) #export
 ```
 
@@ -654,6 +654,7 @@ fib(30)
 ```{r}
 ls() #Lists all available objects
 ls(pattern='x')
+
 ls(pattern='[0-9]') # Search using regular expressions
 ls(pattern='[A-Z]')
 ```
@@ -676,10 +677,12 @@ http://adv-r.had.co.nz/Environments.html
 
 ##  Exploring Categorical Variables  
 ```{r}
-gender<-c(rep('Boy', 10), rep('Girl', 12))
-drink<-c(rep('Coke', 5), rep('Sprite', 3), rep('Coffee', 6), rep('Tea', 7), rep('Water', 1))  
+gender <- c(rep('Boy', 10), rep('Girl', 12))
+drink <- c(rep('Coke', 5), rep('Sprite', 3), rep('Coffee', 6), rep('Tea', 7), rep('Water', 1))  
 class(gender);class(drink)
-table1<-table(gender, drink) 
+
+cbind(gender, drink)
+table1 <- table(gender, drink) 
 table1										
 ```
 
@@ -750,7 +753,7 @@ gender<-factor(gender);drink=factor(drink)
 
 Manual Histogram
 ```{r}
-x<-c(-2.44, -1.70,  -1.45,  -1.27,  -1.25,  -1.12,  -1.10,  -1.05,  -1.01,  -0.50,  -0.33,  -0.12,  -0.01,   0.24,   0.51,   0.80,   1.04,   1.15,   1.28,   1.77)
+x <- c(-2.44, -1.70,  -1.45,  -1.27,  -1.25,  -1.12,  -1.10,  -1.05,  -1.01,  -0.50,  -0.33,  -0.12,  -0.01,   0.24,   0.51,   0.80,   1.04,   1.15,   1.28,   1.77)
 stripchart(x)
 x<- c(rnorm(500),rnorm(300,3))
 stripchart(x)
@@ -761,17 +764,6 @@ title(expression(W(t)==ifelse(abs(t)<=0.5, 1, 0)))
 ```
 
 
-Varying smoothing window width:
-```{r}
-x<-c(-2.44, -1.70,  -1.45,  -1.27,  -1.25,  -1.12,  -1.10,  -1.05,  -1.01,  -0.50,  -0.33,  -0.12,  -0.01,   0.24,   0.51,   0.80,   1.04,   1.15,   1.28,   1.77)
-plot(density(x, kernel='rectangular', adjust=0.01), main='') 
-plot(density(x, kernel='rectangular', adjust=100), main='') 
-plot(density(x, kernel='rectangular', adjust=1), main='') 
-plot(density(x, kernel='rectangular', adjust=1), main='') 
-
-lines(density(x), main='')# Defaut uses a Gaussian "sliding window". 
-rug(x) # always add the raw data at the margins!
-```
 
 
                                                 
