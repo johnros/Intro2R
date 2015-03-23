@@ -16,6 +16,12 @@ http://cran.r-project.org/manuals.html
 - ctrl+1 to skip to editor. 
 - ctrl+2 to skip to console.
 - ctrl+8 to skip to the environment list.
+- Folding:
+  - alt+l collapse chunk.
+  - alt+shift+l unfold chunk.
+  - alt+o collapse all.
+  - alt+shift+o unfold all.
+  
 
 
 # Simple calculator
@@ -40,8 +46,6 @@ format(log(10), digits=4, scientific=T, justify='right')
 ```
 
 
-
-
 # Probability calculator 
 Wish you knew this when you did Intro To Probability class?
 ```{r}
@@ -57,6 +61,7 @@ rbinom(n=1, size=10, prob=0.5)
 rbinom(n=10, size=10, prob=0.5)
 rbinom(n=100, size=10, prob=0.5)
 ```
+
 
 # Getting help
 Get help for a particular function.
@@ -140,8 +145,6 @@ car_data <-
 ```
 
 
-
-
 # Variable creation and manipulation 
 ```{r}
 c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21)
@@ -179,8 +182,6 @@ log(x)
 ```
 
 
-
-
 # Simple plotting 
 ```{r}
 x<- 1:100; y<- 3+sin(x) # Create arbitrary data
@@ -210,6 +211,8 @@ When your plotting gets serious, move to ggplot2 and ggvis as soon as possible.
 
 
 ___
+
+
 # Data frame Manipulation 
 ```{r}
 x<- 1:100; y<- 3+sin(x) 
@@ -232,7 +235,6 @@ length(frame1)
 str(frame1) # the inner structure of an object
 attributes(frame1) # get the objec's meta data
 ```
-
 
 ## Exctraction  (will work on ANY object):
 single element:
@@ -285,7 +287,6 @@ b[1]
 ```
 
 More about extraction: http://adv-r.had.co.nz/Subsetting.html
-
 
 ## dplyr package extension:
 `dplyr` makes the manupilation of data.frames a breeze.
@@ -443,8 +444,6 @@ setdiff(df2, df1)
 
 Leaving dplyr for now...
 
-
-
 ## Arrays 
 Arrays generalize matrices to higher dimension:
 ```{r}
@@ -457,15 +456,12 @@ x[2,3,2,2]
 ```
 
 
-
-
 # Data Import
 For a complete review see:
 http://cran.r-project.org/doc/manuals/R-data.html
 also in  help.start() -> "Import and Export Manual" 
 
-
-### Import from WEB 
+## Import from WEB 
 `read.table()` is the main importing workhorse.
 ```{r}
 URL <- 'http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets/bone.data'
@@ -480,8 +476,7 @@ tirgul1 <- read.table(URL, header = TRUE)
 View(tirgul1)
 ```
 
-
-### Import .csv files
+## Import .csv files
 Let's write a simple file so that we have something to import:
 ```{r}
 (temp.file.name <- tempfile()) # get an arbitrary file name
@@ -498,8 +493,7 @@ View(my.data)
 
 __Note__: Under MS Windows(R) you might want need '\\\' instead of '/'
 
-
-### Imprt .txt files
+## Imprt .txt files
 Tries to guess the seperator
 ```{r, eval=FALSE}
 my.data<- read.table(file='C:\\Documents and Settings\\Jonathan\\My Documents\\...') #
@@ -510,8 +504,7 @@ my.data<- read.delim(file='C:\\Documents and Settings\\Jonathan\\My Documents\\.
 ```
 If you care about your sanity, see ?read.table before starting imports.
 
-
-### Writing Data to files
+## Writing Data to files
 
 Get and set the current directory:
 ```{r, eval=FALSE}
@@ -525,13 +518,12 @@ write.csv(x=tirgul1, file='/tmp/tirgul1.csv') #
 
 See ?write.table for details.
 
-### .XLS files 
+## .XLS files 
 Strongly recommended to convert to .csv
 If you still insist see:
 http://cran.r-project.org/doc/manuals/R-data.html#Reading-Excel-spreadsheets
 
-
-### Massive files 
+## Massive files 
 Better store as matrices and not data.frames.
 `scan()` is faster than `read.table()` but less convenient:
 
@@ -552,14 +544,10 @@ file.remove('/tmp/A.txt')
 
 This matter will be revisited in the last class.
 
+## Databases:
+Start [here](https://rforanalytics.wordpress.com/useful-links-for-r/odbc-databases-for-r/)
 
-
-### Databases:
-R can connect to all databases. 
-
-
-
-### Importing some real life data (from the WEB)
+## Hands on example (from the WEB)
 ```{r}
 URL <- 'http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets/bone.data'
 tirgul1 <- read.table(URL, header = TRUE)
