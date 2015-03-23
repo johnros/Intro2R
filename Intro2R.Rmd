@@ -228,7 +228,7 @@ str(frame1) # the inner structure of an object
 attributes(frame1) # get the objec's meta data
 ```
 
-### Exctraction
+### Exctraction 
 single element:
 ```{r}
 frame1[1, 2]    						
@@ -281,7 +281,7 @@ b[1]
 
 More about extraction: http://adv-r.had.co.nz/Subsetting.html
 
-### dplyr package
+### dplyr package 
 `dplyr` makes the manupilation of data.frames a breeze.
 It is very fast, and straightforward 
 
@@ -484,7 +484,7 @@ write.csv(x=tirgul1, file='/tmp/tirgul1.csv') #
 
 See ?write.table for details.
 
-### .XLS files 
+### .XLS(X) files 
 Strongly recommended to convert to .csv
 If you still insist see:
 http://cran.r-project.org/doc/manuals/R-data.html#Reading-Excel-spreadsheets
@@ -510,7 +510,7 @@ file.remove('/tmp/A.txt')
 
 This matter will be revisited in the last class.
 
-### Databases:
+### Databases 
 Start [here](https://rforanalytics.wordpress.com/useful-links-for-r/odbc-databases-for-r/)
 
 ### Hands on example (from the WEB)
@@ -643,8 +643,6 @@ ctrl+8 in RStudio.
 
 
 
-
-
 # Univariate Exploratory Statistics
 
 
@@ -664,30 +662,10 @@ table1
 
 ##  Exploring Continous Variables 
 
-Histogram
-```{r}
-x <- c(-2.44, -1.70,  -1.45,  -1.27,  -1.25,  -1.12,  -1.10,  -1.05,  -1.01,  -0.50,  -0.33,  -0.12,  -0.01,   0.24,   0.51,   0.80,   1.04,   1.15,   1.28,   1.77)
-stripchart(x)
-x<- c(rnorm(500),rnorm(300,3))
-stripchart(x)
-hist(x, prob=T,main='')	## Disjoint window histogram 
-rug(x)
-lines(density(x, kernel='rectangular', bw=0.1), main='') ## Simple moving average with width 1 
-title(expression(W(t)==ifelse(abs(t)<=0.5, 1, 0))) 
-```
-
-
-
-
-                                                
-Generating and exploring normal data
+Generating and exploring data
 ```{r}
 sample1 <- rnorm(100) 							
 table(sample1) 									
-barplot(table(sample1)) 						
-stem(sample1) 
-stem(sample1, scale=2) 
-stem(sample1, scale=0.5)
 hist(sample1, freq=T, main='Counts')      	
 hist(sample1, freq=F, main='Frequencies') 	
 lines(density(sample1))                  	
@@ -698,19 +676,6 @@ rug(sample1)
 ## The Boxplot 
 ```{r}
 boxplot(sample1)	
-text(x=1.3, y=c(-0.6195636, 0.2581893, 0.7848411), labels=c('Quartile 1', 'Median', 'Quartile 3'))
-abline(h=qnorm(0.25), col='red') 
-abline(h=qnorm(0.5), col='blue') 
-abline(h=qnorm(0.75), col='red') 
-
-# Adjusting the Boxplot fences for the size of the data:
-giantSample<- rnorm(100000)
-par(mfrow=c(2,2))
-boxplot(giantSample, range=1) # Too many outliers :-(
-boxplot(giantSample, range=2)
-boxplot(giantSample, range=3) # Too few outliers :-(
-boxplot(giantSample, range=2.5) # Good distance of fences :-)
-par(mfrow=c(1,1))
 ```
 
 
@@ -740,21 +705,7 @@ with(bone, rug(age))
 
 ind<-bone[, 'gender']=='male'
 
-par(mfrow=c(2, 1))
-plot(density(bone[ind, 'age']), main='Male')
-rug(bone[ind,'age'])
-plot(density(bone[!ind, 'age']), main='Female')
-rug(bone[!ind,'age'])
-
-plot(density(bone[ind, 'age']), main='Male', xlim=c(5, 30)) # Adjusting x axis to fit both genders
-plot(density(bone[!ind, 'age']), main='Female', xlim=c(5, 30)) # Adjusting x axis to fit both genders
-
-boxplot(bone[ind, 'age'], main='Male')
-boxplot(bone[!ind, 'age'], main='Female')
-
-par(mfrow=c(1, 1))
 boxplot(bone$age~bone$gender)
-with(bone, boxplot(spnbmd~gender))
 ```
 
 
@@ -770,11 +721,11 @@ boxplot(age~gender, horizontal=T, col=c('pink','lightblue') )
 title(main='Amazing Boxplots!')
 title(sub="Well actually.. I've seen better Boxplots")
 
-plot(density(age),main='')
-plot(density(age),main='',type='h')
-plot(density(age),main='',type='o')
-plot(density(age),main='',type='p')
-plot(density(age),main='',type='l')
+plot(density(age), main='')
+plot(density(age), main='', type='h')
+plot(density(age), main='', type='o')
+plot(density(age), main='', type='p')
+plot(density(age), main='', type='l')
 
 ?plot.default
 
@@ -799,33 +750,6 @@ plot(density(age[!males]), main='Female', xlim=c(9,26)) ; rug(age[!males])
 par(mfrow=c(1,1),ask=T)
 plot(density(age[males]), main='Male', xlim=c(9,26)) ; rug(age[males])
 plot(density(age[!males]), main='Female', xlim=c(9,26)) ; rug(age[!males])
-
-plot(density(age[males]), main='Male', xlim=c(9,26),ylim=c(0,0.08)) 
-par(mfrow=c(1,1),ask=F, new=T)
-plot(density(age[!males]), main='Female', xlim=c(9,26),ylim=c(0,0.08)) 
-
-plot(density(age[males]), main='Male', xlim=c(9,26)) 
-lines(density(age[!males]), main='Female', xlim=c(9,26)) 
-
-plot(density(age[males]), main='Male', xlim=c(9,26)) 
-lines(density(age[!males]), main='Female', xlim=c(9,26),lwd=2) 
-
-plot(density(age[males]), xlim=c(9,26), main='') 
-lines(density(age[!males]), xlim=c(9,26),lty=2) 
-legend(locator(1), legend=c("Male","Female"), lty=c(1,2))
-
-plot(density(age[males]), xlim=c(9,26), main='',col='blue', lwd=2) 
-lines(density(age[!males]), xlim=c(9,26),lty=2, col='red',lwd=2) 
-legend(locator(1), legend=c("Male","Female"), lty=c(1,2), col=c('blue','red'))
-
-plot(density(age[males]), main='Male', xlim=c(9,26)) 
-points(density(age[!males]), main='Female', xlim=c(9,26), bg='red') 
-points(locator(3),pch="+")
-points(locator(3),pch=10, cex=4)
-
-plot(density(age[males]), main='Male', xlim=c(9,26)) 
-points(density(age[!males]), main='Female', xlim=c(9,26), bg='red') 
-points(locator(6),pch=c('a','b','c'))
 ```
 
 
@@ -845,7 +769,7 @@ rug(jitter(r.age))
 ## Plotting
 
 ### Preparing data for plotting
-2D data can be in either `wide' or `long' format. 
+2D data can be in either _wide_ or _long_ format. 
 Most R functions are designed for long formats. 
 Let's start by trying to plot in the wide format.
 Notice each dosage is plotted seperately (yes, I could have looped).
@@ -877,10 +801,8 @@ plot(dose~long.age, data=long.data, pch=as.numeric(dose.type))
 ```
 I will now try to avoid this manual reshaping.
 
-### Reshaping data
+### Reshaping data with tidyr package
 
-
-#### tidyr package
 This is the package I recommend if you cannot reshape manually.
 Example from [here](http://blog.rstudio.org/2014/07/22/introducing-tidyr/)
 ```{r}
@@ -1009,10 +931,6 @@ qq.uniform<-function(y) {
 qq.uniform(non.normals.1);abline(0, 1)
 qq.uniform(non.normals.2);abline(0, 1)
 qq.uniform(normals.2);abline(0, 1)
-
-
-
-
 ```
 
 
@@ -1064,12 +982,12 @@ plot3d(ozone[, 1:3])
 
 ## Plotting a surface 
 ```{r}
-x<-seq(0, 1, 0.01)
-y<-seq(0, 1, 0.01)
+x <- seq(0, 1, 0.01)
+y <- seq(0, 1, 0.01)
 xy.grid <- expand.grid(x, y)
 func1 <- function(mesh) exp(mesh[, 1]+mesh[, 2])
-z<-func1(xy.grid)
-xyz<-data.frame(xy.grid, z)
+z <- func1(xy.grid)
+xyz <- data.frame(xy.grid, z)
 plot3d(xyz, xlab='x', ylab='y')  
 ```
 
@@ -1148,12 +1066,14 @@ z<-func1(xy.grid, a0=5, a1=1, a2=3, .0); z; xyz=data.frame(xy.grid, z); plot3d(x
 z<-func1(xy.grid, a0=5, a1=1, a2=3, .4); xyz=data.frame(xy.grid, z); plot3d(xyz, xlab='x1', ylab='x2')
 z<-func1(xy.grid, a0=5, a1=1, a2=3, 11); xyz=data.frame(xy.grid, z); plot3d(xyz, xlab='x1', ylab='x2')
 
-z<-func1(xy.grid, a0=5, a1=1, a2=3, .4); xyz=data.frame(xy.grid, z); plot3d(xyz, xlab='x1', ylab='x2')
 ```
 
 `lm()` is the major workhorse for OLS returning the solution to $(X'X)^{-1} X'y$.
 ```{r}
-lm(z~., xyz) # Solves the system "prediction=(X'X)^-1 X'y"
+z<-func1(xy.grid, a0=5, a1=1, a2=3, .4)
+xyz=data.frame(xy.grid, z)
+plot3d(xyz, xlab='x1', ylab='x2')
+lm(z~., xyz) # Did we exctract the correct coefficients?
 ```
 
 
