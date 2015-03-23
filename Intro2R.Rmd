@@ -32,7 +32,8 @@ log(1000, 10)
 
 # Controlling output format:
 ```{r}
-round(log(10)) 
+round(log(10))  # typically most useful
+
 signif(log(10))		
 prettyNum(log(10), digits=5)
 format(log(10), digits=4, scientific=T, justify='right')
@@ -82,17 +83,16 @@ Asignments into a variable named "x":
 x = rbinom(n=1000, size=10, prob=0.5) # Works. Bad style.
 x <- rbinom(n=1000, size=10, prob=0.5) # Asignments into a variable named "x"
 ```
+More on style: http://adv-r.had.co.nz/Style.html
+
 
 Print contents:
 ```{r}
 x 
-print(x) 
-```
-
-Asign and print:
-```{r}
+print(x)  
 (x <- rbinom(n=1000, size=10, prob=0.5))  # Assign and print.
 ```
+
 
 Operate on the object
 ```{r}
@@ -207,6 +207,9 @@ help(package='graphics')
 When your plotting gets serious, move to ggplot2 and ggvis as soon as possible.
 
 
+
+
+___
 # Data frame Manipulation 
 ```{r}
 x<- 1:100; y<- 3+sin(x) 
@@ -293,7 +296,7 @@ Install the package:
 # install.packages('dplyr')
 ```
 
-Following examples taken from:
+The following examples are taken from:
 https://github.com/justmarkham/dplyr-tutorial/blob/master/dplyr-tutorial.Rmd
 ```{r}
 # install.packages('nycflights13')
@@ -481,9 +484,9 @@ View(tirgul1)
 ### Import .csv files
 Let's write a simple file so that we have something to import:
 ```{r}
-(temp.file.name <- tempfile())
-View(airquality)
-write.csv(x = airquality, file = temp.file.name)
+(temp.file.name <- tempfile()) # get an arbitrary file name
+View(airquality) #  examine the data to export
+write.csv(x = airquality, file = temp.file.name) #export
 ```
 
 Now let's import:
@@ -558,26 +561,49 @@ R can connect to all databases.
 
 ### Importing some real life data (from the WEB)
 ```{r}
+URL <- 'http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets/bone.data'
+tirgul1 <- read.table(URL, header = TRUE)
+
 names(tirgul1)
 tirgul1 %>% head
 tirgul1 %>% tail
+View(tirgul1)
 dim(tirgul1)
 length(tirgul1)
-# R can be object oriented (read about S3 and S4 if interested. But, not worth it.).
+```
+
+R can be object oriented (read about S3 and S4 if interested).
+See how `summary()` behaves differely on different object classes:
+```{r}
 class(tirgul1[, 1]); class(tirgul1[, 2]); class(tirgul1[, 3]); class(tirgul1[, 4])
 summary(tirgul1)
 ```
 
 
+
 Matrix is more efficient than data frames. But can store only a single class of vectors.
 ```{r}
-tirgul.matrix <- as.matrix(tirgul1)  
+tirgul.matrix <- as.matrix(tirgul1) 
 tirgul.matrix
 class(tirgul.matrix)
+# notice everything has been cast to the most general class.
 class(tirgul.matrix[, 1]); class(tirgul.matrix[, 2]); class(tirgul.matrix[, 3]); class(tirgul.matrix[, 4])
-sapply(tirgul.matrix, class)  # mapping functions. much more efficient. 
 summary(tirgul.matrix)
 ```
+
+Note: if re-writing an expression bothers you (as it should!), here are some solutions:
+```{r}
+# The apply family of functions:
+sapply(tirgul.matrix, class)
+
+# looping
+for(j in 1:ncol(tirgul.matrix)) print(class(tirgul.matrix[,j]))
+```
+
+Make sure you read `?sapply`. 
+LISP fans might also like to read `?MAP`.
+
+
 
 ## Operations within data objects (very usefull!)
 ```{r}
