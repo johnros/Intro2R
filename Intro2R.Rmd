@@ -27,7 +27,7 @@ http://cran.r-project.org/manuals.html
 
 
 ## Simple calculator
-```{r}
+```{r example}
 10+5
 70*81
 2**4
@@ -95,7 +95,7 @@ More on style: http://adv-r.had.co.nz/Style.html
 
 Print contents:
 ```{r}
-x 
+x
 print(x)  
 (x <- rbinom(n=1000, size=10, prob=0.5))  # Assign and print.
 ```
@@ -152,7 +152,7 @@ car_data <-
 c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21)
 10:21 							
 seq(from=10, to=21, by=1) 							
-seq(from=10, to=21, by=2) 								
+x seq(from=10, to=21, by=2) 								
 x <- c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21) 	
 x
 ```
@@ -169,7 +169,7 @@ y
 
 Operations usually work element-wise:
 ```{r}
-x+2     
+x+2
 x*2    
 x^2    
 sqrt(x)  
@@ -180,15 +180,15 @@ log(x)
 ## Simple plotting 
 ```{r}
 x<- 1:100; y<- 3+sin(x) # Create arbitrary data
-plot(x, y) # x,y syntax  						
-plot(y~x) # y~x syntax (I like better)
+plot(x = x, y = y) # x,y syntax  						
+plot(y ~ x) # y~x syntax (I like better)
 ```
 
 Control plot appearance:   
 ```{r}
 plot(y~x, type='l', main='Plotting a connected line')
 plot(y~x, type='h', main='Sticks plot', xlab='Insert x axis label', ylab='Insert y axis label')
-plot(y~x, pch=3)
+plot(y~x, pch=5)
 plot(y~x, pch=10, type='p', col='blue', cex=4)
 abline(3, 0.002)
 ```
@@ -196,6 +196,7 @@ abline(3, 0.002)
 Available plotting options
 ```{r, eval=FALSE}
 example(plot)
+example(points)
 ?plot
 help(package='graphics')
 ```
@@ -211,10 +212,11 @@ ___
 ## Data frame Manipulation 
 data.frames extend the matrix class, in that they allow the binding of vectors of several classes (with same length).
 ```{r}
-x<- 1:100; y<- 3+sin(x) 
+x<- 1:100; y<- 3 + sin(x) 
 class(x) # R (high) level representation of an object.
-mode(x) 
-typeof(x) 
+
+# mode(x) 
+# typeof(x) 
 ```
 
 
@@ -222,12 +224,16 @@ Create and checkout your first data frame
 ```{r}
 frame1 <- data.frame(x=x, sin=y)	
 frame1
+head(frame1)
 frame1 %>% head() # just print the beginning
 frame1 %>% View() # Excel-like view (never edit!)
+
 class(frame1) # the object is of type data.frame
 dim(frame1)  							
 dim(x)
 length(frame1)
+length(x)
+
 str(frame1) # the inner structure of an object
 attributes(frame1) # get the objec's meta data
 ```
@@ -242,8 +248,8 @@ frame1[2, 1]
 Exctract _column_ by index:
 ```{r}
 frame1[1, ]      						
-t(frame1[, 1])   						
-dim(t(frame1))  						
+frame1[,1] %>% t
+frame1[,1] %>% t %>% dim
 ```
 
 Exctract column by name:
@@ -252,18 +258,19 @@ names(frame1)
 frame1[, 'sin']
 dim(frame1[, 'sin'])  # extract as a vector. no dim attribute.
 frame1['sin'] 
-dim(frame1['sin']) # extract as a data.frame. has dim attribute.
-frame1[, 2] %>% class
+dim(frame1['x',]) # extract as a data.frame. has dim attribute.
+frame1[,1:2] %>% class
 frame1[2] %>% class
 frame1[2, ] # extract a row
-frame1$sin
+
+frame1$sin %>% class
 ```
 
 `subset()` does the same
 ```{r}
 subset(frame1, select=sin) 
 subset(frame1, select=2)
-subset(frame1, select=c(2,0))
+subset(frame1, select= c(2,0))
 ```
 
 
@@ -309,9 +316,11 @@ flights[flights$month == 1 & flights$day == 1, ] # old style
 flights %>% filter(month == 1, day == 1) # dplyr with magrittr style (yes!)
 
 filter(flights, month == 1 | month == 2)
-slice(flights, 1:10) # selects rows
+sli1ce(flights, 1:10) # selects rows
+
 arrange(flights, year, month, day) # sort
 arrange(flights, desc(arr_delay)) # sort descending
+
 select(flights, year, month, day) # select columns
 select(flights, year:day) # select column range
 select(flights, -(year:day)) # drop columns
@@ -319,7 +328,7 @@ rename(flights, tail_num = tailnum) # rename variables
 # add a new computed colume
 mutate(flights,
   gain = arr_delay - dep_delay,
-  speed = distance / air_time * 60)
+  speed = distance / air_time * 60) 
 # you can refer to columns just created!
 mutate(flights,
   gain = arr_delay - dep_delay,
@@ -332,7 +341,8 @@ transmute(flights,
 )
 # simple statistics
 summarise(flights,
-  delay = mean(dep_delay, na.rm = TRUE))
+  delay = mean(dep_delay, na.rm = TRUE)
+  )
 
 sample_n(flights, 10) # random subsample
 sample_frac(flights, 0.01) # random subsample
@@ -346,7 +356,7 @@ delay <- summarise(by_tailnum,
   count = n(),
   avg.dist = mean(distance, na.rm = TRUE),
   avg.delay = mean(arr_delay, na.rm = TRUE))
-delay <- filter(delay, count > 20, dist < 2000)
+delay <- filter(delay, count > 20, avg.dist < 2000)
 View(delay)
 
 destinations <- group_by(flights, dest)
@@ -628,7 +638,7 @@ xz[ord,] # Sorting a data frame using one column
 ```
 
 
-##  Looping 
+## Looping 
 For a crash course in R programming (not only data analysis) try:   
 http://adv-r.had.co.nz/                            
 The usual for(), while(), repeat() 
