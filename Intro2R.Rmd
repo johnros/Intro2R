@@ -605,15 +605,15 @@ LISP fans might also like to read `?MAP`.
 
 
 
-## Operations within data objects (very usefull!)
+Operations _within_ data objects:
 ```{r}
 plot(tirgul1$gender)
+tirgul1$gender %>% plot() # 
 with(tirgul1, plot(gender) ) # Same opration. Different syntax.
-tirgul1$gender %>% plot() # Notice the autom-completion as of RStudio 0.99 (in preview)
 
 mean(tirgul1$age)
+tirgul1$age %>% mean() # 
 with(tirgul1, mean(age) ) # Same opration. Different syntax.
-tirgul1$age %>% mean() # Notice the autom-completion as of RStudio 0.99 (in preview)
 ```
 
 
@@ -625,7 +625,9 @@ tirgul1<- transform(tirgul1, age=age/365 )  #Does this revert back to years?
 with(tirgul1, mean(age) )
 ```
 
-Then again, many of these fnuctions are replaced by more friendly functions in the dplyr package.
+Then again, many of these fnuctions are replaced by more friendly functions in the dplyr package (see below).
+
+
 
 
 
