@@ -5,7 +5,9 @@ date: "March 18, 2015"
 output: html_document
 
 ---
-# Preliminaries:
+# R Basics
+
+Tips for this introction:
 - If you are working alone, consider starting with "An Introduction to R" here:
 http://cran.r-project.org/manuals.html 
 - Make sure you use RStudio.
@@ -24,7 +26,7 @@ http://cran.r-project.org/manuals.html
   
 
 
-# Simple calculator
+## Simple calculator
 ```{r}
 10+5
 70*81
@@ -36,7 +38,7 @@ log(1000, 10)
 ```
 
 
-# Controlling output format:
+## Controlling output format:
 ```{r}
 round(log(10))  # typically most useful
 
@@ -46,7 +48,7 @@ format(log(10), digits=4, scientific=T, justify='right')
 ```
 
 
-# Probability calculator 
+## Probability calculator 
 Wish you knew this when you did Intro To Probability class?
 ```{r}
 dbinom(x=3, size=10, prob=0.5) 	# For X~B(n=10, p=0.5) returns P(X=3)
@@ -63,7 +65,7 @@ rbinom(n=100, size=10, prob=0.5)
 ```
 
 
-# Getting help
+## Getting help
 Get help for a particular function.
 ```{r, eval=FALSE}
 ?dbinom 
@@ -82,7 +84,7 @@ help.start()
 ```
 
 
-# Variable asignment:
+## Variable asignment:
 Asignments into a variable named "x":
 ```{r}
 x = rbinom(n=1000, size=10, prob=0.5) # Works. Bad style.
@@ -111,7 +113,7 @@ rm(x) # remove variable
 For more information on distributions see http://cran.r-project.org/web/views/Distributions.html
 
 
-# Piping for better style and readability
+## Piping for better style and readability
 ```{r}
 # install.packages('magrittr')
 library(magrittr)
@@ -145,7 +147,7 @@ car_data <-
 ```
 
 
-# Vector creation and manipulation 
+## Vector creation and manipulation 
 ```{r}
 c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21)
 10:21 							
@@ -182,7 +184,7 @@ log(x)
 ```
 
 
-# Simple plotting 
+## Simple plotting 
 ```{r}
 x<- 1:100; y<- 3+sin(x) # Create arbitrary data
 plot(x, y) # x,y syntax  						
@@ -213,7 +215,7 @@ When your plotting gets serious, move to ggplot2 and ggvis as soon as possible.
 ___
 
 
-# Data frame Manipulation 
+## Data frame Manipulation 
 ```{r}
 x<- 1:100; y<- 3+sin(x) 
 class(x) # R (high) level representation of an object.
@@ -236,7 +238,7 @@ str(frame1) # the inner structure of an object
 attributes(frame1) # get the objec's meta data
 ```
 
-## Exctraction:
+### Exctraction
 single element:
 ```{r}
 frame1[1, 2]    						
@@ -288,7 +290,7 @@ b[1]
 
 More about extraction: http://adv-r.had.co.nz/Subsetting.html
 
-## dplyr package extension:
+### dplyr package
 `dplyr` makes the manupilation of data.frames a breeze.
 It is very fast, and straightforward 
 
@@ -444,7 +446,7 @@ setdiff(df2, df1)
 
 Leaving dplyr for now...
 
-## Arrays 
+### Arrays 
 Arrays generalize matrices to higher dimension:
 ```{r}
 x<- array(1:24, dim=c(6,4) )
@@ -456,12 +458,12 @@ x[2,3,2,2]
 ```
 
 
-# Data Import
+## Data Import and export 
 For a complete review see:
 http://cran.r-project.org/doc/manuals/R-data.html
 also in  help.start() -> "Import and Export Manual" 
 
-## Import from WEB 
+### Import from WEB 
 `read.table()` is the main importing workhorse.
 ```{r}
 URL <- 'http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets/bone.data'
@@ -476,7 +478,7 @@ tirgul1 <- read.table(URL, header = TRUE)
 View(tirgul1)
 ```
 
-## Import .csv files
+### Import .csv files
 Let's write a simple file so that we have something to import:
 ```{r}
 (temp.file.name <- tempfile()) # get an arbitrary file name
@@ -493,7 +495,7 @@ View(my.data)
 
 __Note__: Under MS Windows(R) you might want need '\\\' instead of '/'
 
-## Imprt .txt files
+### Imprt .txt files 
 Tries to guess the seperator
 ```{r, eval=FALSE}
 my.data<- read.table(file='C:\\Documents and Settings\\Jonathan\\My Documents\\...') #
@@ -504,7 +506,7 @@ my.data<- read.delim(file='C:\\Documents and Settings\\Jonathan\\My Documents\\.
 ```
 If you care about your sanity, see ?read.table before starting imports.
 
-## Writing Data to files
+### Writing Data to files
 
 Get and set the current directory:
 ```{r, eval=FALSE}
@@ -518,12 +520,12 @@ write.csv(x=tirgul1, file='/tmp/tirgul1.csv') #
 
 See ?write.table for details.
 
-## .XLS files 
+### .XLS files 
 Strongly recommended to convert to .csv
 If you still insist see:
 http://cran.r-project.org/doc/manuals/R-data.html#Reading-Excel-spreadsheets
 
-## Massive files 
+### Massive files 
 Better store as matrices and not data.frames.
 `scan()` is faster than `read.table()` but less convenient:
 
@@ -544,10 +546,10 @@ file.remove('/tmp/A.txt')
 
 This matter will be revisited in the last class.
 
-## Databases:
+### Databases:
 Start [here](https://rforanalytics.wordpress.com/useful-links-for-r/odbc-databases-for-r/)
 
-## Hands on example (from the WEB)
+### Hands on example (from the WEB)
 ```{r}
 URL <- 'http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets/bone.data'
 tirgul1 <- read.table(URL, header = TRUE)
@@ -616,10 +618,7 @@ with(tirgul1, mean(age) )
 Then again, many of these fnuctions are replaced by more friendly functions in the dplyr package (see below).
 
 
-
-
-
-# Sorting 
+## Sorting 
 ```{r}
 (x<- c(20, 11, 13, 23, 7, 4))
 (y<- sort(x))
@@ -635,13 +634,10 @@ xz[ord,] # Sorting a data frame using one column
 ```
 
 
-
-
-#  Looping 
+##  Looping 
 For a crash course in R programming (not only data analysis) try:   
 http://adv-r.had.co.nz/                            
-
-## The usual for(), while(), repeat() 
+The usual for(), while(), repeat() 
 ```{r}
 for (i in 1:100){
     print(i)
@@ -656,8 +652,7 @@ for (helloeveryone in seq(10, 100, by=2) ){
 ```
 
 
-    
-# Recursion
+## Recursion
 Typically very slow due to memory management issues.
 
 ```{r}
@@ -670,11 +665,7 @@ fib(30)
 ```
 
 
-
-
-
-
-# Where are my objects?
+## Finding objects 
 ```{r}
 ls() #Lists all available objects
 ls(pattern='x')
@@ -684,7 +675,7 @@ ls(pattern='[A-Z]')
 
 ctrl+8 in RStudio.
 
-## What are the available environments?
+### What are the available environments?
 ```{r}
 search() # This is the search hirarchy of called objects.
 ```
@@ -695,7 +686,11 @@ http://adv-r.had.co.nz/Environments.html
 
 
 
-#  Exploring Categorical Data  
+
+# Univariate Exploratory Statistics
+
+
+##  Exploring Categorical Data  
 ```{r}
 gender<-c(rep('Boy', 10), rep('Girl', 12))
 drink<-c(rep('Coke', 5), rep('Sprite', 3), rep('Coffee', 6), rep('Tea', 7), rep('Water', 1))  
@@ -767,9 +762,7 @@ gender<-factor(gender);drink=factor(drink)
 ```
 
 
-
-
-#  Exploring Continous Variables 
+##  Exploring Continous Variables 
 
 Manual Histogram
 ```{r}
@@ -875,6 +868,7 @@ boxplot(bone$age~bone$gender)
 with(bone, boxplot(spnbmd~gender))
 ```
 
+
 ## Graphical parameters
 ```{r}
 attach(bone) 
@@ -946,8 +940,7 @@ points(locator(6),pch=c('a','b','c'))
 ```
 
 
-
-# Integer data
+## Integer data
 ```{r}
 r.age<-round(age)
 plot(density(r.age))
@@ -959,10 +952,9 @@ rug(jitter(r.age))
 ```
 
 
+## Plotting
 
-# Reshaping Data
-
-## Long vs. Wide format
+### Preparing data for plotting
 
 Plotting in wide format is hard
 ```{r}
@@ -990,8 +982,7 @@ long.data<-data.frame(long.id, long.age, dose.type, dose)
 plot(dose~long.age, data=long.data, pch=as.numeric(dose.type))
 ```
 
-
-## Reshaping data
+### Reshaping data
 With base package
 ```{r}
 stack(data.frame(wide.data$dose1,wide.data$dose2,wide.data$dose4))
@@ -1016,8 +1007,7 @@ With tidyr package (recommended)
 # TODO
 ```
 
-
-# Fancy Plotting 
+### Fancy Plotting 
 ```{r}
 library(ggplot2)
 URL <- 'http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets/bone.data'
@@ -1066,8 +1056,7 @@ qplot(carat, price, data = diamonds) + geom_smooth()
 
 For more information on ggplot2 see http://had.co.nz/ggplot2 
 
-
-# Interactive Plotting 
+### Interactive Plotting 
 ```{r}
 # install.packages("iplots")
 library(iplots)
@@ -1088,9 +1077,7 @@ Note: For more powerfull interactive plotting try:
 
 
 
-# Summary statistics
-
-## Robustness of _location_ Summaries
+## Location Summaries
 ```{r}
 x<- rnorm(11)
 last.observations<- seq(1,1000,by=100)
@@ -1112,7 +1099,6 @@ lines(mean05~last.observations, lty=4, lwd=3, col='blue')
 ```
 
 
-
 ## Spread & Symmetry Summaries
 ```{r}
 x1<-rnorm(1000, 100, 50)
@@ -1128,7 +1114,6 @@ plot(density(x4));#abline(v=100, lty=2);abline(v=0, lty=2)
 boxplot(x1, x2, x3, x4, ylim=c(-100, 400))
 ```
 
-
 ###  Measures of spread
 ```{r}
 cat('SD=', sqrt(var(x1)), 'MAD=', mad(x1), 'IQR=', IQR(x1), '\n') 
@@ -1136,7 +1121,6 @@ cat('SD=', sqrt(var(x2)), 'MAD=', mad(x2), 'IQR=', IQR(x2), '\n')
 cat('SD=', sqrt(var(x3)), 'MAD=', mad(x3), 'IQR=', IQR(x3), '\n') 
 cat('SD=', sqrt(var(x4)), 'MAD=', mad(x4), 'IQR=', IQR(x4), '\n') 
 ```
-
 
 ### Measures of Skewness 
 Yule
@@ -1163,7 +1147,6 @@ pearson(x2)
 pearson(x3)
 pearson(x4)
 ```
-
 
 ### Sensitivity Function
 ```{r}
@@ -1210,7 +1193,7 @@ lines(yule.sensitivity~new.obs, lty=2)
 ```
 
 
-### Univariate transformations
+## Univariate transformations
 ```{r}
 (periods<-c(rnorm(500, 15),rnorm(100, 10)))
 (cells<-10*2^periods)
@@ -1222,10 +1205,10 @@ hist(log(cells)); rug(log(cells))
 
 
 
-# Normal Distribution
+
+
+# The Normal Distribution
 ```{r}
-
-
 #The Standard normal distribution (a.k.a. Gaussian)
 mu<-0;sd<-1;curve(dnorm(x, mean=mu, sd=sd), -5, 5, ylim=c(0, 1), col='red');abline(v=mu)  
 #Non standard normal distribution
@@ -1253,6 +1236,10 @@ qnorm(0.975, mean=10, sd=7)
 
 dnorm(0, mean=0, sd=1) ## Probability density function
 
+```
+
+Demonstrating the CLT
+```{r}
 # The normal approximation of the binomial distribution
 n<-100;p<-0.5
 curve(dbinom(x, n, p), 0, n, type='h', ylim=c(0, 1)) 
@@ -1272,7 +1259,9 @@ curve(pbinom(x, n, p), 0, n, type='S', ylim=c(0, 1)) # The Commulative binomial 
 curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red')
 curve(dbinom(x, n, p), 0, n, type='h', ylim=c(0, 1))
 
-# Demonstrating the C.L.T. (Central limit theorem) using geometric distribution
+
+
+# Now with a geometric population
 rgeom(100, 0.3) 
 hist(rgeom(1000, 0.3))
 generating<-matrix(0, ncol=100, nrow=1000)
@@ -1285,7 +1274,6 @@ length(sums)
 
 par(mfrow=c(1, 2));hist(rgeom(1000, 0.3), main='Original Geometric Distribution');hist(sums, main='Distribution of sum');par(mfrow=c(1, 1))
 ```
-
 
 
 ## The empirical law 
@@ -1308,7 +1296,7 @@ prop.table(table(some.data > some.mean+some.sd))
 ```
 
 
-# The QQ plot 
+## The QQ plot 
 ```{r}
 mystery.2<-function(y) {
   n<-length(y)
@@ -1388,7 +1376,7 @@ curve(dbinom(x, n, p), 0, n, type='h', ylim=c(0, 1))
 
 
 
-# _Simultanous_ analysis of multiple *continous* data vectors 
+# Multiple data vectors 
 
 ## Scatter plots
 ```{r}
@@ -1422,7 +1410,8 @@ names(ozone)
 plot(ozone)
 ```
 
-### 3D plotting (windows only) 
+
+## 3D plotting (windows only) 
 ```{r}
 # install.packages('rgl')
 library(rgl)
@@ -1430,7 +1419,7 @@ plot3d(ozone[, 1:3])
 ```
 
 
-### Plotting a surface 
+## Plotting a surface 
 ```{r}
 x<-seq(0, 1, 0.01)
 y<-seq(0, 1, 0.01)
@@ -1445,12 +1434,12 @@ plot3d(xyz, xlab='x', ylab='y')
 For interacting with plots try the RGGobi package.
 
 
-#  Fitting a linear function 
+##  Fitting linear lines and surfaces  
 ```{r}
 
 ```
 
-# Well behaved data 
+### Well behaved data 
 ```{r}
 x<-1:100
 a<-2
@@ -1460,8 +1449,7 @@ y<-a+b*x+rnorm(100, 0, sigma)
 plot(y~x)
 ```
 
-                        
-## Ordinary Least Squares 
+### Ordinary Least Squares 
 ```{r}
 ols.line<-function(x, y){
     sxy<-sum( (x-mean(x) ) * (y-mean(y) ) )    
@@ -1478,9 +1466,7 @@ residuals<- y - predictions
 plot(residuals) ; abline(h=0)
 ```
 
-
-
-## Robust regression
+### Robust regression
 ```{r}
 
 rline  <- function(x, y)
@@ -1525,7 +1511,6 @@ legend(x=60,y=-200, lty=1, legend=c('Real', 'OLS line', 'Robust Line'), col=c('b
 
 ```
 
-
 ### How are the intercept and slope related? (Simulation Study)
 ```{r}
 x<-1:100
@@ -1545,9 +1530,6 @@ ind<- as.numeric((retries[, 1]>0) & (retries[, 2]>0))+1
 plot(retries, xlab='Deviation from real slope', ylab='Deviation from real intercept', pch=ind)     
 abline(v=0);abline(h=0)
 ```
-
-
-
 
 ### What is a high correlation?
 ```{r}
@@ -1572,8 +1554,7 @@ rug(correlations)
 abline(v=initial.correlation)
 ```
 
-
-###  Extrapolation  
+### Dangers of Extrapolation  
 ```{r}
 
 x<-runif(1000)*5
@@ -1602,7 +1583,8 @@ plot(log(y)~log(x))
 
 ```
 
-#### Intuition: Pearson's correlation is the *OLS* slope if dealing with *standardized* variables. 
+### Intuition for Pearson's correlation 
+It is actually the *OLS* slope if dealing with *standardized* variables.
 ```{r}
 
 x<-1:100;cat('Old X average=', mean(x), '. Old X Variance=', var(x), '\n')
@@ -1620,10 +1602,9 @@ cor(x, y) # The cor coef in the original scale is the same as the slope in Z-sco
 
 ```
 
-
-## Multivariate linear regression ##
+### Multivariate linear regression 
 ```{r}
-
+# install.packages('rgl')
 library(rgl)
 
 xy.grid <- data.frame(x1=runif(10000), x2=runif(10000))
@@ -1642,8 +1623,7 @@ z<-func1(xy.grid, a0=5, a1=1, a2=3, .4);xyz=data.frame(xy.grid, z);plot3d(xyz, x
 lm(z~., xyz) #Solves the system "prediction=(X'X)^-1 X'y"
 ```
 
-
-####  Linearizing Transformations and Examining Residuals
+### Linearizing Transformations and Examining Residuals
 See also http://www.gapminder.org/
 ```{r}
 
@@ -1694,7 +1674,7 @@ compute.R2(x,y);cor(x,y)^2
 compute.R2(exp(x),y);cor(exp(x),y)^2
 ```
 
-## Distribution of y|x:
+### Distribution of y|x:
 Judging by the QQplot: Y|x~N( a+b*exp(x), sigma_e^2)
 sigma_e^2 = (1-R^2) * sigma_y^2
 What is your guess of the next value of y?
@@ -1707,8 +1687,6 @@ R2<- compute.R2(exp(x),y)
 sigma.epsilon<- sqrt( (1-R2)* var(y))
 segments(x, predicted.y-sigma.epsilon, x,  predicted.y+sigma.epsilon, col='lightgrey', cex=0.2)
 ```
-
-
 
 ### Log Linear Model 
 ```{r}
@@ -1749,10 +1727,6 @@ segments(x, log(preds.2)-sigma.epsilon, x,  log(preds.2)+sigma.epsilon, col='dar
 plot(y~x); points(preds.2 ~ x, col='red')
 segments(x, exp(log(preds.2)-sigma.epsilon), x,  exp(log(preds.2)+sigma.epsilon), col='darkgreen', cex=0.2)
 ```
-
-
-
-
 
 ### Log-Log Model
 ```{r}
@@ -1800,10 +1774,6 @@ D(e.y,'x')
 ```
 So dy/y = b d/x Hurray!
 
-
-
-
-
 ### Varying Variance (heteroskedasticity) 
 ```{r}
 x<- runif(100, max=2*pi)
@@ -1824,7 +1794,10 @@ segments(x, predict.1-sigma.epsilon, x,  predict.1+sigma.epsilon, col='darkgreen
 ```
 
 
-### Bootstrapping 
+
+# Random methods
+
+## Bootstrapping 
 ```{r}
 heights<-read.table('heights.txt')[, 1]
 
@@ -1917,85 +1890,7 @@ cat('BootStrap median MSE estimation=', boot.median.MSE,
 ```
 
 
-
-
-
-## Maximum likelihood estimation 
-```{r}
-cat('Expectancy of heights in Vatican is ', round(mean(heights), 2), '\n')
-
-heights.sample<-sample(heights, 100, replace=T) # Sampling from the Vatican population
-hist(heights.sample);mean(heights.sample)
-
-log.norm.like<-function(mu, sigma, data) -sum( (data-mu)^2 ) / (2*sigma^2) - n/2 * log(2*pi*sigma^2)
-
-log.norm.like(170, 15, heights.sample)
-
-mus<-seq(from=165, to=180, by=0.1)
-
-n<-length(mus)
-likelis<-rep(0, n)
-for (i in 1:n){ likelis[i]=log.norm.like(mus[i], 15, heights.sample)    }
-
-plot(likelis~mus);abline(v=mean(heights.sample)) # Showing that the sample mean is indeed maximizes the likelihood
-
-# The likelihood is a random function
-mus<-seq(from=170, to=180, by=0.1)
-n<-length(mus)
-likelis<-rep(0, n)
-plot(NULL, xlim=c(min(mus), max(mus)), ylim=c(-450, -350))
-
-for (j in 1:10) {
-    heights.sample<-sample(heights, 100, replace=T)
-    for (i in 1:n) likelis[i]<-log.norm.like(mus[i], 15, heights.sample)    
-    lines(likelis~mus, col=j)    
-}
-```
-
- What if we don't know the variance?
- 
-```{r}
-library(rgl)
-heights.sample<-sample(heights, 100, replace=T)
-
-log.norm.like<-function(mu, sigma, data) -sum( (data-mu)^2 ) / (2*sigma^2) - n/2 * log(2*pi*sigma^2)
-log.norm.like.2<-function(parms) log.norm.like(parms[1], parms[2], heights.sample)
-
-mus<-170:180
-sigmas<-12:20
-xy<-expand.grid(mu=mus, sigma=sigmas);plot(xy)
-
-n<-dim(xy)[1]
-likelis<-rep(0, n)
-for (i in 1:n) likelis[i]<-log.norm.like(xy[i, 'mu'], xy[i, 'sigma'], heights.sample) 
-xyz<-data.frame(sigma=xy$sigma, mu=xy$mu, likelis);xyz
-
-plot3d(xyz)
-
-likelis.2<-matrix(likelis, ncol=length(sigmas), byrow=F)
-persp3d(mus, sigmas, likelis.2, col='red')
-contour(mus, sigmas, likelis.2, nlevels=200)
-
-library(lattice)
-wireframe(likelis~mu*sigma, data=xyz)
-cloud(likelis~mu*sigma, data=xyz)
-```
-
-
-
-### How does a t distribution look like?
-```{r}
-curve(dnorm(x), -5, 5, lwd=3, lty=2)
-df<-1;curve(dt(x, df), col=df, add=T)
-df<-2;curve(dt(x, df), col=df, add=T)
-df<-5;curve(dt(x, df), col=df, add=T)
-df<-10;curve(dt(x, df), col=df, add=T)
-df<-100;curve(dt(x, df), col=df, add=T)
-```
-
-
-
-### CI Simulations 
+## CI Simulations 
 This code creates samples,  computes the CI of the expectancy assuming unknown variance and checks how many CIs have captured the real expectation.
 ```{r}
 
@@ -2029,12 +1924,7 @@ oks<-factor((CIs[, 1]<170)*(CIs[, 2]>170));levels(oks)<-c('Missed', 'Got it!');t
 
 
 
-
-
-
-
-
-# Strings    
+# String handelind    
 ```{r}
 print("Hello\n") 	# Wrong!
 show("Hello\n") 	# Wrong!
@@ -2124,20 +2014,14 @@ If you use strings often, try the stringr package.
 
 
 
-
-
-# Memory Constraints
+# Beating memory constraints
 ```{r setup, include=FALSE}
 library(knitr)
 opts_chunk$set(cache=TRUE)
 ```
 
 
-
-
-# Diagnostics
-
-
+## Diagnostics
 
 
 ## Tips and Tricks
@@ -2151,8 +2035,6 @@ opts_chunk$set(cache=TRUE)
 4. R releases memory only when needed, not when possible ("lazy" release).
 
 5. Don't count on R returning RAM to the operating system. Restart R if FACEBOOK slows down. 
-
-
 
 
 ## Bla bla... Let's see some code!
@@ -2249,12 +2131,8 @@ We will get back to this...
 ```
 
 
-
- 
-# Streaming Regression
-
-
-## biglm
+## Streaming regression from RAM 
+biglm
 ```{r biglm}
 library(biglm)
 mymodel <- bigglm(payment ~ sex + age + place.served, 
@@ -2305,21 +2183,15 @@ all.equal(lm.2, unname(lm.1$coefficients), tolerance = 1e-12)
 ```
 
 
-
-# Streaming classification
+## Streaming classification from RAM
 `LiblineaR`, and `RSofia` will stream from RAM your data for classification problems;
 mainly SVM.
 
 
-
-
-
-# Out of memory Regression
-
+## Out of RAM
 What if it is not the *algorithm* that causes the problem, but merely importing my objects?
 
-
-## ff
+### ff
 The `ff` package replaces R's in-RAM storage mechanism with on-disk (efficient) storage.
 ```{r}
 library(LaF)
@@ -2399,11 +2271,7 @@ Keep an eye on those benchmark reports.
 
 - Clearly, with so few variables I would be better of *subsampling*.
 
-
-# Out of memory Classification
+### Out of RAM Classification
 I do not know if there are `ff` versions of `LiblineaR` or `RSofia`.
 If you find out, let me know.
-
-
-
 
