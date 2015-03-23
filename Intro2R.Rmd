@@ -1114,9 +1114,13 @@ Note: For more powerfull interactive plotting try:
 
 
 ## Location Summaries
+Examine the robustness of several location summaries
 ```{r}
+# Generate data:
 x<- rnorm(11)
-last.observations<- seq(1,1000,by=100)
+last.observations<- seq(1, 1000, by=100)
+
+# Compute location for the many different samples
 means<- numeric(length=0)
 medians<- numeric(length=0)
 mean05<- numeric(length=0)
@@ -1137,10 +1141,10 @@ lines(mean05~last.observations, lty=4, lwd=3, col='blue')
 
 ## Spread & Symmetry Summaries
 ```{r}
-x1<-rnorm(1000, 100, 50)
-x2<-rexp(1000, 1/100)
-x3<-rgamma(1000, 3, 1/30)
-x4<-rf(1000, 100, 1)/100
+x1<- rnorm(1000, 100, 50)
+x2<- rexp(1000, 1/100)
+x3<- rgamma(1000, 3, 1/30)
+x4<- rf(1000, 100, 1)/100
 
 plot(density(x1));#abline(v=100, lty=2);abline(v=0, lty=2)
 plot(density(x2));#abline(v=100, lty=2);abline(v=0, lty=2)
@@ -1159,12 +1163,15 @@ cat('SD=', sqrt(var(x4)), 'MAD=', mad(x4), 'IQR=', IQR(x4), '\n')
 ```
 
 ### Measures of Skewness 
+
 Yule
 ```{r}
 boxplot(x1, x2, x3)
 boxplot(x1, x2, x3, x4)
 
-yule<-function(x) { (mean(c(quantile(x, 0.25), quantile(x, 0.75))-median(x))) / ( IQR(x)/2 ) } 
+yule<-function(x) { 
+  (mean(c(quantile(x, 0.25), quantile(x, 0.75))-median(x))) / ( IQR(x)/2 ) 
+  } 
 
 yule(x1);yule(x2);yule(x3);yule(x4)
 ```
@@ -1184,7 +1191,7 @@ pearson(x3)
 pearson(x4)
 ```
 
-### Sensitivity Function
+The sensitivity function captures the sensitivity of a summary to the value of a single observation (``hypothesis stability'' in machine learning).
 ```{r}
 (new.obs<- -1000:1000)
 mean.sensitivity<- rep(0,length(new.obs))
@@ -1231,7 +1238,7 @@ lines(yule.sensitivity~new.obs, lty=2)
 
 ## Univariate transformations
 ```{r}
-(periods<-c(rnorm(500, 15),rnorm(100, 10)))
+(periods <- c(rnorm(500, 15),rnorm(100, 10)))
 (cells<-10*2^periods)
 
 hist(cells); rug(cells)
@@ -1245,32 +1252,40 @@ hist(log(cells)); rug(log(cells))
 
 # The Normal Distribution
 ```{r}
-#The Standard normal distribution (a.k.a. Gaussian)
-mu<-0;sd<-1;curve(dnorm(x, mean=mu, sd=sd), -5, 5, ylim=c(0, 1), col='red');abline(v=mu)  
-#Non standard normal distribution
-mu<-0;sd<-0.5;curve(dnorm(x, mean=mu, sd=sd), add=T);abline(v=mu)
-mu<-1;sd<-2;curve(dnorm(x, mean=mu, sd=sd), add=T)
-mu<--2;sd<-.2;curve(dnorm(x, mean=mu, sd=sd), add=T)
+# The Standard normal distribution (a.k.a. Gaussian) PDF
+mu<-0;sd<-1;
+curve(dnorm(x, mean=mu, sd=sd), -5, 5, ylim=c(0, 1), col='red');abline(v=mu)  
 
+
+#Non standard normal distribution
+mu<-0; sd<-0.5; curve(dnorm(x, mean=mu, sd=sd), add=T);abline(v=mu)
+mu<-1; sd<-2; curve(dnorm(x, mean=mu, sd=sd), add=T)
+mu<--2; sd<-.2; curve(dnorm(x, mean=mu, sd=sd), add=T)
+
+# CDFs of scaled Gaussians
 curve(pnorm(x, 0, 1), -4, 4, main='Commulative Standard Normal');abline(v=0);abline(0.5, 0, lty=2)
-curve(pnorm(x, 0, 1), -10, 10, main='Commulative Standard Normal');abline(v=0);abline(0.5, 0, lty=2)
+curve(pnorm(x, 0, 1), -10, 10, main='Commulative Standard Normal'); abline(v=0);abline(0.5, 0, lty=2)
 curve(pnorm(x, 0, 3), -10, 10, add=T, col='red')
 curve(pnorm(x, 0, 5), -10, 10, add=T, col='blue')
 
-curve(pnorm(x, 0, 1), -10, 10, main='Commulative Standard Normal');abline(v=0);abline(0.5, 0, lty=2)
+# CDF of translated Gaussians
+curve(pnorm(x, 0, 1), -10, 10, main='Commulative Standard Normal'); abline(v=0); abline(0.5, 0, lty=2)
 curve(pnorm(x, -1, 1), -10, 10, add=T, col='red')
 curve(pnorm(x, 1, 1), -10, 10, add=T, col='blue')
 legend(x=-7, y=0.8, legend=c(expression(mu==0), expression(mu==1), expression(mu==-1)), lty=1, col=c('black', 'blue', 'red'))
 
-pnorm(0, mean=0, sd=1) ## Commulative density function (CDF)
+## Commulative density function (CDF)
+pnorm(0, mean=0, sd=1) 
 pnorm(1.5, mean=0, sd=1)
 pnorm(510, mean=500, sd=11)
 
-qnorm(0.2, mean=0, sd=1) ## Inverse commulative density function (ICDF) a.k.a. Quantile fucntion.
+## Inverse commulative density function a.k.a. Quantile Function
+qnorm(0.2, mean=0, sd=1)  
 qnorm(0.5, mean=0, sd=1)
 qnorm(0.975, mean=10, sd=7)
 
-dnorm(0, mean=0, sd=1) ## Probability density function
+## Probability density function
+dnorm(0, mean=0, sd=1) 
 
 ```
 
@@ -1279,8 +1294,8 @@ Demonstrating the CLT
 # The normal approximation of the binomial distribution
 n<-100;p<-0.5
 curve(dbinom(x, n, p), 0, n, type='h', ylim=c(0, 1)) 
-curve(pbinom(x, n, p), 0, n, type='S', ylim=c(0, 1)) # The Commulative binomial probaility function
-curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red')
+curve(pbinom(x, n, p), 0, n, type='S', ylim=c(0, 1))# Binomial CDF
+curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red') # Gaussian approximation
 
 n<-1000;p<-0.5
 curve(pbinom(x, n, p), 0, n, type='s', ylim=c(0, 1)) # The Commulative binomial probaility function
@@ -1300,39 +1315,21 @@ curve(dbinom(x, n, p), 0, n, type='h', ylim=c(0, 1))
 # Now with a geometric population
 rgeom(100, 0.3) 
 hist(rgeom(1000, 0.3))
-generating<-matrix(0, ncol=100, nrow=1000)
+generating <- matrix(0, ncol=100, nrow=1000)
 
-for (i in 1:1000) generating[i, ]<-rgeom(100, 0.3)
-generating
+for (i in 1:1000) generating[i, ] <- rgeom(100, 0.3)
+image(generating)
 
 sums<-apply(generating, 1, sum);sums 
 length(sums)
 
-par(mfrow=c(1, 2));hist(rgeom(1000, 0.3), main='Original Geometric Distribution');hist(sums, main='Distribution of sum');par(mfrow=c(1, 1))
+par(mfrow=c(1, 2)); hist(rgeom(1000, 0.3), main='Original Geometric Distribution'); hist(sums, main='Distribution of sum'); par(mfrow=c(1, 1))
 ```
 
-
-## The empirical law 
-```{r}
-
-# Generate data:
-some.data<- rnorm(1000)
-hist(some.data, probability=TRUE)
-lines(density(some.data))
-rug(some.data)
-
-
-(some.mean<- mean(some.data))
-(some.sd<- sd(some.data))
-abline(v=some.mean+c(-1,1)*some.sd, col='red', lwd=3)
-
-table(some.data < some.mean-some.sd)
-prop.table(table(some.data < some.mean-some.sd))
-prop.table(table(some.data > some.mean+some.sd))
-```
 
 
 ## The QQ plot 
+A simple and efficient tool to compare between distributions.
 ```{r}
 mystery.2<-function(y) {
   n<-length(y)
@@ -1343,25 +1340,25 @@ mystery.2<-function(y) {
   plot(y~x, xlab='Theoretical Quantiles', ylab='Empirical Quantiles')
 }
 
-normals.1<-rnorm(100, 0, 1);hist(normals.1)
-mystery.2(normals.1);abline(0, 1)
+normals.1<-rnorm(100, 0, 1); hist(normals.1)
+mystery.2(normals.1); abline(0, 1)
 
-normals.2<-rnorm(100, 0, 10);hist(normals.2)
-mystery.2(normals.2);abline(0, 1)
+normals.2<-rnorm(100, 0, 10); hist(normals.2)
+mystery.2(normals.2); abline(0, 1)
 
 ## No need to write the function every time...
 qqnorm(normals.1)   
 qqnorm(normals.2)   
 
 ## How would non-normal observations look? ##
-non.normals.1<-runif(100);hist(non.normals.1)
-mystery.2(non.normals.1);abline(0, 1)
+non.normals.1<-runif(100); hist(non.normals.1)
+mystery.2(non.normals.1); abline(0, 1)
 
-non.normals.2<-rexp(100, 1);hist(non.normals.2)
-mystery.2(non.normals.2);abline(0, 1)
+non.normals.2<-rexp(100, 1); hist(non.normals.2)
+mystery.2(non.normals.2); abline(0, 1)
 
-non.normals.3<-rgeom(100, 0.5);hist(non.normals.3)
-mystery.2(non.normals.3);abline(0, 1)
+non.normals.3<-rgeom(100, 0.5); hist(non.normals.3)
+mystery.2(non.normals.3); abline(0, 1)
 
 ## Adapting for a non-normal distribution: ##
 qq.uniform<-function(y) {
@@ -1380,16 +1377,15 @@ qq.uniform(normals.2);abline(0, 1)
 
 
 
-#### The normal approximation of the binomial distribution ####
-# Empirical example
-n<-10;p<-0.2;binom.data=rbinom(100, n, p);mystery.2(binom.data);abline(0, 1)
-n<-10;p<-0.5;binom.data=rbinom(100, n, p);mystery.2(binom.data);abline(0, 1)
-n<-100;p<-0.5;binom.data<-rbinom(100, n, p);mystery.2(binom.data);abline(0, 1)
-n<-1000;p<-0.5;binom.data<-rbinom(100, n, p);mystery.2(binom.data);abline(0, 1)
+# Checking the normal approximation of the binomial distribution with a qqplot.
+n<-10;p<-0.2; binom.data=rbinom(100, n, p); mystery.2(binom.data);abline(0, 1)
+n<-10;p<-0.5;binom.data=rbinom(100, n, p); mystery.2(binom.data);abline(0, 1)
+n<-100;p<-0.5;binom.data<-rbinom(100, n, p); mystery.2(binom.data);abline(0, 1)
+n<-1000;p<-0.5;binom.data<-rbinom(100, n, p); mystery.2(binom.data);abline(0, 1)
 
 
-# Analytic example
-n<-100;p<-0.5
+# Theoretical example
+n<-100; p<-0.5
 curve(dbinom(x, n, p), 0, n, type='h', ylim=c(0, 1))
 curve(pbinom(x, n, p), 0, n, type='S', ylim=c(0, 1)) # The Commulative binomial probaility function
 curve(pnorm(x, mean=n*p, sd=sqrt(n*p*(1-p))), add=T, col='red')
@@ -1413,10 +1409,10 @@ curve(dbinom(x, n, p), 0, n, type='h', ylim=c(0, 1))
 
 
 # Multiple data vectors 
+We now leave the single-vector world and move to the analysis of dependencies between several vectors. 
 
 ## Scatter plots
 ```{r}
-
 # Sine function
 x<-seq(-pi, pi, 0.01)
 y<-sin(x)
@@ -1440,14 +1436,14 @@ plot(y~x, type='l')
 plot(y~x, type='o')
 
 ## Some real life data
-ozone<-read.table('http://www-stat.stanford.edu/~tibs/ElemStatLearn/datasets/ozone.data', header=T)
+URL <- 'http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets/ozone.data'
+ozone <- read.table(URL, header=T)
 names(ozone)
-
 plot(ozone)
 ```
 
 
-## 3D plotting (windows only) 
+## 3D plotting  
 ```{r}
 # install.packages('rgl')
 library(rgl)
@@ -1467,21 +1463,16 @@ plot3d(xyz, xlab='x', ylab='y')
 ```
 
 
-For interacting with plots try the RGGobi package.
-
-
 ##  Fitting linear lines and surfaces  
-```{r}
-
-```
+We will now try and fit linear surfaces to our data.
 
 ### Well behaved data 
 ```{r}
-x<-1:100
-a<-2
-b<-3.5
-sigma<-10
-y<-a+b*x+rnorm(100, 0, sigma)
+x <- 1:100
+a <- 2
+b <- 3.5
+sigma <- 10
+y <- a+b*x+rnorm(100, 0, sigma)
 plot(y~x)
 ```
 
@@ -1497,14 +1488,13 @@ ols.line<-function(x, y){
 
 ols<-ols.line(x, y) ; ols
 abline(ols$intercept, ols$slope, lty=2, lwd=3)
-predictions = ols$intercept + ols$slope * x
+predictions <-  ols$intercept + ols$slope * x
 residuals<- y - predictions
 plot(residuals) ; abline(h=0)
 ```
 
 ### Robust regression
 ```{r}
-
 rline  <- function(x, y)
 {
   ind<- is.na(x) | is.na(y)
@@ -1529,32 +1519,33 @@ rline  <- function(x, y)
 	return(list(intercept=b0,  slope=b1,  pred=pred,  resid=resid,  x=x,  xb=xb,  yb=yb,  xt=xt,  yt=yt))
 }
 
+# Robust regression with well behaved data
 robust <- rline(x, y)
 robust$intercept ; robust$slope
 plot(y~x)
 abline(robust$intercept, robust$slope, col='red', lwd=3, lty=2)
 
-## Ill Behaved data 
-y<-a+b*x+rbinom(100, 1, 0.1)*(rbinom(100, 1, 0.5)-0.5)*10000
+# Robust regression with ill behaved data
+y <- a + b*x+rbinom(100, 1, 0.1)*(rbinom(100, 1, 0.5)-0.5)*10000
 plot(y~x, ylim=c(-1, 1)*5000) ; abline(a, b, col='blue', lwd=3, lty=5)
 
 plot(y~x, ylim=c(-1, 1)*500) ; abline(a, b, col='blue', lwd=3, lty=5)
-ols.ill<-ols.line(x, y);ols.ill
+ols.ill <- ols.line(x, y); ols.ill
 abline(ols.ill$intercept, ols.ill$slope, col='brown')
 robust.ill<-rline(x, y)
 abline(robust.ill$intercept, robust.ill$slope, col='red')
 legend(x=60,y=-200, lty=1, legend=c('Real', 'OLS line', 'Robust Line'), col=c('blue', 'brown', 'red'), lwd=c(3, 1, 1))
-
 ```
 
-### How are the intercept and slope related? (Simulation Study)
+### How are the intercept and slope related? 
+This little simulation demonstrated that if the data is not centered, then a correlation is to be expected between slope and intercept.
 ```{r}
 x<-1:100
 a<-2
 b<-3.5
 sigma<-10
 iterations<-100
-retries<-matrix(0, 2*iterations, ncol=2)
+retries <- matrix(0, 2*iterations, ncol=2)
 for (i in 1:iterations){
     y<-a+b*x+rnorm(100, 0, sigma)
     temp.robust<-rline(x, y)  
@@ -1569,7 +1560,6 @@ abline(v=0);abline(h=0)
 
 ### What is a high correlation?
 ```{r}
-
 samples<- 100
 x <- 1:samples
 a <- 2
@@ -1592,7 +1582,6 @@ abline(v=initial.correlation)
 
 ### Dangers of Extrapolation  
 ```{r}
-
 x<-runif(1000)*5
 y<-exp(x)+rnorm(1000)
 plot(y~x, main='Whole relation')
@@ -1616,26 +1605,23 @@ text(x=2, y=121, labels='Extrapolates Terribly!', cex=2)
 plot(y~exp(x))
 plot(log(y)~x)
 plot(log(y)~log(x))
-
 ```
 
-### Intuition for Pearson's correlation 
+### Intuition underlying Pearson's correlation 
 It is actually the *OLS* slope if dealing with *standardized* variables.
 ```{r}
-
 x<-1:100;cat('Old X average=', mean(x), '. Old X Variance=', var(x), '\n')
 a<-2 ; b<-3.5 ; sigma<-10
 y<-a+b*x+rnorm(100, 0, sigma);cat('Old Y average=', mean(y), '. Old Y Variance=', var(y), '\n')
 plot(y~x)
 
-x.stan<-(x-mean(x))/sqrt(var(x));cat('New X average=', mean(x.stan), '. New X variance=', var(x.stan), '\n')
+x.stan <- (x-mean(x))/sqrt(var(x));cat('New X average=', mean(x.stan), '. New X variance=', var(x.stan), '\n')
 y.stan<-(y-mean(y))/sqrt(var(y));cat('New Y average=', round(mean(y.stan), 2), '. New Y variance=', var(y.stan), '\n')
 plot(y~x, cex=0.5);points(y.stan~x.stan, col='red')
 
 ols.line(x.stan, y.stan) # Calculating the slope in Z-score scale
 cor(x.stan, y.stan) # Calculating the correlation coef of the Z-scores  #MatLab: corrcoef
 cor(x, y) # The cor coef in the original scale is the same as the slope in Z-score scale!
-
 ```
 
 ### Multivariate linear regression 
@@ -1651,18 +1637,22 @@ func1<-function(mesh, a0, a1, a2, sigma) {
     }
     
 # More noise hides the stucture in the data:
-z<-func1(xy.grid, a0=5, a1=1, a2=3, .0);z;xyz=data.frame(xy.grid, z);plot3d(xyz, xlab='x1', ylab='x2')
-z<-func1(xy.grid, a0=5, a1=1, a2=3, .4);xyz=data.frame(xy.grid, z);plot3d(xyz, xlab='x1', ylab='x2')
-z<-func1(xy.grid, a0=5, a1=1, a2=3, 11);xyz=data.frame(xy.grid, z);plot3d(xyz, xlab='x1', ylab='x2')
+z<-func1(xy.grid, a0=5, a1=1, a2=3, .0); z; xyz=data.frame(xy.grid, z); plot3d(xyz, xlab='x1', ylab='x2')
+z<-func1(xy.grid, a0=5, a1=1, a2=3, .4); xyz=data.frame(xy.grid, z); plot3d(xyz, xlab='x1', ylab='x2')
+z<-func1(xy.grid, a0=5, a1=1, a2=3, 11); xyz=data.frame(xy.grid, z); plot3d(xyz, xlab='x1', ylab='x2')
 
-z<-func1(xy.grid, a0=5, a1=1, a2=3, .4);xyz=data.frame(xy.grid, z);plot3d(xyz, xlab='x1', ylab='x2')
-lm(z~., xyz) #Solves the system "prediction=(X'X)^-1 X'y"
+z<-func1(xy.grid, a0=5, a1=1, a2=3, .4); xyz=data.frame(xy.grid, z); plot3d(xyz, xlab='x1', ylab='x2')
 ```
+
+`lm()` is the major workhorse for OLS returning the solution to $(X'X)^{-1} X'y$.
+```{r}
+lm(z~., xyz) # Solves the system "prediction=(X'X)^-1 X'y"
+```
+
 
 ### Linearizing Transformations and Examining Residuals
 See also http://www.gapminder.org/
 ```{r}
-
 ## Log example #1:
 x<-runif(1000)*5
 y<-exp(x)+rnorm(1000)
@@ -1678,9 +1668,9 @@ abline(v=2, lty=3)
 
 yResiduals<- y - (ols.interpolating$intercept+ols.interpolating$slope * x)
 par(mfrow=c(1,1))
-plot(y~x, main='Local relation; scatter', cex=0.5, xlim=c(0, 2), ylim=c(-5, 10));abline(v=2, lty=3);
+plot(y~x, main='Local relation; scatter', cex=0.5, xlim=c(0, 2), ylim=c(-5, 10)); abline(v=2, lty=3);
 abline(ols.interpolating$intercept ,  ols.interpolating$slope, col='red')
-plot(yResiduals ~x, main='Local relation; residuals', cex=0.5, xlim=c(0, 2), ylim=c(-5, 10));abline(0,0) 
+plot(yResiduals ~x, main='Local relation; residuals', cex=0.5, xlim=c(0, 2), ylim=c(-5, 10)); abline(0,0) 
 # Note: Non linearity is easier to spot when inspecting residuals!
 
 par(mfrow=c(1,1))
@@ -1711,8 +1701,8 @@ compute.R2(exp(x),y);cor(exp(x),y)^2
 ```
 
 ### Distribution of y|x:
-Judging by the QQplot: Y|x~N( a+b*exp(x), sigma_e^2)
-sigma_e^2 = (1-R^2) * sigma_y^2
+Judging by the QQplot: $Y|x \sim \mathcal{N}( a+b*exp(x), \sigma_e^2)$
+and $\sigma_e^2 = (1-R^2) * \sigma_y^2$.
 What is your guess of the next value of y?
 What is your guess of the range of 68% of values of y?  
  
@@ -1726,7 +1716,6 @@ segments(x, predicted.y-sigma.epsilon, x,  predicted.y+sigma.epsilon, col='light
 
 ### Log Linear Model 
 ```{r}
-
 x<- runif(100)
 a<- 2
 b<- 3.5
@@ -1748,13 +1737,12 @@ resids.2.2<- log(y) - log(preds.2)
 plot(resids.2.2~x);abline(0,0)
 
 ```
- Q: What is this good for?!?
- A: Prediction intervals! (amongst others)
+Q: What is this good for?!?
+A: Prediction intervals! (amongst others)
 
 
 In linear scale
 ```{r}
-
 R2<- compute.R2(x=x,y=log(y))
 sigma.epsilon<- sqrt( (1-R2)* var(log(y)))
 plot(log(y)~x);points(log(preds.2) ~ x, col='red')
@@ -1796,7 +1784,6 @@ plot(log(y)~log(x))
 sigma.epsilon<- sqrt( (1-R2)* var(log(y)))
 plot(y~x); points(predict.4 ~ x, col='red')
 segments(x, exp(log(predict.4)-sigma.epsilon), x,  exp(log(predict.4)+sigma.epsilon), col='darkgreen', cex=0.2)
-
 ```
 
 
@@ -1808,7 +1795,7 @@ Why?
 e.y<- expression(exp(a)*x**b)
 D(e.y,'x')
 ```
-So dy/y = b d/x Hurray!
+So $\Delta y/y = b \Delta x/x$ Hurray!
 
 ### Varying Variance (heteroskedasticity) 
 ```{r}
