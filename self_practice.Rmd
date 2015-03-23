@@ -11,6 +11,7 @@ Make sure you can answer. No need to submit.
 1. What is the difference between .csv and tab delimited data files? What function import and export csv files?
 2. What is the average departure delay of the flights that departed on the Sundays of Oct 2013? (`flights` dataset).
 3. Create an artificial data.frame names `drinks` with gender and drinks data so that the output of `table(drinks)` is:
+
 First Header  | Second Header
 ------------- | -------------
 Content Cell  | Content Cell
