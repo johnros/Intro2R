@@ -963,7 +963,8 @@ points(dose4~age, data=wide.data, pch=3)
 ```
 
 
-Ploting in long format is easy
+Ploting in long format is much easier. 
+I will first convert the data manually.
 ```{r}
 (dose.type<-c(
 		rep('dose1', length(wide.data$dose1)),
@@ -973,13 +974,16 @@ Ploting in long format is easy
 (long.id<- rep(wide.data$id,3))
 (long.age<- rep(wide.data$age,3))
 
-long.data<-data.frame(long.id, long.age, dose.type, dose)
+long.data <- data.frame(long.id, long.age, dose.type, dose)
+View(long.data)
 
 plot(dose~long.age, data=long.data, pch=as.numeric(dose.type))
 ```
+I will now try to avoid this manual reshaping.
 
 ### Reshaping data
-With base package
+
+#### base package
 ```{r}
 stack(data.frame(wide.data$dose1,wide.data$dose2,wide.data$dose4))
 
@@ -987,7 +991,7 @@ reshape(wide.data, varying=list(c("dose1","dose2","dose4")), direction="long", i
 reshape(wide.data, varying=list(c("dose1","dose2","dose4")), direction="long", idvar="id", timevar="age", v.names="dose")
 ```
 
-With respahe package
+#### respahe package
 ```{r}
 # melt() is much more confortable then reshape( )
 library(reshape)
@@ -998,9 +1002,44 @@ cast(melted.data)
 ```
 
 
-With tidyr package (recommended)
+#### tidyr package
+This is the package I recommend if you cannot reshape manually.
+Example from [here](http://blog.rstudio.org/2014/07/22/introducing-tidyr/)
 ```{r}
-# TODO
+library(tidyr)
+library(dplyr)
+
+# Data in wide format:
+messy <- data.frame(
+  name = c("Wilbur", "Petunia", "Gregory"),
+  a = c(67, 80, 64),
+  b = c(56, 90, 50)
+)
+messy
+
+# Convert to long format:
+messy %>% gather(drug, heartrate, a:b)
+```
+
+```{r}
+# Another example- from wide to long:
+set.seed(10)
+messy <- data.frame(
+  id = 1:4,
+  trt = sample(rep(c('control', 'treatment'), each = 2)),
+  work.T1 = runif(4),
+  home.T1 = runif(4),
+  work.T2 = runif(4),
+  home.T2 = runif(4)
+)
+messy %>% head
+tidier <- messy %>%  gather(key, time, -id, -trt)
+tidier %>% head(8)
+
+# From long to wide
+tidy <- tidier %>%
+  separate(key, into = c("location", "time"), sep = "\\.") 
+tidy %>% head(8)
 ```
 
 ### Fancy Plotting 
@@ -1015,8 +1054,6 @@ qplot(spnbmd, data=bone, geom='density')+ facet_wrap(~gender)
 qplot(spnbmd, data=bone)+ geom_density(col='red', size=1)+ facet_wrap(~gender)
 qplot(spnbmd, data=bone, fill=gender, geom='density', alpha=1)
 ```
-
-Notice data is usually in *Long* format
 
 Diamonds example (Taken from Wickham's web site: http://had.co.nz/stat405/)
 ```{r}
@@ -1056,20 +1093,23 @@ For more information on ggplot2 see http://had.co.nz/ggplot2
 ```{r}
 # install.packages("iplots")
 library(iplots)
-
 data(iris)
-attach(iris)
-iplot(Sepal.Width,Petal.Width)
+attach(iris) 
+```
+
+
+The folllowing plots are interconnected in that selecting points in one of them, selects the points in all.
+```{r}
+iplot(Sepal.Width, Petal.Width)
 iplot(Sepal.Width/Sepal.Length, Species)
 ihist(iris$Sepal.Width)
 ibar(Species)
 ```
 
-
 Note: For more powerfull interactive plotting try:
-1. Mondrian (open source)
-2. JMP (expensive)
-3. Ggobi and Rggobi (open source)
+1. [Mondrian](http://en.wikipedia.org/wiki/Mondrian_%28software%29) (open source)
+2. [JMP](http://www.jmp.com/en_us/home.html) (expensive)
+3. Ggobi and [Rggobi](http://cran.r-project.org/web/packages/rggobi/index.html) (open source)
 
 
 
