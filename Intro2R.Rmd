@@ -158,13 +158,6 @@ x
 ```
 
 
-Non standard assignments
-```{r}
-c(1,2,3) ->y ; y
-assign('y', c(1,2,3) ); y
-assign('y', c(1,2,3), env=.GlobalEnv )
-```
-
 
 You can assign AFTER the computation is finished:
 ```{r}
@@ -216,6 +209,7 @@ ___
 
 
 ## Data frame Manipulation 
+data.frames extend the matrix class, in that they allow the binding of vectors of several classes (with same length).
 ```{r}
 x<- 1:100; y<- 3+sin(x) 
 class(x) # R (high) level representation of an object.
@@ -370,7 +364,7 @@ daily <- group_by(flights, year, month, day)
 
 
 
-Piping operatons
+Piping and dplyr
 ```{r}
 # Old style
 a1 <- group_by(flights, year, month, day)
@@ -652,7 +646,7 @@ for (helloeveryone in seq(10, 100, by=2) ){
 ```
 
 
-## Recursion
+## Recursion 
 Typically very slow due to memory management issues.
 
 ```{r}
@@ -665,7 +659,7 @@ fib(30)
 ```
 
 
-## Finding objects 
+## Finding your objects 
 ```{r}
 ls() #Lists all available objects
 ls(pattern='x')
@@ -679,7 +673,6 @@ ctrl+8 in RStudio.
 ```{r}
 search() # This is the search hirarchy of called objects.
 ```
-
 When you start serious programming in R, read this:
 http://adv-r.had.co.nz/Environments.html
 
@@ -690,7 +683,7 @@ http://adv-r.had.co.nz/Environments.html
 # Univariate Exploratory Statistics
 
 
-##  Exploring Categorical Data  
+##  Exploring Categorical Variables  
 ```{r}
 gender<-c(rep('Boy', 10), rep('Girl', 12))
 drink<-c(rep('Coke', 5), rep('Sprite', 3), rep('Coffee', 6), rep('Tea', 7), rep('Water', 1))  
@@ -806,7 +799,7 @@ rug(sample1)
 ```
 
 
-## The Boxplot
+## The Boxplot 
 ```{r}
 boxplot(sample1)	
 text(x=1.3, y=c(-0.6195636, 0.2581893, 0.7848411), labels=c('Quartile 1', 'Median', 'Quartile 3'))
@@ -869,7 +862,7 @@ with(bone, boxplot(spnbmd~gender))
 ```
 
 
-## Graphical parameters
+## Graphical parameters 
 ```{r}
 attach(bone) 
 stripchart(age)
@@ -940,7 +933,8 @@ points(locator(6),pch=c('a','b','c'))
 ```
 
 
-## Integer data
+## Integer data 
+Integer data will most certainly produce overlaps if plotted. Either add jitter, or treat as discrete.
 ```{r}
 r.age<-round(age)
 plot(density(r.age))
@@ -955,8 +949,10 @@ rug(jitter(r.age))
 ## Plotting
 
 ### Preparing data for plotting
-
-Plotting in wide format is hard
+2D data can be in either `wide' or `long' format. 
+Most R functions are designed for long formats. 
+Let's start by trying to plot in the wide format.
+Notice each dosage is plotted seperately (yes, I could have looped).
 ```{r}
 wide.data<-data.frame(id=1:4, age=c(40,50,60,50), dose1=c(1,2,1,2),dose2=c(2,1,2,1), dose4=c(3,3,3,3))
 wide.data
