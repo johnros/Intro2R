@@ -10,9 +10,9 @@ The project is based on the [Bike Sharing Demand](https://www.kaggle.com/c/bike-
 You are required to submit a prediction to Kaggle, and a report on the process to me.
 
 # Dates
-Teaming up: no later than *27.4.2015*.
-Submit prediction to Kaggle: *29.5.2015*.
-Submit report to Jonathan : *26.6.2015*.
+Teaming up: no later than __27.4.2015__.
+Submit prediction to Kaggle: __29.5.2015__.
+Submit report to Jonathan : __26.6.2015__.
 
 Recommended time-table:
 
@@ -23,7 +23,7 @@ Recommended time-table:
 
 # Guidelines
 
-1. Your task is to participate in the [Bike Sharing Demand](https://www.kaggle.com/c/bike-sharing-demand) competiton. The competion ends on *29.5.2015* when you will have to submit your predictions to Kaggle.
+1. Your task is to participate in the [Bike Sharing Demand](https://www.kaggle.com/c/bike-sharing-demand) competiton. The competion ends on __29.5.2015__ when you will have to submit your predictions to Kaggle.
 3. By the end of the course you will need to submit to me a report documenting the process.
   - No longer than 8 pages (not including appendices).
   - Should contain the sections:
