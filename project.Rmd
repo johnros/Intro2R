@@ -10,8 +10,8 @@ The project is based on [Kaggle's]() competitions.
 You will be required to pick one of 5 competitions, submit an entry, and report the process.
 
 # Dates
-Teaming up: no later than 27.4.2015.
-Submission data: no later than 26.6.2015.
+Teaming up: no later than _27.4.2015_.
+Submission data: no later than _26.6.2015_.
 
 Recommended time-table:
 
