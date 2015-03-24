@@ -7,7 +7,9 @@ output: html_document
 
 Here are the guidelines for the course's concluding project.
 The project is based on [Kaggle's]() competitions.
-You will be required to pick one of $5$ competitions, submit an entry, and report the process.
+You will be required to pick one of 5 competitions, submit an entry, and report the process.
+
+Submission data: 
 
 Guidelines:
 
@@ -26,5 +28,5 @@ Guidelines:
     - The data: What data was provided for learning? What files in what formats? Which variables? How did you handle them?
     - Algorithms: Which learning algorithms did you try?
     - Results: What score did you achieve? What was your ranking in the competition?
-    - Discussion: Why were you successful/unsuccessful? 
+    - Discussion: Why were you successful/unsuccessful? What other ideas would you have liked to try? What were the major challenges? 
     
