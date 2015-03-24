@@ -5,12 +5,9 @@ date: "March 24, 2015"
 output: html_document
 ---
 
-[_Under construction. Please ignore and revisit on 25.5.2015._]
-____
-
 Here are the guidelines for the course's concluding project.
 The project is based on the [Bike Sharing Demand](https://www.kaggle.com/c/bike-sharing-demand) competition at Kaggle.
-You will be required to submit a prediction, and report the process.
+You are required to submit a prediction to Kaggle, and a report on the process to me.
 
 # Dates
 Teaming up: no later than _27.4.2015_.
@@ -19,16 +16,15 @@ Submit report to Jonathan : _26.6.2015_.
 
 Recommended time-table:
 
-1. During the Passover vacation, download the data. Make sure you can load it. 
+1. During the Passover vacation, download the data. Make sure you can load it and practice `dplyr` and `lubridate` on it.
 2. After Passover, find your partner and notify me.
-3. Don't wait until the last minute! [This](http://www-bcf.usc.edu/~gareth/ISL/) is an easy reference to start reading for yourself. [This](http://statweb.stanford.edu/~tibs/ElemStatLearn/) is a more advanced reference. 
-
+3. Keep revisiting the data as we progress and study new techniques. Don't leave everything to submission date.
 
 
 # Guidelines
 
-1. You will essentially be participating in the [Bike Sharing Demand](https://www.kaggle.com/c/bike-sharing-demand) competiton. Because the competion ends on 29.5.2015, you can either submit to Kaggle by that date, or submit
-3. Write a report documenting the process.
+1. Your task is to participate in the [Bike Sharing Demand](https://www.kaggle.com/c/bike-sharing-demand) competiton. The competion ends on _29.5.2015_ when you will have to submit your predictions to Kaggle.
+3. By the end of the course you will need to submit to me a report documenting the process.
   - No longer than 8 pages (not including appendices).
   - Should contain the sections:
     - Background: Some background on the competition. 
