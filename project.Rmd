@@ -10,8 +10,8 @@ The project is based on [Kaggle's]() competitions.
 You will be required to pick one of 5 competitions, submit an entry, and report the process.
 
 # Dates
-Teaming up: no later than 27.4.2015
-Submission data: no later than 26.6.2015
+Teaming up: no later than 27.4.2015.
+Submission data: no later than 26.6.2015.
 
 Recommended time-table:
 
@@ -24,7 +24,7 @@ Recommended time-table:
 # Guidelines
 
 1. Open an account at [Kaggle](https://www.kaggle.com/).
-2. Pick one of the "Playground" competitions. These are: 
+2. Pick one of the "Playground" competitions and compete! These are: 
   - [Billion Word Imputations](https://www.kaggle.com/c/billion-word-imputation).
   - [Forest Cover Type Prediction](https://www.kaggle.com/c/forest-cover-type-prediction).
   - [Bike Sharing Demand](https://www.kaggle.com/c/bike-sharing-demand) (recommended). 
