@@ -5,6 +5,9 @@ date: "March 24, 2015"
 output: html_document
 ---
 
+[Under construction. Please revisit and expect updates.]
+____
+
 Here are the guidelines for the course's concluding project.
 The project is based on [Kaggle's]() competitions.
 You will be required to pick one of 5 competitions, submit an entry, and report the process.
