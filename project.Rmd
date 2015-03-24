@@ -31,7 +31,7 @@ Recommended time-table:
   - [Random Acts of Pizza](https://www.kaggle.com/c/random-acts-of-pizza).
   - [Poker Rule Induction](https://www.kaggle.com/c/poker-rule-induction).
 3. Write a report documenting the process.
-  - No longer than $8$ pages (not including appendices).
+  - No longer than 8 pages (not including appendices).
   - Should contain the sections:
     - Background: Some background on the competition. 
     - Scoring: The scoring criterion in the competition. What loss function with what data?
