@@ -18,4 +18,7 @@ Guidelines:
   - [Bike Sharing Demand](https://www.kaggle.com/c/bike-sharing-demand) (recommended). 
   - [Random Acts of Pizza](https://www.kaggle.com/c/random-acts-of-pizza).
   - [Poker Rule Induction](https://www.kaggle.com/c/poker-rule-induction).
-3. 
+3. Write a report documenting the process.
+  - No longer than $8$ pages (not including appendices).
+  - Should contain the sections:
+    - 
