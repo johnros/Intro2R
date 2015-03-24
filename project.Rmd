@@ -1,0 +1,20 @@
+---
+title: "Project"
+author: "Jonathan Rosenblatt"
+date: "March 24, 2015"
+output: html_document
+---
+
+Here are the guidelines for the course's concluding project.
+The project is based on [Kaggle's]() competitions.
+You will be required to pick one of $5$ competitons, submit an entry, and report the process.
+
+Guidelines:
+1. Open an account at [Kaggle](https://www.kaggle.com/).
+2. Pick one of the "Playground" competitions. These are: 
+  - [Billion Word Imputations](https://www.kaggle.com/c/billion-word-imputation).
+  - [Forest Cover Type Prediction](https://www.kaggle.com/c/forest-cover-type-prediction).
+  - [Bike Sharing Demand](https://www.kaggle.com/c/bike-sharing-demand) (recommended). 
+  - [Random Acts of Pizza]().
+  - [Poker Rule Induction]().
+3. 
