@@ -7,7 +7,7 @@ output: html_document
 
 Here are the guidelines for the course's concluding project.
 The project is based on [Kaggle's]() competitions.
-You will be required to pick one of $5$ competitons, submit an entry, and report the process.
+You will be required to pick one of $5$ competitions, submit an entry, and report the process.
 
 Guidelines:
 
@@ -21,4 +21,10 @@ Guidelines:
 3. Write a report documenting the process.
   - No longer than $8$ pages (not including appendices).
   - Should contain the sections:
-    - 
+    - Background: Some background on the competition. 
+    - Scoring: The scoring criterion in the competition. What loss function with what data?
+    - The data: What data was provided for learning? What files in what formats? Which variables? How did you handle them?
+    - Algorithms: Which learning algorithms did you try?
+    - Results: What score did you achieve? What was your ranking in the competition?
+    - Discussion: Why were you successful/unsuccessful? 
+    
