@@ -5,7 +5,7 @@ date: "March 24, 2015"
 output: html_document
 ---
 
-[_Under construction. Please revisit and expect updates._]
+[_Under construction. Please ignore and revisit on 25.5.2015._]
 ____
 
 Here are the guidelines for the course's concluding project.
