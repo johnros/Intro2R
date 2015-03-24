@@ -9,30 +9,25 @@ output: html_document
 ____
 
 Here are the guidelines for the course's concluding project.
-The project is based on [Kaggle's]() competitions.
-You will be required to pick one of 5 competitions, submit an entry, and report the process.
+The project is based on the [Bike Sharing Demand](https://www.kaggle.com/c/bike-sharing-demand) competition at Kaggle.
+You will be required to submit a prediction, and report the process.
 
 # Dates
 Teaming up: no later than _27.4.2015_.
-Submission data: no later than _26.6.2015_.
+Submit prediction to Kaggle: _29.5.2015_.
+Submit report to Jonathan : _26.6.2015_.
 
 Recommended time-table:
 
-1. During the Passover vacation, go over the different competitions. Download the data. Make sure you can load it. 
-2. After Passover, find your partner and project and notify me.
-3. Don't wait until the last minute! [This](http://www-bcf.usc.edu/~gareth/ISL/) is an easy reference to start reading for yourself. [This](http://statweb.stanford.edu/~tibs/ElemStatLearn/) is a more advanced reference. Once you picked your project, I can point to the appropriate chapters.
+1. During the Passover vacation, download the data. Make sure you can load it. 
+2. After Passover, find your partner and notify me.
+3. Don't wait until the last minute! [This](http://www-bcf.usc.edu/~gareth/ISL/) is an easy reference to start reading for yourself. [This](http://statweb.stanford.edu/~tibs/ElemStatLearn/) is a more advanced reference. 
 
 
 
 # Guidelines
 
-1. Open an account at [Kaggle](https://www.kaggle.com/).
-2. Pick one of the "Playground" competitions and compete! These are: 
-  - [Billion Word Imputations](https://www.kaggle.com/c/billion-word-imputation).
-  - [Forest Cover Type Prediction](https://www.kaggle.com/c/forest-cover-type-prediction).
-  - [Bike Sharing Demand](https://www.kaggle.com/c/bike-sharing-demand) (recommended). 
-  - [Random Acts of Pizza](https://www.kaggle.com/c/random-acts-of-pizza).
-  - [Poker Rule Induction](https://www.kaggle.com/c/poker-rule-induction).
+1. You will essentially be participating in the [Bike Sharing Demand](https://www.kaggle.com/c/bike-sharing-demand) competiton. Because the competion ends on 29.5.2015, you can either submit to Kaggle by that date, or submit
 3. Write a report documenting the process.
   - No longer than 8 pages (not including appendices).
   - Should contain the sections:
