@@ -9,9 +9,19 @@ Here are the guidelines for the course's concluding project.
 The project is based on [Kaggle's]() competitions.
 You will be required to pick one of 5 competitions, submit an entry, and report the process.
 
-Submission data: 
+# Dates
+Teaming up: no later than 27.4.2015
+Submission data: no later than 26.6.2015
 
-Guidelines:
+Recommended time-table:
+
+1. During the passover vacation, go over the different competitions. Download the data. Make sure you can load it. 
+2. After passover, find your partner and project and notify me.
+3. Don't wait until the last minute! [This](http://www-bcf.usc.edu/~gareth/ISL/) is an easy reference to start reading for yourself. [This](http://statweb.stanford.edu/~tibs/ElemStatLearn/) is a more advanced reference. Once you picked your project, I can point to the appropriate chapters.
+
+
+
+# Guidelines
 
 1. Open an account at [Kaggle](https://www.kaggle.com/).
 2. Pick one of the "Playground" competitions. These are: 
