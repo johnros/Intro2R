@@ -17,13 +17,14 @@ Submit report to Jonathan : __26.6.2015__.
 Recommended time-table:
 
 1. During the Passover vacation, download the data. Make sure you can load it and practice `dplyr` and `lubridate` on it.
-2. After Passover, find your partner and notify me.
+2. After Passover, find your team and notify me.
 3. Keep revisiting the data as we progress and study new techniques. Don't leave everything to submission date.
 
 
 # Guidelines
 
 1. Your task is to participate in the [Bike Sharing Demand](https://www.kaggle.com/c/bike-sharing-demand) competiton. The competion ends on __29.5.2015__ when you will have to submit your predictions to Kaggle.
+2. You can do so in pairs, or trios.
 3. By the end of the course you will need to submit to me a report documenting the process.
   - No longer than 8 pages (not including appendices).
   - Should contain the sections:
@@ -33,4 +34,5 @@ Recommended time-table:
     - Algorithms: Which learning algorithms did you try?
     - Results: What score did you achieve? What was your ranking in the competition?
     - Discussion: Why were you successful/unsuccessful? What other ideas would you have liked to try? What were the major challenges? 
+    4. Feel free to use the courses forums for questions. Especially regarding the use of Kaggle and R. Make sure however, that you do not share your solutions. 
     
