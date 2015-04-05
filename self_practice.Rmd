@@ -10,7 +10,7 @@ Make sure you can answer. No need to submit.
 
 1. What is the difference between .csv and tab delimited data files? What function imports and exports csv files?
 2. What is the average departure delay of the flights that departed on the Sundays of Oct 2013? (`flights` dataset in the `nycflights13` package).
-3. Plot a histogram and a boxplot of the delays of JetBlue Airways flights (after joining with the `airlines` dataset. Now plot the same plots for each day of the week. Export the plots as pdf files.
+3. Plot a histogram and a boxplot of the delays of JetBlue Airways flights, after joining with the `airlines` dataset. Now plot the same plots for each day of the week. Export the plots as pdf files.
 4. Create, then save as a csv, a data.frame named `drinks` with gender and drinks data, so that the output of `table(drinks)` is:
 
 Gender | Coke  | Coffee
