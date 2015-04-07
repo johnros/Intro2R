@@ -51,6 +51,8 @@
 \newcommand{\argmin}[2]{argmin_{#1}\left\{ #2 \right\}}
 \newcommand{\hyp}{f}
 \newcommand{\hypclass}{\mathcal{F}}
+\newcommand{\plane}{\mathbb{L}}
+
 
 \begin{document}
 
@@ -308,6 +310,7 @@ Naive Bayes and Fisher's LDA are also not considered ERMs, but they can be cast 
 We now proceed to show that many supervised learning algorithms are in fact ERMs with some type of inductive bias.
 
 \subsection{Linear Regression (OLS)}
+\label{sec:ols}
 As seen in Example~\ref{eg:OLS}, by adopting a squared error loss, and restricting $\hypclass$ by assuming $f$ is a linear function of $x$, we get the OLS problem.
 In this case, learning $f$ is effectively the same as learning $\beta$ as they are isomorphic.
 
@@ -352,10 +355,40 @@ The sparsity property is very attractive as it acts as a model selection method,
 
 \subsection{Logistic Regression}
 The logistic regression is the first categorical prediction problem. I.e., the outcome $y$ is not a continous variable, but rather takes values in some finite set. In the logistic regression problem, it can take two possible values.
-In the statistical literature, $y$ is encoded as $\{0,1\}$ and 
+In the statistical literature, $y$ is encoded as $\{0,1\}$ and $\hyp$ is assumed to take to take the following form:
+\begin{align}
+	& P(y=1|x) = \Psi(x\beta) \\
+	& \Psi(t) = \frac{1}{1+e^{-t}}
+\end{align}
+
+The hypothesis class $\hypclass$ is thus all $\hyp(x)=\Psi(x\beta)$.
+In the $\{0,1\}$ encoding, the loss is the negative log likelihood, i.e.:
+\begin{align}
+	\loss{y,x,\beta} = -\log \left[ \Psi(x\beta)^{y} (1-\Psi(x\beta))^{1-y}  \right].
+\end{align}
+In the learning literature it is more common for $\{1,-1\}$ encoding of $y$ in which case the loss is 
+\begin{align}
+	\loss{y,x,\beta} = -\log \left[ 1+\exp(-y f(x))  \right].
+\end{align}
 
 
-\subsection{Linear SVM }
+\paragraph{How to classify?}
+In the $\{0,1\}$ encoding, we predict class $1$ if $\Psi(x\beta)>0.5$ and class $0$ otherwise.
+The logistic problem thus defines a separating hyperplane $\plane$ between the classes: $\plane=\{x:f(x)=0.5\}$.
+
+In the $\{1,-1\}$ encoding, we predict class $1$ if $\Psi(x\beta)>0$ and class $0$ otherwise.
+The plane $\plane$ is clearly invariant to the encoding of $y$.
+
+
+
+\subsection{Regression Classifier}
+\label{sec:regression_classifier}
+[TODO]
+Can we use the OLS framework for prediction with proper encoding of $y$?
+It turns out we can.
+Solving the same problem from Example~\ref{eg:OLS} with 
+
+\subsection{Linear SVM}
 
 \subsection{Generalized Additive Models (GAMs)}
 
