@@ -45,6 +45,7 @@
 \newcommand{\loglik}[1]{L(#1)}
 \newcommand{\loss}[1]{l(#1)}
 \newcommand{\risk}[1]{R(#1)}
+\newcommand{\riskn}[1]{\mathbb{R}(#1)}
 
 
 
@@ -206,21 +207,41 @@ M-Estimation, know as Empirical Risk Minimizaton (ERM) in the machine learning l
 The underlying idea is that each realization of $X$ incurs some loss, and we seek to find a "policy", in this case a parameter, $\theta^*$ that minimizes the average loss.
 In the econometric literature, we dot not incur a loss, but rather a utility, we thus seek a policy that maximizes the average utility.
 
-Define a loss function $\loss{X;\theta}$, and a risk function, being the expected loss, $\risk{\theta}:=\expect{\loss{X;\theta}}$. Then 
+Define a loss function $\loss{X;\theta}$, and a risk function, being the expected loss, 
+$\risk{\theta}:=\expect{\loss{X;\theta}}$. Then 
 \begin{align}
 \label{eq:risk_min}
- \theta^*:= argmin_\theta\{\risk{\theta}\}.
+ \theta^*:= argmin_\theta\{ \risk{\theta} \}.
 \end{align}
 
 
 
-As we do not know the distribution of $X$, we cannot solve 
+As we do not know the distribution of $X$, we cannot solve Eq.(\ref{eq:risk_min}), so we minimize the \emph{empirical} risk. 
+Define the empirical risk as $\riskn{\theta}:=\expectn{\loss{X;\theta}}$, then 
+\begin{align}
+\label{eq:empirical_risk_min}
+ \hat{\theta}:= argmin_\theta \{ \riskn{\theta} \}.
+\end{align}
 
-\begin{example}[Squared loss]
-Let $\loss{X;\theta}=\frac{1}{2}(X-\theta)^2$. Then 
 
 
+
+
+\begin{example}[Squared Loss]
+Let $\loss{X;\theta}=(X-\theta)^2$. Then 
+$
+	\risk{\theta} = 
+	\expect{(X-\theta)^2} = 
+	(\expect{X}-\theta)^2 + Var[X]. 
+$
+Clearly $Var[X]$ does not depend on $\theta$  so that $\risk{\theta}$ is minimized by $\theta^*=\expect{X}$.
+\textbf{We thus say that the expectation of a random variable is the minimizer of the squared loss.}
+
+How do we estimate the population expectation? Well a natural estimator is the empirical mean, which is also the minimizer of the empirical risk $\riskn{X}$. The proof is immediate by differentiating. 
 \end{example}
+
+
+
 
 
 \section{From Estimation to Learning}
