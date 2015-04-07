@@ -5,15 +5,17 @@ date: "April 7, 2015"
 output: 
   pdf_document:
     toc: true 
+    toc_depth: 3
 
 ---
 \newcommand{\expect}[1]{E[#1]}
 \newcommand{\expectn}[1]{\mathbb{E}[#1]}
-\newcommand{\gauss}[2]{\mathcal{N}(#1,#2)}
+\newcommand{\gauss}[1]{\mathcal{N}(#1)}
 \newcommand{\cdf}[2]{F_{#1}(#2)}
 \newcommand{\cdfn}[2]{\mathbb{F}_{#1}(#2)}
 \newcommand{\icdf}[2]{F^{-1}_{#1}(#2)}
 \newcommand{\icdfn}[2]{\mathbb{F}^{-1}_{#1}(#2)}
+\newcommand{\norm}[1]{\Vert #1 \Vert}
 
 
 # Estimation {#estimation}
@@ -34,7 +36,7 @@ $\expect{X}=1/\lambda$.
 $\Rightarrow \hat{\lambda}=1/\expectn{X}$ 
 
 ### Example: Linear Regression
-Estimate $\beta$ in $Y \sim \gauss{X\beta}{\sigma^2 I}$, a $p$ dimensional random vector.
+Estimate $\beta$ in $Y \sim \gauss{X\beta,\sigma^2 I}$, a $p$ dimensional random vector.
 $\expect{Y}=X\beta$ and $\expectn{Y}=y$.
 Clearly, moment mathing won't work because no $\beta$ satistifes $X\beta=Y$.
 A technical workaround:
@@ -76,10 +78,90 @@ Then $\hat{\theta}_{ML}:= argmax_{\theta}\{ L(\theta) \}$.
 Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 Using the exponential PDF and the i.i.d. assumption
 $$ L(\lambda) = \lambda^n \exp(-\lambda \sum_i X_i) $$.
+Using a monotone mapping such as the log, does not change the $argmax$. 
+Denoting $l(\theta):=\log(L(\theta))$, we have
+$$ l(\lambda) = n \log(\lambda) -\lambda \sum_i X_i $$.
+By differentiating and equating $0$, we get $\hat{\lambda}_{ML}=1/\expectn{X}$.
+
+### Example: Discrete time Markov Chain:
+Estimate the transition probabilities,  $p_1$ and $p_2$ in a two state, $\{0,1\}$, discrete time, Markov chain where:
+$P(X_{t+1}=1|X_{t}=0)=p_1$ and $P(X_{t+1}=1|X_{t}=1)=p_2$.
+The likelihood:
+$$
+  L(p_1,p_2)=P(X_1,\dots,X_n;p_1,p_2)=\prod_{t=0}^T P(X_{t+1}=x_{t+1}|X_{t}=x_t).
+$$
+We denote $n_{ij}$ the number of observed transitions from $i$ to $j$ and get that $\hat{p}_1=\frac{n_{01}}{n_{01}+n_{00}}$, and that $\hat{p}_2=\frac{n_{11}}{n_{11}+n_{10}}$.
+
+#### Remark:
+Well, this is a rather artificial example, as because of the Markov property, and the stationarity of the process, we only need to look at transition events, themselves Brenoulli distributed. 
+This example does show, however, the power of the ML method to deal with non i.i.d. samples. As does the next example.
+
+### Example: Brownian motion with drift
+Estimate the drift parameter $a$,  in a discrete time Gaussian process where:
+$X_{t+1}=X_t+\varepsilon; \varepsilon \sim \gauss{0,\sigma^2} \Rightarrow X_{t+1}|X_t \sim \gauss{a X_t,\sigma^2}$.
+
+We start with the conditional density at time $t+1$:
+$$
+  p_{X_{t+1}|X_t=x_t}(x_{t+1}) = 
+  (2 \pi \sigma^2)^{-1/2} \exp \left( 
+    -\frac{1}{2 \sigma^2}(x_{t+1}-a x_t)^2 
+  \right)
+$$.
+Moving to the likelihood:
+$$
+  L(a) = 
+  (2 \pi \sigma^2)^{-T/2} \exp \left(
+    -\frac{1}{2 \sigma^2}\sum_{t=1}^T (x_{t+1}-a x_t)^2 
+  \right).
+$$
+Differentiating with respect to $a$ and equating $0$ we get $\hat{a}_{ML}=\frac{\sum x_{t+1}x_{t}}{\sum x_t^2}$.
+
+We again see the power of the ML device.
+Could we have arrive to this estimator by intuiton alone? Hmmmm... maybe. 
+See that $Cov[X_{t+1},X_t] = a \; Var[X_t] \Rightarrow a=\frac{Cov[X_{t+1},X_t]}{Var[X_t]}$.
+So $a$ can also be derived using the moment matching method which is probably more intuitive.
+
+### Example: Linear Regression
+Estimate $\beta$ in $Y \sim \gauss{X\beta,\sigma^2 I}$, a $p$ dimensional random vector.
+Recalling the multivariate Gaussian PDF:
+$$
+  p_{\mu,\Sigma}(y) = 
+  (2 \pi)^{-n/2} |\Sigma|^{-1/2} \exp\left(
+    -\frac{1}{2} (y-\mu)' \Sigma^{-1} (y-\mu)
+  \right)
+$$
+So in the regression setup:
+$$
+  L(\beta)= 
+  p_{\beta,\sigma^2}(y) = 
+  (2 \pi)^{-n/2} |\sigma^2 I|^{-1/2} \exp\left(
+    -\frac{1}{2 \sigma^2} \norm{y-X\beta}^2
+  \right)
+$$
 
 
 
 
 ## M-Estimation (Empirical Risk Minimization)
 
+
+
 # From Estimation to Learning {#learning}
+
+## Empirical Risk Minimization (ERM) and Inductive Bias
+
+### Linear Regression (OLS)
+
+### Ridge Regression
+
+### Logistic Regression
+
+### LASSO
+
+### Linear SVM 
+
+### Generalized Additive Models (GAMs)
+
+### Neural Nets (NNETs)
+
+### Classification and Regression Trees (CARTs)
