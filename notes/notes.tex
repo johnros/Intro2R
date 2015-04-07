@@ -49,6 +49,8 @@
 \newcommand{\riskn}[1]{\mathbb{R}(#1)}
 \newcommand{\deriv}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\argmin}[2]{argmin_{#1}\left\{ #2 \right\}}
+\newcommand{\hyp}{f}
+\newcommand{\hypclass}{\mathcal{F}}
 
 \begin{document}
 
@@ -245,6 +247,7 @@ How do we estimate the population expectation? Well a natural estimator is the e
 
 
 \begin{example}[Least Squares Regression]
+\label{eg:OLS}
 Define the loss $\loss{Y,X;\beta}:=\frac{1}{2}(Y-X\beta)^2$.
 Computing the risk, $\expect{\norm{Y-X\beta}^2}$ will require dealing with the $X$'s by either assuming the \textbf{Generative Model}\footnote{A Generative Model is a supervised learning problem where the we use the assumed distribution of the $X$s and not only $Y|X$. The latter are know as Discriminative Models.}, as expectation is taken over $X$ and $Y$. 
 We don't really care about that right now. 
@@ -273,26 +276,84 @@ If we set the loss function to be the negative log likelihood of the (true) samp
 
 \section{From Estimation to Supervised Learning}
 \label{sec:learning}
-This section draws from \cite{hastie_elements_2003} and \cite{shalev-shwartz_understanding_2014}
+This section draws from \cite{hastie_elements_2003} and \cite{shalev-shwartz_understanding_2014}.
+The former is freely available online.
+For a softer introduction, with more hands-on examples, see \cite{james_introduction_2013}.
+All books are very well written and strongly recommended.
 
 
 \subsection{Empirical Risk Minimization (ERM) and Inductive Bias}
-In Supervised Learning problems where we want to extract the relation $y=f(x)$ between attributes $x$ and some outcome $y$.
+In Supervised Learning problems where we want to extract the relation $y=\hyp(x)$ between attributes $x$ and some outcome $y$.
 In particular, we don't need to explain the causal process relating the two, so there is no need to commit to a sampling distribution. The implied M-Estimation problem is thus
 \begin{align}
-	\hat{f}(x) = \argmin{f}{\sum_i \loss{y_i-f(x_i)}}.
+	\hat{\hyp}(x) = \argmin{\hyp}{\sum_i \loss{y_i - \hyp(x_i) }}.
 \end{align}
-Alas, there are clearly infinitely many $f$ for which $\riskn{f}=0$, in particular, all those where $f(x_i)=y_i$.
-All these $f$s feel like very bad predictors (we will revisit this matter in Section~\ref{sec:desicion_theory}).
+Alas, there are clearly infinitely many $\hyp$ for which $\riskn{\hat{\hyp}(x)}=0$, in particular, all those where $\hat{\hyp}(x_i)=y_i$.
+All these $\hyp$ feel like very bad predictors, and we will indeed formalize this intuition in Section~\ref{sec:desicion_theory}.
 
+We need to make sure that we do not learn overly complex poor predictors. 
+Motivated by the fact that humans approach new problems equipped with their past experience, this regularization is called \emph{Inductive Bias}.
+There are several ways to introduce this bias, which can be combined:
+\begin{description}
+\item[The Hypothesis Class]
+We typically do not allow $\hyp$ to be ``any function'' but rather restrict it to belong to a certain class. In the machine learning terminology, $\hyp$ is a Hypothesis, and it belongs to $\hypclass$ which is the Hypothesis Class.
+\item[Prior Knowledge] We do not need to treat all $\hyp \in \hypclass$ equivalently. We might have prior preferences towards particular $\hyp$'s and we can introduce these preference in the learning process. This is called \emph{Regularization}.
+\item[Non ERM Approaches] Many learning problems can be cast as ERM problems, but another way to introduce bias is by learning $\hyp$ via some other scheme, which cannot be cast as an ERM problem. 
+Learning algorithms that cannot be cast as ERMs include: Nearest Neighbour, Kernel Smoothing, Boosting.
+Naive Bayes and Fisher's LDA are also not considered ERMs, but they can be cast as such [TODO: verify].
+\end{description}
+
+
+
+We now proceed to show that many supervised learning algorithms are in fact ERMs with some type of inductive bias.
 
 \subsection{Linear Regression (OLS)}
+As seen in Example~\ref{eg:OLS}, by adopting a squared error loss, and restricting $\hypclass$ by assuming $f$ is a linear function of $x$, we get the OLS problem.
+In this case, learning $f$ is effectively the same as learning $\beta$ as they are isomorphic.
+
+\begin{remark}
+We distinguish between OLS and Linear Regression. In these notes, we refer to linear regression when we assume that the data generating process it actually $y=x\beta+\varepsilon$, whereas in OLS we merely fit a linear function without claiming it is the data generating one.
+\end{remark}
+
+
 
 \subsection{Ridge Regression}
+Consider the Ridge regression problem:
+\begin{align}
+\label{eq:ridge}
+	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \frac{\lambda}{2}\norm{\beta}^2} \\
+	& \hat{\beta}= (X'X+\lambda I)^{-1} X'y
+\end{align}
+We can see that again, $\hypclass$ is restricted to be the space of linear functions of $x$, but we also add a regularization that favors the linear functions with small coefficients.
 
-\subsection{Logistic Regression}
+The regularization of $\beta$ can have several interpretations and justifications.
+\begin{description}
+\item[A mathematical device] Strengthening the diagonal of $X'X$ makes is more easily invertible. This is a standard tool in applied mathematics called Tikhonov Regularization. It is also helpful when dealing with multicolinearity, as $(X'X+\lambda I)$ is always invertible.
+\item[A Subjective Bayesian View] If we believe that $\beta$ should be small; say our believes can be quantified by $\beta \sim \gauss{0,\lambda I}$, then the Ridge solution is actually the mean of our posterior believes on $\beta|y$.
+\end{description}
+
+For more on Ridge regression see \cite{hastie_elements_2003}.
+
 
 \subsection{LASSO}
+Consider the LASSO problem:
+\begin{align}
+\label{eq:lasso}
+	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \lambda \norm{\beta}^2_1} 
+\end{align}
+As can be seen, just like in Ridge regression, $\hypclass$ is restricted to linear functions. The regularization however differs. Instead of $l_2$ penalty, we use an $l_1$ penalty.
+Eq.(\ref{eq:lasso}) does not have a closed form solution for $\hat{\beta}$ but the LARS algorithms solves it efficiently.
+
+The LASSO has gained much popularity as it has the property that $\hat{\beta}$ has many zero entries. It is thus said to be \emph{sparse}.
+The sparsity property is very attractive as it acts as a model selection method, allowing to consider $X$s where $p>n$, and making predictions computationally efficient.
+
+
+
+
+\subsection{Logistic Regression}
+The logistic regression is the first categorical prediction problem. I.e., the outcome $y$ is not a continous variable, but rather takes values in some finite set. In the logistic regression problem, it can take two possible values.
+In the statistical literature, $y$ is encoded as $\{0,1\}$ and 
+
 
 \subsection{Linear SVM }
 
