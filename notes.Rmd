@@ -1,0 +1,20 @@
+---
+title: "Notes"
+author: "Jonathan Rosenblatt"
+date: "April 7, 2015"
+output: html_document
+toc: true
+---
+
+
+# Estimation
+
+## Moment matching
+
+## Quantile matching
+
+## Maixmum Likelihood
+
+## M-Estimation (Empirical Risk Minimization)
+
+# From Estimation to Learning
