@@ -9,6 +9,7 @@
 \usepackage{graphicx}
 \usepackage{amsthm}
 \usepackage{marginnote}
+\usepackage{natbib}
 
 
 
@@ -46,8 +47,8 @@
 \newcommand{\loss}[1]{l(#1)}
 \newcommand{\risk}[1]{R(#1)}
 \newcommand{\riskn}[1]{\mathbb{R}(#1)}
-
-
+\newcommand{\deriv}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\argmin}[2]{argmin_{#1}\left\{ #2 \right\}}
 
 \begin{document}
 
@@ -58,6 +59,7 @@
 \label{sec:estimation} 
 In this section, we present several estimation principeles. 
 Their properties are not discussed, as the section is merely a reminder and a preparation for Section~\ref{sec:learning}.
+These concepts and examples can be found in many introductory books to statistics. I particularly recommend \citep{wasserman_all_2004}.
 
 \subsection{Moment matching}
 \label{sec:moment_matching}
@@ -211,7 +213,7 @@ Define a loss function $\loss{X;\theta}$, and a risk function, being the expecte
 $\risk{\theta}:=\expect{\loss{X;\theta}}$. Then 
 \begin{align}
 \label{eq:risk_min}
- \theta^*:= argmin_\theta\{ \risk{\theta} \}.
+ \theta^*:= \argmin{\theta}{\risk{\theta}}.
 \end{align}
 
 
@@ -220,7 +222,7 @@ As we do not know the distribution of $X$, we cannot solve Eq.(\ref{eq:risk_min}
 Define the empirical risk as $\riskn{\theta}:=\expectn{\loss{X;\theta}}$, then 
 \begin{align}
 \label{eq:empirical_risk_min}
- \hat{\theta}:= argmin_\theta \{ \riskn{\theta} \}.
+ \hat{\theta}:= \argmin{\theta}{\riskn{\theta}}.
 \end{align}
 
 
@@ -242,12 +244,47 @@ How do we estimate the population expectation? Well a natural estimator is the e
 
 
 
+\begin{example}[Least Squares Regression]
+Define the loss $\loss{Y,X;\beta}:=\frac{1}{2}(Y-X\beta)^2$.
+Computing the risk, $\expect{\norm{Y-X\beta}^2}$ will require dealing with the $X$'s by either assuming the \textbf{Generative Model}\footnote{A Generative Model is a supervised learning problem where the we use the assumed distribution of the $X$s and not only $Y|X$. The latter are know as Discriminative Models.}, as expectation is taken over $X$ and $Y$. 
+We don't really care about that right now. 
+We merely want to see that the empirical risk minimizer, is actually the classical OLS Regression. And well, it is, by definition...
+\begin{align*}
+	\riskn{\beta}=\sum_{i=1}^n 	\frac{1}{2}(y-x_i\beta)^2 = \frac{1}{2}\norm{y-x\beta}^2.
+\end{align*}
+Minimization is easiest with vector derivatives, but I will stick to regular derivatives:
+\begin{align*}
+	\deriv{\riskn{\beta}}{{\beta_j}} = \sum_i \left[ (y_i-\sum_{j=1}^p x_{ij}\beta_j)(-x_{ij}) \right]
+\end{align*}
+Equating $0$ yields $\hat{\beta_j}=\frac{\sum_i y_i x_{ij}}{\sum_i x_{ij}^2}$.
+Solving for all $j$'s and putting in matrix notation we get
+\begin{align}
+	\hat{\beta}_{OLS}=(X'X)^{-1} X'y.
+\end{align}
 
 
-\section{From Estimation to Learning}
+\end{example}
+
+
+\subsection{Notes}
+\paragraph{Maximum Likelhood} 
+If we set the loss function to be the negative log likelihood of the (true) sampling distribution, we see that maximum likelihood estimators in independent samples are actually a certain type of M-estimators.
+
+
+\section{From Estimation to Supervised Learning}
 \label{sec:learning}
+This section draws from \cite{hastie_elements_2003} and \cite{shalev-shwartz_understanding_2014}
+
 
 \subsection{Empirical Risk Minimization (ERM) and Inductive Bias}
+In Supervised Learning problems where we want to extract the relation $y=f(x)$ between attributes $x$ and some outcome $y$.
+In particular, we don't need to explain the causal process relating the two, so there is no need to commit to a sampling distribution. The implied M-Estimation problem is thus
+\begin{align}
+	\hat{f}(x) = \argmin{f}{\sum_i \loss{y_i-f(x_i)}}.
+\end{align}
+Alas, there are clearly infinitely many $f$ for which $\riskn{f}=0$, in particular, all those where $f(x_i)=y_i$.
+All these $f$s feel like very bad predictors (we will revisit this matter in Section~\ref{sec:desicion_theory}).
+
 
 \subsection{Linear Regression (OLS)}
 
@@ -267,6 +304,27 @@ How do we estimate the population expectation? Well a natural estimator is the e
 
 
 
+
+
+\section{Unsupervised Learning}
+\label{sec:unsupervised}
+
+\section{Statistical Decision Theory}
+\label{sec:desicion_theory}
+
+\section{Dimensionality Reduction}
+\label{sec:dim_reduce}
+
+\section{Latent Space Models}
+\label{sec:latent_space}
+
+
+
+
+
+
+\bibliographystyle{abbrvnat}
+\bibliography{Intro2MachineLearning}
 
 
 \end{document}
