@@ -66,18 +66,29 @@ img {
 <h4 class="date"><em>April 7, 2015</em></h4>
 </div>
 
-
-<div id="outline" class="section level1">
-<h1>Outline</h1>
+<div id="TOC">
 <ul>
-<li>Recalling estimation</li>
-<li>From estimation to learning</li>
+<li><a href="#estimation">Estimation</a><ul>
+<li><a href="#moment-matching">Moment matching</a><ul>
+<li><a href="#example-exponential-rate">Example: Exponential Rate</a></li>
+</ul></li>
+<li><a href="#quantile-matching">Quantile matching</a></li>
+<li><a href="#maixmum-likelihood">Maixmum Likelihood</a></li>
+<li><a href="#m-estimation-empirical-risk-minimization">M-Estimation (Empirical Risk Minimization)</a></li>
+</ul></li>
+<li><a href="#from-estimation-to-learning">From Estimation to Learning</a></li>
 </ul>
 </div>
+
 <div id="estimation" class="section level1">
 <h1>Estimation</h1>
 <div id="moment-matching" class="section level2">
 <h2>Moment matching</h2>
+<p>The fundamental idea: match empirical moments to theoretical. I.e., estimate <span class="math">\[ {\mathbb{E}[g(X)]}   \]</span> by <span class="math">\[ {\mathbb{E}_n[g(X)]}   \]</span> where <span class="math">\(\mathbb{E}_n(g(X)):=\frac{1}{n} \sum_i g(X_i)\)</span>, is the empirical mean.</p>
+<div id="example-exponential-rate" class="section level3">
+<h3>Example: Exponential Rate</h3>
+<p>Estimate <span class="math">\(\lambda\)</span> in <span class="math">\(X \sim exp(1)/\lambda = exp(\lambda)\)</span>. $</p>
+</div>
 </div>
 <div id="quantile-matching" class="section level2">
 <h2>Quantile matching</h2>
@@ -88,6 +99,9 @@ img {
 <div id="m-estimation-empirical-risk-minimization" class="section level2">
 <h2>M-Estimation (Empirical Risk Minimization)</h2>
 </div>
+</div>
+<div id="from-estimation-to-learning" class="section level1">
+<h1>From Estimation to Learning</h1>
 </div>
 
 

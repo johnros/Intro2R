@@ -2,14 +2,28 @@
 title: "Notes"
 author: "Jonathan Rosenblatt"
 date: "April 7, 2015"
-output: html_document
-toc: true
+output: 
+  html_document:
+    toc: true 
+
 ---
+\newcommand{\expect}[1]{\mathbb{E}[#1]}
+\newcommand{\expectn}[1]{\mathbb{E}_n[#1]}
 
 
 # Estimation
 
 ## Moment matching
+The fundamental idea: match empirical moments to theoretical. I.e., estimate
+$$ \expect{g(X)}   $$
+by 
+$$ \expectn{g(X)}   $$
+where $\mathbb{E}_n(g(X)):=\frac{1}{n}  \sum_i g(X_i)$, is the empirical mean.
+
+### Example: Exponential Rate
+Estimate $\lambda$ in $X \sim exp(1)/\lambda = exp(\lambda)$.
+$\mathbb{E}
+
 
 ## Quantile matching
 
