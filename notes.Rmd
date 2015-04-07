@@ -1,20 +1,86 @@
 ---
-title: "Notes"
+title: "Class Notes (experimental)"
 author: "Jonathan Rosenblatt"
 date: "April 7, 2015"
-output: html_document
-toc: true
+output: 
+  pdf_document:
+    toc: true 
+
 ---
+\newcommand{\expect}[1]{E[#1]}
+\newcommand{\expectn}[1]{\mathbb{E}[#1]}
+\newcommand{\gauss}[2]{\mathcal{N}(#1,#2)}
+\newcommand{\cdf}[2]{F_{#1}(#2)}
+\newcommand{\cdfn}[2]{\mathbb{F}_{#1}(#2)}
+\newcommand{\icdf}[2]{F^{-1}_{#1}(#2)}
+\newcommand{\icdfn}[2]{\mathbb{F}^{-1}_{#1}(#2)}
 
 
-# Estimation
+# Estimation {#estimation}
+In this section, we present several estimation principeles. 
+Their properties are not discussed, as the section is merely a reminder and a preparation for the [Learning](#learning).
 
-## Moment matching
 
-## Quantile matching
+## Moment matching {#moments}
+The fundamental idea: match empirical moments to theoretical. I.e., estimate
+$$ \expect{g(X)}   $$
+by 
+$$ \expectn{g(X)}   $$
+where $\expectn{g(X)}:=\frac{1}{n}  \sum_i g(X_i)$, is the empirical mean.
 
-## Maixmum Likelihood
+### Example: Exponential Rate
+Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
+$\expect{X}=1/\lambda$.
+$\Rightarrow \hat{\lambda}=1/\expectn{X}$ 
+
+### Example: Linear Regression
+Estimate $\beta$ in $Y \sim \gauss{X\beta}{\sigma^2 I}$, a $p$ dimensional random vector.
+$\expect{Y}=X\beta$ and $\expectn{Y}=y$.
+Clearly, moment mathing won't work because no $\beta$ satistifes $X\beta=Y$.
+A technical workaround:
+Since $\beta$ is $p$ dimensional, I need to find some $g(Y): \mathbb{R}^n \mapsto \mathbb{R}^p$.
+Well, $g(Y):=XY$ is such a mapping. I will use it, even though my technical justification is currently unsatisfactory. We thus have:
+$\expect{X'Y}=X'X\beta$ which I match to $\expectn{X'Y}=X'y$:
+$$
+  X'X \beta = X' y \Rightarrow \hat{\beta}=(X'X)^{-1} X'y.
+$$
+
+## Quantile matching {#quantiles}
+The fundamental idea: match empirical quantiles to theoretical. 
+Denoting by $\cdf{X}{t}$ the CDF of $X$, then $\icdf{X}{\alpha}$ is the $\alpha$ quantile of $X$.
+Also denoting by $\cdfn{X}{t}$ the Empirical CDF of $X_1,\dots, X_n$, then $\icdfn{X}{\alpha}$ is the $\alpha$ quantile of $X_1,\dots, X_n$.
+The quantile matching method thus implies estimating
+$$ \icdf{X}{\alpha}   $$
+by 
+$$ \icdfn{X}{\alpha}  . $$
+
+### Example: Exponential rate:
+Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
+$$
+  \cdf{X}{t} = 1-\exp(-\lambda t) = \alpha \Rightarrow \\
+  \icdf{X}{\alpha} = \frac{-\log(1-\alpha)}{\lambda} \Rightarrow \\
+  \icdf{X}{0.5} = \frac{-\log(0.5)}{\lambda} \Rightarrow \\
+  \hat{\lambda} = \frac{-\log(0.5)}{\icdfn{X}{0.5}}
+$$.
+
+
+
+
+
+## Maximum Likelihood {#ml}
+The fundamental idea is that if the data generating proces (i.e., the __sampling distribution__) can be assumed, then the observations are probably some high probability instance of this process, and not a low probability event:
+Let $X_1,\dots,X_n \sim P_\theta$, with density (or probability) $p_\theta(X_1,\dots,X_n)$.
+Denote the likelihood, as a function of $\theta$: $L(\theta): p_\theta(X_1,\dots,X_n)$..
+Then $\hat{\theta}_{ML}:= argmax_{\theta}\{ L(\theta) \}$.
+
+### Example: Exponential rate:
+Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
+Using the exponential PDF and the i.i.d. assumption
+$$ L(\lambda) = \lambda^n \exp(-\lambda \sum_i X_i) $$.
+
+
+
 
 ## M-Estimation (Empirical Risk Minimization)
 
-# From Estimation to Learning
+# From Estimation to Learning {#learning}
