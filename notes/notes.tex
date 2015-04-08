@@ -10,6 +10,8 @@
 \usepackage{amsthm}
 \usepackage{marginnote}
 \usepackage{natbib}
+\usepackage{hyperref}
+\AtBeginDocument{\let\textlabel\label}
 
 
 
@@ -54,11 +56,13 @@
 \newcommand{\plane}{\mathbb{L}}
 \newcommand{\categories}{\mathcal{G}}
 \newcommand{\positive}[1]{\left[ #1 \right]_+}
+\newcommand{\kernel}{\mathcal{K}}
 
 \begin{document}
 
 \maketitle
 
+\tableofcontents
 
 \section{Estimation}
 \label{sec:estimation} 
@@ -339,7 +343,7 @@ The regularization of $\beta$ can have several interpretations and justification
 \item[A Subjective Bayesian View] If we believe that $\beta$ should be small; say our believes can be quantified by $\beta \sim \gauss{0,\lambda I}$, then the Ridge solution is actually the mean of our posterior believes on $\beta|y$.
 \end{description}
 
-Whatever the justification may be, it can be easily shown that $\deriv{\risk(\lambda,\beta}){\lambda}$ at $\lambda=0$ is negative, thus, we can only improve the predictions by introducing some regularization.
+Whatever the justification may be, it can be easily shown that $\deriv{\risk(\lambda,\beta)}{\lambda}$ at $\lambda=0$ is negative, thus, we can only improve the predictions by introducing some regularization.
 
 
 For more on Ridge regression see \cite{hastie_elements_2003}.
@@ -505,6 +509,7 @@ Then again, if the assumed logistic model of the logistic regression, is actuall
 
 
 \subsection{Generalized Additive Models (GAMs)}
+\label{sec:gam}
 A way to allow for a more broad hypothesis calss $\hypclass$, that is still not too broad, so that overfitting is hopefully under control, is by allowing the predictor to be an additive combination of simple functions.
 We thus allow $\hyp(x)=\beta_0 + \sum_{j=1}^p f_j(x_j)$. We also not assume the exact form of $\{f_j\}_{j=1}^p$ but rather learn them from the data, while constraining them to take some simple form.
 The ERM problem of GAMs is thus
@@ -512,13 +517,177 @@ The ERM problem of GAMs is thus
 \label{eq:GAM}
 	 \argmin{\beta_0,\hyp \in \hypclass}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2  }
 \end{align}
+where $\hyp$ is as defined above.
+
+\begin{remark}[Not a pure ERM]
+The learning of $\{f_j\}_{j=1}^p$ is in fact not performed by optimization, but rather by kernel smoothing (\S~\ref{sec:kernel}).
+The solution to Eq.(\ref{eq:GAM}) is not a pure ERM problem, but a hybrid between ERM and kernel smoothing.
+\end{remark}
 
 
-\subsection{Neural Nets (NNETs)}
-[TODO]
+
+\subsection{Projection Pursuit Regression (PPR)}
+\label{sec:ppr}
+Another way to generalize the hypothesis class $\hypclass$, which generalizes the GAM model, is to allow $\hyp$ to be some simple function of a linear combination of the predictors. Let 
+\begin{align}
+\label{eq:PPR}
+	\hyp(x)=\sum_{m=1}^M g_m(w_m x)
+\end{align}
+where both $\{g_m\}_{m=1}^M$ and $\{g_m\}_{m=1}^M$ are learned from the data. 
+The regularization is now performed by choosing $M$ and the class of $\{g_m\}_{m=1}^M$.
+The ERM problem is the same as in Eq.(\ref{eq:GAM}), with the appropriate $\hyp$.
+
+\begin{remark}[Not a pure ERM]
+Just like the GAM problem, in the PPR problem $\{g_m\}_{m=1}^M$ are learned by kernel smoothing. Solving the PPR problem is thus a hybrid of ERM and Kernel smoothing. 
+\end{remark}
+
+\begin{remark}[Universal Approximator]
+By choosing a sufficiently large $M$, the class $\hypclass$ can approximate any continuous function. This property of the class is called a \emph{Universal Approximator}.\marginnote{Universal Approximator}
+\end{remark}
+
+
+
+
+\subsection{Neural Networks (NNETs)}
+\subsection{Single Hidden Layer}
+In the spirit of \cite[Section 11]{hastie_elements_2003}, we introduce the NNET model via the PPR model, and not through its historically original construction.
+In the language of Eq.(\ref{eq:PPR}), a single-layer--feed-forward neural network, is a model where $\{g_m\}_{m=1}^M$  are not learned from the data, but rather assumed a-priori. 
+\begin{align*}
+	g_m(x w_m):= \beta_m \sigma(\alpha_0 + x \alpha_m )
+\end{align*}
+where only $\{w_m\}_{m=1}^M = \{\beta_m, \alpha_m\}_{m=1}^M$ are learned from the data. 
+A typical \emph{activation function}\marginnote{Activation Function}, $\sigma(t)$ is the standard logistic CDF: $\sigma(t)=\frac{1}{1+e^{-t}}$. Another popular alternative are Gaussian radial functions.
+
+As can be seen, the NNET is merely a non-linear regression model.
+The parameters of which are often called \emph{weights}.
+
+NNETs have gained tremendous popularity, as it strikes a good balance between model complexity and regularity; particularly in the machine vision, sound analysis and natural language processing domains, where data samples are abundant.
+
+\paragraph{Loss Functions}
+For regression the squared loss is used. For classification, one can still use the squared error (as in the Regression Classifier), or the binomial likelihood leading to what is know as the \emph{deviance}, or \emph{cross-entropy} loss.\marginnote{Deviance \& Cross Entropy}
+
+\paragraph{Universal Approximator}
+Like the PPR, even when $\{g_m\}_{m=1}^M$ are fixed beforehand, the class is still a universal approximator (although it might require a larger $M$ than PPR).
+
+\paragraph{Regularization}
+Regularization of the model is done via the selection of the $\sigma$, the number of nodes/variables in the network and the number of layers. More that one hidden layer leads to \emph{Deep Neural Networks} which offer even more flexibility at the cost of complexity, thus requiring many data samples for fitting.\marginnote{Deep Neural Networks}
+
+\paragraph{Back Propagation}
+The fitting of such models is done via a coordinate-wise gradient descent algorithm called \emph{back propagation}.
+
+\paragraph{Further Reading}
+For more on NNETs see \citep[Chapter 11]{hastie_elements_2003}.
+For a recent overview of Deep Learning in Neural Networks see \cite{schmidhuber_deep_2015}.
+
+
+
+
 \subsection{Classification and Regression Trees (CARTs)}
+CARTs are a type of ERM where $\hyp(x)$ include very non smooth functions that can be interpreted as "if-then" rules, also know as \emph{decision trees}.\marginnote{Decision Tree}
+
+The hypothesis class of CARTs includes functions of the form
+\begin{align}
+	\hyp(x)=\sum_{m=1}^M c_m I_{x \in R_m}
+\end{align}
+where $I_A$ is the indicator function of the event $A$.
+The parameters of the model are the different conditions $\{R_m\}_{m=1}^M$ and the function's value at each condition $\{c_m\}_{m=1}^M$. 
+
+Regularization is done by the choice of $M$ which is called the \emph{tree depth}.\marginnote{Tree Depth}
+
+As $\hyp(x)$ is defined over indicator functions, CARTs have no difficulty to deal with categorical variables and even missing values, on top of the more standard continuous predictors. More on the many advantages of CARTs can be found in the references.
+
+\paragraph{Optimization}
+As searching over all possible partitions of the $x$'s to optimize $\{R_m\}_{m=1}^M$ is computationally impossible, optimization is done is a greedy fashion, by splitting on each variable $x_j$ at a time.
+
+
+\paragraph{Loss Functions}
+As usual, a squared loss can be used for continuous outcomes $y$.
+For categorical outcomes, the loss function is called the \emph{impurity measure}.\marginnote{Impurity Measure}
+One can use either a misclassification error, the multinomial likelihood (knows as the deviance, or cross-entropy), or a first order approximation of the latter known as the \emph{Gini Index}.
+
+
+\paragraph{Dendogram}
+As CARTs are essentially decision trees, they can typically viewed as a hirarchy of if-then rules applied on the data.
+This type of visualization if called a \emph{dendogram}.\marginnote{Dendogram}
+
+\paragraph{A Personal Note}
+While CARTs are very rich hypothesis classes, and easily interpretable, I have poor personal experience with them. 
+I suspect it is their very non smooth nature that is simply inadequate for the problems I have encountered.
+Then again, the Bagging algorithm, deals with this matter nicely by averaging many trees.\marginnote{Bagging}
+
+
+\paragraph{Further Reading}
+For more on CARTs and Bagging see \citep[Section 9]{hastie_elements_2003}.
+
+
+\subsection{Smoothing Splines}
 [TODO]
 
+
+\section{Non ERM Methods}
+\label{sec:non_erm}
+Up until now, we have focused on purely ERM, or hybrid ERM methods.
+Inductive bias, however, can also be introduced by avoiding the optimization approach of ERM.
+ERM decouples the motivation of a method and the particular learning algorithm (ultimately, some optimization algorithm).
+In the following methods, the learning algorithm is an integral part of the method. 
+This restricts the learnable hypothesis class, thus acting as a regularizer.
+
+Note that in most of the previous sections\footnote{Well, bar CARTs and Smoothing Splines}, the restriction of the hypothesis class $\hypclass$ has been imposed by some parametric representation of $\hypclass$, over which optimization is performed.
+The methods in this section do not impose any such parametrization. They are thus also known as \emph{non parametric}.\marginnote{Non Parametric}
+
+
+
+\subsection{k-Nearest Neighbour (KNN)}
+\label{sec:knn}
+[TODO]
+
+
+
+\subsection{Kernel Smoothing}
+\label{sec:kernel}
+Not to be confused with the Kernel Trick in Kernel SVM, Kernel PCA, and Kernel Regression.
+Kernel \emph{smoothing} is essentially a generalization of a moving average.
+The \emph{Nadaraya-Watson} weighted average is defined as \marginnote{Nadaraya-Watson}
+\begin{align}
+	\hat{\hyp}(x):= \frac{\sum_i \kernel_\lambda(x,x_i)y_i}{\sum_i \kernel_\lambda(x,x_i)}
+\end{align}
+where $\kernel_\lambda$ is the kernel function, which is merely a measure of the distance between the evaluation point $x$ and the data points $\{ x_i \}_{i=1}^n$ and weights the contribution of each $\{ y_i \}_{i=1}^n$ to the value at $x$.
+The denominator merely ensures the weights sum to $1$.
+Regularization is controlled by the $\lambda$ parameter.
+
+The moving average in a window of width $\lambda$ is an instance where $\kernel_\lambda(x,x_i)$ is fixed in the window.
+
+\paragraph{Metric Spaces}
+Clearly, as $\kernel_\lambda(x,x_i)$ measures distances, it only makes sense if there indeed exists a notion of distance between the $x$'s. 
+This can be far from trivial when dealing with categorical predictors such as countries, genomes, gender, etc.
+Have no worries however, as even with these type of variables, one can define some notion of distance (not claiming it will prove useful in application).
+
+
+\paragraph{Relation to KNN}
+There is an intimate relation between KNN and Kernel Smoothing. 
+Essentially, both predict the value of $y$ at some $x$ by averaging their neighbourhood. 
+Averaging can be weighted or not, in both cases.
+The important distinction is how neighbourhoods are defined.
+In KNN, the neighbourhood of $x$ is the k nearest data points. The radius of the neighbourhood thus varies, while the number of data points does not.
+In Kernel Smoothing, the neighbourhood of $x$ is all the data points in the support of the kernel. The radius of the neighbourhood is now fixed, while the number of data points can vary.
+
+
+
+
+\subsection{Local Regression (LOESS)}
+[TODO]
+
+
+
+\subsection{Local Likelihood and Local ERM}
+Although presented as two competing concepts, they can augment each other. 
+We have already seen that Kernel Smoothing plays a part within some ERM algorithms such as GAM~(\S\ref{sec:gam}) and PPR~(\S \ref{sec:ppr}).
+
+
+
+\section{Statistical Decision Theory}
+\label{sec:desicion_theory}
+[TODO]
 
 
 
@@ -526,13 +695,13 @@ The ERM problem of GAMs is thus
 \label{sec:unsupervised}
 [TODO]
 
-\section{Statistical Decision Theory}
-\label{sec:desicion_theory}
-[TODO]
 
 
 \section{Dimensionality Reduction}
 \label{sec:dim_reduce}
+[TODO]
+
+\subsection{PCA}
 [TODO]
 
 
