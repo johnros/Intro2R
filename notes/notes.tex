@@ -57,6 +57,7 @@
 \newcommand{\categories}{\mathcal{G}}
 \newcommand{\positive}[1]{\left[ #1 \right]_+}
 \newcommand{\kernel}{\mathcal{K}}
+\newcommand{\featureS}{\mathcal{X}}
 
 \begin{document}
 
@@ -293,6 +294,8 @@ All books are very well written and strongly recommended.
 
 \subsection{Empirical Risk Minimization (ERM) and Inductive Bias}
 In Supervised Learning problems where we want to extract the relation $y=\hyp(x)$ between attributes $x$ and some outcome $y$.
+The attributes, also know as features, or predictors, are assumed to belong to some \emph{feature space} $\featureS$. \marginnote{Feature Space}
+
 In particular, we don't need to explain the causal process relating the two, so there is no need to commit to a sampling distribution. The implied ERM problem is thus
 \begin{align}
 	\hat{\hyp}(x) = \argmin{\hyp}{\sum_i \loss(y_i - \hyp(x_i))}.
@@ -639,7 +642,9 @@ The methods in this section do not impose any such parametrization. They are thu
 
 \subsection{k-Nearest Neighbour (KNN)}
 \label{sec:knn}
-[TODO]
+The fundamental idea behind the KNN approach is that an observation is similar in $y$ to its surroundings in $x$. 
+So say I want to classify the type of a bird ($y$), I merely need to look at the classes of birds which are similar in their attributes ($x$'s). 
+Clearly this requires some notion of distance in the feature space $\featureS$.
 
 
 
@@ -658,7 +663,7 @@ Regularization is controlled by the $\lambda$ parameter.
 The moving average in a window of width $\lambda$ is an instance where $\kernel_\lambda(x,x_i)$ is fixed in the window.
 
 \paragraph{Metric Spaces}
-Clearly, as $\kernel_\lambda(x,x_i)$ measures distances, it only makes sense if there indeed exists a notion of distance between the $x$'s. 
+Clearly, as $\kernel_\lambda(x,x_i)$ measures distances, it only makes sense if there indeed exists a notion of distance between the $x$'s, which is saying that the feature space $\featureS$ is a metric space. 
 This can be far from trivial when dealing with categorical predictors such as countries, genomes, gender, etc.
 Have no worries however, as even with these type of variables, one can define some notion of distance (not claiming it will prove useful in application).
 
@@ -675,6 +680,7 @@ In Kernel Smoothing, the neighbourhood of $x$ is all the data points in the supp
 
 
 \subsection{Local Regression (LOESS)}
+\label{sec:loess}
 [TODO]
 
 
@@ -682,6 +688,8 @@ In Kernel Smoothing, the neighbourhood of $x$ is all the data points in the supp
 \subsection{Local Likelihood and Local ERM}
 Although presented as two competing concepts, they can augment each other. 
 We have already seen that Kernel Smoothing plays a part within some ERM algorithms such as GAM~(\S\ref{sec:gam}) and PPR~(\S \ref{sec:ppr}).
+
+Another way to marry the two ideas, is by performing EMR only locally, in each neighbourhood of data points defined by a kernel. This idea is very powerful and leads to, e.g., the LOESS (\S \ref{sec:loess}) and \emph{Local Likelihood} methods.
 
 
 
