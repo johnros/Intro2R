@@ -58,6 +58,8 @@
 \newcommand{\positive}[1]{\left[ #1 \right]_+}
 \newcommand{\kernel}{\mathcal{K}}
 \newcommand{\featureS}{\mathcal{X}}
+\newcommand{\sample}{\tau}
+
 
 \begin{document}
 
@@ -718,15 +720,20 @@ We have already seen that Kernel Smoothing plays a part within some ERM algorith
 Another way to marry the two ideas, is by performing EMR only locally, in each neighbourhood of data points defined by a kernel. This idea is very powerful and leads to, e.g., the LOESS (\S \ref{sec:loess}) and \emph{Local Likelihood} methods.
 
 
+%%%%%%%%% Statistical Descision Theory %%%%%%%%%%%
 
 \section{Statistical Decision Theory}
 \label{sec:desicion_theory}
+
+
 In Section~\ref{sec:learning}, we gave an intuitive argument for which without some inductive bias, learning will return models with poor performance on new data.
 In this section we learn how to quantify the performance of a model. In particular, when given new data. This allows us to select among competing candidate models. It will also allow us to choose the value of the regularization parameter of each method.
 
 Figure~\ref{fig:bias_variance} demonstrate the prediction error (red curve) of some model as the model complexity increases. As can be seen, the prediction error decreases as the model becomes more complex, but saturates at some point. 
 This is because the reduction in the bias is smaller than the increase in variance of learning very complex models.
 This is the celebrated bias-variance tradeoff.\marginnote{Bias Variance Tradeoff}
+
+Once we are able to estimate the prediction error from our data, we will seek for a model which minimizes this error.
 
 \begin{figure}[h]
         \centering
@@ -738,32 +745,122 @@ This is the celebrated bias-variance tradeoff.\marginnote{Bias Variance Tradeoff
         \label{fig:bias_variance}}
 \end{figure}
 
+Before we proceed, we now need to distinguish between several types of prediction errors.
+The population \emph{risk} of a model parametrized by $\theta$, was previously defined as the average loss over all possible data instances, and denoted by $\risk(\theta)$ (\S \ref{sec:m_estimation}).
+The empirical risk was defined as the average loss over the observed data points, and denoted by $\riskn(\theta)$.
+We now update these definitions to deal with the the $\hyp(x)$ notation of the previous section.
+
+Inline with \cite[Section 7]{hastie_elements_2003} we denote the sample $\sample$ and define
+\begin{align}
+	Err_\sample :=& \expect{\loss(Y,\hat{\hyp}(X))|\sample}, \label{eq:test_error} \\
+	Err :=& \expect{\loss(Y,\hat{\hyp}(X))}, \label{eq:expected_test_error} \\
+	\overline{err} :=& \frac{1}{n} \sum_i \loss(y_i,\hat{\hyp}(x_i)). \label{eq:training_error}
+\end{align}
+
+Eq.(\ref{eq:training_error}) is the reformulation of empirical risk, $\riskn(\theta)$, we have been optimizing in Section~\ref{sec:learning}.
+We referred to it as the \emph{empirical risk}, but it is also known as the \emph{train error}.
+\marginnote{Train Error}
+
+Eq.(\ref{eq:expected_test_error}) is a new magnitude, where the expectation is taken over all samples. As the predictor $\hat{\hyp}(X)$ is not fixed, this is more a property of an algorithm, and not of a particular predictor. 
+It has been stated for completeness, but we will not study it herein.
+
+
+Eq.(\ref{eq:test_error}) is merely a reformulation of $\risk(\theta)$ from Section~\ref{sec:m_estimation}.
+It captures the expected loss, a given predictor, $\hat{\hyp}(X)$, will incur when given new data.
+This will be the magnitude which will tell us which models perform well, and which do not.
+It is known as the \emph{test error} or also as \emph{prediction error}.\marginnote{Test Error \\ Prediction Error}
 
 
 
 
+The red curve is Figure~\ref{fig:bias_variance} depicts $Err_\sample $ while the blue depicts $\overline{err}$.
+
+
+\subsection{Unbiased Estimators of the Risk}
+\label{sec:risk_estimation}
+[TODO]
+
+
+
+\subsection{Jackknifing}
+\label{sec:jackknife}
+[TODO]
+
+
+
+
+\subsection{Cross Validation}
+\label{sec:cv}
+[TODO]
+
+
+%%%%%%%%% Unsupervised %%%%%%%%%%%
 \section{Unsupervised Learning}
 \label{sec:unsupervised}
 [TODO]
 
 
+\subsection{Agglomerative Clustering}
+[TODO]
 
+\subsection{K Means Clustering}
+[TODO]
+
+
+
+%%%%%%%%% Dimension Reduction %%%%%%%%%%%
 \section{Dimensionality Reduction}
 \label{sec:dim_reduce}
+[TODO]
+
+\subsection{Model Selection}
+[TODO]
+
+\subsection{LASSO}
 [TODO]
 
 \subsection{PCA}
 [TODO]
 
+\subsection{ICA}
+[TODO]
 
+\subsection{kPCA}
+[TODO]
+
+\subsection{ISOmap}
+[TODO]
+
+
+\subsection{LLE}
+[TODO]
+
+
+%%%%%%%%% Latent Space Models%%%%%%%%%%%
 \section{Latent Space Models}
 \label{sec:latent_space}
 [TODO]
 
 
+\subsection{Mixtures}
+[TODO]
+
+
+\subsection{Regression Switching}
+[TODO]
 
 
 
+\subsection{Hidden Markov}
+[TODO]
+
+
+\subsection{Collaborative Filtering}
+[TODO]
+
+
+
+%%%%%%%%% Bibliography %%%%%%%%%%%
 \bibliographystyle{abbrvnat}
 \bibliography{Intro2MachineLearning}
 
