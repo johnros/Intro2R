@@ -627,6 +627,10 @@ For more on CARTs and Bagging see \citep[Section 9]{hastie_elements_2003}.
 [TODO]
 
 
+
+
+
+%%%%% NON ERM %%%%%%%%
 \section{Non ERM Methods}
 \label{sec:non_erm}
 Up until now, we have focused on purely ERM, or hybrid ERM methods.
@@ -644,7 +648,7 @@ The methods in this section do not impose any such parametrization. They are thu
 \label{sec:knn}
 The fundamental idea behind the KNN approach is that an observation is similar in $y$ to its surroundings in $x$. 
 So say I want to classify the type of a bird ($y$), I merely need to look at the classes of birds which are similar in their attributes ($x$'s). 
-Clearly this requires some notion of distance in the feature space $\featureS$.
+Clearly this requires some notion of distance in the feature space $\featureS$, as typically all non-parametric methods do\footnote{Why is this the case? Well, because non parametric methods replace the idea of optimization in a parameter space, with the idea of similarity in neighbourhoods.}.
 
 
 
