@@ -650,6 +650,26 @@ The fundamental idea behind the KNN approach is that an observation is similar i
 So say I want to classify the type of a bird ($y$), I merely need to look at the classes of birds which are similar in their attributes ($x$'s). 
 Clearly this requires some notion of distance in the feature space $\featureS$, as typically all non-parametric methods do\footnote{Why is this the case? Well, because non parametric methods replace the idea of optimization in a parameter space, with the idea of similarity in neighbourhoods.}.
 
+The predicted value of a continuous $y$ at some point $x$ has the form
+\begin{align}
+\label{eq:knn}
+	\hat{y}(x)=\frac{1}{k}\sum_{i \in N_k(x) y_i}
+\end{align}
+where $N_k(x)$ are the indexes of the $k$ nearest observations to $x$ in $\featureS$.
+Eq.(\ref{eq:knn}) merely states that we predict $y$ to have the average value of the $y_i$'s in its neighbourhood.
+
+For a categorical $y$, we would replace the averaging with a majority vote of the classes in its neighbourhood.
+
+\paragraph{Regularization}
+The regularization of the KNN is performed by choice of $k$.
+
+\paragraph{Universal Approximator}
+KNN is a universal approximator, in that it can recover approximate any $\hyp$ relating $x$ to $y$.
+
+\paragraph{Sample Complexity}
+While KNN is a universal approximator, it is notoriously known to require many observations to recover even simple relations. With realistic sample sizes, the performance of KNN is typically dominated by other methods.
+
+
 
 
 \subsection{Kernel Smoothing}
@@ -665,6 +685,8 @@ The denominator merely ensures the weights sum to $1$.
 Regularization is controlled by the $\lambda$ parameter.
 
 The moving average in a window of width $\lambda$ is an instance where $\kernel_\lambda(x,x_i)$ is fixed in the window.
+The Band-Pass filter, popular in Electrical Engineering, is an instance of the Nadaraya-Watson smoother, with a Gaussian kernel [TODO: verify].\marginnote{Band Pass}
+
 
 \paragraph{Metric Spaces}
 Clearly, as $\kernel_\lambda(x,x_i)$ measures distances, it only makes sense if there indeed exists a notion of distance between the $x$'s, which is saying that the feature space $\featureS$ is a metric space. 
@@ -699,7 +721,24 @@ Another way to marry the two ideas, is by performing EMR only locally, in each n
 
 \section{Statistical Decision Theory}
 \label{sec:desicion_theory}
-[TODO]
+In Section~\ref{sec:learning}, we gave an intuitive argument for which without some inductive bias, learning will return models with poor performance on new data.
+In this section we learn how to quantify the performance of a model. In particular, when given new data. This allows us to select among competing candidate models. It will also allow us to choose the value of the regularization parameter of each method.
+
+Figure~\ref{fig:bias_variance} demonstrate the prediction error (red curve) of some model as the model complexity increases. As can be seen, the prediction error decreases as the model becomes more complex, but saturates at some point. 
+This is because the reduction in the bias is smaller than the increase in variance of learning very complex models.
+This is the celebrated bias-variance tradeoff.\marginnote{Bias Variance Tradeoff}
+
+\begin{figure}[h]
+        \centering
+        \includegraphics[width=1\textwidth]{art/support-vector-machine-15-728}
+        \caption{Overfitting: 
+        Prediction error on new data (red curve) versus the empirical prediction error (light blue).
+        The empirical prediction error will always decrease as more complicated models are fit (moving right).
+        The prediction error on new data, however, will not always decrease and will typically show a local minima.
+        \label{fig:bias_variance}}
+\end{figure}
+
+
 
 
 
