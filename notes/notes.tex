@@ -42,11 +42,11 @@
 \newcommand{\icdf}[2]{F^{-1}_{#1}(#2)}
 \newcommand{\icdfn}[2]{\mathbb{F}^{-1}_{#1}(#2)}
 \newcommand{\norm}[1]{\Vert #1 \Vert}
-\newcommand{\lik}[1]{\mathcal{L}(#1)}
-\newcommand{\loglik}[1]{L(#1)}
-\newcommand{\loss}[1]{l(#1)}
-\newcommand{\risk}[1]{R(#1)}
-\newcommand{\riskn}[1]{\mathbb{R}(#1)}
+\newcommand{\lik}{\mathcal{L}}
+\newcommand{\loglik}{L}
+\newcommand{\loss}{l}
+\newcommand{\risk}{R}
+\newcommand{\riskn}{\mathbb{R}}
 \newcommand{\deriv}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\argmin}[2]{argmin_{#1}\left\{ #2 \right\}}
 \newcommand{\hyp}{f}
@@ -124,19 +124,19 @@ Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 \subsection{Maximum Likelihood}
 \label{sec:ml}
 
-The fundamental idea is that if the data generating proces (i.e., the \emph{sampling distribution}) can be assumed, then the observations are probably some high probability instance of this process, and not a low probability event:
+The fundamental idea is that if the data generating process (i.e., the \emph{sampling distribution}) can be assumed, then the observations are probably some high probability instance of this process, and not a low probability event:
 Let $X_1,\dots,X_n \sim P_\theta$, with density (or probability) $p_\theta(X_1,\dots,X_n)$.
-Denote the likelihood, as a function of $\theta$: $\lik{\theta}: p_\theta(X_1,\dots,X_n)$.
-Then $\hat{\theta}_{ML}:= argmax_{\theta}\{ \lik{\theta} \}$.
+Denote the likelihood, as a function of $\theta$: $\lik(\theta): p_\theta(X_1,\dots,X_n)$.
+Then $\hat{\theta}_{ML}:= argmax_{\theta}\{ \lik(\theta) \}$.
 
 \begin{example}[Exponential rate]
 
 Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 Using the exponential PDF and the i.i.d. assumption
-$$ \lik{\lambda} = \lambda^n \exp(-\lambda \sum_i X_i). $$
+$$ \lik(\lambda) = \lambda^n \exp(-\lambda \sum_i X_i). $$
 Using a monotone mapping such as the log, does not change the $argmax$. 
-Denoting $\loglik{\theta}:=\log(\lik{\theta})$, we have
-$$ \loglik{\lambda} = n \log(\lambda) -\lambda \sum_i X_i. $$
+Denoting $\loglik(\theta):=\log(\lik(\theta))$, we have
+$$ \loglik(\lambda) = n \log(\lambda) -\lambda \sum_i X_i. $$
 By differentiating and equating $0$, we get $\hat{\lambda}_{ML}=1/\expectn{X}$.
 
 \end{example}
@@ -147,7 +147,7 @@ Estimate the transition probabilities,  $p_1$ and $p_2$ in a two state, $\{0,1\}
 $P(X_{t+1}=1|X_{t}=0)=p_1$ and $P(X_{t+1}=1|X_{t}=1)=p_2$.
 The likelihood:
 $$
-  \lik{p_1,p_2}=P(X_1,\dots,X_n;p_1,p_2)=\prod_{t=0}^T P(X_{t+1}=x_{t+1}|X_{t}=x_t).
+  \lik(p_1,p_2)=P(X_1,\dots,X_n;p_1,p_2)=\prod_{t=0}^T P(X_{t+1}=x_{t+1}|X_{t}=x_t).
 $$
 We denote $n_{ij}$ the number of observed transitions from $i$ to $j$ and get that $\hat{p}_1=\frac{n_{01}}{n_{01}+n_{00}}$, and that $\hat{p}_2=\frac{n_{11}}{n_{11}+n_{10}}$.
 
@@ -170,7 +170,7 @@ $$
 $$
 Moving to the likelihood:
 $$
-  \lik{a} = 
+  \lik(a) = 
   (2 \pi \sigma^2)^{-T/2} \exp \left(
     -\frac{1}{2 \sigma^2}\sum_{t=1}^T (x_{t+1}-a x_t)^2 
   \right).
@@ -196,7 +196,7 @@ $$
 $$
 So in the regression setup:
 $$
-  \lik{\beta}= 
+  \lik(\beta)= 
   p_{\beta,\sigma^2}(y) = 
   (2 \pi)^{-n/2} |\sigma^2 I|^{-1/2} \exp\left(
     -\frac{1}{2 \sigma^2} \norm{y-X\beta}^2
@@ -214,36 +214,38 @@ The underlying idea is that each realization of $X$ incurs some loss, and we see
 In the econometric literature, we dot not incur a loss, but rather a utility, we thus seek a policy that maximizes the average utility.
 
 Define a loss function $\loss{X;\theta}$, and a risk function, being the expected loss, 
-$\risk{\theta}:=\expect{\loss{X;\theta}}$. Then 
+$\risk(\theta):=\expect{\loss{X;\theta}}$. Then \marginnote{Risk Function}
 \begin{align}
 \label{eq:risk_min}
- \theta^*:= \argmin{\theta}{\risk{\theta}}.
+ \theta^*:= \argmin{\theta}{\risk(\theta)}.
 \end{align}
 
 
 
-As we do not know the distribution of $X$, we cannot solve Eq.(\ref{eq:risk_min}), so we minimize the \emph{empirical} risk. 
-Define the empirical risk as $\riskn{\theta}:=\expectn{\loss{X;\theta}}$, then 
+As we do not know the distribution of $X$, we cannot solve Eq.(\ref{eq:risk_min}), so we minimize the \emph{empirical} risk. \marginnote{Empirical Risk}
+Define the empirical risk as $\riskn(\theta):=\expectn{\loss{X;\theta}}$, then 
 \begin{align}
 \label{eq:empirical_risk_min}
- \hat{\theta}:= \argmin{\theta}{\riskn{\theta}}.
+ \hat{\theta}:= \argmin{\theta}{\riskn(\theta)}.
 \end{align}
 
-
+\begin{remark}
+The risk function, $\risk(\theta)$ defined above
+\end{remark}
 
 
 
 \begin{example}[Squared Loss]
 Let $\loss{X;\theta}=(X-\theta)^2$. Then 
 $
-	\risk{\theta} = 
+	\risk(\theta) = 
 	\expect{(X-\theta)^2} = 
 	(\expect{X}-\theta)^2 + Var[X]. 
 $
-Clearly $Var[X]$ does not depend on $\theta$  so that $\risk{\theta}$ is minimized by $\theta^*=\expect{X}$.
+Clearly $Var[X]$ does not depend on $\theta$  so that $\risk(\theta)$ is minimized by $\theta^*=\expect{X}$.
 \textbf{We thus say that the expectation of a random variable is the minimizer of the squared loss.}
 
-How do we estimate the population expectation? Well a natural estimator is the empirical mean, which is also the minimizer of the empirical risk $\riskn{X}$. The proof is immediate by differentiating. 
+How do we estimate the population expectation? Well a natural estimator is the empirical mean, which is also the minimizer of the empirical risk $\riskn(X)$. The proof is immediate by differentiating. 
 \end{example}
 
 
@@ -255,11 +257,11 @@ Computing the risk, $\expect{\norm{Y-X\beta}^2}$ will require dealing with the $
 We don't really care about that right now. 
 We merely want to see that the empirical risk minimizer, is actually the classical OLS Regression. And well, it is, by definition...
 \begin{align*}
-	\riskn{\beta}=\sum_{i=1}^n 	\frac{1}{2}(y-x_i\beta)^2 = \frac{1}{2}\norm{y-x\beta}^2.
+	\riskn(\beta)=\sum_{i=1}^n 	\frac{1}{2}(y-x_i\beta)^2 = \frac{1}{2}\norm{y-x\beta}^2.
 \end{align*}
 Minimization is easiest with vector derivatives, but I will stick to regular derivatives:
 \begin{align*}
-	\deriv{\riskn{\beta}}{{\beta_j}} = \sum_i \left[ (y_i-\sum_{j=1}^p x_{ij}\beta_j)(-x_{ij}) \right]
+	\deriv{\riskn(\beta)}{{\beta_j}} = \sum_i \left[ (y_i-\sum_{j=1}^p x_{ij}\beta_j)(-x_{ij}) \right]
 \end{align*}
 Equating $0$ yields $\hat{\beta_j}=\frac{\sum_i y_i x_{ij}}{\sum_i x_{ij}^2}$.
 Solving for all $j$'s and putting in matrix notation we get
@@ -290,11 +292,11 @@ In particular, we don't need to explain the causal process relating the two, so 
 \begin{align}
 	\hat{\hyp}(x) = \argmin{\hyp}{\sum_i \loss{y_i - \hyp(x_i) }}.
 \end{align}
-Alas, there are clearly infinitely many $\hyp$ for which $\riskn{\hat{\hyp}(x)}=0$, in particular, all those where $\hat{\hyp}(x_i)=y_i$.
+Alas, there are clearly infinitely many $\hyp$ for which $\riskn(\hat{\hyp}(x))=0$, in particular, all those where $\hat{\hyp}(x_i)=y_i$.
 All these $\hyp$ feel like very bad predictors, and we will indeed formalize this intuition in Section~\ref{sec:desicion_theory}.
 
 We need to make sure that we do not learn overly complex poor predictors. 
-Motivated by the fact that humans approach new problems equipped with their past experience, this regularization is called \emph{Inductive Bias}.
+Motivated by the fact that humans approach new problems equipped with their past experience, this regularization is called \emph{Inductive Bias}. \marginnote{Inductive Bias}
 There are several ways to introduce this bias, which can be combined:
 \begin{description}
 \item[The Hypothesis Class]
@@ -335,6 +337,9 @@ The regularization of $\beta$ can have several interpretations and justification
 \item[A Subjective Bayesian View] If we believe that $\beta$ should be small; say our believes can be quantified by $\beta \sim \gauss{0,\lambda I}$, then the Ridge solution is actually the mean of our posterior believes on $\beta|y$.
 \end{description}
 
+Whatever the justification may be, it can be easily shown that $\deriv{\risk(\lambda,\beta}){\lambda}$ at $\lambda=0$ is negative, thus, we can only improve the predictions by introducing some regularization.
+
+
 For more on Ridge regression see \cite{hastie_elements_2003}.
 
 
@@ -345,10 +350,18 @@ Consider the LASSO problem:
 	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \lambda \norm{\beta}^2_1} 
 \end{align}
 As can be seen, just like in Ridge regression, $\hypclass$ is restricted to linear functions. The regularization however differs. Instead of $l_2$ penalty, we use an $l_1$ penalty.
-Eq.(\ref{eq:lasso}) does not have a closed form solution for $\hat{\beta}$ but the LARS algorithms solves it efficiently.
+Eq.(\ref{eq:lasso}) does not have a closed form solution for $\hat{\beta}$ but the LARS algorithm, a quadratic programming algorithm, solves it efficiently.
 
-The LASSO has gained much popularity as it has the property that $\hat{\beta}$ has many zero entries. It is thus said to be \emph{sparse}.
+
+
+The LASSO has gained much popularity as it has the property that $\hat{\beta}_{LASSO}$ has many zero entries. It is thus said to be \emph{sparse}\marginnote{Sparsity}.
 The sparsity property is very attractive as it acts as a model selection method, allowing to consider $X$s where $p>n$, and making predictions computationally efficient.
+
+The sparsity property can be demonstrated for the orthogonal design case ($X'X=I$) where $\hat{\beta}$ admits a closed form solution:
+\begin{align}
+	\hat{\beta}_{j,LASSO} = sign(\beta_j) \left[|\hat{\beta}_{j,OLS}|-\frac{\lambda}{2} \right]_+.
+\end{align}
+We thus see that the LASSO performs 
 
 
 
