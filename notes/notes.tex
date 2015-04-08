@@ -289,12 +289,13 @@ All books are very well written and strongly recommended.
 
 \subsection{Empirical Risk Minimization (ERM) and Inductive Bias}
 In Supervised Learning problems where we want to extract the relation $y=\hyp(x)$ between attributes $x$ and some outcome $y$.
-In particular, we don't need to explain the causal process relating the two, so there is no need to commit to a sampling distribution. The implied M-Estimation problem is thus
+In particular, we don't need to explain the causal process relating the two, so there is no need to commit to a sampling distribution. The implied ERM problem is thus
 \begin{align}
 	\hat{\hyp}(x) = \argmin{\hyp}{\sum_i \loss(y_i - \hyp(x_i))}.
 \end{align}
 Alas, there are clearly infinitely many $\hyp$ for which $\riskn(\hat{\hyp}(x))=0$, in particular, all those where $\hat{\hyp}(x_i)=y_i$.
-All these $\hyp$ feel like very bad predictors, and we will indeed formalize this intuition in Section~\ref{sec:desicion_theory}.
+All these $\hyp$ feel like very bad predictors, as they \emph{overfit} the observed data, at a cost of generalizability.\marginnote{Overfitting}
+We will formalize this intuition in Section~\ref{sec:desicion_theory}. 
 
 We need to make sure that we do not learn overly complex poor predictors. 
 Motivated by the fact that humans approach new problems equipped with their past experience, this regularization is called \emph{Inductive Bias}. \marginnote{Inductive Bias}
@@ -504,11 +505,19 @@ Then again, if the assumed logistic model of the logistic regression, is actuall
 
 
 \subsection{Generalized Additive Models (GAMs)}
+A way to allow for a more broad hypothesis calss $\hypclass$, that is still not too broad, so that overfitting is hopefully under control, is by allowing the predictor to be an additive combination of simple functions.
+We thus allow $\hyp(x)=\beta_0 + \sum_{j=1}^p f_j(x_j)$. We also not assume the exact form of $\{f_j\}_{j=1}^p$ but rather learn them from the data, while constraining them to take some simple form.
+The ERM problem of GAMs is thus
+\begin{align}
+\label{eq:GAM}
+	 \argmin{\beta_0,\hyp \in \hypclass}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2  }
+\end{align}
+
 
 \subsection{Neural Nets (NNETs)}
-
+[TODO]
 \subsection{Classification and Regression Trees (CARTs)}
-
+[TODO]
 
 
 
