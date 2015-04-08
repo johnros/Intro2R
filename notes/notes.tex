@@ -52,7 +52,8 @@
 \newcommand{\hyp}{f}
 \newcommand{\hypclass}{\mathcal{F}}
 \newcommand{\plane}{\mathbb{L}}
-
+\newcommand{\categories}{\mathcal{G}}
+\newcommand{\positive}[1]{\left[ #1 \right]_+}
 
 \begin{document}
 
@@ -213,8 +214,8 @@ M-Estimation, know as Empirical Risk Minimizaton (ERM) in the machine learning l
 The underlying idea is that each realization of $X$ incurs some loss, and we seek to find a "policy", in this case a parameter, $\theta^*$ that minimizes the average loss.
 In the econometric literature, we dot not incur a loss, but rather a utility, we thus seek a policy that maximizes the average utility.
 
-Define a loss function $\loss{X;\theta}$, and a risk function, being the expected loss, 
-$\risk(\theta):=\expect{\loss{X;\theta}}$. Then \marginnote{Risk Function}
+Define a loss function $\loss(X;\theta)$, and a risk function, being the expected loss, 
+$\risk(\theta):=\expect{\loss(X;\theta)}$. Then \marginnote{Risk Function}
 \begin{align}
 \label{eq:risk_min}
  \theta^*:= \argmin{\theta}{\risk(\theta)}.
@@ -223,7 +224,7 @@ $\risk(\theta):=\expect{\loss{X;\theta}}$. Then \marginnote{Risk Function}
 
 
 As we do not know the distribution of $X$, we cannot solve Eq.(\ref{eq:risk_min}), so we minimize the \emph{empirical} risk. \marginnote{Empirical Risk}
-Define the empirical risk as $\riskn(\theta):=\expectn{\loss{X;\theta}}$, then 
+Define the empirical risk as $\riskn(\theta):=\expectn{\loss(X;\theta)}$, then 
 \begin{align}
 \label{eq:empirical_risk_min}
  \hat{\theta}:= \argmin{\theta}{\riskn(\theta)}.
@@ -236,7 +237,7 @@ The risk function, $\risk(\theta)$ defined above
 
 
 \begin{example}[Squared Loss]
-Let $\loss{X;\theta}=(X-\theta)^2$. Then 
+Let $\loss(X;\theta)=(X-\theta)^2$. Then 
 $
 	\risk(\theta) = 
 	\expect{(X-\theta)^2} = 
@@ -252,8 +253,8 @@ How do we estimate the population expectation? Well a natural estimator is the e
 
 \begin{example}[Least Squares Regression]
 \label{eg:OLS}
-Define the loss $\loss{Y,X;\beta}:=\frac{1}{2}(Y-X\beta)^2$.
-Computing the risk, $\expect{\norm{Y-X\beta}^2}$ will require dealing with the $X$'s by either assuming the \textbf{Generative Model}\footnote{A Generative Model is a supervised learning problem where the we use the assumed distribution of the $X$s and not only $Y|X$. The latter are know as Discriminative Models.}, as expectation is taken over $X$ and $Y$. 
+Define the loss $\loss(Y,X;\beta):=\frac{1}{2}(Y-X\beta)^2$.
+Computing the risk, $\expect{\norm{Y-X\beta}^2}$ will require dealing with the $X$'s by either assuming the \emph{Generative Model}\footnote{A Generative Model is a supervised learning problem where the we use the assumed distribution of the $X$s and not only $Y|X$. The latter are know as Discriminative Models.}, as expectation is taken over $X$ and $Y$. \marginnote{Generative Model}
 We don't really care about that right now. 
 We merely want to see that the empirical risk minimizer, is actually the classical OLS Regression. And well, it is, by definition...
 \begin{align*}
@@ -290,7 +291,7 @@ All books are very well written and strongly recommended.
 In Supervised Learning problems where we want to extract the relation $y=\hyp(x)$ between attributes $x$ and some outcome $y$.
 In particular, we don't need to explain the causal process relating the two, so there is no need to commit to a sampling distribution. The implied M-Estimation problem is thus
 \begin{align}
-	\hat{\hyp}(x) = \argmin{\hyp}{\sum_i \loss{y_i - \hyp(x_i) }}.
+	\hat{\hyp}(x) = \argmin{\hyp}{\sum_i \loss(y_i - \hyp(x_i))}.
 \end{align}
 Alas, there are clearly infinitely many $\hyp$ for which $\riskn(\hat{\hyp}(x))=0$, in particular, all those where $\hat{\hyp}(x_i)=y_i$.
 All these $\hyp$ feel like very bad predictors, and we will indeed formalize this intuition in Section~\ref{sec:desicion_theory}.
@@ -313,8 +314,8 @@ We now proceed to show that many supervised learning algorithms are in fact ERMs
 
 \subsection{Linear Regression (OLS)}
 \label{sec:ols}
-As seen in Example~\ref{eg:OLS}, by adopting a squared error loss, and restricting $\hypclass$ by assuming $f$ is a linear function of $x$, we get the OLS problem.
-In this case, learning $f$ is effectively the same as learning $\beta$ as they are isomorphic.
+As seen in Example~\ref{eg:OLS}, by adopting a squared error loss, and restricting $\hypclass$ by assuming $\hyp$ is a linear function of $x$, we get the OLS problem.
+In this case, learning $\hyp$ is effectively the same as learning $\beta$ as they are isomorphic.
 
 \begin{remark}
 We distinguish between OLS and Linear Regression. In these notes, we refer to linear regression when we assume that the data generating process it actually $y=x\beta+\varepsilon$, whereas in OLS we merely fit a linear function without claiming it is the data generating one.
@@ -327,7 +328,7 @@ Consider the Ridge regression problem:
 \begin{align}
 \label{eq:ridge}
 	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \frac{\lambda}{2}\norm{\beta}^2} \\
-	& \hat{\beta}= (X'X+\lambda I)^{-1} X'y
+	& \hat{\beta}_{Ridge}= (X'X+\lambda I)^{-1} X'y
 \end{align}
 We can see that again, $\hypclass$ is restricted to be the space of linear functions of $x$, but we also add a regularization that favors the linear functions with small coefficients.
 
@@ -361,14 +362,15 @@ The sparsity property can be demonstrated for the orthogonal design case ($X'X=I
 \begin{align}
 	\hat{\beta}_{j,LASSO} = sign(\beta_j) \left[|\hat{\beta}_{j,OLS}|-\frac{\lambda}{2} \right]_+.
 \end{align}
-We thus see that the LASSO performs 
+We thus see that the LASSO actually performs \emph{soft thresholding} on the OLS estimates. \marginnote{Soft Thresholding}
 
 
 
 
 \subsection{Logistic Regression}
-The logistic regression is the first categorical prediction problem. I.e., the outcome $y$ is not a continous variable, but rather takes values in some finite set. In the logistic regression problem, it can take two possible values.
-In the statistical literature, $y$ is encoded as $\{0,1\}$ and $\hyp$ is assumed to take to take the following form:
+The logistic regression is the first categorical prediction problem. \marginnote{Categorical Prediction}
+I.e., the outcome $y$ is not a continuous variable, but rather takes values in some finite set $\categories$. In the logistic regression problem, it can take two possible values.
+In the statistical literature, $y$ is encoded as $\categories=\{0,1\}$ and $\hyp$ is assumed to take to take the following form:
 \begin{align}
 	& P(y=1|x) = \Psi(x\beta) \\
 	& \Psi(t) = \frac{1}{1+e^{-t}}
@@ -377,11 +379,11 @@ In the statistical literature, $y$ is encoded as $\{0,1\}$ and $\hyp$ is assumed
 The hypothesis class $\hypclass$ is thus all $\hyp(x)=\Psi(x\beta)$.
 In the $\{0,1\}$ encoding, the loss is the negative log likelihood, i.e.:
 \begin{align}
-	\loss{y,x,\beta} = -\log \left[ \Psi(x\beta)^{y} (1-\Psi(x\beta))^{1-y}  \right].
+	\loss(y,x,\beta) = -\log \left[ \Psi(x\beta)^{y} (1-\Psi(x\beta))^{1-y}  \right].
 \end{align}
 In the learning literature it is more common for $\{1,-1\}$ encoding of $y$ in which case the loss is 
 \begin{align}
-	\loss{y,x,\beta} = -\log \left[ 1+\exp(-y f(x))  \right].
+	\loss(y,x,\beta) = -\log \left[ 1+\exp(-y f(x))  \right].
 \end{align}
 
 
@@ -393,15 +395,113 @@ In the $\{1,-1\}$ encoding, we predict class $1$ if $\Psi(x\beta)>0$ and class $
 The plane $\plane$ is clearly invariant to the encoding of $y$.
 
 
+\begin{remark}[Log Odds Ratio]
+The formulation above, implies that the log odds ratio is linear in the predictors:
+\begin{align*}
+	\log \frac{P(y=1|x)}{P(y=0|x)} = x\beta
+\end{align*}
+\end{remark}
+
+
+
+\begin{remark}[GLMs]
+Logistic regression is a particular instance of the very developped theory of Generalized Linear Models.\marginnote{GLM}
+These models include the OLS, Probit Regression, Poisson Regression, Quasi Likelihood, Multinomial Regression, Proportional Odds regression and more.
+The ultimate reference on the matter is \cite{mccullagh_generalized_1989}.
+\end{remark}
+
+
+
 
 \subsection{Regression Classifier}
 \label{sec:regression_classifier}
-[TODO]
-Can we use the OLS framework for prediction with proper encoding of $y$?
-It turns out we can.
-Solving the same problem from Example~\ref{eg:OLS} with 
+Can we use the OLS framework for prediction? Yes! With proper encoding of $y$.
+Solving the same problem from Example~\ref{eg:OLS} by encoding $y$ as $\{0,1\}$ gives us the linear separating hyperplane $\plane: \{x:x\hat{\beta}_{OLS}=0.5\}$.
 
-\subsection{Linear SVM}
+\begin{remark}
+We can interpret $\hat{y}$ as the probability of an event, but there a slight technical difficulty as $\hat{y}$ might actually be smaller than $0$ or larger than $1$.
+\end{remark}
+
+
+\subsection{Linear Support Vector Machines (SVM)}
+We will now not assume anything on the data, and seek for a hyperplane that seperates two classes.
+This, purely geometrical intuition, was the one that motivated Vapnik's support vector classifier \citep{vapnik_statistical_1998}.
+In this section we will see the this geometrical intuition can also be seen as an ERM problem over a linear hypothesis class.
+
+\paragraph{Problem Setup}
+Encode $y$ as $\categories=\{-1,1\}$.
+Define a plane $\plane=\{x: \hyp(x)=0 \}$, and assume a linear hypothesis class, $\hyp(x)=x\beta+\beta_0$.
+Now find the plane $\plane$ that maximizes the (sum of) distances to the data points.
+We call the minimal distance from $\plane$ to the data points, the \emph{Margin}, and denote it by $M$.
+
+To state the optimization problem, we need to note that $\hyp(x)=x\beta+\beta_0$ is not only the value of our classifier, but it is actually proportional to the signed distance of $x$ from $\plane$. 
+\begin{proof}
+The distance of $x$ to $\plane$ is defined as $\min_{x_0 \in \plane} \{ \norm{x-x_0} \}$.
+Note $\beta^*:=\beta/\norm{\beta}$ is a normal vector to $\plane$, since $\plane=\{x: x\beta+\beta_0=0 \}$, so that for $x_1,x_2 \in \plane \Rightarrow \beta(x_1-x_2)=0$.
+Now $x-x_0$ is orthogonal to $\plane$ because $x_0$ is, by definition, the orthogonal projection of $x$ onto $\plane$.
+Since $x-x_0$ are both orthogonal to $\plane$, they are linearly dependent, so that by the Cauchy Schwarz inequality $\norm{\beta^*} \norm{x-x_0}= \norm{\beta^*(x-x_0)}$.
+Now recalling that $\norm{\beta^*}=1$ and $\beta^* x_0=-\beta_0/\norm{\beta}$ we have $\norm{x-x_0}=\frac{1}{\norm{\beta}} (x\beta+\beta_0)= \frac{1}{\norm{\beta}} \hyp(x)$.
+\end{proof}
+
+Using this fact, then $y_i \hyp(x_i)$ is the distance from $\plane$ to point $i$, positive for correct classifications and negative for incorrect classification. 
+The (linear) support vector classifier is defined as the solution to
+\begin{align}
+\label{eq:svc_separable}
+	\max_{\beta,\beta_0} \left\{ 
+		M \quad s.t. \quad 
+		\forall i: y_i \hyp(x_i) \geq M, \quad \norm{\beta}=1
+	\right\}
+\end{align}
+
+If the data is not separable by a plane, we need to allow some slack.
+We thus replace $y_i \hyp(x_i) \geq M$ with $y_i \hyp(x_i) \geq M(1-\xi_i)$, for $\xi_i>0$ but require that the missclassifications are controlled using a regularization parameter $C$: $\sum_i \xi_i \leq C$.
+Eq.(\ref{eq:svc_separable}) now becomes \citep[Eq.(12.25)]{hastie_elements_2003}
+\begin{align}
+\label{eq:svc_non_separable}
+	\max_{\beta,\beta_0} \left\{ 
+		M \quad s.t. \quad 
+		\forall i: y_i \hyp(x_i) \geq M(1-\xi_i), 
+		\: \norm{\beta}=1, 
+		\: \sum_i \xi_i \leq C,
+		\:\forall i:\xi_i\ \geq 0
+	\right\}
+\end{align}
+
+This is the classical geometrical motivation for support vector classification problem.
+The literature now typically discusses how to efficiently optimize this problem, which is done via the dual formulation of Eq.(\ref{eq:svc_non_separable}).
+We will not go in this direction, but rather, note that Eq.(\ref{eq:svc_non_separable}) can be restated as an ERM problem:
+\begin{align}
+\label{eq:svc_ERM}
+	\min_{\beta,\beta_0} \left\{
+		\sum_i \positive{1-y_i \hyp(x_i)} +\frac{\lambda}{2} \norm{\beta}_2^2
+	\right\}
+\end{align}
+
+Eq.(\ref{eq:svc_ERM}) thus reveals that the linear SVM is actually an ERM problem, over a linear hypothesis class, with $l_2$ regularization of $\beta$.
+
+See Section 12 in \cite{hastie_elements_2003} for more details on SVMs.
+
+
+\begin{remark}[Name Origins]
+SVM takes its name from the fact that $\hat{\beta}_{SVM}=\sum_i \hat{\alpha}_i y_i x_i$.
+The explicit form of $\hat{\alpha}_i$ can be found in \citep[Section 12.2.1]{hastie_elements_2003}.
+For our purpose, it suffices to note that $\hat{\alpha}_i$ will be $0$ for all data points far away from $\plane$.
+The data points for which $\hat{\alpha}_i>0$ are the \emph{support vectors}, which give the method its name.
+\end{remark}
+
+
+
+
+
+\begin{remark}[Solve the right problem]
+Comparing with the logistic regression, and the linear classifier, we see that the SVM cares only about the decision boundary $\plane$. Indeed, if only interested in predictions, estimating probabilities is a needless complication. As Put by Vapnik: 
+\begin{quote}
+When solving a given problem, try to avoid a more general problem as an intermediate
+step.
+\end{quote}
+Then again, if the assumed logistic model of the logistic regression, is actually a good approximation of reality, then it will outperform the SVM as it borrows information from all of the data, and not only the support vectors. 
+\end{remark}
+
 
 \subsection{Generalized Additive Models (GAMs)}
 
