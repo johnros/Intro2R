@@ -805,7 +805,7 @@ Before proceeding, we distinguish between two similar tasks:
 
 
 
-\subsection{Train, Validate, Test Sets}
+\subsection{Train, Validate, Test}
 \label{sec:train_test}
 If data is abundant, a trivial, assumption free way to go about, is to split the data into $3$ sets.
 A \emph{training set}, used to learn several competing models.
@@ -822,7 +822,11 @@ Akaike's Information Criterion (AIC), the finite sample corrected AIC (AICc), Ma
 
 The differences, pros, and cons, of each will not be discussed herein. Just remember what they mean when you see them in your favourite software (R!).
 They all have in common that you will want the model with the smallest criterion.
+But be careful- as they are used for model selection, they are indifferent to scaling, and thus should be not interpreted as the expected prediction error.
 
+\paragraph{Further Reading}
+For a brief review of AIC, BIC and SRM see Chapter 7 in \citep{hastie_elements_2003}. 
+For a more rigorous derivation, see \cite{claeskens_model_2008}.
 
 \subsection{Jackknifing}
 \label{sec:jackknife}
