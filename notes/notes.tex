@@ -61,6 +61,8 @@
 \newcommand{\sample}{\mathcal{S}}
 \newcommand{\test}{\risk(\hat{\hyp})}
 \newcommand{\train}{\riskn(\hat{\hyp})}
+\newcommand{\insample}{\bar{\risk}(\hat{\hyp})}
+\newcommand{\optimism}{op}
 
 
 \begin{document}
@@ -738,6 +740,7 @@ Another way to marry the two ideas, is by performing EMR only locally, in each n
 \section{Statistical Decision Theory}
 \label{sec:desicion_theory}
 
+This section follows the spirit and terminology of Section 7 in \cite{hastie_elements_2003}, up to some changes in notation.
 
 In Section~\ref{sec:learning}, we gave an intuitive argument for which without some inductive bias, learning will return models with poor performance on new data.
 In this section we learn how to quantify the performance of a model. In particular, when given new data. This allows us to select among competing candidate models. It will also allow us to choose the value of the regularization parameter of each method.
@@ -763,8 +766,9 @@ The population \emph{risk} of a model parametrized by $\theta$, was previously d
 The empirical risk was defined as the average loss over the observed data points, and denoted by $\riskn(\theta)$.
 We now update these definitions to deal with the the $\hyp(x)$ notation of the previous section.
 \begin{align}
-	\risk(\hat{\hyp}) :=& \expect{\loss(Y,\hat{\hyp}(X))}, \label{eq:test_error} \\
-	\riskn(\hat{\hyp}):=& \frac{1}{n} \sum_i \loss(y_i,\hat{\hyp}(x_i)). \label{eq:training_error}
+	\test :=& \expect{\loss(Y,\hat{\hyp}(X))}, \label{eq:test_error} \\
+	\train :=& \expectn{\loss(y,\hat{\hyp}(x))} = \frac{1}{n} \sum_i \loss(y_i,\hat{\hyp}(x_i)),  \label{eq:training_error} \\
+	\insample :=& \frac{1}{n} \sum_i \expect{\loss(Y,\hat{\hyp}(x_i))}. \label{eq:in_sample}
 \end{align}
 
 Eq.(\ref{eq:training_error}) is the reformulation of empirical risk, $\riskn(\theta)$, we have been optimizing in Section~\ref{sec:learning}.
@@ -778,22 +782,46 @@ It is known as the \emph{test error} or also as \emph{prediction error}.\marginn
 Note that although $\hat{\hyp}(X)$ is learned from the data, it is \emph{not} treated as random when assessing its accuracy.
 
 
+Eq.(\ref{eq:in_sample}) is the average risk at the observed $x$'s, when only $Y$ is treated as random.
+This magnitude should not be unfamiliar: e.g., inference in ANOVA is performed conditional on the $x$'s, which typically stem from a designed experiment. 
+This is the \emph{in sample error}.
+\marginnote{In Sample Error}
+
+
 We would like to compare the performance of models based on $\test$, as this will give us an idea on the quality of the prediction on new data. 
-Alas, this requires knowing the distribution of $y$ and $x$, while we only have access to the $n$ observed samples.
+Alas, computing $\test$ requires the distribution of $y$ and $x$, while we only have access to the $n$ observed samples.
 Can the empirical risk $\train$ estimate the unknown risk $\test$? 
-Figure~\ref{fig:bias_variance} suggests we cannot since $\train$ underestimates $\test$.
+Figure~\ref{fig:bias_variance} suggests it cannot since $\train$ underestimates $\test$.
 Why is this?
 At an intuitive level: this is because with ERM we learn the $\hyp$ with smallest error in each sample.
-It is thus the same as estimating the expected height in a population, by using the minimum in each sample; we will clearly be underestimating the expectation. Then again, there is the hope that we may take this minimum and debias it. This is the goal in the next sections.
+It is thus the same as estimating the expected height in a population, by using the minimum in each sample; we will clearly be underestimating the expectation. Then again, there is the hope that we may take this minimum and debias it. 
+This is the goal in the next sections.
 
-The first approach is analytic, discussed in Section~\ref{sec:risk_estimation} and requires some assumptions and some probability theory.
-Other approaches are computational. They require less assumptions, but more computing power.
+Before proceeding, we distinguish between two similar tasks: 
+\begin{description}
+\item[Model Selection] This is the task of selecting between several candidate models.
+\item[Model Assessment] This is the task of assessing the prediction error (i.e., the expected loss, the risk) of a given model.
+\end{description}
 
+
+
+\subsection{Train, Validate, Test Sets}
+\label{sec:train_test}
+If data is abundant, a trivial, assumption free way to go about, is to split the data into $3$ sets.
+A \emph{training set}, used to learn several competing models.
+A \emph{validation set}, used check the performance of the learned models and choose the best performer using some comparison measure. 
+A \emph{test set}, used to estimate the risk, as the empirical risk will be unbiased $\train$ to the population risk $\test$.
+
+If there is not enough data for this scheme, keep reading...
 
 
 \subsection{Unbiased Estimators of the Risk}
 \label{sec:risk_estimation}
-[TODO]
+Under appropriate assumptions, the bias in $\train$ when estimating $\insample$ can be computed analytically, and accounted for.
+Akaike's Information Criterion (AIC), the finite sample corrected AIC (AICc), Mallow's Cp (Cp), the Bayesian Information Criterion (BIC, aka SBC, aka SBIC), the Minimal Description Length (MDL), Vapnic's Structural Risk Minimization (SRM), the Deviance Information Criterion (DIC), the Focused Information Criterion (FIC), and the Hannan-Quinn Information Criterion (HQC), all try to estimate $\insample$ or $\test$ under different assumptions.\marginnote{AIC, BIC}
+
+The differences, pros, and cons, of each will not be discussed herein. Just remember what they mean when you see them in your favourite software (R!).
+They all have in common that you will want the model with the smallest criterion.
 
 
 \subsection{Jackknifing}
