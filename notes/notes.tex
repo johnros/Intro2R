@@ -58,9 +58,9 @@
 \newcommand{\positive}[1]{\left[ #1 \right]_+}
 \newcommand{\kernel}{\mathcal{K}}
 \newcommand{\featureS}{\mathcal{X}}
-\newcommand{\sample}{\tau}
-\newcommand{\test}{ERR_\sample}
-\newcommand{\train}{\overline{err}}
+\newcommand{\sample}{\mathcal{S}}
+\newcommand{\test}{\risk(\hat{\hyp})}
+\newcommand{\train}{\riskn(\hat{\hyp})}
 
 
 \begin{document}
@@ -762,26 +762,20 @@ Before we proceed, we now need to distinguish between several types of predictio
 The population \emph{risk} of a model parametrized by $\theta$, was previously defined as the average loss over all possible data instances, and denoted by $\risk(\theta)$ (\S \ref{sec:m_estimation}).
 The empirical risk was defined as the average loss over the observed data points, and denoted by $\riskn(\theta)$.
 We now update these definitions to deal with the the $\hyp(x)$ notation of the previous section.
-
-Inline with \cite[Section 7]{hastie_elements_2003} we denote the sample $\sample$ and define
 \begin{align}
-	\test :=& \expect{\loss(Y,\hat{\hyp}(X))|\sample}, \label{eq:test_error} \\
-	Err :=& \expect{\loss(Y,\hat{\hyp}(X))}, \label{eq:expected_test_error} \\
-	\train :=& \frac{1}{n} \sum_i \loss(y_i,\hat{\hyp}(x_i)). \label{eq:training_error}
+	\risk(\hat{\hyp}) :=& \expect{\loss(Y,\hat{\hyp}(X))}, \label{eq:test_error} \\
+	\riskn(\hat{\hyp}):=& \frac{1}{n} \sum_i \loss(y_i,\hat{\hyp}(x_i)). \label{eq:training_error}
 \end{align}
 
 Eq.(\ref{eq:training_error}) is the reformulation of empirical risk, $\riskn(\theta)$, we have been optimizing in Section~\ref{sec:learning}.
 We referred to it as the \emph{empirical risk}, but it is also known as the \emph{train error}.
 \marginnote{Train Error}
 
-Eq.(\ref{eq:expected_test_error}) is a new magnitude, where the expectation is taken over all samples. As the predictor $\hat{\hyp}(X)$ is not fixed, this is more a property of an algorithm, and not of a particular predictor. 
-It is known as the \emph{expected prediction error} but has been stated for completeness, but we will not study it herein.
-
 Eq.(\ref{eq:test_error}) is merely a reformulation of $\risk(\theta)$ from Section~\ref{sec:m_estimation}.
 It captures the expected loss, a given predictor, $\hat{\hyp}(X)$, will incur when given new data.
 This will be the magnitude which will tell us which models perform well, and which do not.
 It is known as the \emph{test error} or also as \emph{prediction error}.\marginnote{Test Error \\ Prediction Error}
-
+Note that although $\hat{\hyp}(X)$ is learned from the data, it is \emph{not} treated as random when assessing its accuracy.
 
 
 We would like to compare the performance of models based on $\test$, as this will give us an idea on the quality of the prediction on new data. 
@@ -789,19 +783,17 @@ Alas, this requires knowing the distribution of $y$ and $x$, while we only have 
 Can the empirical risk $\train$ estimate the unknown risk $\test$? 
 Figure~\ref{fig:bias_variance} suggests we cannot since $\train$ underestimates $\test$.
 Why is this?
-At an intuitive level, this is because in ERM, we have optimized $\hat{\hyp}$: 
-For each sample, we choose the best fitting $\hyp$. This is an unfair process as new samples might not look like the data at hand.
+At an intuitive level: this is because with ERM we learn the $\hyp$ with smallest error in each sample.
+It is thus the same as estimating the expected height in a population, by using the minimum in each sample; we will clearly be underestimating the expectation. Then again, there is the hope that we may take this minimum and debias it. This is the goal in the next sections.
 
-We now have several ways to proceed to an unbiased estimation of $\test$. 
-The first is analytic, and discussed in Section~\ref{sec:risk_estimation} and requires some assumptions and some probability theory.
-The rest are computational. They require less assumptions, but more computing power.
-
+The first approach is analytic, discussed in Section~\ref{sec:risk_estimation} and requires some assumptions and some probability theory.
+Other approaches are computational. They require less assumptions, but more computing power.
 
 
 
 \subsection{Unbiased Estimators of the Risk}
 \label{sec:risk_estimation}
-
+[TODO]
 
 
 \subsection{Jackknifing}
