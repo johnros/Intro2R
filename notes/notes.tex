@@ -122,10 +122,10 @@ $$ \icdfn{X}{\alpha}  . $$
 \begin{example}[Exponential rate]
 Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 \begin{align*}
-	  \cdf{X}{t} =& 1-\exp(-\lambda t) = \alpha \Rightarrow \\
-  \icdf{X}{\alpha} =& \frac{-\log(1-\alpha)}{\lambda} \Rightarrow \\
-  \icdf{X}{0.5} =& \frac{-\log(0.5)}{\lambda} \Rightarrow \\
-  \hat{\lambda} =& \frac{-\log(0.5)}{\icdfn{X}{0.5}}.
+	& \cdf{X}{t} = 1-\exp(-\lambda t) = \alpha \Rightarrow \\
+	& \icdf{X}{\alpha} = \frac{-\log(1-\alpha)}{\lambda} \Rightarrow \\
+	& \icdf{X}{0.5} = \frac{-\log(0.5)}{\lambda} \Rightarrow \\
+	& \hat{\lambda} = \frac{-\log(0.5)}{\icdfn{X}{0.5}}.
 \end{align*}
 
 \end{example}
@@ -157,9 +157,11 @@ Estimate the transition probabilities,  $p_1$ and $p_2$ in a two state, $\{0,1\}
 $P(X_{t+1}=1|X_{t}=0)=p_1$ and $P(X_{t+1}=1|X_{t}=1)=p_2$.
 The likelihood:
 $$
-  \lik(p_1,p_2)=P(X_1,\dots,X_n;p_1,p_2)=\prod_{t=0}^T P(X_{t+1}=x_{t+1}|X_{t}=x_t).
+  \lik(p_1,p_2)=
+  P(X_2,\dots,X_T;X_1,p_1,p_2)=
+  \prod_{t=1}^T P(X_{t+1}=x_{t+1}|X_{t}=x_t).
 $$
-We denote $n_{ij}$ the number of observed transitions from $i$ to $j$ and get that $\hat{p}_1=\frac{n_{01}}{n_{01}+n_{00}}$, and that $\hat{p}_2=\frac{n_{11}}{n_{11}+n_{10}}$.
+We denote $n_{ij}$ the total number of observed transitions from $i$ to $j$ and get that $\hat{p}_1=\frac{n_{01}}{n_{01}+n_{00}}$, and that $\hat{p}_2=\frac{n_{11}}{n_{11}+n_{10}}$.
 
 \begin{remark}
 Well, this is a rather artificial example, as because of the Markov property, and the stationarity of the process, we only need to look at transition events, themselves Brenoulli distributed. 
@@ -212,6 +214,11 @@ $$
     -\frac{1}{2 \sigma^2} \norm{y-X\beta}^2
   \right)
 $$
+and $\hat{\beta}_{ML}$ equals 
+\begin{align}
+	\hat{\beta}_{ML}=(X'X)^{-1} X'y.
+\end{align}
+
 
 \end{example}
 
@@ -224,7 +231,7 @@ The underlying idea is that each realization of $X$ incurs some loss, and we see
 In the econometric literature, we dot not incur a loss, but rather a utility, we thus seek a policy that maximizes the average utility.
 
 Define a loss function $\loss(X;\theta)$, and a risk function, being the expected loss, 
-$\risk(\theta):=\expect{\loss(X;\theta)}$. Then \marginnote{Risk Function}
+$\risk(\theta):=\expect{\loss(X;\theta)}$. Then \marginnote{Risk}
 \begin{align}
 \label{eq:risk_min}
  \theta^*:= \argmin{\theta}{\risk(\theta)}.
@@ -556,7 +563,7 @@ By choosing a sufficiently large $M$, the class $\hypclass$ can approximate any 
 
 
 \subsection{Neural Networks (NNETs)}
-\subsection{Single Hidden Layer}
+\subsubsection{Single Hidden Layer}
 In the spirit of \cite[Section 11]{hastie_elements_2003}, we introduce the NNET model via the PPR model, and not through its historically original construction.
 In the language of Eq.(\ref{eq:PPR}), a single-layer--feed-forward neural network, is a model where $\{g_m\}_{m=1}^M$  are not learned from the data, but rather assumed a-priori. 
 \begin{align*}
