@@ -137,16 +137,20 @@ Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 The fundamental idea is that if the data generating process (i.e., the \emph{sampling distribution}) can be assumed, then the observations are probably some high probability instance of this process, and not a low probability event:
 Let $X_1,\dots,X_n \sim P_\theta$, with density (or probability) $p_\theta(X_1,\dots,X_n)$.
 Denote the likelihood, as a function of $\theta$: $\lik(\theta): p_\theta(X_1,\dots,X_n)$.
-Then $\hat{\theta}_{ML}:= argmax_{\theta}\{ \lik(\theta) \}$.
+Then $$\hat{\theta}_{ML}:= argmax_{\theta}\{ \lik(\theta) \}$$.
 
+Using a monotone mapping such as the log, does not change the $argmax$. 
+Denote $$\loglik(\theta):=\log(\lik(\theta))$$.
+
+ 
 \begin{example}[Exponential rate]
 
 Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 Using the exponential PDF and the i.i.d. assumption
-$$ \lik(\lambda) = \lambda^n \exp(-\lambda \sum_i X_i). $$
-Using a monotone mapping such as the log, does not change the $argmax$. 
-Denoting $\loglik(\theta):=\log(\lik(\theta))$, we have
+$$ \lik(\lambda) = \lambda^n \exp(-\lambda \sum_i X_i), $$
+and 
 $$ \loglik(\lambda) = n \log(\lambda) -\lambda \sum_i X_i. $$
+
 By differentiating and equating $0$, we get $\hat{\lambda}_{ML}=1/\expectn{X}$.
 
 \end{example}
