@@ -391,7 +391,7 @@ The regularization of $\beta$ can have several interpretations and justification
 \item[A Subjective Bayesian View] If we believe that $\beta$ should be small; say our beliefs can be quantified by $\beta \sim \gauss{0,\lambda I}$, then the Ridge solution is actually the mean of our posterior believes on $\beta|y$.
 \end{description}
 
-Whatever the justification may be, it can be easily shown that $\deriv{\risk(\lambda,\beta)}{\lambda}$ at $\lambda=0$ is negative, thus, we can only improve the predictions by introducing some regularization.
+Whatever the justification, it can be easily shown that $\deriv{\risk(\lambda,\beta)}{\lambda}$ at $\lambda=0$ is negative, thus, we can only improve the predictions by introducing some regularization.
 
 
 For more on Ridge regression see \cite{hastie_elements_2003}.
@@ -686,6 +686,13 @@ Considering a single predictor, the ERM problem for \emph{Smoothing Spline}
 
 It is quite surprising, and useful that even though the optimization is performed over an infinite dimensional function space, the solution belongs to a finite dimensional parametric sub-space. 
 The magic continues! It turns out that the fitted values, $\{\hat{\hyp}(x_i)\}_{i=1}^n$ are linear in $\{y_i\}_{i=1}^n$. A fact that greatly facilitates the analysis of the statistical properties of these models.
+
+In the presence of several predictors, Eq.(\ref{eq:smoothing_spline}) can be generalized as 
+\begin{align}
+\label{eq:smoothing_spline_multi}
+	 \argmin{\hyp}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2 + \lambda J(\nabla^2 f)  }.
+\end{align}
+where $J$ is some matrix norm. A natural extension is the squared Frobenius norm\footnote{The Frobenius matrix norm is the sum of squares over all elements: $\norm{A}^2=\sum_{i,j} A_{i,j}^2$ }, which returns a \emph{thin plate spline} as the risk minimizer.\marginnote{Thin Plate Spline}
 
 
 
