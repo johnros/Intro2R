@@ -65,6 +65,8 @@
 \newcommand{\kernel}{\mathcal{K}}
 \newcommand{\featureS}{\mathcal{X}}
 \newcommand{\indicator}[1]{I_{\{ #1 \}}}
+\newcommand{\density}{f}
+\newcommand{\similarity}{d}
 
 \newcommand{\sample}{\mathcal{S}}
 \newcommand{\test}{\risk(\hyp)}
@@ -76,7 +78,9 @@
 \newcommand{\bootstraps}{B} % Bootstrap samples
 \newcommand{\bootstrap}{{b^*}}
 
-\newcommand{\density}{f}
+
+
+
 
 
 
@@ -1043,15 +1047,63 @@ As previously stated, these methods may fail when $x$ are high dimensional. We t
 
 
 \subsection{Detect High Density Regions}
+When data data is high dimensional so that we cannot perform density estimation, or when we are merely interested in grouping observations, we can still detect high density regions where observations ``clump'' together. Hopefully, into meaningful homogenous groups.
+These groups are called \emph{clusters}, thus these methods are known as \emph{cluster analysis}, or \emph{data segmentation} methods.\marginnote{Cluster Analysis, Data Segmentation}
 
-\subsubsection{Agglomerative Clustering}
-[TODO]
+Since these methods are aim at detecting data clustering, they clearly imply the availability of some measure of distance, or similarity, between data points. 
+
 
 \subsubsection{K Means Clustering}
+\label{sec:kmeans}
+The idea behind K-means clustering is to find a representative point for each of K clusters, and assign each (unlabeled) data point to one of these clusters. As each cluster has a representative point, this is also a \emph{prototype method}.\marginnote{Prototype Methods}.
+The clusters are defined so that they minimize the average distance between all points to the center of the cluster.
+
+In K-means, the clusters are first defined, and then similarities computed. This is thus a \emph{top-down} method.\marginnote{Top Down Clustering}
+
+\begin{algorithm}[H]
+\caption{K-Means}
+\begin{algorithmic}
+\State Choose the number of clusters $K$.
+\State Arbitrarily assign points to clusters.
+\While {Clusters keep changing}
+	\State Compute the cluster centers as the average of their points.
+	\State Assign each point to its closest cluster center (in Euclidean distance).
+\EndWhile
+\State \Return Cluster assignments and means.
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\paragraph{K-Medoids}
+If a Euclidean distance is inappropriate for a particular $\featureS$, or that robustness to corrupt observations is required, or that we wish to constrain the cluster centers to be actual observations, then the \emph{K-Medoids} algorithm is an adaptation of K-means that allows this.
+
+\begin{algorithm}[H]
+\caption{K-Medoids}
+\begin{algorithmic}
+\State Choose a similarity metric $\similarity(x_i,x_j)$.
+\State Choose the number of clusters $K$.
+\State Arbitrarily assign points to clusters.
+\While {Clusters keep changing}
+	\State Within each cluster, set the center as the data point that minimizes the sum of distances to other points in the cluster.
+	\State Assign each point to its closest cluster center (in $\similarity(x_i,x_j)$ distance).
+\EndWhile
+\State \Return Cluster assignments and centers.
+\end{algorithmic}
+\end{algorithm}
+
+
+See Section 14.3.10 in \cite{hastie_elements_2003}.
+
+
+\subsubsection{Hierarchical Clustering}
+\label{sec:hierarchical }
 [TODO]
+
 
 
 \subsubsection{Association Rules}
+\label{sec:association}
 [TODO]
 
 
@@ -1062,7 +1114,7 @@ As previously stated, these methods may fail when $x$ are high dimensional. We t
 \label{sec:dim_reduce}
 [TODO]
 
-\subsection{In Supervised Learning}
+\subsection{Dimensionality Reduction In Supervised Learning}
 [TODO]
 
 
@@ -1074,7 +1126,7 @@ As previously stated, these methods may fail when $x$ are high dimensional. We t
 [TODO]
 
 
-\subsection{In unsupervised Learning}
+\subsection{Dimensionality Reduction in Unsupervised Learning}
 [TODO]
 
 
