@@ -39,6 +39,7 @@
 
 
 \newcommand{\naive}{na\"{\i}ve}
+\newcommand{\Naive}{Na\"{\i}ve}
 
 \newcommand{\expect}[1]{E\left[ #1 \right]}
 \newcommand{\expectg}[2]{E_{#1}\left[ #2 \right]}
@@ -75,6 +76,7 @@
 \newcommand{\bootstraps}{B} % Bootstrap samples
 \newcommand{\bootstrap}{{b^*}}
 
+\newcommand{\density}{f}
 
 
 
@@ -711,7 +713,17 @@ This restricts the learnable hypothesis class, thus acting as a regularizer.
 Note that in most of the previous sections\footnote{Well, bar CARTs and Smoothing Splines}, the restriction of the hypothesis class $\hypclass$ has been imposed by some parametric representation of $\hypclass$, over which optimization is performed.
 The methods in this section do not impose any such parametrization. They are thus also known as \emph{non parametric}.\marginnote{Non Parametric}
 
+\subsection{Generative Models}
 
+\subsubsection{Fisher's Linear Discriminant Analysis (LDA)}
+\label{sec:lda}
+[TODO]
+
+\subsubsection{\Naive Bayes}
+\label{sec:naive_bayes}
+[TODO]
+
+ 
 
 \subsection{k-Nearest Neighbour (KNN)}
 \label{sec:knn}
@@ -747,6 +759,7 @@ Not to be confused with the Kernel Trick in Kernel SVM, Kernel PCA, and Kernel R
 Kernel \emph{smoothing} is essentially a generalization of a moving average.
 The \emph{Nadaraya-Watson} weighted average is defined as \marginnote{Nadaraya-Watson}
 \begin{align}
+\label{eq:nadaraya_watson}
 	\hat{\hyp}(x):= \frac{\sum_i \kernel_\lambda(x,x_i)y_i}{\sum_i \kernel_\lambda(x,x_i)}
 \end{align}
 where $\kernel_\lambda$ is the kernel function, which is merely a measure of the distance between the evaluation point $x$ and the data points $\{ x_i \}_{i=1}^n$ and weights the contribution of each $\{ y_i \}_{i=1}^n$ to the value at $x$.
@@ -989,6 +1002,8 @@ Unlike Supervised Learning, in Unsupervised Learning there is not outcome variab
 Describing the data via it's joint distribution would be nice, but would require many samples if $X$ has a high dimension (by high we mean $p>3$!).
 
 For low dimensional data, aim at learning the joint distribution. 
+
+
 For higher dimensions we need to set more modest goals:
 \begin{description}
 \item[Detect high density regions] Find feature combinations which tend to concentrate, hopefully, because the belong to homogenous and interpretable subgroups.
@@ -998,8 +1013,33 @@ This goal is discussed in Section~\ref{sec:dim_reduce}.
 \end{description}
 
 
-\subsection{Density Estimation}
+\paragraph{Relation to Supervised Classification}
+Any supervised classification problem can be solved, at least in theory, by solving an unsupervised. 
+I.e., estimate the joint distribution within each class, and then classify new observations to the highest density class, via Bayes rule. 
+This is known as a \emph{generative} model, as we try to learn the full data generating distribution, unlike the \emph{discriminative} models described above, where the distribution of the features $x$ is of no interest.
 
+
+
+\subsection{Density Estimation}
+Density estimation deals with the learning of the data generating distribution.
+If a parametric generative model can be assumed, this collapses to an unsupervised ERM problem. 
+Maximum Likelihood estimation being a particularly attractive approach.
+If a parametric model cannot be assumed, we fall into the real of non-parametric methods. As we saw for Supervised learning, these typically rely on pooling information from neighbourhoods of $\featureS$.
+
+Much like the Kernel Smoothing regression, a \naive estimator is the moving average.
+A natural generalization, in the spirit of the Nadaraya-Watson smoother (Eq.(\ref{eq:nadaraya_watson})) is the \emph{Parzen} estimate:\marginnote{Parzen Estimate}
+\begin{align}
+\label{eq:parzen}
+	\hat{\density}(x):=\frac{1}{n \lambda} \sum_{i=1}^n \kernel_\lambda(x,x_i).
+\end{align}
+
+As previously stated, these methods may fail when $x$ are high dimensional. We thus recur to other methods.
+
+
+
+
+\subsection{Mixtures}
+A way to deal with high dimension distributions, 
 
 
 \subsection{Agglomerative Clustering}
@@ -1009,8 +1049,7 @@ This goal is discussed in Section~\ref{sec:dim_reduce}.
 [TODO]
 
 
-\subsection{Mixtures}
-[TODO]
+
 
 
 \subsubsection{Association Rules}
