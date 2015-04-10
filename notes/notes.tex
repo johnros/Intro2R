@@ -38,8 +38,8 @@
 \newtheorem{example}{Example}
 
 
-\newcommand{\naive}{na\"{\i}ve}
-\newcommand{\Naive}{Na\"{\i}ve}
+\newcommand{\naive}{na\"{\i}ve }
+\newcommand{\Naive}{Na\"{\i}ve }
 
 \newcommand{\expect}[1]{E\left[ #1 \right]}
 \newcommand{\expectg}[2]{E_{#1}\left[ #2 \right]}
@@ -998,15 +998,12 @@ For more on the Bootstrap, see \cite{efron_introduction_1994}.
 \label{sec:unsupervised}
 
 Unlike Supervised Learning, in Unsupervised Learning there is not outcome variable. There is thus no notion of ``right'' and ``wrong''. We merely want to learn the joint distribution of the data, $X \in \featureS$, and represent it in some way we can understand. 
-Describing the data via it's joint distribution would be nice, but would require many samples if $X$ has a high dimension (by high we mean $p>3$!).
+Describing the data via it's joint distribution would be nice, but would require many samples if $X$ has a high dimension (by high we mean $p>3$!). For higher dimensions we need to set more modest goals.
 
-For low dimensional data, aim at learning the joint distribution. 
-
-
-For higher dimensions we need to set more modest goals:
+The different goals of unsupervised learning are
 \begin{description}
+\item[Density Estimation] Estimate the joint density of $x$ over $\featureS$.
 \item[Detect high density regions] Find feature combinations which tend to concentrate, hopefully, because the belong to homogenous and interpretable subgroups.
-This goal is discussed in the present section.
 \item[Find low dimensional representations] Find a low dimensional representation of the joint distribution. This allows the learning from realistic sample sizes, and analysis by, e.g., interpretable parameters and visualization.
 This goal is discussed in Section~\ref{sec:dim_reduce}.
 \end{description}
@@ -1019,11 +1016,17 @@ This is known as a \emph{generative} model, as we try to learn the full data gen
 
 
 
+
+
 \subsection{Density Estimation}
+
+\subsubsection{Parametric Density Estimation}
 Density estimation deals with the learning of the data generating distribution.
 If a parametric generative model can be assumed, this collapses to an unsupervised ERM problem. 
 Maximum Likelihood estimation being a particularly attractive approach.
 If a parametric model cannot be assumed, we fall into the real of non-parametric methods. As we saw for Supervised learning, these typically rely on pooling information from neighbourhoods of $\featureS$.
+
+\subsubsection{Kernel Density Estimation}
 
 Much like the Kernel Smoothing regression, a \naive estimator is the moving average.
 A natural generalization, in the spirit of the Nadaraya-Watson smoother (Eq.(\ref{eq:nadaraya_watson})) is the \emph{Parzen} estimate:\marginnote{Parzen Estimate}
@@ -1032,23 +1035,20 @@ A natural generalization, in the spirit of the Nadaraya-Watson smoother (Eq.(\re
 	\hat{\density}(x):=\frac{1}{n \lambda} \sum_{i=1}^n \kernel_\lambda(x,x_i).
 \end{align}
 
+\begin{remark}
+If you have been convinced by the use of KNN (\S\ref{sec:knn}) for regression (or classification), there is no reason not to use it for density estimation. It will keep offering the same pros and cons as in KNN regression (or classification).
+\end{remark}
+
 As previously stated, these methods may fail when $x$ are high dimensional. We thus recur to other methods.
 
 
+\subsection{Detect High Density Regions}
 
-
-\subsection{Mixtures}
-A way to deal with high dimension distributions, 
-
-
-\subsection{Agglomerative Clustering}
+\subsubsection{Agglomerative Clustering}
 [TODO]
 
-\subsection{K Means Clustering}
+\subsubsection{K Means Clustering}
 [TODO]
-
-
-
 
 
 \subsubsection{Association Rules}
