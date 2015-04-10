@@ -38,7 +38,7 @@
 \newtheorem{example}{Example}
 
 
-
+\newcommand{\naive}{na\"{\i}ve}
 
 \newcommand{\expect}[1]{E\left[ #1 \right]}
 \newcommand{\expectg}[2]{E_{#1}\left[ #2 \right]}
@@ -345,7 +345,6 @@ We typically do not allow $\hyp$ to be ``any function'' but rather restrict it t
 \item[Prior Knowledge] We do not need to treat all $\hyp \in \hypclass$ equivalently. We might have prior preferences towards particular $\hyp$'s and we can introduce these preference in the learning process. This is called \emph{Regularization}.
 \item[Non ERM Approaches] Many learning problems can be cast as ERM problems, but another way to introduce bias is by learning $\hyp$ via some other scheme, which cannot be cast as an ERM problem. 
 Learning algorithms that cannot be cast as ERMs include: Nearest Neighbour, Kernel Smoothing, Boosting.
-Naive Bayes and Fisher's LDA are also not considered ERMs, but they can be cast as such [TODO: verify].
 \end{description}
 
 
@@ -667,7 +666,19 @@ For more on CARTs and Bagging see \citep[Section 9]{hastie_elements_2003}.
 
 
 \subsection{Smoothing Splines}
-[TODO]
+\label{sec:smoothing_splines}
+The GAM (\S\ref{sec:gam}) model is an example of learning a non-parametric model, since we did not constrain the parametric form of the functions $\{f_j\}_{j=1}^p$. The regularization was part of the optimization algorithm, and not explicit in the problem's definition.
+\emph{Smoothing Splines} is another non-parametric approach, since we do not assume the parametric form of $\{f_j\}_{j=1}^p$. 
+Unlike GAMs, however, the regularization is indeed explicit in the formulation of the problem. 
+Regularization is achieved by penalizing the second derivative of $\hyp$, thus forcing it $\hyp$ to be smooth. 
+Considering a single predictor, the ERM problem for \emph{Smoothing Spline}
+\begin{align}
+\label{eq:smoothing_spline}
+	 \argmin{\hyp}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2 + \lambda \norm{\nabla^2 f}_2^2  }.
+\end{align}
+
+It is quite surprising, and useful that even though the optimization is performed over an infinite dimensional function space, the solution belongs to a finite dimensional parametric sub-space. 
+The magic continues! It turns out that the fitted values, $\{\hat{\hyp}(x_i)\}_{i=1}^n$ are linear in $\{y_i\}_{i=1}^n$. A fact that greatly facilitates the analysis of the statistical properties of these models.
 
 
 
