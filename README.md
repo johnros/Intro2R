@@ -5,5 +5,7 @@ Some notes and code accompanying the Machine Learning course at BGU IE (2015B).
 - Class notes can be found in [notes/notes.pdf](https://github.com/johnros/Intro2R/blob/master/notes/notes.pdf)
 - Supervised learning with R can be found in [the near future].
 - Unsupervised learning with R can be found in [the near future].
+- Dimensionality reduction with R can be found in [the near future].
+- Memory efficient examples of learning with R can be found in [the near future]
 
 
