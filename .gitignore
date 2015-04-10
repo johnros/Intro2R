@@ -33,3 +33,6 @@ notes.Rmd
 *.mtc1
 *.out
 *.synctex.gz
+
+# Questions
+questions.*
