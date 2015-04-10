@@ -9,6 +9,7 @@
 \usepackage{graphicx}
 \usepackage{amsthm}
 \usepackage{natbib}
+\usepackage{algorithm}
 \usepackage{algpseudocode}
 
 \usepackage{hyperref}
@@ -69,8 +70,10 @@
 \newcommand{\train}{\riskn(\hyp)}
 \newcommand{\insample}{\bar{\risk}(\hyp)}
 \newcommand{\EPE}{\risk(\hat{\hyp}_n)}
-\newcommand{\folds}{K}
+\newcommand{\folds}{K} % Cross validation folds
 \newcommand{\fold}{k}
+\newcommand{\bootstraps}{B} % Bootstrap samples
+\newcommand{\bootstrap}{{b^*}}
 
 
 
@@ -80,6 +83,8 @@
 \maketitle
 
 \tableofcontents
+
+
 
 \section{Estimation}
 \label{sec:estimation} 
@@ -352,8 +357,16 @@ We now proceed to show that many supervised learning algorithms are in fact ERMs
 As seen in Example~\ref{eg:OLS}, by adopting a squared error loss, and restricting $\hypclass$ by assuming $\hyp$ is a linear function of $x$, we get the OLS problem.
 In this case, learning $\hyp$ is effectively the same as learning $\beta$ as they are isomorphic.
 
+\paragraph{Regularization}
+While the OLS problem seemingly has no regulaziation parameters, we are in no way restricted to the original $X$ matrix supplied to us. 
+We are free to choose any subset of the $X$ variables. Selecting a subset of the $X$ variables is known as \emph{model selection}.\marginnote{Model Selection}.
+We will discuss many different methods to choose the regularization level, in this case, the variables in the OLS, in Section~\ref{sec:desicion_theory}.
+
+We are not only free to select a subset of $X$s, but we can also augment $X$ with new variables, consisting of non linear transformation of the original ones. This is know as \emph{basis augmentation}. \marginnote{Basis Augmentation}
+The idea of basis augmentation is a useful and fundamental one that will revisit us throughout the course, even if we typically don't call it by its name.
+
 \begin{remark}
-We distinguish between OLS and Linear Regression. In these notes, we refer to linear regression when we assume that the data generating process it actually $y=x\beta+\varepsilon$, whereas in OLS we merely fit a linear function without claiming it is the data generating one.
+In this text, we distinguish between OLS and Linear Regression. In these notes, we refer to linear regression when we assume that the data generating process it actually $y=x\beta+\varepsilon$, whereas in OLS we merely fit a linear function without claiming it is the data generating one.
 \end{remark}
 
 
@@ -874,36 +887,70 @@ For a more rigorous derivation, see \cite{claeskens_model_2008}.
 
 If concerned with over fitting, here is a simple algorithm to estimate the prediction error:
 
+\begin{algorithm}[H]
+\caption{Jackknife}
 \begin{algorithmic}
 \For {$i \in 1,\dots,n$}
     \State $\hat{\hyp}^{(i)} \gets$ the learned model with all but the $i$'th observation.
     \State $\loss^{(i)} \gets$ the loss of $\hat{\hyp}^{(i)}$ on the $i$'th observation.
 \EndFor
-\State \Return the average loss of $\loss^{(i)}$.
+\State \Return the average loss over $\loss^{(i)}$.
 \end{algorithmic}
-
+\end{algorithm}
 
 This process is called the \emph{Jackknife}, or \emph{Leave-One-Out--Cross-Validation}. 
 This algorithm return an estimator of $\EPE$.
 This might be quite surprising: every split uses almost an identical sample, so why would it not estimate $\test$? See Section 7.12 in \cite{hastie_elements_2003} for details..
 
-But wait- we might be able to stabilize the variability of the estimated error in every split, if instead of leaving only a single observation aside, we leave some more. This lead to way to \emph{K-Fold Cross Validation} in the next section.
+But wait! We might be able to stabilize the variability of the estimated error in every split, if instead of leaving only a single observation aside, we leave some more. This lead to way to \emph{K-Fold Cross Validation} in the next section.
 
 
 \subsection{Cross Validation}
 \label{sec:cv}
 
+\begin{algorithm}[H]
+\caption{Cross Validation}
 \begin{algorithmic}
 \State Split the data into $\folds$ parts (``folds'').
-\For {$k \in 1,\dots,\folds$}
+\For {$\fold \in 1,\dots,\folds$}
     \State $\hat{\hyp}^{(k)} \gets$ the learned model with all \emph{except} the observations in the $\fold$'th fold.
-    \State $\loss^{(\fold)} \gets$ the loss of $\hat{\hyp}^{(\fold)}$ on the observations in the $\fold$'th fold.
+    \State $\loss^{(\fold)} \gets$ the loss average of $\hat{\hyp}^{(\fold)}$ on the observations in the $\fold$'th fold.
 \EndFor
-\State \Return the average of $\loss^{(\fold)}$ .
+\State \Return the average over $\loss^{(\fold)}$ .
 \end{algorithmic}
+\end{algorithm}
 
 This simple algorithm estimates $\EPE$ without any assumption on the data generating process, and less data than would be required for a ``train-validate-test'' scheme.
 Well, as it actually serves for model selection, it should be seen as a ``train-validate'' scheme, without the ``test'' part. It is thus \emph{not} an unbiased estimate of $\EPE$. See Section 7.12 in \cite{hastie_elements_2003} for details.
+
+But wait again! 
+The Cross Validation scheme resamples the data \emph{without replacement} to estimate $\EPE$. Could we have sampled it \emph{with} replacement? Yes. This is the idea underlying the \emph{Bootstrapping} scheme.
+
+
+\subsection{Bootstrapping}
+\label{sec:bootstrap}
+
+Here is the simplest version of Bootstrap validation:
+
+\begin{algorithm}[H]
+\caption{Bootstrap}
+\begin{algorithmic}
+\For {$\bootstrap \in 1,\dots,\bootstraps$}
+	\State $\sample^\bootstrap \gets$ $n$ randomly selected observations, with replacement, from the original data.
+    \State $\hat{\hyp}^{\bootstrap} \gets$ the model learned with  $\sample^\bootstrap$.
+    \State $\loss^{\bootstrap} \gets$ the average loss of $\hat{\hyp}^{\bootstrap}$ on the observations in the \emph{original} data.
+\EndFor
+\State \Return the over of $\loss^{\bootstrap}$ .
+\end{algorithmic}
+\end{algorithm}
+
+This algorithm is not a good estimator of $\EPE$ as observations play a role both in learning and in validating. 
+Several corrections are available. For details see Section 7.11 in \cite{hastie_elements_2003}.
+
+The Bootstrap is a very general scheme, which can be used not only for model validation, but for assessing many of its statistical properties. It is possibly best known when used for hypothesis testing. 
+For more on the Bootstrap, see \cite{efron_introduction_1994}.
+
+
 
 
 
@@ -929,6 +976,7 @@ Well, as it actually serves for model selection, it should be seen as a ``train-
 
 \subsection{Model Selection}
 [TODO]
+%\cite{foster_variable_2004}
 
 \subsection{LASSO}
 [TODO]
@@ -972,6 +1020,12 @@ Well, as it actually serves for model selection, it should be seen as a ``train-
 \subsection{Collaborative Filtering}
 [TODO]
 
+
+
+
+%%%%%%%%% Algorithms %%%%%%%%%%%
+\newpage
+\listofalgorithms
 
 
 %%%%%%%%% Bibliography %%%%%%%%%%%
