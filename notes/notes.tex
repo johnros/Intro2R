@@ -677,22 +677,22 @@ For more on CARTs and Bagging see \citep[Section 9]{hastie_elements_2003}.
 The GAM (\S\ref{sec:gam}) model is an example of learning a non-parametric model, since we did not constrain the parametric form of the functions $\{f_j\}_{j=1}^p$. The regularization was part of the optimization algorithm, and not explicit in the problem's definition.
 \emph{Smoothing Splines} is another non-parametric approach, since we do not assume the parametric form of $\{f_j\}_{j=1}^p$. 
 Unlike GAMs, however, the regularization is indeed explicit in the formulation of the problem. 
-Regularization is achieved by penalizing the second derivative of $\hyp$, thus forcing it $\hyp$ to be smooth. 
+Regularization is achieved by penalizing the second derivative of $\hyp$, thus forcing $\hyp$ to be smooth. 
 Considering a single predictor, the ERM problem for \emph{Smoothing Spline}
 \begin{align}
 \label{eq:smoothing_spline}
 	 \argmin{\hyp}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2 + \lambda \norm{\nabla^2 f}_2^2  }.
 \end{align}
 
-It is quite surprising, and useful that even though the optimization is performed over an infinite dimensional function space, the solution belongs to a finite dimensional parametric sub-space. 
+It is quite surprising, and useful, that even though the optimization is performed over an infinite dimensional function space, the solution belongs to a finite dimensional parametric sub-space. 
 The magic continues! It turns out that the fitted values, $\{\hat{\hyp}(x_i)\}_{i=1}^n$ are linear in $\{y_i\}_{i=1}^n$. A fact that greatly facilitates the analysis of the statistical properties of these models.
 
-In the presence of several predictors, Eq.(\ref{eq:smoothing_spline}) can be generalized as 
+In the presence of $p>1$ predictors, Eq.(\ref{eq:smoothing_spline}) can be generalized as 
 \begin{align}
 \label{eq:smoothing_spline_multi}
 	 \argmin{\hyp}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2 + \lambda J(\nabla^2 f)  }.
 \end{align}
-where $J$ is some matrix norm. A natural extension is the squared Frobenius norm\footnote{The Frobenius matrix norm is the sum of squares over all elements: $\norm{A}^2=\sum_{i,j} A_{i,j}^2$ }, which returns a \emph{thin plate spline} as the risk minimizer.\marginnote{Thin Plate Spline}
+where $J$ is some matrix norm. A natural extension is the squared Frobenius norm\footnote{The Frobenius matrix norm is the sum of squares over all elements: $\norm{A}^2_F=\sum_{i,j} A_{i,j}^2$ }, which returns a \emph{thin plate spline} as the risk minimizer.\marginnote{Thin Plate Spline}
 
 
 
@@ -773,17 +773,16 @@ In Kernel Smoothing, the neighbourhood of $x$ is all the data points in the supp
 
 
 
-\subsection{Local Regression (LOESS)}
-\label{sec:loess}
-[TODO]
-
-
-
 \subsection{Local Likelihood and Local ERM}
 Although presented as two competing concepts, they can augment each other. 
 We have already seen that Kernel Smoothing plays a part within some ERM algorithms such as GAM~(\S\ref{sec:gam}) and PPR~(\S \ref{sec:ppr}).
 
 Another way to marry the two ideas, is by performing EMR only locally, in each neighbourhood of data points defined by a kernel. This idea is very powerful and leads to, e.g., the LOESS (\S \ref{sec:loess}) and \emph{Local Likelihood} methods.
+
+\subsection{Local Regression (LOESS)}
+\label{sec:loess}
+[TODO]
+
 
 
 %%%%%%%%% Statistical Descision Theory %%%%%%%%%%%
@@ -791,7 +790,7 @@ Another way to marry the two ideas, is by performing EMR only locally, in each n
 \section{Statistical Decision Theory}
 \label{sec:desicion_theory}
 
-This section follows the spirit and terminology of Section~7 in \cite{hastie_elements_2003}, up to some changes in notation.
+This section follows the spirit of Section~7 in \cite{hastie_elements_2003}, up to some changes in notation.
 
 In Section~\ref{sec:learning}, we gave an intuitive argument for which without some inductive bias, learning will return models with poor performance on new data.
 In this section we learn how to quantify the performance of a model. In particular, when given new data. This allows us to select among competing candidate models. It will also allow us to choose the value of the regularization parameter of each method.
