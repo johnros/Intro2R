@@ -801,7 +801,7 @@ plot(dose~long.age, data=long.data, pch=as.numeric(dose.type))
 ```
 I will now try to avoid this manual reshaping.
 
-### Reshaping data with tidyr package
+### Reshaping data with `tidyr` package
 
 This is the package I recommend if you cannot reshape manually.
 Example from [here](http://blog.rstudio.org/2014/07/22/introducing-tidyr/)
@@ -1168,7 +1168,7 @@ gsub("  ", " ", s)
 ```
 
 
-If you use strings often, try the stringr package.
+If you use strings often, try the `stringr` package.
 
 
 
