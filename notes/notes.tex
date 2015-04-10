@@ -9,6 +9,7 @@
 \usepackage{graphicx}
 \usepackage{amsthm}
 \usepackage{natbib}
+\usepackage{algpseudocode}
 
 \usepackage{hyperref}
 \AtBeginDocument{\let\textlabel\label}
@@ -61,14 +62,17 @@
 \newcommand{\positive}[1]{\left[ #1 \right]_+}
 \newcommand{\kernel}{\mathcal{K}}
 \newcommand{\featureS}{\mathcal{X}}
+\newcommand{\indicator}[1]{I_{\{ #1 \}}}
 
 \newcommand{\sample}{\mathcal{S}}
 \newcommand{\test}{\risk(\hyp)}
 \newcommand{\train}{\riskn(\hyp)}
 \newcommand{\insample}{\bar{\risk}(\hyp)}
 \newcommand{\EPE}{\risk(\hat{\hyp}_n)}
+\newcommand{\folds}{K}
+\newcommand{\fold}{k}
 
-\newcommand{\indicator}[1]{I_{\{ #1 \}}}
+
 
 
 \begin{document}
@@ -833,7 +837,8 @@ If there is not enough data for this scheme, keep reading...
 
 \subsection{Unbiased Estimators of the Risk}
 \label{sec:risk_estimation}
-Under appropriate assumptions, the bias in $\train$ when estimating $\insample$ can be computed analytically, and accounted for.
+Under appropriate assumptions, the bias in $\train$ when estimating $\insample$\footnote{In this case, note that it is $\insample$ being estimated, and not $\test$ nor $\EPE$.} can be computed analytically, and accounted for.
+The bias $\insample-\train$ is called the \emph{optimism} of the algorithm.\marginnote{Optimism}
 Akaike's Information Criterion (AIC), 
 the finite sample Corrected AIC (AICc), 
 Mallow's Cp (Cp), 
@@ -842,7 +847,7 @@ the Minimum Description Description Length (MDL),
 Vapnic's Structural Risk Minimization (SRM), 
 the Deviance Information Criterion (DIC), 
 and the Hannan-Quinn Information Criterion (HQC), 
-all try to estimate $\insample$ or $\test$ under different assumptions.\marginnote{AIC, BIC}
+all try to estimate $\insample$ by correcting for the optimism under different assumptions.\marginnote{Cp, AIC, BIC, MDL, SRM}
 
 The differences, pros, and cons, of each will not be discussed herein. Just remember what they mean when you see them in your favourite software (R!).
 They all have in common that you will want the model with the smallest criterion.
@@ -851,6 +856,7 @@ But be careful- as they are used for model selection, they are indifferent to sc
 \begin{remark}
 Not all model selection criteria estimate $\insample$. The Focused Information Criterion (FIC), for example, does not.
 \end{remark}
+
 
 
 
@@ -865,14 +871,41 @@ For a more rigorous derivation, see \cite{claeskens_model_2008}.
 
 \subsection{Jackknifing}
 \label{sec:jackknife}
-[TODO]
+
+If concerned with over fitting, here is a simple algorithm to estimate the prediction error:
+
+\begin{algorithmic}
+\For {$i \in 1,\dots,n$}
+    \State $\hat{\hyp}^{(i)} \gets$ the learned model with all but the $i$'th observation.
+    \State $\loss^{(i)} \gets$ the loss of $\hat{\hyp}^{(i)}$ on the $i$'th observation.
+\EndFor
+\State \Return the average loss of $\loss^{(i)}$.
+\end{algorithmic}
 
 
+This process is called the \emph{Jackknife}, or \emph{Leave-One-Out--Cross-Validation}. 
+This algorithm return an estimator of $\EPE$.
+This might be quite surprising: every split uses almost an identical sample, so why would it not estimate $\test$? See Section 7.12 in \cite{hastie_elements_2003} for details..
+
+But wait- we might be able to stabilize the variability of the estimated error in every split, if instead of leaving only a single observation aside, we leave some more. This lead to way to \emph{K-Fold Cross Validation} in the next section.
 
 
 \subsection{Cross Validation}
 \label{sec:cv}
-[TODO]
+
+\begin{algorithmic}
+\State Split the data into $\folds$ parts (``folds'').
+\For {$k \in 1,\dots,\folds$}
+    \State $\hat{\hyp}^{(k)} \gets$ the learned model with all \emph{except} the observations in the $\fold$'th fold.
+    \State $\loss^{(\fold)} \gets$ the loss of $\hat{\hyp}^{(\fold)}$ on the observations in the $\fold$'th fold.
+\EndFor
+\State \Return the average of $\loss^{(\fold)}$ .
+\end{algorithmic}
+
+This simple algorithm estimates $\EPE$ without any assumption on the data generating process, and less data than would be required for a ``train-validate-test'' scheme.
+Well, as it actually serves for model selection, it should be seen as a ``train-validate'' scheme, without the ``test'' part. It is thus \emph{not} an unbiased estimate of $\EPE$. See Section 7.12 in \cite{hastie_elements_2003} for details.
+
+
 
 
 %%%%%%%%% Unsupervised %%%%%%%%%%%
