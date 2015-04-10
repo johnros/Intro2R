@@ -85,6 +85,12 @@
 \tableofcontents
 
 
+This text draws from \cite{hastie_elements_2003} and \cite{shalev-shwartz_understanding_2014}.
+The former is freely available online.
+For a softer introduction, with more hands-on examples, see \cite{james_introduction_2013}.
+All books are very well written and strongly recommended.
+
+
 
 \section{Estimation}
 \label{sec:estimation} 
@@ -280,12 +286,11 @@ $
 	\expect{(X-\theta)^2} = 
 	(\expect{X}-\theta)^2 + Var[X]. 
 $
-Clearly $Var[X]$ does not depend on $\theta$  so that $\risk(\theta)$ is minimized by $\theta^*=\expect{X}$.
+Clearly  $Var[X]$ does not depend on $\theta$  so that $\risk(\theta)$ is minimized by $\theta^*=\expect{X}$.
 \textbf{We thus say that the expectation of a random variable is the minimizer of the squared loss.}
 
 How do we estimate the population expectation? Well a natural estimator is the empirical mean, which is also the minimizer of the empirical risk $\riskn(X)$. The proof is immediate by differentiating. 
 \end{example}
-
 
 
 \begin{example}[Least Squares Regression]
@@ -318,14 +323,10 @@ If we set the loss function to be the negative log likelihood of the (true) samp
 
 \section{From Estimation to Supervised Learning}
 \label{sec:learning}
-This section draws from \cite{hastie_elements_2003} and \cite{shalev-shwartz_understanding_2014}.
-The former is freely available online.
-For a softer introduction, with more hands-on examples, see \cite{james_introduction_2013}.
-All books are very well written and strongly recommended.
-
 
 \subsection{Empirical Risk Minimization (ERM) and Inductive Bias}
-In Supervised Learning problems where we want to extract the relation $y=\hyp(x)$ between attributes $x$ and some outcome $y$.
+In Supervised Learning, or \emph{learning with teacher} problems where we want to extract the relation $y=\hyp(x)$ between attributes $x$ and some outcome $y$.
+It is implicit, and essential, that the outcomes are observed. If this is not the case, see Unsupervised Learning (\S\ref{sec:unsupervised})
 The attributes, also know as features, or predictors, are assumed to belong to some \emph{feature space} $\featureS$. \marginnote{Feature Space}
 
 In particular, we don't need to explain the causal process relating the two, so there is no need to commit to a sampling distribution. The implied ERM problem is thus
@@ -980,9 +981,25 @@ For more on the Bootstrap, see \cite{efron_introduction_1994}.
 
 
 %%%%%%%%% Unsupervised %%%%%%%%%%%
+
 \section{Unsupervised Learning}
 \label{sec:unsupervised}
-[TODO]
+
+Unlike Supervised Learning, in Unsupervised Learning there is not outcome variable. There is thus no notion of ``right'' and ``wrong''. We merely want to learn the joint distribution of the data, $X \in \featureS$, and represent it in some way we can understand. 
+Describing the data via it's joint distribution would be nice, but would require many samples if $X$ has a high dimension (by high we mean $p>3$!).
+
+For low dimensional data, aim at learning the joint distribution. 
+For higher dimensions we need to set more modest goals:
+\begin{description}
+\item[Detect high density regions] Find feature combinations which tend to concentrate, hopefully, because the belong to homogenous and interpretable subgroups.
+This goal is discussed in the present section.
+\item[Find low dimensional representations] Find a low dimensional representation of the joint distribution. This allows the learning from realistic sample sizes, and analysis by, e.g., interpretable parameters and visualization.
+This goal is discussed in Section~\ref{sec:dim_reduce}.
+\end{description}
+
+
+\subsection{Density Estimation}
+
 
 
 \subsection{Agglomerative Clustering}
@@ -992,34 +1009,64 @@ For more on the Bootstrap, see \cite{efron_introduction_1994}.
 [TODO]
 
 
+\subsection{Mixtures}
+[TODO]
+
+
+\subsubsection{Association Rules}
+[TODO]
+
+
+
 
 %%%%%%%%% Dimension Reduction %%%%%%%%%%%
 \section{Dimensionality Reduction}
 \label{sec:dim_reduce}
 [TODO]
 
-\subsection{Model Selection}
+\subsection{In Supervised Learning}
+[TODO]
+
+
+\subsubsection{Model Selection}
 [TODO]
 %\cite{foster_variable_2004}
 
-\subsection{LASSO}
-[TODO]
-
-\subsection{PCA}
-[TODO]
-
-\subsection{ICA}
-[TODO]
-
-\subsection{kPCA}
-[TODO]
-
-\subsection{ISOmap}
+\subsubsection{LASSO}
 [TODO]
 
 
-\subsection{LLE}
+\subsection{In unsupervised Learning}
 [TODO]
+
+
+\subsubsection{PCA}
+[TODO]
+
+\subsubsection{Multidimensional Scaling (MDS)}
+[TODO]
+
+
+\subsubsection{Self Organizing Maps}
+[TODO]
+
+
+\subsubsection{Principal Curves}
+[TODO]
+
+\subsubsection{ICA}
+[TODO]
+
+\subsubsection{kPCA}
+[TODO]
+
+\subsubsection{ISOmap}
+[TODO]
+
+
+\subsubsection{LLE}
+[TODO]
+
 
 
 %%%%%%%%% Latent Space Models%%%%%%%%%%%
@@ -1037,12 +1084,19 @@ For more on the Bootstrap, see \cite{efron_introduction_1994}.
 
 
 
+\subsection{Factor Analysis}
+[TODO]
+
+
 \subsection{Hidden Markov}
 [TODO]
 
 
 \subsection{Collaborative Filtering}
 [TODO]
+
+
+
 
 
 
