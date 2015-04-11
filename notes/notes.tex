@@ -40,12 +40,15 @@
 
 \newcommand{\expect}[1]{E\left[ #1 \right]}
 \newcommand{\expectg}[2]{E_{#1}\left[ #2 \right]}
-\newcommand{\expectn}[1]{\mathbb{E}[#1]}
-\newcommand{\gauss}[1]{\mathcal{N}(#1)}
-\newcommand{\cdf}[2]{F_{#1}(#2)}
-\newcommand{\cdfn}[2]{\mathbb{F}_{#1}(#2)}
-\newcommand{\icdf}[2]{F^{-1}_{#1}(#2)}
-\newcommand{\icdfn}[2]{\mathbb{F}^{-1}_{#1}(#2)}
+\newcommand{\expectn}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\gauss}[1]{\mathcal{N}\left(#1\right)}
+\newcommand{\cdf}{F}
+\newcommand{\cdfn}{\mathbb{F}}
+\newcommand{\icdf}{F^{-1}}
+\newcommand{\icdfn}{\mathbb{F}^{-1}}
+\newcommand{\pdf}{p}
+\newcommand{\dist}{P}
+
 \newcommand{\norm}[1]{\Vert #1 \Vert}
 \newcommand{\lik}{\mathcal{L}}
 \newcommand{\loglik}{L}
@@ -62,8 +65,12 @@
 \newcommand{\kernel}{\mathcal{K}}
 \newcommand{\featureS}{\mathcal{X}}
 \newcommand{\indicator}[1]{I_{\{ #1 \}}}
-\newcommand{\density}{f}
 \newcommand{\similarity}{d}
+
+
+
+
+
 
 \newcommand{\sample}{\mathcal{S}}
 \newcommand{\test}{\risk(\hyp)}
@@ -140,18 +147,18 @@ $$
 \subsection{Quantile matching}
 \label{sec:quantiles}
 The fundamental idea: match empirical quantiles to theoretical. 
-Denoting by $\cdf{X}{t}$ the CDF of $X$, then $\icdf{X}{\alpha}$ is the $\alpha$ quantile of $X$.
-Also denoting by $\cdfn{X}{t}$ the Empirical CDF of $X_1,\dots, X_n$, then $\icdfn{X}{\alpha}$ is the $\alpha$ quantile of $X_1,\dots, X_n$.
+Denoting by $\cdf_X(t)$ the CDF of $X$, then $\icdf_X(\alpha)$ is the $\alpha$ quantile of $X$.
+Also denoting by $\cdfn_X(t)$ the Empirical CDF of $X_1,\dots, X_n$, then $\icdfn_X(\alpha)$ is the $\alpha$ quantile of $X_1,\dots, X_n$.
 The quantile matching method thus implies estimating
-$$ \icdf{X}{\alpha}   $$
+$$ \icdf_X(\alpha)   $$
 by 
-$$ \icdfn{X}{\alpha}  . $$
+$$ \icdfn_X(\alpha)  . $$
 
 \begin{example}[Exponential rate]
 Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 \begin{align*}
-	& \cdf{X}{t} = 1-\exp(-\lambda t) = \alpha \Rightarrow \\
-	& \icdf{X}{\alpha} = \frac{-\log(1-\alpha)}{\lambda} \Rightarrow \\
+	& \cdf_X(t) = 1-\exp(-\lambda t) = \alpha \Rightarrow \\
+	& \icdf_X(\alpha) = \frac{-\log(1-\alpha)}{\lambda} \Rightarrow \\
 	& \icdf{X}{0.5} = \frac{-\log(0.5)}{\lambda} \Rightarrow \\
 	& \hat{\lambda} = \frac{-\log(0.5)}{\icdfn{X}{0.5}}.
 \end{align*}
@@ -1016,6 +1023,7 @@ This is known as a \emph{generative} model, as we try to learn the full data gen
 
 
 \subsection{Density Estimation}
+\label{sec:density_estimation}
 
 \subsubsection{Parametric Density Estimation}
 Density estimation deals with the learning of the data generating distribution.
@@ -1029,7 +1037,7 @@ Much like the Kernel Smoothing regression, a \naive estimator is the moving aver
 A natural generalization, in the spirit of the Nadaraya-Watson smoother (Eq.(\ref{eq:nadaraya_watson})) is the \emph{Parzen} estimate:\marginnote{Parzen Estimate}
 \begin{align}
 \label{eq:parzen}
-	\hat{\density}(x):=\frac{1}{n \lambda} \sum_{i=1}^n \kernel_\lambda(x,x_i).
+	\hat{\pdf}(x):=\frac{1}{n \lambda} \sum_{i=1}^n \kernel_\lambda(x,x_i).
 \end{align}
 
 \begin{remark}
@@ -1103,14 +1111,48 @@ See Section 14.3.10 in \cite{hastie_elements_2003}.
 % Generative models %
 
 \section{Generative Models}
+For the mere purpose of making a prediction, we do not need to learn the full data generating distribution $\dist(y,x)$. 
+Knowing this distribution, however, does permit to make predictions, via Bayes Theorem: 
+$\dist(y|x)=\frac{\dist(y,x)}{\int\dist(y,x)dy}$.
+Several supervised and unsupervised methods make use of this relation to make predictions. These are known as \emph{generative models} .
+Since the generative distribution serves both in supervised and unsupervised learning, we have dedicated it a section of its own.
+
+\subsection{Density Estimation}
+Clearly, the trivial generative model is the density estimation, discussed in Section~\ref{sec:density_estimation}.
+
 
 \subsection{Fisher's Linear Discriminant Analysis (LDA)}
 \label{sec:lda}
-[TODO]
+The fundamental idea behind Fisher's LDA (sometimes, just LDA) is that for dichotomous $y$'s: $\dist(x|y)$ is multivariate Gaussian, with the same covariance for all $y$.
+Estimating $\dist(x|y)$ thus amounts to the estimation of the mean and covariance, which are fairly simple problems that do not require too much data (relatively).
+
+The decision boundaries of this method turn out to be linear in $\featureS$. 
+Denoting the distance from the class centers by $\hat{\delta}:=(\hat{\mu}_1-\hat{\mu}_2)$, class thus 2 will be predicted if 
+\begin{align}
+	x' \hat{\Sigma}^{-1} \hat{\delta} > \frac{1}{2} \hat{\delta}' \hat{\Sigma}^{-1} \hat{\delta}
+\end{align}
+and class 1 otherwise.
+
+
+\paragraph{Relation to OLS classification}
+Interestingly, the two-class LDA, is the same as a regression classifier from  Section~\ref{sec:regression_classifier} \cite[Eq. 4.11 ]{hastie_elements_2003}.
+
+
+
+\subsection{Fisher's Quadratic Discriminant Analysis (QDA)}
+If you are uncomfortable with the fixed covariance assumption of LDA, one can relax thus assumption.
+This leads to QDA, which is more flexible than LDA, requiring slightly more data, but permitting the learning of a class of quadratic classifiers, and not only linear.
+
+
+
+
+
 
 \subsection{\Naive Bayes}
 \label{sec:naive_bayes}
-[TODO]
+In LDA we dealt with the problem of estimating high dimensional distributions by adding the class-wise Gaussianity assumption. As Gaussians as fairly simple to learn from data, if there is any truth to this assumption, our life improved. 
+Another life-simplifying assumption, replacing the Gaussianity assumption, is that $\dist(x|y)$ is the product of the margins, i.e., the the features are independent within each class: $\dist(x|y)=\prod_{j=1}^p\dist(x_j|y)$
+This greatly simplifies things as estimating the univariate marginal distributions $\dist(x_j|y)$ is a fairly simple problem, which can be done non-parametrically by Kernel smoothing for continuous predictors (\S\ref{sec:kernel}), and simple relative frequencies for discrete predictors. 
 
 
 %%%%%%%%% Dimension Reduction %%%%%%%%%%%
