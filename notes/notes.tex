@@ -761,9 +761,13 @@ While KNN is a universal approximator, it is notoriously known to require many o
 
 \subsection{Kernel Smoothing}
 \label{sec:kernel}
+
 Not to be confused with the Kernel Trick in Kernel SVM, Kernel PCA, and Kernel Regression.
+
 Kernel \emph{smoothing} is essentially a generalization of a moving average.
-The \emph{Nadaraya-Watson} weighted average is defined as \marginnote{Nadaraya-Watson}
+It is also known as a \emph{scan statistic}, or \emph{searchlight statistic}.\marginnote{Scan Statistic}
+
+The \emph{Nadaraya-Watson} weighted average encompasses most if not all kernel smoothers and is defined as \marginnote{Nadaraya-Watson}
 \begin{align}
 \label{eq:nadaraya_watson}
 	\hat{\hyp}(x):= \frac{\sum_i \kernel_\lambda(x,x_i)y_i}{\sum_i \kernel_\lambda(x,x_i)}
@@ -801,9 +805,19 @@ Another way to marry the two ideas, is by performing EMR only locally, in each n
 
 
 
-\subsection{Local Regression (LOESS)}
+\subsubsection{Local Regression (LOESS)}
 \label{sec:loess}
-[TODO]
+
+While not the original historical motivation, we can think of LOESS as a kernel ERM problem. 
+I.e., minimizing the squared loss, in a sliding window, over some very simple hypothesis class, with weighted observations.
+
+It is more flexible than kernel smoothing.
+An intuition to this can be gained by thinking of kernel smoothing as fitting a local regression with an intercept only, while LOESS also allows local polynomials.
+
+It has several attractive statistical properties. In particular, it can also be used for estimation gradients more accurately than by using simple differences. 
+This flexibility however comes at a slight computational cost. 
+It is thus rare to see high dimensional ($p \geq 3$) LOESS fits, even though the theory can easily be generalized to higher dimensions.
+
 
 
 
