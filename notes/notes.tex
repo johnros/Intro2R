@@ -996,7 +996,60 @@ For more on the Bootstrap, see \cite{efron_introduction_1994}.
 % Ensembels %
 \section{Ensembles}
 \label{sec:ensembles}
+
+Our inductive bias constrains the hypothesis class so that we do not overfit the data. 
+It is overly optimistic to think that nature generates samples in accord with our own inductive bias.
+Ensemble learning is a ``meta'' class of algorithms, in which we do not confine ourselves to selecting a single $\hyp$ but rather to selecting (finitely) many, and them aggregating them into a single predictor.
+This is a very flexible framework that might actually return classifiers that do not belong to any of the classes of the hypothesis constituting it. As such, it is an \emph{improper learning} algorithm.\marginnote{Improper Learning}.
+
+One might consider many combinations of hypothesis classes, learning methods and aggregation schemes.
+Several celebrated algorithms fall in this class. 
+
+
+
+\begin{remark}
+As opposed to a \emph{strong learner}, a \emph{weak learner} is a learning algorithm that is only partially optimized for the observed data. 
+Some of the above algorithms are motivated by the idea of combining many weak learners from the same $\hypclass$ to return a strong learner. 
+Such is the Bagging algorithm. \marginnote{Weak/ Strong Learner}
+It has been noted, however, that it is preferable\footnote{Statistically, not necessarily computationally.}  to combine strong learners from different hypothesis classes, then to combine weak learners from the same hypothesis class \cite{gashler_decision_2008}.
+\end{remark}
+
+
+\subsection{Bayes Optimal Classifier}
 [TODO]
+
+\subsection{Bootstrap Averaging (Bagging)}
+
+Generates bootstrap samples and averages the learned predictors (see Algorithm~\ref{algo:bagging}). A \emph{random forrest} is such an algorithm, when CARTs are fitted and averaged. 
+\begin{algorithm}[H]
+\caption{Bagging}
+\label{algo:bagging}
+\begin{algorithmic}
+\State Choose the number Bootstraps $\bootstraps$.
+\For{$ \bootstrap \in 1,\dots,\bootstraps$}
+	\State Generate a bootstrap sample of size $n$: $\sample_\bootstrap$.
+	\State Learn $\hat{\hyp}(x)_{\bootstrap}$ from $\sample_\bootstrap$.
+\EndFor
+\State $\bar{\hyp}(x) \gets$ the average of $\hat{\hyp}(x)_{\bootstrap}$.
+\State \Return $\bar{\hyp}(x)$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Boosting}
+See Section~\ref{sec:boosting}.
+
+\subsection{Bayesian Model Averaging}
+[TODO]
+
+\subsection{Bayesian Model Combination}
+[TODO]
+
+\subsection{Bucket of Models}
+[TODO]
+
+\subsection{Stacking}
+[TODO]
+
 
 
 
