@@ -655,7 +655,7 @@ CARTs are a type of ERM where $\hyp(x)$ include very non smooth functions that c
 
 The hypothesis class of CARTs includes functions of the form
 \begin{align}
-\label{eq:cart}
+\label{eq:decision_list}
 	\hyp(x)=\sum_{m=1}^M c_m \indicator{x \in R_m}
 \end{align}
 where $I_A$ is the indicator function of the event $A$.
@@ -667,7 +667,7 @@ As $\hyp(x)$ is defined over indicator functions, CARTs have no difficulty to de
 
 \paragraph{Optimization}
 As searching over all possible partitions of the $x$'s to optimize $\{R_m\}_{m=1}^M$ is computationally impossible, optimization is done is a greedy fashion, by splitting on each variable $x_j$ at a time.
-The problem presented in Eq.~\ref{eq:cart} is actually a decision \emph{list}. It is the nature of the optimization that makes the solution a decision \emph{tree}.\marginnote{Decision List}
+The problem presented in Eq.~\ref{eq:decision_list} is actually a decision \emph{list}. It is the nature of the optimization that makes the solution a decision \emph{tree}.\marginnote{Decision List}
 
 
 \paragraph{Loss Functions}
@@ -1021,8 +1021,8 @@ This section follows the lines of Chapter 8 in \cite{hastie_elements_2003}.
 
 Our inductive bias constrains the hypothesis class so that we do not overfit the data. 
 It is overly optimistic to think that nature generates samples in accord with our own inductive bias.
-Ensemble learning is a ``meta'' class of algorithms, in which we do not confine ourselves to selecting a single $\hyp$ but rather to selecting (finitely) many, and them aggregating them into a single predictor.
-This is a very flexible framework that might actually return classifiers that do not belong to any of the classes of the hypothesis constituting it. As such, it is an \emph{improper learning} algorithm.\marginnote{Improper Learning}.
+Ensemble learning is a ``meta'' class of algorithms, in which we do not confine ourselves to selecting a single $\hyp$ but rather to selecting (finitely) many, possibly from different classes, and them aggregating them into a single predictor.
+This is a very flexible framework that might actually return classifiers that do not belong to any of underlying hypothesis classes. As such, it is an \emph{improper learning} algorithm.\marginnote{Improper Learning}.
 
 One might consider many combinations of hypothesis classes, learning methods and aggregation schemes.
 Several celebrated algorithms fall in this class. 
@@ -1130,25 +1130,8 @@ A \emph{random forrest} is such an algorithm, when CARTs are fitted and averaged
 
 
 \subsection{Boosting}
-See Section~\ref{sec:boosting}.
+The Boosting algorithm in Section~\ref{sec:boosting} might have the flavour of an Ensemble method, but it should be seen as a regularization scheme. Moving on...
 
-
-
-
-\subsection{Bayes Optimal Classifier}
-[TODO]
-
-
-
-
-
-\subsection{Bayesian Model Combination}
-[TODO]
-
-
-
-\subsection{Bucket of Models}
-[TODO]
 
 
 
@@ -1208,9 +1191,12 @@ If you have been convinced by the use of KNN (\S\ref{sec:knn}) for regression (o
 As previously stated, these methods may fail when $x$ are high dimensional. We thus recur to other methods.
 
 
-\subsection{Detect High Density Regions}
+\subsection{Detect High Density Regions- Cluster Analysis}
 When data data is high dimensional so that we cannot perform density estimation, or when we are merely interested in grouping observations, we can still detect high density regions where observations ``clump'' together. Hopefully, into meaningful homogenous groups.
-These groups are called \emph{clusters}, thus these methods are known as \emph{cluster analysis}, or \emph{data segmentation} methods.\marginnote{Cluster Analysis, Data Segmentation}
+The following methods are thus also known a \emph{bump hunting} or \emph{mode finding}.\marginnote{Bump Hunting}
+They are all different heuristic algorithms that return high density regions. Either defined as groups of observations, or as regions in the feature space $\featureS$.
+
+Groups identified are called \emph{clusters}, thus these methods are known as \emph{cluster analysis}, or \emph{data segmentation} methods.
 
 Since these methods are aim at detecting data clustering, they clearly imply the availability of some measure of distance, or similarity, between data points. 
 
@@ -1266,7 +1252,18 @@ See Section 14.3.10 in \cite{hastie_elements_2003}.
 
 \subsubsection{Association Rules}
 \label{sec:association}
-[TODO]
+Association rules, or \emph{market basket analysis} can be seen as approximating the joint distribution with a region-wise constant function (Eq.~\ref{eq:decision_list}).\marginnote{Market Basket Analysis}
+Put differently, we want to capture high density regions of the joint distribution of $x$ with a decision-list (not tree) mode.
+Learning a decision-list is a computationally impractical problem in general. Association rules are thus typically learned over binary feature spaces $\featureS$, using heuristic optimization schemes.
+
+This type of problems typically occurs in sales analysis, where vendors seek for combinations of products that tend to sell jointly (so that can design the store better, or discount product bundles).
+
+The \emph{Aprioiri} algorithm \cite{agraval_fast_1994}, is an example of such a heuristic search for high density combinations.\marginnote{Apriori Algorithm}
+
+
+
+
+
 
 
 % Generative models %
