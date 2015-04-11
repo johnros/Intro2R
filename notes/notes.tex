@@ -714,9 +714,6 @@ In the presence of $p>1$ predictors, Eq.(\ref{eq:smoothing_spline}) can be gener
 where $J$ is some matrix norm. A natural extension is the squared Frobenius norm\footnote{The Frobenius matrix norm is the sum of squares over all elements: $\norm{A}^2_F=\sum_{i,j} A_{i,j}^2$ }, which returns a \emph{thin plate spline} as the risk minimizer.\marginnote{Thin Plate Spline}
 
 
-\subsection{Bumping}
-\label{sec:bumping}
-[TODO]
 
 
 %%%%% NON ERM %%%%%%%%
@@ -811,8 +808,17 @@ Another way to marry the two ideas, is by performing EMR only locally, in each n
 
 \subsection{Boosting}
 \label{sec:boosting}
-[TODO]
 
+Boosting is not an ERM problem, but rather an (meta-)optimization scheme due to \cite{schapire_strength_1990}.
+A \emph{weak learner} is a learning algorithm slightly better than random guessing. 
+The fundamental idea in Boosting is that a \emph{strong learner} is obtained by starting with some weak learner, then training a series of these on the data, while re-weighting the data points inversely to the error, and then taking a weighted average of the series of learners as a (strong) predictor.
+
+The ADABoost algorithm \citep{freund_decision-theoretic_1997} is an instance of Boosted when applied to CARTs.\marginnote{ADABoost}
+
+It was initially quite surprising and magical that this heuristic algorithm can produce the great predictors it does. 
+It was later shown that ADABoost can be seen as a greedy, self regularizing, optimization algorithm to solving an ERM with log-likelihood loss \citep{friedman_additive_2000} over the CART hypothesis class.
+
+For more on Boosting and ADABoost see Chapter 10 in \cite{hastie_elements_2003}.
 
 
 
@@ -1011,6 +1017,8 @@ For more on the Bootstrap, see \cite{efron_introduction_1994}.
 \section{Ensembles}
 \label{sec:ensembles}
 
+This section follows the lines of Chapter 8 in \cite{hastie_elements_2003}.
+
 Our inductive bias constrains the hypothesis class so that we do not overfit the data. 
 It is overly optimistic to think that nature generates samples in accord with our own inductive bias.
 Ensemble learning is a ``meta'' class of algorithms, in which we do not confine ourselves to selecting a single $\hyp$ but rather to selecting (finitely) many, and them aggregating them into a single predictor.
@@ -1027,6 +1035,8 @@ Some of the above algorithms are motivated by the idea of combining many weak le
 Such is the Bagging algorithm. \marginnote{Weak/ Strong Learner}
 It has been noted, however, that it is preferable\footnote{Statistically, not necessarily computationally.}  to combine strong learners from different hypothesis classes, then to combine weak learners from the same hypothesis class \cite{gashler_decision_2008}.
 \end{remark}
+
+
 
 
 \subsection{Committee Methods}
@@ -1097,7 +1107,12 @@ Here is  stacking example for a continuous $y$:
 
 \subsection{Bootstrap Averaging (Bagging)}
 
-Generates bootstrap samples and averages the learned predictors (see Algorithm~\ref{algo:bagging}). A \emph{random forrest} is such an algorithm, when CARTs are fitted and averaged. 
+Generates bootstrap samples and averages the learned predictors (see Algorithm~\ref{algo:bagging}). 
+While seemingly completely frequentist, the Bootstrap average can be seen as an estimator of the posterior mean for some non-parametric prior.
+
+A \emph{random forrest} is such an algorithm, when CARTs are fitted and averaged. \marginnote{Random Forrest}
+
+
 \begin{algorithm}[H]
 \caption{Bagging}
 \label{algo:bagging}
@@ -1111,6 +1126,8 @@ Generates bootstrap samples and averages the learned predictors (see Algorithm~\
 \State \Return $\bar{\hyp}(x)$
 \end{algorithmic}
 \end{algorithm}
+
+
 
 \subsection{Boosting}
 See Section~\ref{sec:boosting}.
