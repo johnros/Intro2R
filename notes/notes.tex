@@ -66,6 +66,8 @@
 \newcommand{\featureS}{\mathcal{X}}
 \newcommand{\indicator}[1]{I_{\{ #1 \}}}
 \newcommand{\similarity}{d}
+\newcommand{\manifold}{\mathcal{M}}
+\newcommand{\project}{\hookrightarrow}
 
 
 
@@ -797,7 +799,9 @@ Another way to marry the two ideas, is by performing EMR only locally, in each n
 \label{sec:loess}
 [TODO]
 
-
+\subsection{Boosting}
+\label{sec:boosting}
+[TODO]
 
 %%%%%%%%% Statistical Descision Theory %%%%%%%%%%%
 
@@ -1158,10 +1162,19 @@ This greatly simplifies things as estimating the univariate marginal distributio
 %%%%%%%%% Dimension Reduction %%%%%%%%%%%
 \section{Dimensionality Reduction}
 \label{sec:dim_reduce}
-[TODO]
+The fundamental idea behind dimensionality reduction is that while $\featureS$ may be high dimensional, thus $\dist(X)$ hard to learn, there is hope that $x$ does not really vary in the whole space. If indeed the mass of $\dist(X)$ is concentrated around some low dimensional manifold $\manifold$, then the original problem might be approximated to learning the distribution of the projection $\dist(X \project \manifold)$ on $\manifold$. Being low dimensional, by assumption, our life has improved again. 
+
+A similar reasoning justifies dimensionality reduction in supervised learning. While $\dist(X)$ might vary in the whole $\featureS$, but there might be only few directions which carry information on $y$. Learning $\dist(Y|X)$ can thus be well approximated by $\dist(Y|X \project \manifold)$.
+
+
+\begin{remark}
+The subspace $\manifold$, which approximates $\dist(X)$ may differ than the one that approximates $\dist(Y|X)$. Despite this, it is still quite common for a supervised learning problem to be preceeded by an unsupervised dimensionality reduction stage.
+\end{remark}
+
+
 
 \subsection{Dimensionality Reduction In Supervised Learning}
-[TODO]
+\label{sec:dim_reduce_supervised}
 
 
 \subsubsection{Model Selection}
@@ -1173,7 +1186,7 @@ This greatly simplifies things as estimating the univariate marginal distributio
 
 
 \subsection{Dimensionality Reduction in Unsupervised Learning}
-[TODO]
+\label{sec:dim_reduce_unsupervised}
 
 
 \subsubsection{PCA}
