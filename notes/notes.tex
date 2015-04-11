@@ -70,6 +70,10 @@
 \newcommand{\project}{\hookrightarrow}
 
 
+\newcommand{\ensembleSize}{M}
+\newcommand{\ensembleInd}{m}
+
+
 
 
 
@@ -710,7 +714,9 @@ In the presence of $p>1$ predictors, Eq.(\ref{eq:smoothing_spline}) can be gener
 where $J$ is some matrix norm. A natural extension is the squared Frobenius norm\footnote{The Frobenius matrix norm is the sum of squares over all elements: $\norm{A}^2_F=\sum_{i,j} A_{i,j}^2$ }, which returns a \emph{thin plate spline} as the risk minimizer.\marginnote{Thin Plate Spline}
 
 
-
+\subsection{Bumping}
+\label{sec:bumping}
+[TODO]
 
 
 %%%%% NON ERM %%%%%%%%
@@ -795,13 +801,21 @@ We have already seen that Kernel Smoothing plays a part within some ERM algorith
 
 Another way to marry the two ideas, is by performing EMR only locally, in each neighbourhood of data points defined by a kernel. This idea is very powerful and leads to, e.g., the LOESS (\S \ref{sec:loess}) and \emph{Local Likelihood} methods.
 
+
+
 \subsection{Local Regression (LOESS)}
 \label{sec:loess}
 [TODO]
 
+
+
 \subsection{Boosting}
 \label{sec:boosting}
 [TODO]
+
+
+
+
 
 %%%%%%%%% Statistical Descision Theory %%%%%%%%%%%
 
@@ -1015,8 +1029,71 @@ It has been noted, however, that it is preferable\footnote{Statistically, not ne
 \end{remark}
 
 
-\subsection{Bayes Optimal Classifier}
-[TODO]
+\subsection{Committee Methods}
+Considering a set of $\ensembleSize$ candidate learning algorithms, a \emph{committee method} is simply an average of the $\ensembleSize$ predictors:
+
+\begin{algorithm}[H]
+\caption{Commitee Methods}
+\label{algo:committee}
+\begin{algorithmic}
+\State For $\ensembleSize$ candidate learning algorithms.
+\For{$ \ensembleInd \in 1,\dots,\ensembleSize$}
+	\State $\hat{\hyp}^\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm.
+\EndFor
+\State $\bar{\hyp}(x) \gets$ the average of $\hat{\hyp}^\ensembleInd(x)$. 
+\State \Return $\bar{\hyp}(x)$
+\end{algorithmic}
+\end{algorithm}
+
+This concept can be generalized by considering different aggregation schemes. The following (meta-)algorithms are merely different aggregation schemes. Most, if not all, can be seen as minimizers of some posterior expected loss. I.e., they minimize some risk with respect to the posterior probabilities of $\{\hat{\hyp}^\ensembleInd(x) \}_{\ensembleInd=1}^\ensembleSize $.
+
+
+\subsection{Bayesian Model Averaging}
+The idea of \emph{Bayesian model averaging} is that of using the posterior mean as a predictor. 
+Computing the posterior mean can be quite a tedious task. 
+When dealing with hypotheses from the same parametric class, a more practical approach is that of \emph{inverse BIC weighting}. 
+This is justified by that fact that the BIC (\S\ref{sec:risk_estimation}) is approximately proportional to the posterior probability of $\{\hat{\hyp}^\ensembleInd(x)$.
+
+
+\begin{algorithm}[H]
+\caption{Model Averaging}
+\label{algo:model_averaging}
+\begin{algorithmic}
+\State For $\ensembleSize$ candidate learning algorithms.
+\For{$ \ensembleInd \in 1,\dots,\ensembleSize$}
+	\State $\hat{\hyp}^\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm.
+	\State $BIC^\ensembleInd \gets$ the BIC of $\hat{\hyp}^\ensembleInd(x)$.
+\EndFor
+\State $\bar{\hyp}(x) \gets$ the average of $\hat{\hyp}^\ensembleInd(x)$ inversely weighted by $BIC^\ensembleInd$. 
+\State \Return $\bar{\hyp}(x)$
+\end{algorithmic}
+\end{algorithm}
+
+$BIC$ is used as weights as it approximates the posterior 
+
+
+
+\subsection{Stacking}
+A simple and powerful (meta-)algorithm by which you train several predictors, and then use their predictions as features for a new predictor. 
+A built-in Jackknifing (or Cross Validation) ensures over-fit models are not overweighted.
+Here is  stacking example for a continuous $y$:
+
+\begin{algorithm}[H]
+\caption{Stacking}
+\label{algo:stacking}
+\begin{algorithmic}
+\State For $\ensembleSize$ candidate learning algorithms.
+\For{$ i \in 1,\dots,n$}
+	\For{$ \ensembleInd \in 1,\dots \ensembleSize $}
+		\State $\hat{\hyp}^{(i)}_\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm, and without the $i$'th observation.
+	\EndFor
+\EndFor
+\State $\bar{\hyp}(x_i) \gets$ the OLS prediction using $\{ \hat{\hyp}^{(i)}_\ensembleInd(x_i)\}_{\ensembleInd=1}^\ensembleSize$ as features. 
+\State \Return $\bar{\hyp}(x)$
+\end{algorithmic}
+\end{algorithm}
+
+
 
 \subsection{Bootstrap Averaging (Bagging)}
 
@@ -1038,17 +1115,24 @@ Generates bootstrap samples and averages the learned predictors (see Algorithm~\
 \subsection{Boosting}
 See Section~\ref{sec:boosting}.
 
-\subsection{Bayesian Model Averaging}
+
+
+
+\subsection{Bayes Optimal Classifier}
 [TODO]
+
+
+
+
 
 \subsection{Bayesian Model Combination}
 [TODO]
 
+
+
 \subsection{Bucket of Models}
 [TODO]
 
-\subsection{Stacking}
-[TODO]
 
 
 
