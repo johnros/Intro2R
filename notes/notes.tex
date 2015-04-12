@@ -1444,7 +1444,12 @@ $D$ is a $p \times p$ diagonal matrix with diagonal elements $d_1 \geq d_2 \geq 
 $V$ is a $p \times p$ orthogonal matrix ($V'V=I_p$).
 \end{definition}
 
-The solution to Eq.(\ref{eq:PCA}) is $\hat{\projectMat}_\rank=V_\rank'V_\rank$, where $V_\rank$ are the first $\rank$ columns of $V$.
+The solution to Eq.(\ref{eq:PCA}) is 
+\begin{align}
+\label{eq:PCA_solution}
+	\hat{\projectMat}_\rank=V_\rank'V_\rank,
+\end{align}
+where $V_\rank$ are the first $\rank$ columns of $V$.
 
 
 \paragraph{Nomenclature}
@@ -1456,12 +1461,14 @@ Here are some terms needed to understand PCA outputs:
 \end{itemize}
 
 
-\paragraph{Intuition}
-The points to clarify: 
-(1) How does the ERM problem capture our motivation of finding direction with most variance.
-(2) Why is does $\hat{\projectMat_\rank}$ solve the problem?
-
-Starting with (1):
+%\paragraph{Intuition}
+%The main point to clarify is why is does $\hat{\projectMat_\rank}$ in Eq.(\ref{eq:PCA_solution}) solve Eq.(\ref{eq:PCA})?
+%The intuition we offer is via OLS.
+%As an OLS problem, we seek to predict $X$ with $X$, where $\beta$ is not a $p \times 1$ vector, but rather a $p \times p$ matrix of rank $\rank$.
+%X (X'X)^{-1} X'X
+%
+%The intuition we offer is that because PCA is essentially a squared loss problem, it is solved by $\rank$ dimensional subspace that captures most of the variance in $X$. 
+%The variance in $X$ is clearly $X'X$ so we would like a low dimensional representation of $X$, $\projectMat_\rank X$, that conserves $X'X$ as much as it can.
 
 
 
