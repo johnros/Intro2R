@@ -153,6 +153,7 @@ $$
 
 \subsection{Quantile matching}
 \label{sec:quantiles}
+
 The fundamental idea: match empirical quantiles to theoretical. 
 Denoting by $\cdf_X(t)$ the CDF of $X$, then $\icdf_X(\alpha)$ is the $\alpha$ quantile of $X$.
 Also denoting by $\cdfn_X(t)$ the Empirical CDF of $X_1,\dots, X_n$, then $\icdfn_X(\alpha)$ is the $\alpha$ quantile of $X_1,\dots, X_n$.
@@ -209,13 +210,16 @@ $$
 $$
 We denote $n_{ij}$ the total number of observed transitions from $i$ to $j$ and get that $\hat{p}_1=\frac{n_{01}}{n_{01}+n_{00}}$, and that $\hat{p}_2=\frac{n_{11}}{n_{11}+n_{10}}$.
 
-\begin{remark}
-Well, this is a rather artificial example, as because of the Markov property, and the stationarity of the process, we only need to look at transition events, themselves Brenoulli distributed. 
+\begin{remark}[Confession]
+Well, this is a rather artificial example, as because of the Markov property, and the stationarity of the process, we only need to look at transition events, themselves Bernoulli distributed. 
 This example does show, however, the power of the ML method to deal with non i.i.d. samples. As does the next example.
 \end{remark}
 \end{example}
 
-\begin{example}[Brownian motion with drift]
+
+
+
+\begin{example}[Autoregression of order 1 (AR(1))]
 Estimate the drift parameter $a$,  in a discrete time Gaussian process where:
 $X_{t+1}=X_t+\varepsilon; \varepsilon \sim \gauss{0,\sigma^2} \Rightarrow X_{t+1}|X_t \sim \gauss{a X_t,\sigma^2}$.
 
@@ -241,6 +245,9 @@ See that $Cov[X_{t+1},X_t] = a \; Var[X_t] \Rightarrow a=\frac{Cov[X_{t+1},X_t]}
 So $a$ can also be derived using the moment matching method which is probably more intuitive.
 
 \end{example}
+
+
+
 
 \begin{example}[Linear Regression]
 
@@ -397,6 +404,8 @@ Most if not all extensions of OLS, such as Generalized Least Squared (GLS) and G
 
 
 \subsection{Ridge Regression}
+\label{sec:ridge}
+
 Consider the Ridge regression problem:
 \begin{align}
 \label{eq:ridge}
@@ -418,6 +427,8 @@ For more on Ridge regression see \cite{hastie_elements_2003}.
 
 
 \subsection{LASSO}
+\label{sec:lasso}
+
 Consider the LASSO problem:
 \begin{align}
 \label{eq:lasso}
@@ -1378,11 +1389,21 @@ The bottom line is however, that a \textbf{significant variable, does not make i
 \end{remark}
 
 \subsubsection{LASSO}
+We presented the LASSO in Section \ref{sec:lasso} as a regularized ERM problem.
+We claimed, without proof, that the $l_1$ regularization in fact performs soft coefficient thresholding. The estimated $\hat{\beta}_{LASSO}$ has thus many entries set to zero, acting as a model selection device. 
+
+
+
+\subsubsection{Partial Least Squares (PLS)}
+\label{sec:pls}
 [TODO]
 
 
 \subsection{Dimensionality Reduction in Unsupervised Learning}
 \label{sec:dim_reduce_unsupervised}
+
+
+
 
 
 \subsubsection{PCA}
