@@ -1278,8 +1278,8 @@ See Section 14.3.10 in \cite{hastie_elements_2003}.
 
 \subsubsection{Association Rules}
 \label{sec:association}
-Association rules, or \emph{market basket analysis} can be seen as approximating the joint distribution with a region-wise constant function (Eq.~\ref{eq:decision_list}).\marginnote{Market Basket Analysis}
-Put differently, we want to capture high density regions of the joint distribution of $x$ with a decision-list (not tree) mode.
+Association rules, or \emph{market basket analysis}, or \emph{affinity analysis}, can be seen as approximating the joint distribution with a region-wise constant function (Eq.~\ref{eq:decision_list}).\marginnote{Market Basket Analysis}
+Put differently, we want to capture high density regions of the joint distribution of $x$ with by approximating it with a decision-list (not tree).
 Learning a decision-list is a computationally impractical problem in general. Association rules are thus typically learned over binary feature spaces $\featureS$, using heuristic optimization schemes.
 
 This type of problems typically occurs in sales analysis, where vendors seek for combinations of products that tend to sell jointly (so that can design the store better, or discount product bundles).
@@ -1397,6 +1397,8 @@ We claimed, without proof, that the $l_1$ regularization in fact performs soft c
 \subsubsection{Partial Least Squares (PLS)}
 \label{sec:pls}
 [TODO]
+
+
 
 
 \subsection{Dimensionality Reduction in Unsupervised Learning}
