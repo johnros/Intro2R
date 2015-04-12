@@ -1331,7 +1331,9 @@ This greatly simplifies things as estimating the univariate marginal distributio
 %%%%%%%%% Dimension Reduction %%%%%%%%%%%
 \section{Dimensionality Reduction}
 \label{sec:dim_reduce}
-The fundamental idea behind dimensionality reduction is that while $\featureS$ may be high dimensional, thus $\dist(X)$ hard to learn, there is hope that $x$ does not really vary in the whole space. If indeed the mass of $\dist(X)$ is concentrated around some low dimensional manifold $\manifold$, then the original problem might be approximated to learning the distribution of the projection $\dist(X \project \manifold)$ on $\manifold$. Being low dimensional, by assumption, our life has improved again. 
+The fundamental idea behind dimensionality reduction is that while $\featureS$ may be high dimensional, thus $\dist(X)$ hard to learn, there is hope that $x$ does not really vary in the whole space. 
+If the mass of $\dist(X)$ is concentrated around some low dimensional manifold $\manifold$, then the original problem might be approximated to learning the distribution of the projection $\dist(X \project \manifold)$ on $\manifold$. 
+If $\manifold$ is fairly low dimensional, we may now visualize and analyze $\dist(X \project \manifold)$ with fairly simple tools.
 
 A similar reasoning justifies dimensionality reduction in supervised learning. While $\dist(X)$ might vary in the whole $\featureS$, but there might be only few directions which carry information on $y$. Learning $\dist(Y|X)$ can thus be well approximated by $\dist(Y|X \project \manifold)$.
 
@@ -1344,11 +1346,36 @@ The subspace $\manifold$, which approximates $\dist(X)$ may differ than the one 
 
 \subsection{Dimensionality Reduction In Supervised Learning}
 \label{sec:dim_reduce_supervised}
-[TODO]
+We start with finding a low representation of $x$ that predicts $y$.
+This practice has several different motivations. As a regularization device avoiding overfitting, and  as a computational device reducing memory and time complexity. 
 
 \subsubsection{Variable Selection}
-[TODO]
-%\cite{foster_variable_2004}
+A trivial way of reducing the dimension of $x$ is by dropping some of it components. 
+Clearly, with $p$ variables, there are $2^p$ possible variable combinations. Searching over all possible variable combinations is called \emph{subset selection}, but is rarely performed in practice due to computational complexity. It more practical to perform a \emph{forward search}, i.e., a greedy search where we insert on variable at a time.\marginnote{Subset Selection}
+The search stops when the next variable does not improve the model's accuracy. 
+While tempting, measuring the accuracy using the empirical risk will certainly lead to overfitting (see Figure~\ref{fig:bias_variance}).
+We can thus drive the search with a CV scheme, but the computational burden might be overwhelming. Using some estimator of $\risk$ auch as AIC, BIC,... is a reasonable and practical way to guide the search.
+
+
+\begin{algorithm}[H]
+\caption{Forward Search}
+\begin{algorithmic}
+\State Pick your favourite model selection criterion $\hat{\risk}(x)$.
+\While{$\hat{\risk}(x)$ keeps getting smaller}
+    \State $\hat{\hyp} \gets$ the model with the smallest $\hat{\risk}(x)$ after adding a \emph{single} variable.
+\EndWhile
+\State \Return $\hat{\risk}(x)$.
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\begin{remark}[Hypothesis Testing Driven Variable Selection]
+For a statistician , it is probably very natural to guide a forward search with hypothesis testing. I.e., at each iteration, insert the variable with the most significance. 
+Note however, that when interested in good predictions, we might actually gain accuracy by dropping a significant variable. This is a classica bias-variance tradeoff: dropping a true predictor adds bias, but reduces the variance as we have one less parameter to estimate. If the true effect is small, we can gain from this tradeoff. 
+This intuition is actually used as a model selection criterion \citep{foster_variable_2004}.
+The bottom line is however, that a \textbf{significant variable, does not make it a good predictor.} 
+\end{remark}
 
 \subsubsection{LASSO}
 [TODO]
