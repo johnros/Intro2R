@@ -68,6 +68,8 @@
 \newcommand{\similarity}{d}
 \newcommand{\manifold}{\mathcal{M}}
 \newcommand{\project}{\hookrightarrow}
+\newcommand{\projectMat}{H}
+\newcommand{\rank}{q}
 
 
 \newcommand{\ensembleSize}{M}
@@ -417,7 +419,7 @@ We can see that again, $\hypclass$ is restricted to be the space of linear funct
 The regularization of $\beta$ can have several interpretations and justifications.
 \begin{description}
 \item[A mathematical device] Strengthening the diagonal of $X'X$ makes is more easily invertible. This is a standard tool in applied mathematics called Tikhonov Regularization. It is also helpful when dealing with multicolinearity, as $(X'X+\lambda I)$ is always invertible.
-\item[A Subjective Bayesian View] If we believe that $\beta$ should be small; say our beliefs can be quantified by $\beta \sim \gauss{0,\lambda I}$, then the Ridge solution is actually the mean of our posterior believes on $\beta|y$.
+\item[A Subjective Bayesian View] If we believe that $\beta$ should be small; say our beliefs can be quantified by $\beta \sim \gauss{0,1/\lambda I}$, then the Ridge solution is actually the mean of our posterior believes on $\beta|y$.
 \end{description}
 
 Whatever the justification, it can be easily shown that $\deriv{\risk(\lambda,\beta)}{\lambda}$ at $\lambda=0$ is negative, thus, we can only improve the predictions by introducing some regularization.
@@ -1345,6 +1347,7 @@ This greatly simplifies things as estimating the univariate marginal distributio
 The fundamental idea behind dimensionality reduction is that while $\featureS$ may be high dimensional, thus $\dist(X)$ hard to learn, there is hope that $x$ does not really vary in the whole space. 
 If the mass of $\dist(X)$ is concentrated around some low dimensional manifold $\manifold$, then the original problem might be approximated to learning the distribution of the projection $\dist(X \project \manifold)$ on $\manifold$. 
 If $\manifold$ is fairly low dimensional, we may now visualize and analyze $\dist(X \project \manifold)$ with fairly simple tools.
+Dimensionality reduction also reduces the memory required to represent the data. It is thus intimately related to \emph{lossy compression} in information theory.\marginnote{Lossy Compression}.
 
 A similar reasoning justifies dimensionality reduction in supervised learning. While $\dist(X)$ might vary in the whole $\featureS$, but there might be only few directions which carry information on $y$. Learning $\dist(Y|X)$ can thus be well approximated by $\dist(Y|X \project \manifold)$.
 
@@ -1394,8 +1397,9 @@ We claimed, without proof, that the $l_1$ regularization in fact performs soft c
 
 
 
-\subsubsection{Partial Least Squares (PLS)}
+\subsubsection{Partial Least Squares (PLS) and Canonical Correlation Analysis (CCA)}
 \label{sec:pls}
+\label{sec:cca}
 [TODO]
 
 
@@ -1404,12 +1408,76 @@ We claimed, without proof, that the $l_1$ regularization in fact performs soft c
 \subsection{Dimensionality Reduction in Unsupervised Learning}
 \label{sec:dim_reduce_unsupervised}
 
+The idea of ERM also applies to unsupervised learning.
+If $\hyp(x)$ is low dimensional representation of $x$, mapping it to $\manifold$, we would seek some $\hyp$ that does not incur too much loss, on average. I.e., we seek to minimize $\risk(\hyp(x))$.
+As usual, we do not have access to the data generating process of $x$, so we typically content ourselves with the empirical risk minimization.
+In the context of unsupervised learing, the empirical risk is know as the \emph{reconstruction error}.\marginnote{Reconstruction Error}
 
 
 
 
-\subsubsection{PCA}
+\subsubsection{Principal Components Analysis (PCA)}
+
+PCA is such a basic technique, it has been rediscovered and renamed independently in many fields. 
+It can be found under the names of \emph{discrete Karhunen–Loève transform; Hotteling transform; proper orthogonal decomposition (POD); Eckart–Young theorem; Schmidt–Mirsky theorem;  empirical orthogonal functions; empirical eigenfunction decomposition;  empirical component analysis;  quasi-harmonic modes; quasiharmonic modes;  spectral decomposition;  empirical modal analysis;} and possibly more\footnote{Wikipedia: \url{http://en.wikipedia.org/wiki/Principal_component_analysis} }.
+The many names are quite interesting as they offer an insight into the different problems that led to the (re)discovery of PCA.
+
+Starting with an example, consider human height and weight data. 
+While clearly two dimensional data, you don't really need both to understand how ``big'' are the people in the data. 
+This is because, height and weight vary mostly along a single dimension: the ``bigness'' of an individuals. 
+This is why, doctors use the Body Mass Index (BMI) as an indicator of size, instead of a two-dimensional measurement.
+Assume you now wish to give each individual a size index, that is a linear combination of height and weight. PCA does just that, it returns the linear combination that has the most variability, i.e., the combination which best distinguishes between individuals. 
+
+More generally, PCA seeks to represent $x$ in the simplest manifold possible: a linear subspace. Thus, $\manifold$ is simply a rank $\rank$ linear subspace in $\mathbb{R}^p$: $\hyp(x):=\projectMat_\rank x$ for $\projectMat_\rank$ a $\rank \times p$ matrix with rank $\rank$.
+The ERM problem is then:
+\begin{align}
+\label{eq:PCA}
+	& \hat{\projectMat}_\rank:= \argmin{\projectMat_\rank}{\frac{1}{n}\sum_i (x_i-\projectMat_\rank x_i)^2} .
+\end{align}
+
+Without going into the optimization details, it turns out that Eq.(\ref{eq:PCA}) has a closed form solution. 
+This solution is typically presented using the Singular Value Decomposition (SVD) of $X$ we now define.\marginnote{SVD}
+\begin{definition}[SVD]
+Any $n \times p$ matrix $X$, can be decomposed into $X=UDV'$ where 
+$U$ is an $n \times p$ orthogonal matrix ($U'U=I_p$); 
+$D$ is a $p \times p$ diagonal matrix with diagonal elements $d_1 \geq d_2 \geq \dots \geq d_p$;
+$V$ is a $p \times p$ orthogonal matrix ($V'V=I_p$).
+\end{definition}
+
+The solution to Eq.(\ref{eq:PCA}) is $\hat{\projectMat}_\rank=V_\rank'V_\rank$, where $V_\rank$ are the first $\rank$ columns of $V$.
+
+
+\paragraph{Nomenclature}
+PCA has received much attention. As such, it has rich underlying theory and nomenclature.
+Here are some terms needed to understand PCA outputs:
+\begin{itemize}
+\item[Loadings] The weights of each data point in each component, i.e., the entries of the $\projectMat_\rank$ matrix.
+\item[Scores] Also known as \emph{component scores}, or \emph{factor scores}, or simply \emph{factors}. The $\rank$ values of the transformed variables.
+\end{itemize}
+
+
+\paragraph{Intuition}
+The points to clarify: 
+(1) How does the ERM problem capture our motivation of finding direction with most variance.
+(2) Why is does $\hat{\projectMat_\rank}$ solve the problem?
+
+Starting with (1):
+
+
+
+
+
+\subsubsection{Random Projections}
+[TODO: Johnson-Lindenstrauss Lemma]
+
+
+
+\subsubsection{Compressed Sensing}
+\label{sec:compressed_sensing}
 [TODO]
+
+
+
 
 \subsubsection{Multidimensional Scaling (MDS)}
 [TODO]
