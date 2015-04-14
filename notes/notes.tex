@@ -100,7 +100,7 @@ Estimate $\lambda$ in $\rv x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 The fundamental idea is that if the data generating process (i.e., the \emph{sampling distribution}) can be assumed, then the observations are probably some high probability instance of this process, and not a low probability event:
 Let $\rv x_1,\dots,\rv x_n \sim P_\theta$, with density (or probability) $p_\theta(x_1,\dots,x_n)$.
 Denote the likelihood, as a function of $\theta$: $\lik(\theta): p_\theta(x_1,\dots,x_n)$.
-Then $$\estim{\theta}_{ML}:= argmax_{\theta}\{ \lik(\theta) \}.$$
+Then $$\estim{\theta}_{ML}:= argmax_{\theta}\set{ \lik(\theta) }.$$
 
 Using a monotone mapping such as the log, does not change the $argmax$. 
 Denote $$\loglik(\theta):=\log(\lik(\theta)).$$
@@ -120,7 +120,7 @@ By differentiating and equating $0$, we get $\estim{\lambda}_{ML}=1/\expectn{X}$
 
 \begin{example}[Discrete time Markov Chain]
 
-Estimate the transition probabilities,  $p_1$ and $p_2$ in a two state, $\{0,1\}$, discrete time, Markov chain where:
+Estimate the transition probabilities,  $p_1$ and $p_2$ in a two state, $\set{0,1}$, discrete time, Markov chain where:
 $P(\rv x_{t+1}=1|x_{t}=0)=p_1$ and $P(\rv X_{t+1}=1|X_{t}=1)=p_2$.
 The likelihood:
 $$
@@ -272,26 +272,26 @@ If we set the loss function to be the negative log likelihood of the (true) samp
 
 \subsection{Empirical Risk Minimization (ERM) and Inductive Bias}
 In Supervised Learning, or \emph{learning with teacher} problems where we want to extract the relation $y=\hyp(x)$ between attributes $x$ and some outcome $y$.
-It is implicit, and essential, that the outcomes are observed. If this is not the case, see Unsupervised Learning (\S\ref{sec:unsupervised})
+It is implicit, and essential, that the outcomes are observed. If this is not the case, see \emph{Unsupervised Learning }(\S\ref{sec:unsupervised}).
 The attributes, also know as features, or predictors, are assumed to belong to some \emph{feature space} $\featureS$. \marginnote{Feature Space}
 
-In particular, we don't need to explain the causal process relating the two, so there is no need to commit to a sampling distribution. The implied ERM problem is thus
+Unlike classical statistics, we don't care to explain the causal process relating $x$ and $y$, we just want good predictions.  There is thus no need to assume the sampling distribution. The implied ERM problem is thus
 \begin{align}
-	\estim{\hyp}(x) = \argmin{\hyp}{\sum_i \loss(y_i - \hyp(x_i))}.
+	\estim{\hyp}(x) := \argmin{\hyp}{\riskn(\hyp(x))} = \argmin{\hyp}{\frac{1}{n} \sum_i \loss(y_i - \hyp(x_i))}.
 \end{align}
 Alas, there are clearly infinitely many $\hyp$ for which $\riskn(\estim{\hyp}(x))=0$, in particular, all those where $\estim{\hyp}(x_i)=y_i$.
 All these $\hyp$ feel like very bad predictors, as they \emph{overfit} the observed data, at a cost of generalizability.\marginnote{Overfitting}
-We will formalize this intuition in Section~\ref{sec:desicion_theory}. 
+We formalize this intuition in Section~\ref{sec:desicion_theory}. 
 
 We need to make sure that we do not learn overly complex poor predictors. 
 Motivated by the fact that humans approach new problems equipped with their past experience, this regularization is called \emph{Inductive Bias}. \marginnote{Inductive Bias}
 There are several ways to introduce this bias, which can be combined:
 \begin{description}
-\item[The Hypothesis Class]
+\item[Constrained Hypothesis Classes]
 We typically do not allow $\hyp$ to be ``any function'' but rather restrict it to belong to a certain class. In the machine learning terminology, $\hyp$ is a Hypothesis, and it belongs to $\hypclass$ which is the Hypothesis Class.
-\item[Prior Knowledge] We do not need to treat all $\hyp \in \hypclass$ equivalently. We might have prior preferences towards particular $\hyp$'s and we can introduce these preference in the learning process. This is called \emph{Regularization}.
-\item[Non ERM Approaches] Many learning problems can be cast as ERM problems, but another way to introduce bias is by learning $\hyp$ via some other scheme, which cannot be cast as an ERM problem. 
-Learning algorithms that cannot be cast as ERMs include: Nearest Neighbour, Kernel Smoothing, Boosting.
+\item[Regularization] We do not need to treat all $\hyp \in \hypclass$ equivalently. We might have prior preferences towards particular $\hyp$'s , typically simple $\hyp$'s, and we can introduce these preference in the learning process. This is called \emph{Regularization}.
+\item[Non ERM Approaches] Many learning problems can be cast as ERM problems, but another way to introduce bias is by learning $\hyp$ in a non-optimal manner. Inductive bias is thus introduced by the (non) optimization algorithm 
+Learning algorithms that cannot be cast as ERMs include: Nearest Neighbour (\S\ref{sec:knn}), Kernel Smoothing(\S\ref{sec:kernel}), Boosting (\S\ref{sec:boosting}).
 \end{description}
 
 
@@ -301,7 +301,7 @@ We now proceed to show that many supervised learning algorithms are in fact ERMs
 \subsection{Ordinary Least Squares (OLS)}
 \label{sec:ols}
 As seen in Example~\ref{eg:OLS}, by adopting a squared error loss, and restricting $\hypclass$ by assuming $\hyp$ is a linear function of $x$, we get the OLS problem.
-In this case, learning $\hyp$ is effectively the same as learning $\beta$ as they are isomorphic.
+In this case, learning $\hyp$ is effectively the same as learning $\beta$ as they are isomorphic, as will be the case in all hypothesis classes that admit a finite dimensional parametrization.
 
 \paragraph{Regularization}
 While the OLS problem seemingly has no regulaziation parameters, we are in no way restricted to the original $X$ matrix supplied to us. 
@@ -332,15 +332,15 @@ Consider the Ridge regression problem:
 	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \frac{\lambda}{2}\norm{\beta}^2} \\
 	& \estim{\beta}_{Ridge}= (X'X+\lambda I)^{-1} X'y
 \end{align}
-We can see that again, $\hypclass$ is restricted to be the space of linear functions of $x$, but we also add a regularization that favors the linear functions with small coefficients.
+We can see that again, $\hypclass$ is restricted to be the space of linear functions of $x$, but we also add a regularization that favours linear functions with small coefficients.
 
 The regularization of $\beta$ can have several interpretations and justifications.
 \begin{description}
 \item[A mathematical device] Strengthening the diagonal of $X'X$ makes is more easily invertible. This is a standard tool in applied mathematics called \emph{Tikhonov Regularization}. It is also helpful when dealing with multicolinearity, as $(X'X+\lambda I)$ is always invertible.
-\item[A Subjective Bayesian View] If we believe that $\beta$ should be small; say our beliefs can be quantified by $\beta \sim \gauss{0,1/\lambda I}$, then the Ridge solution is actually the mean of our posterior believes on $\beta|y$.
+\item[A Subjective Bayesian View] If we believe that $\beta$ should be small; say our beliefs can be quantified by $\rv \beta \sim \gauss{0,1/\lambda I}$, then the Ridge solution is actually the mean of our posterior believes on $\rv \beta|y$.
 \end{description}
 
-Whatever the justification, it can be easily shown that $\deriv{\risk(\lambda,\beta)}{\lambda}$ at $\lambda=0$ is negative, thus, we can only improve the predictions by introducing some regularization.
+Whatever the justification, it can be easily shown that $\deriv{\risk(\lambda,\beta)}{\lambda}$ at $\lambda=0$ is negative, thus, we can only improve the predictions by introducing some small regularization (how small is small? see \S\ref{sec:desicion_theory}).
 
 
 For more on Ridge regression see \cite{hastie_elements_2003}.
@@ -354,7 +354,7 @@ Consider the LASSO problem:
 \label{eq:lasso}
 	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \lambda \norm{\beta}^2_1} 
 \end{align}
-As can be seen, just like in Ridge regression, $\hypclass$ is restricted to linear functions. The regularization however differs. Instead of $l_2$ penalty, we use an $l_1$ penalty.
+As can be seen, just like in Ridge regression, $\hypclass$ is restricted to linear functions. The regularization however differs. Instead of $l_2$ norm penalty, we use an $l_1$ norm penalty.
 Eq.(\ref{eq:lasso}) does not have a closed form solution for $\estim{\beta}$ but the LARS algorithm, a quadratic programming algorithm, solves it efficiently.
 
 
@@ -364,7 +364,7 @@ The sparsity property is very attractive as it acts as a model selection method,
 
 The sparsity property can be demonstrated for the orthogonal design case ($X'X=I$) where $\estim{\beta}$ admits a closed form solution:
 \begin{align}
-	\estim{\beta}_{j,LASSO} = sign(\beta_j) \left[|\estim{\beta}_{j,OLS}|-\frac{\lambda}{2} \right]_+.
+	\estim{\beta}_{j,LASSO} = sign(\estim{\beta}_{j,OLS}) \left[|\estim{\beta}_{j,OLS}|-\frac{\lambda}{2} \right]_+.
 \end{align}
 We thus see that the LASSO actually performs \emph{soft thresholding} on the OLS estimates. \marginnote{Soft Thresholding}
 
@@ -373,39 +373,32 @@ We thus see that the LASSO actually performs \emph{soft thresholding} on the OLS
 
 \subsection{Logistic Regression}
 \label{sec:logistic}
-The logistic regression is the first categorical prediction problem. \marginnote{Categorical Prediction}
+The logistic regression is the first categorical prediction problem we consider. \marginnote{Categorical Prediction}
 I.e., the outcome $y$ is not a continuous variable, but rather takes values in some finite set $\categories$. In the logistic regression problem, it can take two possible values.
-In the statistical literature, $y$ is encoded as $\categories=\{0,1\}$ and $\hyp$ is assumed to take to take the following form:
+In the statistical literature, $y$ is encoded as $\categories=\set{0,1}$ and $\hyp$ is assumed to take to take the following form:
 \begin{align}
-	& P(y=1|x) = \Psi(x\beta) \\
+	& P(\rv y=1|x) = \Psi(x\beta) \\
 	& \Psi(t) = \frac{1}{1+e^{-t}}
 \end{align}
-
 The hypothesis class $\hypclass$ is thus all $\hyp(x)=\Psi(x\beta)$.
-In the $\{0,1\}$ encoding, the loss is the negative log likelihood, i.e.:
+
+In the $\set{0,1}$ encoding, the loss is the negative log likelihood, i.e.:
 \begin{align}
 	\loss(y,x,\beta) = -\log \left[ \Psi(x\beta)^{y} (1-\Psi(x\beta))^{1-y}  \right].
 \end{align}
-In the learning literature it is more common for $\{1,-1\}$ encoding of $y$ in which case the loss is 
+In the learning literature it is more common for $\set{1,-1}$ encoding of $y$ in which case the loss is 
 \begin{align}
 	\loss(y,x,\beta) = -\log \left[ 1+\exp(-y f(x))  \right].
 \end{align}
 
 
 \paragraph{How to classify?}
-In the $\{0,1\}$ encoding, we predict class $1$ if $\Psi(x\beta)>0.5$ and class $0$ otherwise.
-The logistic problem thus defines a separating hyperplane $\plane$ between the classes: $\plane=\{x:f(x)=0.5\}$.
+In the $\set{0,1}$ encoding, we predict class $1$ if $\Psi(x\beta)>0.5$ and class $0$ otherwise.
+The logistic problem thus defines a separating hyperplane $\plane$ between the classes: $\plane=\set{x:f(x)=0.5}$.
 
-In the $\{1,-1\}$ encoding, we predict class $1$ if $\Psi(x\beta)>0$ and class $0$ otherwise.
+In the $\set{1,-1}$ encoding, we predict class $1$ if $\Psi(x\beta)>0$ and class $0$ otherwise.
 The plane $\plane$ is clearly invariant to the encoding of $y$.
 
-
-\begin{remark}[Log Odds Ratio]
-The formulation above, implies that the log odds ratio is linear in the predictors:
-\begin{align*}
-	\log \frac{P(y=1|x)}{P(y=0|x)} = x\beta
-\end{align*}
-\end{remark}
 
 
 
@@ -421,28 +414,43 @@ The ultimate reference on the matter is \cite{mccullagh_generalized_1989}.
 \subsection{Regression Classifier}
 \label{sec:regression_classifier}
 Can we use the OLS framework for prediction? Yes! With proper encoding of $y$.
-Solving the same problem from Example~\ref{eg:OLS} by encoding $y$ as $\{0,1\}$ gives us the linear separating hyperplane $\plane: \{x:x\estim{\beta}_{OLS}=0.5\}$.
+Solving the same problem from Example~\ref{eg:OLS} by encoding $y$ as $\set{0,1}$ gives us the linear separating hyperplane $\plane: \set{x:x\estim{\beta}_{OLS}=0.5}$.
 
 \begin{remark}
 We can interpret $\estim{y}$ as the probability of an event, but there a slight technical difficulty as $\estim{y}$ might actually be smaller than $0$ or larger than $1$.
 \end{remark}
 
 
-\subsection{Linear Support Vector Machines (SVM)}
-We will now not assume anything on the data, and seek for a hyperplane that seperates two classes.
-This, purely geometrical intuition, was the one that motivated Vapnik's support vector classifier \citep{vapnik_statistical_1998}.
-In this section we will see the this geometrical intuition can also be seen as an ERM problem over a linear hypothesis class.
 
-\paragraph{Problem Setup}
-Encode $y$ as $\categories=\{-1,1\}$.
-Define a plane $\plane=\{x: \hyp(x)=0 \}$, and assume a linear hypothesis class, $\hyp(x)=x\beta+\beta_0$.
+
+\subsection{Linear Support Vector Machines (SVM)}
+\label{sec:svm}
+
+The literature typically presents the SVM method using the geometrical arguments that originally motivated the problem. 
+For our purposes, we present the ERM formulation of the problem, followed by the original arguments.
+
+\begin{align}
+\label{eq:svc_ERM}
+	\min_{\beta,\beta_0} \set{
+		\sum_i \positive{1-y_i \hyp(x_i)} +\frac{\lambda}{2} \norm{\beta}_2^2
+	}.
+\end{align}
+Eq.(\ref{eq:svc_ERM}) thus reveals that the linear SVM is actually an ERM problem, over a linear hypothesis class, with what is called the \emph{hinge} loss function and $l_2$ regularization of $\beta$.
+
+
+\subsubsection{Geometrical motivation}
+We now present Vapnik's The original geometric motivation \citep{vapnik_statistical_1998} for the formulation of the SVM problem for completeness. 
+
+We do not assume anything on the data, and seek for a hyperplane $\plane$ that seperates two classes. 
+Encode $y$ as $\categories=\set{-1,1}$.
+Define a plane $\plane=\set{x: \hyp(x)=0 }$, and assume a linear hypothesis class, $\hyp(x)=x\beta+\beta_0$.
 Now find the plane $\plane$ that maximizes the (sum of) distances to the data points.
 We call the minimal distance from $\plane$ to the data points, the \emph{Margin}, and denote it by $M$.
 
 To state the optimization problem, we need to note that $\hyp(x)=x\beta+\beta_0$ is not only the value of our classifier, but it is actually proportional to the signed distance of $x$ from $\plane$. 
 \begin{proof}
-The distance of $x$ to $\plane$ is defined as $\min_{x_0 \in \plane} \{ \norm{x-x_0} \}$.
-Note $\beta^*:=\beta/\norm{\beta}$ is a normal vector to $\plane$, since $\plane=\{x: x\beta+\beta_0=0 \}$, so that for $x_1,x_2 \in \plane \Rightarrow \beta(x_1-x_2)=0$.
+The distance of $x$ to $\plane$ is defined as $\min_{x_0 \in \plane} \set{ \norm{x-x_0} }$.
+Note $\beta^*:=\beta/\norm{\beta}$ is a normal vector to $\plane$, since $\plane=\set{x: x\beta+\beta_0=0 }$, so that for $x_1,x_2 \in \plane \Rightarrow \beta(x_1-x_2)=0$.
 Now $x-x_0$ is orthogonal to $\plane$ because $x_0$ is, by definition, the orthogonal projection of $x$ onto $\plane$.
 Since $x-x_0$ are both orthogonal to $\plane$, they are linearly dependent, so that by the Cauchy Schwarz inequality $\norm{\beta^*} \norm{x-x_0}= \norm{\beta^*(x-x_0)}$.
 Now recalling that $\norm{\beta^*}=1$ and $\beta^* x_0=-\beta_0/\norm{\beta}$ we have $\norm{x-x_0}=\frac{1}{\norm{\beta}} (x\beta+\beta_0)= \frac{1}{\norm{\beta}} \hyp(x)$.
@@ -452,10 +460,10 @@ Using this fact, then $y_i \hyp(x_i)$ is the distance from $\plane$ to point $i$
 The (linear) support vector classifier is defined as the solution to
 \begin{align}
 \label{eq:svc_separable}
-	\max_{\beta,\beta_0} \left\{ 
+	\max_{\beta,\beta_0} \set{ 
 		M \quad s.t. \quad 
 		\forall i: y_i \hyp(x_i) \geq M, \quad \norm{\beta}=1
-	\right\}
+	}
 \end{align}
 
 If the data is not separable by a plane, we need to allow some slack.
@@ -463,26 +471,15 @@ We thus replace $y_i \hyp(x_i) \geq M$ with $y_i \hyp(x_i) \geq M(1-\xi_i)$, for
 Eq.(\ref{eq:svc_separable}) now becomes \citep[Eq.(12.25)]{hastie_elements_2003}
 \begin{align}
 \label{eq:svc_non_separable}
-	\max_{\beta,\beta_0} \left\{ 
+	\max_{\beta,\beta_0} \set{ 
 		M \quad s.t. \quad 
 		\forall i: y_i \hyp(x_i) \geq M(1-\xi_i), 
 		\: \norm{\beta}=1, 
 		\: \sum_i \xi_i \leq C,
 		\:\forall i:\xi_i\ \geq 0
-	\right\}
+	}
 \end{align}
 
-This is the classical geometrical motivation for support vector classification problem.
-The literature now typically discusses how to efficiently optimize this problem, which is done via the dual formulation of Eq.(\ref{eq:svc_non_separable}).
-We will not go in this direction, but rather, note that Eq.(\ref{eq:svc_non_separable}) can be restated as an ERM problem:
-\begin{align}
-\label{eq:svc_ERM}
-	\min_{\beta,\beta_0} \left\{
-		\sum_i \positive{1-y_i \hyp(x_i)} +\frac{\lambda}{2} \norm{\beta}_2^2
-	\right\}
-\end{align}
-
-Eq.(\ref{eq:svc_ERM}) thus reveals that the linear SVM is actually an ERM problem, over a linear hypothesis class, with $l_2$ regularization of $\beta$.
 
 See Section 12 in \cite{hastie_elements_2003} for more details on SVMs.
 
@@ -511,7 +508,7 @@ Then again, if the assumed logistic model of the logistic regression, is actuall
 \subsection{Generalized Additive Models (GAMs)}
 \label{sec:gam}
 A way to allow for a more broad hypothesis calss $\hypclass$, that is still not too broad, so that overfitting is hopefully under control, is by allowing the predictor to be an additive combination of simple functions.
-We thus allow $\hyp(x)=\beta_0 + \sum_{j=1}^p f_j(x_j)$. We also not assume the exact form of $\{f_j\}_{j=1}^p$ but rather learn them from the data, while constraining them to take some simple form.
+We thus allow $\hyp(x)=\beta_0 + \sum_{j=1}^p f_j(x_j)$. We also not assume the exact form of $\set{f_j}_{j=1}^p$ but rather learn them from the data, while constraining them to take some simple form.
 The ERM problem of GAMs is thus
 \begin{align}
 \label{eq:GAM}
@@ -520,7 +517,7 @@ The ERM problem of GAMs is thus
 where $\hyp$ is as defined above.
 
 \begin{remark}[Not a pure ERM]
-The learning of $\{f_j\}_{j=1}^p$ is in fact not performed by optimization, but rather by kernel smoothing (\S~\ref{sec:kernel}).
+The learning of $\set{f_j}_{j=1}^p$ is in fact not performed by optimization, but rather by kernel smoothing (\S~\ref{sec:kernel}).
 The solution to Eq.(\ref{eq:GAM}) is not a pure ERM problem, but a hybrid between ERM and kernel smoothing.
 \end{remark}
 
@@ -533,12 +530,12 @@ Another way to generalize the hypothesis class $\hypclass$, which generalizes th
 \label{eq:PPR}
 	\hyp(x)=\sum_{m=1}^M g_m(w_m x)
 \end{align}
-where both $\{g_m\}_{m=1}^M$ and $\{g_m\}_{m=1}^M$ are learned from the data. 
-The regularization is now performed by choosing $M$ and the class of $\{g_m\}_{m=1}^M$.
+where both $\set{g_m}_{m=1}^M$ and $\set{g_m}_{m=1}^M$ are learned from the data. 
+The regularization is now performed by choosing $M$ and the class of $\set{g_m}_{m=1}^M$.
 The ERM problem is the same as in Eq.(\ref{eq:GAM}), with the appropriate $\hyp$.
 
 \begin{remark}[Not a pure ERM]
-Just like the GAM problem, in the PPR problem $\{g_m\}_{m=1}^M$ are learned by kernel smoothing. Solving the PPR problem is thus a hybrid of ERM and Kernel smoothing. 
+Just like the GAM problem, in the PPR problem $\set{g_m}_{m=1}^M$ are learned by kernel smoothing. Solving the PPR problem is thus a hybrid of ERM and Kernel smoothing. 
 \end{remark}
 
 \begin{remark}[Universal Approximator]
@@ -551,11 +548,11 @@ By choosing a sufficiently large $M$, the class $\hypclass$ can approximate any 
 \subsection{Neural Networks (NNETs)}
 \subsubsection{Single Hidden Layer}
 In the spirit of \cite[Section 11]{hastie_elements_2003}, we introduce the NNET model via the PPR model, and not through its historically original construction.
-In the language of Eq.(\ref{eq:PPR}), a single-layer--feed-forward neural network, is a model where $\{g_m\}_{m=1}^M$  are not learned from the data, but rather assumed a-priori. 
+In the language of Eq.(\ref{eq:PPR}), a single-layer--feed-forward neural network, is a model where $\set{g_m}_{m=1}^M$  are not learned from the data, but rather assumed a-priori. 
 \begin{align*}
 	g_m(x w_m):= \beta_m \sigma(\alpha_0 + x \alpha_m )
 \end{align*}
-where only $\{w_m\}_{m=1}^M = \{\beta_m, \alpha_m\}_{m=1}^M$ are learned from the data. 
+where only $\set{w_m}_{m=1}^M = \set{\beta_m, \alpha_m}_{m=1}^M$ are learned from the data. 
 A typical \emph{activation function}\marginnote{Activation Function}, $\sigma(t)$ is the standard logistic CDF: $\sigma(t)=\frac{1}{1+e^{-t}}$. Another popular alternative are Gaussian radial functions.
 
 As can be seen, the NNET is merely a non-linear regression model.
@@ -567,7 +564,7 @@ NNETs have gained tremendous popularity, as it strikes a good balance between mo
 For regression the squared loss is used. For classification, one can still use the squared error (as in the Regression Classifier), or the binomial likelihood leading to what is know as the \emph{deviance}, or \emph{cross-entropy} loss.\marginnote{Deviance \& Cross Entropy}
 
 \paragraph{Universal Approximator}
-Like the PPR, even when $\{g_m\}_{m=1}^M$ are fixed beforehand, the class is still a universal approximator (although it might require a larger $M$ than PPR).
+Like the PPR, even when $\set{g_m}_{m=1}^M$ are fixed beforehand, the class is still a universal approximator (although it might require a larger $M$ than PPR).
 
 \paragraph{Regularization}
 Regularization of the model is done via the selection of the $\sigma$, the number of nodes/variables in the network and the number of layers. More that one hidden layer leads to \emph{Deep Neural Networks} which offer even more flexibility at the cost of complexity, thus requiring many data samples for fitting.\marginnote{Deep Neural Networks}
@@ -591,14 +588,14 @@ The hypothesis class of CARTs includes functions of the form
 	\hyp(x)=\sum_{m=1}^M c_m \indicator{x \in R_m}
 \end{align}
 where $I_A$ is the indicator function of the event $A$.
-The parameters of the model are the different conditions $\{R_m\}_{m=1}^M$ and the function's value at each condition $\{c_m\}_{m=1}^M$. 
+The parameters of the model are the different conditions $\set{R_m}_{m=1}^M$ and the function's value at each condition $\set{c_m}_{m=1}^M$. 
 
 Regularization is done by the choice of $M$ which is called the \emph{tree depth}.\marginnote{Tree Depth}
 
 As $\hyp(x)$ is defined over indicator functions, CARTs have no difficulty to deal with categorical variables and even missing values, on top of the more standard continuous predictors. More on the many advantages of CARTs can be found in the references.
 
 \paragraph{Optimization}
-As searching over all possible partitions of the $x$'s to optimize $\{R_m\}_{m=1}^M$ is computationally impossible, optimization is done is a greedy fashion, by splitting on each variable $x_j$ at a time.
+As searching over all possible partitions of the $x$'s to optimize $\set{R_m}_{m=1}^M$ is computationally impossible, optimization is done is a greedy fashion, by splitting on each variable $x_j$ at a time.
 The problem presented in Eq.~\ref{eq:decision_list} is actually a decision \emph{list}. It is the nature of the optimization that makes the solution a decision \emph{tree}.\marginnote{Decision List}
 
 
@@ -625,8 +622,8 @@ For more on CARTs and Bagging see \citep[Section 9]{hastie_elements_2003}.
 
 \subsection{Smoothing Splines}
 \label{sec:smoothing_splines}
-The GAM (\S\ref{sec:gam}) model is an example of learning a non-parametric model, since we did not constrain the parametric form of the functions $\{f_j\}_{j=1}^p$. The regularization was part of the optimization algorithm, and not explicit in the problem's definition.
-\emph{Smoothing Splines} is another non-parametric approach, since we do not assume the parametric form of $\{f_j\}_{j=1}^p$. 
+The GAM (\S\ref{sec:gam}) model is an example of learning a non-parametric model, since we did not constrain the parametric form of the functions $\set{f_j}_{j=1}^p$. The regularization was part of the optimization algorithm, and not explicit in the problem's definition.
+\emph{Smoothing Splines} is another non-parametric approach, since we do not assume the parametric form of $\set{f_j}_{j=1}^p$. 
 Unlike GAMs, however, the regularization is indeed explicit in the formulation of the problem. 
 Regularization is achieved by penalizing the second derivative of $\hyp$, thus forcing $\hyp$ to be smooth. 
 Considering a single predictor, the ERM problem for \emph{Smoothing Spline}
@@ -636,7 +633,7 @@ Considering a single predictor, the ERM problem for \emph{Smoothing Spline}
 \end{align}
 
 It is quite surprising, and useful, that even though the optimization is performed over an infinite dimensional function space, the solution belongs to a finite dimensional parametric sub-space. 
-The magic continues! It turns out that the fitted values, $\{\estim{\hyp}(x_i)\}_{i=1}^n$ are linear in $\{y_i\}_{i=1}^n$. A fact that greatly facilitates the analysis of the statistical properties of these models.
+The magic continues! It turns out that the fitted values, $\set{\estim{\hyp}(x_i)}_{i=1}^n$ are linear in $\set{y_i}_{i=1}^n$. A fact that greatly facilitates the analysis of the statistical properties of these models.
 
 In the presence of $p>1$ predictors, Eq.(\ref{eq:smoothing_spline}) can be generalized as 
 \begin{align}
@@ -703,7 +700,7 @@ The \emph{Nadaraya-Watson} weighted average encompasses most if not all kernel s
 \label{eq:nadaraya_watson}
 	\estim{\hyp}(x):= \frac{\sum_i \kernel_\lambda(x,x_i)y_i}{\sum_i \kernel_\lambda(x,x_i)}
 \end{align}
-where $\kernel_\lambda$ is the kernel function, which is merely a measure of the distance between the evaluation point $x$ and the data points $\{ x_i \}_{i=1}^n$ and weights the contribution of each $\{ y_i \}_{i=1}^n$ to the value at $x$.
+where $\kernel_\lambda$ is the kernel function, which is merely a measure of the distance between the evaluation point $x$ and the data points $\set{ x_i }_{i=1}^n$ and weights the contribution of each $\set{ y_i }_{i=1}^n$ to the value at $x$.
 The denominator merely ensures the weights sum to $1$.
 Regularization is controlled by the $\lambda$ parameter.
 
@@ -1001,14 +998,14 @@ Considering a set of $\ensembleSize$ candidate learning algorithms, a \emph{comm
 \end{algorithmic}
 \end{algorithm}
 
-This concept can be generalized by considering different aggregation schemes. The following (meta-)algorithms are merely different aggregation schemes. Most, if not all, can be seen as minimizers of some posterior expected loss. I.e., they minimize some risk with respect to the posterior probabilities of $\{\estim{\hyp}^\ensembleInd(x) \}_{\ensembleInd=1}^\ensembleSize $.
+This concept can be generalized by considering different aggregation schemes. The following (meta-)algorithms are merely different aggregation schemes. Most, if not all, can be seen as minimizers of some posterior expected loss. I.e., they minimize some risk with respect to the posterior probabilities of $\set{\estim{\hyp}^\ensembleInd(x) }_{\ensembleInd=1}^\ensembleSize $.
 
 
 \subsection{Bayesian Model Averaging}
 The idea of \emph{Bayesian model averaging} is that of using the posterior mean as a predictor. 
 Computing the posterior mean can be quite a tedious task. 
 When dealing with hypotheses from the same parametric class, a more practical approach is that of \emph{inverse BIC weighting}. 
-This is justified by that fact that the BIC (\S\ref{sec:risk_estimation}) is approximately proportional to the posterior probability of $\{\estim{\hyp}^\ensembleInd(x)$.
+This is justified by that fact that the BIC (\S\ref{sec:risk_estimation}) is approximately proportional to the posterior probability of $\estim{\hyp}^\ensembleInd(x)$.
 
 
 \begin{algorithm}[H]
@@ -1044,7 +1041,7 @@ Here is  stacking example for a continuous $y$:
 		\State $\estim{\hyp}^{(i)}_\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm, and without the $i$'th observation.
 	\EndFor
 \EndFor
-\State $\bar{\hyp}(x_i) \gets$ the OLS prediction using $\{ \estim{\hyp}^{(i)}_\ensembleInd(x_i)\}_{\ensembleInd=1}^\ensembleSize$ as features. 
+\State $\bar{\hyp}(x_i) \gets$ the OLS prediction using $\set{ \estim{\hyp}^{(i)}_\ensembleInd(x_i)}_{\ensembleInd=1}^\ensembleSize$ as features. 
 \State \Return $\bar{\hyp}(x)$
 \end{algorithmic}
 \end{algorithm}

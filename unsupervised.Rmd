@@ -5,6 +5,12 @@ date: "April 12, 2015"
 output: html_document
 ---
 
+# PCA
+
+# K-means
+
+
+
 # Association rules
 install.packages('arules')
 library(arules)

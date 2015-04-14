@@ -4,3 +4,17 @@ author: "Jonathan Rosenblatt"
 date: "April 12, 2015"
 output: html_document
 ---
+
+
+# OLS
+
+# Ridge
+
+# LASSO
+
+# SVM
+
+# Neural Net
+
+# Kernel Smoothing
+

@@ -40,6 +40,7 @@
 \newcommand{\Naive}{Na\"{\i}ve }
 
 
+\newcommand{\set}[1]{\left\{ #1 \right\}}
 \newcommand{\rv}[1]{\mathbf{#1}}
 \newcommand{\expect}[1]{\mathbf{E}\left[ \rv{#1} \right]}
 \newcommand{\expectg}[2]{\mathbf{E}_{\rv{#1}}\left[ \rv{#2} \right]}
@@ -61,7 +62,7 @@
 \newcommand{\risk}{R}
 \newcommand{\riskn}{\mathbb{R}}
 \newcommand{\deriv}[2]{\frac{\partial #1}{\partial #2}}
-\newcommand{\argmin}[2]{argmin_{#1}\left\{ #2 \right\}}
+\newcommand{\argmin}[2]{argmin_{#1}\set{#2}}
 \newcommand{\hyp}{\mathbf{f}}
 \newcommand{\hypclass}{\mathcal{F}}
 \newcommand{\plane}{\mathbb{L}}
@@ -69,7 +70,7 @@
 \newcommand{\positive}[1]{\left[ #1 \right]_+}
 \newcommand{\kernel}{\mathcal{K}}
 \newcommand{\featureS}{\mathcal{X}}
-\newcommand{\indicator}[1]{I_{\{ #1 \}}}
+\newcommand{\indicator}[1]{I_{\set{#1}}}
 \newcommand{\similarity}{d}
 \newcommand{\manifold}{\mathcal{M}}
 \newcommand{\project}{\hookrightarrow}
