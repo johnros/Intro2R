@@ -1,0 +1,91 @@
+\documentclass[12pt,a4paper]{article}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{amsthm}
+\usepackage{natbib}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{hyperref}
+\AtBeginDocument{\let\textlabel\label}
+
+\usepackage{marginnote}
+\renewcommand*{\marginfont}{\footnotesize}
+
+
+
+
+
+
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
+
+
+% Custom commands
+
+\newcommand{\naive}{na\"{\i}ve }
+\newcommand{\Naive}{Na\"{\i}ve }
+
+
+\newcommand{\rv}[1]{\mathbf{#1}}
+\newcommand{\expect}[1]{\mathbf{E}\left[ \rv{#1} \right]}
+\newcommand{\expectg}[2]{\mathbf{E}_{\rv{#1}}\left[ \rv{#2} \right]}
+\newcommand{\expectn}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\gauss}[1]{\mathcal{N}\left(#1\right)}
+\newcommand{\cdf}[2]{F_\rv{#1} (#2)}
+\newcommand{\cdfn}[2]{\mathbb{F}_{#1}(#2)}
+\newcommand{\icdf}[2]{F_\rv{#1}^{-1} (#2)}
+\newcommand{\icdfn}[2]{\mathbb{F}^{-1}_{#1}(#2)}
+\newcommand{\pdf}{p}
+\newcommand{\dist}{P}
+
+\newcommand{\estim}[1]{\hat{\rv{#1}}}
+
+\newcommand{\norm}[1]{\Vert #1 \Vert}
+\newcommand{\lik}{\mathcal{L}}
+\newcommand{\loglik}{L}
+\newcommand{\loss}{l}
+\newcommand{\risk}{R}
+\newcommand{\riskn}{\mathbb{R}}
+\newcommand{\deriv}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\argmin}[2]{argmin_{#1}\left\{ #2 \right\}}
+\newcommand{\hyp}{\mathbf{f}}
+\newcommand{\hypclass}{\mathcal{F}}
+\newcommand{\plane}{\mathbb{L}}
+\newcommand{\categories}{\mathcal{G}}
+\newcommand{\positive}[1]{\left[ #1 \right]_+}
+\newcommand{\kernel}{\mathcal{K}}
+\newcommand{\featureS}{\mathcal{X}}
+\newcommand{\indicator}[1]{I_{\{ #1 \}}}
+\newcommand{\similarity}{d}
+\newcommand{\manifold}{\mathcal{M}}
+\newcommand{\project}{\hookrightarrow}
+\newcommand{\projectMat}{H}
+\newcommand{\rank}{q}
+
+\newcommand{\ensembleSize}{M}
+\newcommand{\ensembleInd}{m}
+
+
+\newcommand{\sample}{\mathcal{S}}
+\newcommand{\test}{\risk(\hyp)}
+\newcommand{\train}{\riskn(\hyp)}
+\newcommand{\insample}{\bar{\risk}(\hyp)}
+\newcommand{\EPE}{\risk(\hat{\hyp}_n)}
+\newcommand{\folds}{K} % Cross validation folds
+\newcommand{\fold}{k}
+\newcommand{\bootstraps}{B} % Bootstrap samples
+\newcommand{\bootstrap}{{b^*}}
