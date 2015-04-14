@@ -242,12 +242,12 @@ How do we estimate the population expectation? Well a natural estimator is the e
 \begin{example}[Ordinary Least Squares (OLS)]
 \label{eg:OLS}
 Define the loss $\loss(y,x;\beta):=\frac{1}{2}(y-x\beta)^2$.
-Computing the risk, $\expect{\normII{\y-\x\beta}^2}$ will require dealing with the joint distribution of $(\x,\y)$.
+Computing the risk, $\expect{\frac{1}{2} \normII{\y-\x\beta}^2}$ will require dealing with the joint distribution of $(\x,\y)$.
 We don't really care about that right now. 
 We merely want to see that the empirical risk minimizer, is actually the classical OLS problem. 
-And well, it is, by definition...
+And well, it is (by definition actually):
 \begin{align*}
-	\riskn(\beta)=\sum_{i=1}^n 	\frac{1}{2}(y-x_i\beta)^2 = \frac{1}{2}\normII{y-x\beta}^2.
+	\riskn(\beta)=\sum_{i=1}^n 	\frac{1}{2}(y_i-x_i\beta)^2 = \frac{1}{2}\normII{y-x\beta}^2.
 \end{align*}
 Minimization is easiest with vector derivatives, but I will stick to regular derivatives:
 \begin{align*}
@@ -258,7 +258,6 @@ Solving for all $j$'s and putting in matrix notation we get
 \begin{align}
 	\estim{\beta}_{OLS}=(X'X)^{-1} X'y.
 \end{align}
-
 
 \end{example}
 
