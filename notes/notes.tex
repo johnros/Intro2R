@@ -463,7 +463,7 @@ The (linear) support vector classifier is defined as the solution to
 	}
 \end{align}
 
-If the data is not separable by a plane, we need to allow some slack.
+If the data is not separable by a plane, which is typically the case, we need to allow some slack.
 We thus replace $y_i \hyp(x_i) \geq M$ with $y_i \hyp(x_i) \geq M(1-\xi_i)$, for $\xi_i>0$ but require that the missclassifications are controlled using a regularization parameter $C$: $\sum_i \xi_i \leq C$.
 Eq.(\ref{eq:svc_separable}) now becomes \citep[Eq.(12.25)]{hastie_elements_2003}
 \begin{align}
@@ -509,7 +509,7 @@ We thus allow $\hyp(x)=\beta_0 + \sum_{j=1}^p f_j(x_j)$. We also not assume the 
 The ERM problem of GAMs is thus
 \begin{align}
 \label{eq:GAM}
-	 \argmin{\beta_0,\hyp \in \hypclass}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2  }
+	 \argmin{\hyp \in \hypclass}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2  }
 \end{align}
 where $\hyp$ is as defined above.
 
@@ -527,12 +527,12 @@ Another way to generalize the hypothesis class $\hypclass$, which generalizes th
 \label{eq:PPR}
 	\hyp(x)=\sum_{m=1}^M g_m(w_m x)
 \end{align}
-where both $\set{g_m}_{m=1}^M$ and $\set{g_m}_{m=1}^M$ are learned from the data. 
+where both $\set{g_m}_{m=1}^M$ and $\set{w_m}_{m=1}^M$ are learned from the data. 
 The regularization is now performed by choosing $M$ and the class of $\set{g_m}_{m=1}^M$.
 The ERM problem is the same as in Eq.(\ref{eq:GAM}), with the appropriate $\hyp$.
 
 \begin{remark}[Not a pure ERM]
-Just like the GAM problem, in the PPR problem $\set{g_m}_{m=1}^M$ are learned by kernel smoothing. Solving the PPR problem is thus a hybrid of ERM and Kernel smoothing. 
+Just like the GAM problem, in the PPR problem $\set{g_m}_{m=1}^M$ are learned by kernel smoothing (\S\ref{sec:kernel}). Solving the PPR problem is thus a hybrid of ERM and Kernel smoothing algorithms.
 \end{remark}
 
 \begin{remark}[Universal Approximator]

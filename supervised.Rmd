@@ -4,15 +4,167 @@ author: "Jonathan Rosenblatt"
 date: "April 12, 2015"
 output: html_document
 ---
+In these examples, two data sets from the `ElemStatLearn` package: `spam` for categorical predictions, and `prostate` for continuous predictions.
+In `spam` we will try to decide if a mail is spam or not. 
+In `prostate` we will try to predict the size of a cancerous tumor.
+
+```{r}
+library(ElemStatLearn)
+data("prostate")
+data("spam")
+```
+You can now call `?prostate` and `?spam` to learn more about the variables in the data.
+
+We also load some utility packages and functions that we will require down the road. 
+```{r}
+library(magrittr) # for piping
+library(dplyr) # for handeling data frames
+
+l2 <- function(x) x^2 %>% sum %>% sqrt
+l1 <- function(x) abs(x) %>% sum 
+MSE <- function(x) x^2 %>% mean
+
+missclassification <- function(tab) sum(tab[c(2,3)])/sum(tab)
+```
 
 
 # OLS
 
+Starting with OLS regression, and a split train-test data set:
+```{r}
+prostate %>% names
+prostate.train <- prostate %>% filter(train) %>% select(-train)
+prostate.test <- prostate %>% filter(!train) %>% select(-train)
+# now verify that your data looks as you would expect....
+
+ols.1 <- lm(lcavol~. ,data = prostate.train)
+# Train error:
+MSE( predict(ols.1)- prostate.train$lcavol)
+# Test error:
+MSE( predict(ols.1, newdata = prostate.test)- prostate.test$lcavol)
+```
+
+Now using cross validation to estimate the prediciton error:
+```{r}
+folds <- 5
+fold.assignment <- sample(1:5, nrow(prostate), replace = TRUE)
+errors <- NULL
+
+for (k in 1:folds){
+  prostate.cross.train <- prostate[fold.assignment!=k,]
+  prostate.cross.test <-  prostate[fold.assignment==k,] 
+  .ols <- lm(lcavol~. ,data = prostate.cross.train)
+  .predictions <- predict(.ols, newdata=prostate.cross.test)
+  .errors <-  .predictions - prostate.cross.test$lcavol
+  errors <- c(errors, .errors)
+}
+
+# Cross validated prediction error:
+MSE(errors)
+```
+
+Also trying a bootstrap prediction error:
+```{r}
+B <- 20
+n <- nrow(prostate)
+errors <- NULL
+
+prostate.boot.test <-  prostate 
+for (b in 1:B){
+  prostate.boot.train <- prostate[sample(1:n, replace = TRUE),]
+  .ols <- lm(lcavol~. ,data = prostate.boot.train)
+  .predictions <- predict(.ols, newdata=prostate.boot.test)
+  .errors <-  .predictions - prostate.boot.test$lcavol
+  errors <- c(errors, .errors)
+}
+
+# Bootstrapped prediction error:
+MSE(errors)
+```
+
+
+Trying OLS classification
+```{r}
+names(spam)
+n <- nrow(spam)
+spam.dummy <- spam %>% mutate(spam=as.numeric(spam=='spam'))
+
+# Making train and test sets:
+train.prop <- 0.66
+train.ind <- c(TRUE,FALSE) %>% 
+  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
+spam.train <- spam.dummy[train.ind,]
+spam.test <- spam.dummy[!train.ind,]
+
+ols.2 <- lm(spam~., data = spam.train)
+
+# Train confusion matrix:
+.predictions.train <- predict(ols.2) > 0.5
+(confusion.train <- table(prediction=.predictions.train, truth=spam.train$spam))
+missclassification(confusion.train)
+
+# Test confusion matrix:
+.predictions.test <- predict(ols.2, newdata = spam.test) > 0.5
+(confusion.test <- table(prediction=.predictions.test, truth=spam.test$spam))
+missclassification(confusion.test)
+```
+
+
+
 # Ridge
+```{r}
+library(ridge)
+
+ridge.1 <- linearRidge(lcavol~. ,data = prostate.train)
+# Note that if not specified, lambda is chosen automatically by linearRidge.
+
+# Train error:
+MSE( predict(ridge.1)- prostate.train$lcavol)
+# Test error:
+MSE( predict(ridge.1, newdata = prostate.test)- prostate.test$lcavol)
+```
+
+Another implementation:
+```{r}
+library(glmnet)
+y.train <- prostate.train$lcavol
+X.train <- prostate.train %>% select(-lcavol) %>% as.matrix
+ridge.2 <- glmnet(x=X.train, y=y.train, alpha = 0)
+
+# Train error:
+MSE( predict(ridge.2, newx =X.train)- y.train)
+
+# Test error:
+y.test <- prostate.test$lcavol
+X.test <- prostate.test %>% select(-lcavol) %>% as.matrix
+
+MSE( predict(ridge.2, newx = X.test)- y.test)
+```
+
+
 
 # LASSO
+```{r}
+library(glmnet)
+y.train <- prostate.train$lcavol
+X.train <- prostate.train %>% select(-lcavol) %>% as.matrix
+lasso.1 <- glmnet(x=X.train, y=y.train, alpha = 1)
+
+# Train error:
+MSE( predict(lasso.1, newx =X.train)- y.train)
+
+# Test error:
+y.test <- prostate.test$lcavol
+X.test <- prostate.test %>% select(-lcavol) %>% as.matrix
+
+MSE( predict(lasso.1, newx = X.test)- y.test)
+```
+
+
 
 # SVM
+
+
 
 # Neural Net
 
