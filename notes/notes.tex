@@ -35,17 +35,21 @@
 \newtheorem{example}{Example}
 
 
+% Custom commands
+
 \newcommand{\naive}{na\"{\i}ve }
 \newcommand{\Naive}{Na\"{\i}ve }
 
-\newcommand{\expect}[1]{E\left[ #1 \right]}
-\newcommand{\expectg}[2]{E_{#1}\left[ #2 \right]}
+
+\newcommand{\rv}[1]{\mathbf{#1}}
+\newcommand{\expect}[1]{\mathbf{E}\left[ \rv{#1} \right]}
+\newcommand{\expectg}[2]{\mathbf{E}_{\rv{#1}}\left[ \rv{#2} \right]}
 \newcommand{\expectn}[1]{\mathbb{E}\left[#1\right]}
 \newcommand{\gauss}[1]{\mathcal{N}\left(#1\right)}
-\newcommand{\cdf}{F}
-\newcommand{\cdfn}{\mathbb{F}}
-\newcommand{\icdf}{F^{-1}}
-\newcommand{\icdfn}{\mathbb{F}^{-1}}
+\newcommand{\cdf}[2]{F_\rv{#1} (#2)}
+\newcommand{\cdfn}[2]{\mathbb{F}_{#1}(#2)}
+\newcommand{\icdf}[2]{F_\rv{#1}^{-1} (#2)}
+\newcommand{\icdfn}[2]{\mathbb{F}^{-1}_{#1}(#2)}
 \newcommand{\pdf}{p}
 \newcommand{\dist}{P}
 
@@ -57,7 +61,7 @@
 \newcommand{\riskn}{\mathbb{R}}
 \newcommand{\deriv}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\argmin}[2]{argmin_{#1}\left\{ #2 \right\}}
-\newcommand{\hyp}{f}
+\newcommand{\hyp}{\mathbf{f}}
 \newcommand{\hypclass}{\mathcal{F}}
 \newcommand{\plane}{\mathbb{L}}
 \newcommand{\categories}{\mathcal{G}}
@@ -71,13 +75,8 @@
 \newcommand{\projectMat}{H}
 \newcommand{\rank}{q}
 
-
 \newcommand{\ensembleSize}{M}
 \newcommand{\ensembleInd}{m}
-
-
-
-
 
 
 \newcommand{\sample}{\mathcal{S}}
@@ -113,9 +112,13 @@ All books are very well written and strongly recommended.
 
 \newpage
 
+
+
+
+
 \section{Estimation}
 \label{sec:estimation} 
-In this section, we present several estimation principeles. 
+In this section, we present several estimation principles. 
 Their properties are not discussed, as the section is merely a reminder and a preparation for what follows.
 These concepts and examples can be found in many introductory books to statistics. I particularly recommend \cite{wasserman_all_2004} or \cite{abramovich_statistical_2013}.
 
@@ -126,26 +129,26 @@ The fundamental idea: match empirical moments to theoretical. I.e., estimate
 $$ \expect{g(X)}   $$
 by 
 $$ \expectn{g(X)}   $$
-where $\expectn{g(X)}:=\frac{1}{n}  \sum_i g(X_i)$, is the empirical mean.
+where $\expectn{g(x)}:=\frac{1}{n}  \sum_i g(x_i)$, is the empirical mean.
 
 \begin{example}[Exponential Rate]
 
-Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
-$\expect{X}=1/\lambda$.
-$\Rightarrow \hat{\lambda}=1/\expectn{X}$ 
+Estimate $\lambda$ in $\rv x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
+$\expect{x}=1/\lambda$.
+$\Rightarrow \hat{\lambda}=1/\expectn{x}$ .
 
 \end{example}
 
 
 \begin{example}[Linear Regression]
 
-Estimate $\beta$ in $Y \sim \gauss{X\beta,\sigma^2 I}$, a $p$ dimensional random vector.
-$\expect{Y}=X\beta$ and $\expectn{Y}=y$.
-Clearly, moment mathing won't work because no $\beta$ satistifes $X\beta=Y$.
+Estimate $\beta$ in $\rv y \sim \gauss{X\beta,\sigma^2 I}$, a $p$ dimensional random vector.
+$\expect{y}=X\beta$ and $\expectn{y}=y$.
+Clearly, moment matching won't work because no $\beta$ satisfies $X\beta=y$.
 A technical workaround:
-Since $\beta$ is $p$ dimensional, I need to find some $g(Y): \mathbb{R}^n \mapsto \mathbb{R}^p$.
-Well, $g(Y):=XY$ is such a mapping. I will use it, even though my technical justification is currently unsatisfactory. We thus have:
-$\expect{X'Y}=X'X\beta$ which I match to $\expectn{X'Y}=X'y$:
+Since $\beta$ is $p$ dimensional, I need to find some $g(\rv y): \mathbb{R}^n \mapsto \mathbb{R}^p$.
+Well, $g(y):=Xy$ is such a mapping. I will use it, even though my technical justification is currently unsatisfactory. We thus have:
+$\expect{X'y}=X'X\beta$ which I match to $\expectn{X'y}=X'y$:
 $$
   X'X \beta = X' y \Rightarrow \hat{\beta}=(X'X)^{-1} X'y.
 $$
@@ -157,20 +160,20 @@ $$
 \label{sec:quantiles}
 
 The fundamental idea: match empirical quantiles to theoretical. 
-Denoting by $\cdf_X(t)$ the CDF of $X$, then $\icdf_X(\alpha)$ is the $\alpha$ quantile of $X$.
-Also denoting by $\cdfn_X(t)$ the Empirical CDF of $X_1,\dots, X_n$, then $\icdfn_X(\alpha)$ is the $\alpha$ quantile of $X_1,\dots, X_n$.
+Denoting by $\cdf{x}{t}$ the CDF of $\rv{x}$, then $\icdf x \alpha$ is the $\alpha$ quantile of $\rv x$.
+Also denoting by $\cdfn x t$ the Empirical CDF of $x_1,\dots, x_n$, then $\icdfn x \alpha$ is the $\alpha$ quantile of $x_1,\dots, x_n$.
 The quantile matching method thus implies estimating
-$$ \icdf_X(\alpha)   $$
+$$ \icdf x \alpha $$
 by 
-$$ \icdfn_X(\alpha)  . $$
+$$ \icdfn x \alpha  . $$
 
 \begin{example}[Exponential rate]
-Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
+Estimate $\lambda$ in $\rv x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 \begin{align*}
-	& \cdf_X(t) = 1-\exp(-\lambda t) = \alpha \Rightarrow \\
-	& \icdf_X(\alpha) = \frac{-\log(1-\alpha)}{\lambda} \Rightarrow \\
-	& \icdf{X}{0.5} = \frac{-\log(0.5)}{\lambda} \Rightarrow \\
-	& \hat{\lambda} = \frac{-\log(0.5)}{\icdfn{X}{0.5}}.
+	& \cdf x t = 1-\exp(-\lambda t) = \alpha \Rightarrow \\
+	& \icdf x \alpha = \frac{-\log(1-\alpha)}{\lambda} \Rightarrow \\
+	& \icdf{x}{0.5} = \frac{-\log(0.5)}{\lambda} \Rightarrow \\
+	& \hat{\lambda} = \frac{-\log(0.5)}{\icdfn{x}{0.5}}.
 \end{align*}
 
 \end{example}
@@ -182,10 +185,10 @@ Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 The fundamental idea is that if the data generating process (i.e., the \emph{sampling distribution}) can be assumed, then the observations are probably some high probability instance of this process, and not a low probability event:
 Let $X_1,\dots,X_n \sim P_\theta$, with density (or probability) $p_\theta(X_1,\dots,X_n)$.
 Denote the likelihood, as a function of $\theta$: $\lik(\theta): p_\theta(X_1,\dots,X_n)$.
-Then $$\hat{\theta}_{ML}:= argmax_{\theta}\{ \lik(\theta) \}$$.
+Then $$\hat{\theta}_{ML}:= argmax_{\theta}\{ \lik(\theta) \}.$$
 
 Using a monotone mapping such as the log, does not change the $argmax$. 
-Denote $$\loglik(\theta):=\log(\lik(\theta))$$.
+Denote $$\loglik(\theta):=\log(\lik(\theta)).$$
 
  
 \begin{example}[Exponential rate]
@@ -223,11 +226,11 @@ This example does show, however, the power of the ML method to deal with non i.i
 
 \begin{example}[Autoregression of order 1 (AR(1))]
 Estimate the drift parameter $a$,  in a discrete time Gaussian process where:
-$X_{t+1}=X_t+\varepsilon; \varepsilon \sim \gauss{0,\sigma^2} \Rightarrow X_{t+1}|X_t \sim \gauss{a X_t,\sigma^2}$.
+$\rv x_{t+1}=\rv x_t+\rv \varepsilon; \rv \varepsilon \sim \gauss{0,\sigma^2} \Rightarrow \rv x_{t+1}|\rv x_t \sim \gauss{a x_t,\sigma^2}$.
 
 We start with the conditional density at time $t+1$:
 $$
-  p_{X_{t+1}|X_t=x_t}(x_{t+1}) = 
+  p_{\rv x_{t+1}|\rv x_t=x_t}(x_{t+1}) = 
   (2 \pi \sigma^2)^{-1/2} \exp \left( 
     -\frac{1}{2 \sigma^2}(x_{t+1}-a x_t)^2 
   \right).
@@ -1547,14 +1550,66 @@ Here are some terms needed to understand PCA outputs:
 
 
 
+\newpage
+
+\appendix
+
+
+
+\section{Notation}
+\label{sec:notation}
+
+In this text we use the following notation conventions:
+\begin{description}
+\item[$x$] A scalar or vector.
+\item[$\rv{x}$] A (possibly) vector valued random variable.
+\item[$X$] A matrix.
+\item[$\rv{X}$]  A matrix valued random variable (a random matrix).
+\item[$\norm{x}_2$] The $l_2$ norm of $x$: $\sqrt{\sum_j x_j^2}$.
+\item[$\norm{x}_1$] The $l_1$ norm of $x$: $\sum_j |x_j|$
+\item[$\sample$] A data sample.
+\item[$\expect{x}$] The expectation of $\rv{x}$.
+\item[$\expectn{x}$] The empirical expectation (average) of the vector $x$.
+\item[$\cdf{x}{t}$] The CDF of $\rv{x}$ at $t$.
+\item[$\icdf{x}{\alpha}$] The inverse CDF at $\alpha$ (the quantile function).
+\item[$\cdfn{x}{t}$] The empirical CDF of data vector $x$.
+\item[$\icdfn{x}{\alpha}$] The empirical $\alpha$ quantile of the data vector $x$.
+\item[$\rv x \sim \dist$]  The random variable $\rv{x}$ is $\dist$ distributed. 
+\item[$\pdf(x)$] The density function of $\dist$ at $x$.
+\item[$\gauss{\mu,\sigma^2}$] The univariate Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
+\item[$\gauss{\mu,\Sigma}$] The multivariate Gaussian distribution with mean vector $\mu$ and covariance matrix $\Sigma$.
+\item[$\lik(\theta)$] The likelihood function at $\theta$.
+\item[$\loglik(\theta)$] The log likelihood function at $\theta$.
+\item[$\loss(x,\theta)$] The loss function of $\theta$ at $x$.
+\item[$\risk(\theta)$]  The risk at $\theta$.
+\item[$\riskn(\theta)$] The empirical risk at $\theta$.
+\item[$\hyp(x)$] A prediction (hypothesis) at $x$.
+\item[$\hypclass$] The class of all hypotheses $\hyp$.
+\item[$\plane$] A hyperplane.
+\item[$\categories$] A set of categories. 
+\item[$\positive{t}$] The positive part of $t$.
+\item[$\kernel(x,y)$] A kernel function evaluated at $(x,y)$.
+\item[$\indicator{A}$] The indicator function of the set $A$.
+\item[$\manifold$] A manifold.
+\item[$\project$] A projection operator.
+
+\end{description}
+
+
+
+
 
 
 %%%%%%%%% Algorithms %%%%%%%%%%%
 \newpage
+
 \listofalgorithms
 
 
 %%%%%%%%% Bibliography %%%%%%%%%%%
+\newpage
+
+
 \bibliographystyle{abbrvnat}
 \bibliography{Intro2MachineLearning}
 
