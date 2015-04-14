@@ -50,7 +50,7 @@ where $\expectn{g(x)}:=\frac{1}{n}  \sum_i g(x_i)$, is the empirical mean.
 
 Estimate $\lambda$ in $\rv x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 $\expect{x}=1/\lambda$.
-$\Rightarrow \hat{\lambda}=1/\expectn{x}$ .
+$\Rightarrow \estim{\lambda}=1/\expectn{x}$ .
 
 \end{example}
 
@@ -65,7 +65,7 @@ Since $\beta$ is $p$ dimensional, I need to find some $g(\rv y): \mathbb{R}^n \m
 Well, $g(y):=Xy$ is such a mapping. I will use it, even though my technical justification is currently unsatisfactory. We thus have:
 $\expect{X'y}=X'X\beta$ which I match to $\expectn{X'y}=X'y$:
 $$
-  X'X \beta = X' y \Rightarrow \hat{\beta}=(X'X)^{-1} X'y.
+  X'X \beta = X' y \Rightarrow \estim{\beta}=(X'X)^{-1} X'y.
 $$
 
 \end{example}
@@ -88,7 +88,7 @@ Estimate $\lambda$ in $\rv x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 	& \cdf x t = 1-\exp(-\lambda t) = \alpha \Rightarrow \\
 	& \icdf x \alpha = \frac{-\log(1-\alpha)}{\lambda} \Rightarrow \\
 	& \icdf{x}{0.5} = \frac{-\log(0.5)}{\lambda} \Rightarrow \\
-	& \hat{\lambda} = \frac{-\log(0.5)}{\icdfn{x}{0.5}}.
+	& \estim{\lambda} = \frac{-\log(0.5)}{\icdfn{x}{0.5}}.
 \end{align*}
 
 \end{example}
@@ -98,9 +98,9 @@ Estimate $\lambda$ in $\rv x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 \label{sec:ml}
 
 The fundamental idea is that if the data generating process (i.e., the \emph{sampling distribution}) can be assumed, then the observations are probably some high probability instance of this process, and not a low probability event:
-Let $X_1,\dots,X_n \sim P_\theta$, with density (or probability) $p_\theta(X_1,\dots,X_n)$.
-Denote the likelihood, as a function of $\theta$: $\lik(\theta): p_\theta(X_1,\dots,X_n)$.
-Then $$\hat{\theta}_{ML}:= argmax_{\theta}\{ \lik(\theta) \}.$$
+Let $\rv x_1,\dots,\rv x_n \sim P_\theta$, with density (or probability) $p_\theta(x_1,\dots,x_n)$.
+Denote the likelihood, as a function of $\theta$: $\lik(\theta): p_\theta(x_1,\dots,x_n)$.
+Then $$\estim{\theta}_{ML}:= argmax_{\theta}\{ \lik(\theta) \}.$$
 
 Using a monotone mapping such as the log, does not change the $argmax$. 
 Denote $$\loglik(\theta):=\log(\lik(\theta)).$$
@@ -114,21 +114,21 @@ $$ \lik(\lambda) = \lambda^n \exp(-\lambda \sum_i X_i), $$
 and 
 $$ \loglik(\lambda) = n \log(\lambda) -\lambda \sum_i X_i. $$
 
-By differentiating and equating $0$, we get $\hat{\lambda}_{ML}=1/\expectn{X}$.
+By differentiating and equating $0$, we get $\estim{\lambda}_{ML}=1/\expectn{X}$.
 
 \end{example}
 
 \begin{example}[Discrete time Markov Chain]
 
 Estimate the transition probabilities,  $p_1$ and $p_2$ in a two state, $\{0,1\}$, discrete time, Markov chain where:
-$P(X_{t+1}=1|X_{t}=0)=p_1$ and $P(X_{t+1}=1|X_{t}=1)=p_2$.
+$P(\rv x_{t+1}=1|x_{t}=0)=p_1$ and $P(\rv X_{t+1}=1|X_{t}=1)=p_2$.
 The likelihood:
 $$
   \lik(p_1,p_2)=
   P(X_2,\dots,X_T;X_1,p_1,p_2)=
   \prod_{t=1}^T P(X_{t+1}=x_{t+1}|X_{t}=x_t).
 $$
-We denote $n_{ij}$ the total number of observed transitions from $i$ to $j$ and get that $\hat{p}_1=\frac{n_{01}}{n_{01}+n_{00}}$, and that $\hat{p}_2=\frac{n_{11}}{n_{11}+n_{10}}$.
+We denote $n_{ij}$ the total number of observed transitions from $i$ to $j$ and get that $\estim{p}_1=\frac{n_{01}}{n_{01}+n_{00}}$, and that $\estim{p}_2=\frac{n_{11}}{n_{11}+n_{10}}$.
 
 \begin{remark}[Confession]
 Well, this is a rather artificial example, as because of the Markov property, and the stationarity of the process, we only need to look at transition events, themselves Bernoulli distributed. 
@@ -157,7 +157,7 @@ $$
     -\frac{1}{2 \sigma^2}\sum_{t=1}^T (x_{t+1}-a x_t)^2 
   \right).
 $$
-Differentiating with respect to $a$ and equating $0$ we get $\hat{a}_{ML}=\frac{\sum x_{t+1}x_{t}}{\sum x_t^2}$.
+Differentiating with respect to $a$ and equating $0$ we get $\estim{a}_{ML}=\frac{\sum x_{t+1}x_{t}}{\sum x_t^2}$.
 
 We again see the power of the ML device.
 Could we have arrive to this estimator by intuiton alone? Hmmmm... maybe. 
@@ -187,9 +187,9 @@ $$
     -\frac{1}{2 \sigma^2} \norm{y-X\beta}^2
   \right)
 $$
-and $\hat{\beta}_{ML}$ equals 
+and $\estim{\beta}_{ML}$ equals 
 \begin{align}
-	\hat{\beta}_{ML}=(X'X)^{-1} X'y.
+	\estim{\beta}_{ML}=(X'X)^{-1} X'y.
 \end{align}
 
 
@@ -216,7 +216,7 @@ As we do not know the distribution of $X$, we cannot solve Eq.(\ref{eq:risk_min}
 Define the empirical risk as $\riskn(\theta):=\expectn{\loss(X;\theta)}$, then 
 \begin{align}
 \label{eq:empirical_risk_min}
- \hat{\theta}:= \argmin{\theta}{\riskn(\theta)}.
+ \estim{\theta}:= \argmin{\theta}{\riskn(\theta)}.
 \end{align}
 
 \begin{remark}
@@ -252,10 +252,10 @@ Minimization is easiest with vector derivatives, but I will stick to regular der
 \begin{align*}
 	\deriv{\riskn(\beta)}{{\beta_j}} = \sum_i \left[ (y_i-\sum_{j=1}^p x_{ij}\beta_j)(-x_{ij}) \right]
 \end{align*}
-Equating $0$ yields $\hat{\beta_j}=\frac{\sum_i y_i x_{ij}}{\sum_i x_{ij}^2}$.
+Equating $0$ yields $\estim{\beta_j}=\frac{\sum_i y_i x_{ij}}{\sum_i x_{ij}^2}$.
 Solving for all $j$'s and putting in matrix notation we get
 \begin{align}
-	\hat{\beta}_{OLS}=(X'X)^{-1} X'y.
+	\estim{\beta}_{OLS}=(X'X)^{-1} X'y.
 \end{align}
 
 
@@ -277,9 +277,9 @@ The attributes, also know as features, or predictors, are assumed to belong to s
 
 In particular, we don't need to explain the causal process relating the two, so there is no need to commit to a sampling distribution. The implied ERM problem is thus
 \begin{align}
-	\hat{\hyp}(x) = \argmin{\hyp}{\sum_i \loss(y_i - \hyp(x_i))}.
+	\estim{\hyp}(x) = \argmin{\hyp}{\sum_i \loss(y_i - \hyp(x_i))}.
 \end{align}
-Alas, there are clearly infinitely many $\hyp$ for which $\riskn(\hat{\hyp}(x))=0$, in particular, all those where $\hat{\hyp}(x_i)=y_i$.
+Alas, there are clearly infinitely many $\hyp$ for which $\riskn(\estim{\hyp}(x))=0$, in particular, all those where $\estim{\hyp}(x_i)=y_i$.
 All these $\hyp$ feel like very bad predictors, as they \emph{overfit} the observed data, at a cost of generalizability.\marginnote{Overfitting}
 We will formalize this intuition in Section~\ref{sec:desicion_theory}. 
 
@@ -330,7 +330,7 @@ Consider the Ridge regression problem:
 \begin{align}
 \label{eq:ridge}
 	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \frac{\lambda}{2}\norm{\beta}^2} \\
-	& \hat{\beta}_{Ridge}= (X'X+\lambda I)^{-1} X'y
+	& \estim{\beta}_{Ridge}= (X'X+\lambda I)^{-1} X'y
 \end{align}
 We can see that again, $\hypclass$ is restricted to be the space of linear functions of $x$, but we also add a regularization that favors the linear functions with small coefficients.
 
@@ -355,16 +355,16 @@ Consider the LASSO problem:
 	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \lambda \norm{\beta}^2_1} 
 \end{align}
 As can be seen, just like in Ridge regression, $\hypclass$ is restricted to linear functions. The regularization however differs. Instead of $l_2$ penalty, we use an $l_1$ penalty.
-Eq.(\ref{eq:lasso}) does not have a closed form solution for $\hat{\beta}$ but the LARS algorithm, a quadratic programming algorithm, solves it efficiently.
+Eq.(\ref{eq:lasso}) does not have a closed form solution for $\estim{\beta}$ but the LARS algorithm, a quadratic programming algorithm, solves it efficiently.
 
 
 
-The LASSO has gained much popularity as it has the property that $\hat{\beta}_{LASSO}$ has many zero entries. It is thus said to be \emph{sparse}\marginnote{Sparsity}.
+The LASSO has gained much popularity as it has the property that $\estim{\beta}_{LASSO}$ has many zero entries. It is thus said to be \emph{sparse}\marginnote{Sparsity}.
 The sparsity property is very attractive as it acts as a model selection method, allowing to consider $X$s where $p>n$, and making predictions computationally efficient.
 
-The sparsity property can be demonstrated for the orthogonal design case ($X'X=I$) where $\hat{\beta}$ admits a closed form solution:
+The sparsity property can be demonstrated for the orthogonal design case ($X'X=I$) where $\estim{\beta}$ admits a closed form solution:
 \begin{align}
-	\hat{\beta}_{j,LASSO} = sign(\beta_j) \left[|\hat{\beta}_{j,OLS}|-\frac{\lambda}{2} \right]_+.
+	\estim{\beta}_{j,LASSO} = sign(\beta_j) \left[|\estim{\beta}_{j,OLS}|-\frac{\lambda}{2} \right]_+.
 \end{align}
 We thus see that the LASSO actually performs \emph{soft thresholding} on the OLS estimates. \marginnote{Soft Thresholding}
 
@@ -421,10 +421,10 @@ The ultimate reference on the matter is \cite{mccullagh_generalized_1989}.
 \subsection{Regression Classifier}
 \label{sec:regression_classifier}
 Can we use the OLS framework for prediction? Yes! With proper encoding of $y$.
-Solving the same problem from Example~\ref{eg:OLS} by encoding $y$ as $\{0,1\}$ gives us the linear separating hyperplane $\plane: \{x:x\hat{\beta}_{OLS}=0.5\}$.
+Solving the same problem from Example~\ref{eg:OLS} by encoding $y$ as $\{0,1\}$ gives us the linear separating hyperplane $\plane: \{x:x\estim{\beta}_{OLS}=0.5\}$.
 
 \begin{remark}
-We can interpret $\hat{y}$ as the probability of an event, but there a slight technical difficulty as $\hat{y}$ might actually be smaller than $0$ or larger than $1$.
+We can interpret $\estim{y}$ as the probability of an event, but there a slight technical difficulty as $\estim{y}$ might actually be smaller than $0$ or larger than $1$.
 \end{remark}
 
 
@@ -488,10 +488,10 @@ See Section 12 in \cite{hastie_elements_2003} for more details on SVMs.
 
 
 \begin{remark}[Name Origins]
-SVM takes its name from the fact that $\hat{\beta}_{SVM}=\sum_i \hat{\alpha}_i y_i x_i$.
-The explicit form of $\hat{\alpha}_i$ can be found in \citep[Section 12.2.1]{hastie_elements_2003}.
-For our purpose, it suffices to note that $\hat{\alpha}_i$ will be $0$ for all data points far away from $\plane$.
-The data points for which $\hat{\alpha}_i>0$ are the \emph{support vectors}, which give the method its name.
+SVM takes its name from the fact that $\estim{\beta}_{SVM}=\sum_i \estim{\alpha}_i y_i x_i$.
+The explicit form of $\estim{\alpha}_i$ can be found in \citep[Section 12.2.1]{hastie_elements_2003}.
+For our purpose, it suffices to note that $\estim{\alpha}_i$ will be $0$ for all data points far away from $\plane$.
+The data points for which $\estim{\alpha}_i>0$ are the \emph{support vectors}, which give the method its name.
 \end{remark}
 
 
@@ -636,7 +636,7 @@ Considering a single predictor, the ERM problem for \emph{Smoothing Spline}
 \end{align}
 
 It is quite surprising, and useful, that even though the optimization is performed over an infinite dimensional function space, the solution belongs to a finite dimensional parametric sub-space. 
-The magic continues! It turns out that the fitted values, $\{\hat{\hyp}(x_i)\}_{i=1}^n$ are linear in $\{y_i\}_{i=1}^n$. A fact that greatly facilitates the analysis of the statistical properties of these models.
+The magic continues! It turns out that the fitted values, $\{\estim{\hyp}(x_i)\}_{i=1}^n$ are linear in $\{y_i\}_{i=1}^n$. A fact that greatly facilitates the analysis of the statistical properties of these models.
 
 In the presence of $p>1$ predictors, Eq.(\ref{eq:smoothing_spline}) can be generalized as 
 \begin{align}
@@ -671,7 +671,7 @@ Clearly this requires some notion of distance in the feature space $\featureS$, 
 The predicted value of a continuous $y$ at some point $x$ has the form
 \begin{align}
 \label{eq:knn}
-	\hat{y}(x)=\frac{1}{k}\sum_{i \in N_k(x) y_i}
+	\estim{y}(x)=\frac{1}{k}\sum_{i \in N_k(x) y_i}
 \end{align}
 where $N_k(x)$ are the indexes of the $k$ nearest observations to $x$ in $\featureS$.
 Eq.(\ref{eq:knn}) merely states that we predict $y$ to have the average value of the $y_i$'s in its neighbourhood.
@@ -701,7 +701,7 @@ It is also known as a \emph{scan statistic}, or \emph{searchlight statistic}.\ma
 The \emph{Nadaraya-Watson} weighted average encompasses most if not all kernel smoothers and is defined as \marginnote{Nadaraya-Watson}
 \begin{align}
 \label{eq:nadaraya_watson}
-	\hat{\hyp}(x):= \frac{\sum_i \kernel_\lambda(x,x_i)y_i}{\sum_i \kernel_\lambda(x,x_i)}
+	\estim{\hyp}(x):= \frac{\sum_i \kernel_\lambda(x,x_i)y_i}{\sum_i \kernel_\lambda(x,x_i)}
 \end{align}
 where $\kernel_\lambda$ is the kernel function, which is merely a measure of the distance between the evaluation point $x$ and the data points $\{ x_i \}_{i=1}^n$ and weights the contribution of each $\{ y_i \}_{i=1}^n$ to the value at $x$.
 The denominator merely ensures the weights sum to $1$.
@@ -803,8 +803,8 @@ We now update these definitions to deal with the the $\hyp(x)$ notation of the p
 	\test :=& \expectg{Y,X}{\loss(Y,\hyp(X))}, \label{eq:test_error} \\
 	\train :=& \expectn{\loss(y,\hyp(x))} = \frac{1}{n} \sum_i \loss(y_i,\hyp(x_i)),  \label{eq:training_error} \\
 	\insample :=& \frac{1}{n} \sum_i \expectg{Y}{\loss(Y,\hyp(x_i))}, \label{eq:in_sample} \\
-	\EPE :=& \expectg{\hat{\hyp}_n}{
-		\expectg{Y,X}{\loss(Y,\hat{\hyp}_n(X))|\hat{\hyp}_n}
+	\EPE :=& \expectg{\estim{\hyp}_n}{
+		\expectg{Y,X}{\loss(Y,\estim{\hyp}_n(X))|\estim{\hyp}_n}
 	}.\label{eq:epe}
 \end{align}
 
@@ -822,8 +822,8 @@ This is the \emph{in sample error}.
 \marginnote{In Sample Error}
 
 Eq.(\ref{eq:epe}) is called the \emph{expected prediction error}, i.e., the expected loss when $\hyp$ is also re-learned. 
-Put differently: How much would we err when:(1) we are given $n$ new examples $\sample_1$; (2) re-learn $\hat{\hyp}_n$ on $\sample_1$; (3) compute the risk of $\hat{\hyp}_n$ (in the population, not in $\sample_1$.
-We emphasize this by writing $\hat{\hyp}_n$ instead of $\hyp$.
+Put differently: How much would we err when:(1) we are given $n$ new examples $\sample_1$; (2) re-learn $\estim{\hyp}_n$ on $\sample_1$; (3) compute the risk of $\estim{\hyp}_n$ (in the population, not in $\sample_1$.
+We emphasize this by writing $\estim{\hyp}_n$ instead of $\hyp$.
 $\EPE$ is thus not a property of a particular predictor $\hyp$, but rather of a whole learning algorithm on random samples of size $n$.
 It could have also been written as $\risk(algorithm)$, although I have not seen this notation in use.
 \marginnote{Expected Prediction Error}
@@ -899,8 +899,8 @@ If concerned with over fitting, here is a simple algorithm to estimate the predi
 \caption{Jackknife}
 \begin{algorithmic}
 \For {$i \in 1,\dots,n$}
-    \State $\hat{\hyp}^{(i)} \gets$ the learned model with all but the $i$'th observation.
-    \State $\loss^{(i)} \gets$ the loss of $\hat{\hyp}^{(i)}$ on the $i$'th observation.
+    \State $\estim{\hyp}^{(i)} \gets$ the learned model with all but the $i$'th observation.
+    \State $\loss^{(i)} \gets$ the loss of $\estim{\hyp}^{(i)}$ on the $i$'th observation.
 \EndFor
 \State \Return the average loss over $\loss^{(i)}$.
 \end{algorithmic}
@@ -921,8 +921,8 @@ But wait! We might be able to stabilize the variability of the estimated error i
 \begin{algorithmic}
 \State Split the data into $\folds$ parts (``folds'').
 \For {$\fold \in 1,\dots,\folds$}
-    \State $\hat{\hyp}^{(k)} \gets$ the learned model with all \emph{except} the observations in the $\fold$'th fold.
-    \State $\loss^{(\fold)} \gets$ the loss average of $\hat{\hyp}^{(\fold)}$ on the observations in the $\fold$'th fold.
+    \State $\estim{\hyp}^{(k)} \gets$ the learned model with all \emph{except} the observations in the $\fold$'th fold.
+    \State $\loss^{(\fold)} \gets$ the loss average of $\estim{\hyp}^{(\fold)}$ on the observations in the $\fold$'th fold.
 \EndFor
 \State \Return the average over $\loss^{(\fold)}$ .
 \end{algorithmic}
@@ -945,8 +945,8 @@ Here is the simplest version of Bootstrap validation:
 \begin{algorithmic}
 \For {$\bootstrap \in 1,\dots,\bootstraps$}
 	\State $\sample^\bootstrap \gets$ $n$ randomly selected observations, with replacement, from the original data.
-    \State $\hat{\hyp}^{\bootstrap} \gets$ the model learned with  $\sample^\bootstrap$.
-    \State $\loss^{\bootstrap} \gets$ the average loss of $\hat{\hyp}^{\bootstrap}$ on the observations in the \emph{original} data.
+    \State $\estim{\hyp}^{\bootstrap} \gets$ the model learned with  $\sample^\bootstrap$.
+    \State $\loss^{\bootstrap} \gets$ the average loss of $\estim{\hyp}^{\bootstrap}$ on the observations in the \emph{original} data.
 \EndFor
 \State \Return the over of $\loss^{\bootstrap}$ .
 \end{algorithmic}
@@ -994,21 +994,21 @@ Considering a set of $\ensembleSize$ candidate learning algorithms, a \emph{comm
 \begin{algorithmic}
 \State For $\ensembleSize$ candidate learning algorithms.
 \For{$ \ensembleInd \in 1,\dots,\ensembleSize$}
-	\State $\hat{\hyp}^\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm.
+	\State $\estim{\hyp}^\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm.
 \EndFor
-\State $\bar{\hyp}(x) \gets$ the average of $\hat{\hyp}^\ensembleInd(x)$. 
+\State $\bar{\hyp}(x) \gets$ the average of $\estim{\hyp}^\ensembleInd(x)$. 
 \State \Return $\bar{\hyp}(x)$
 \end{algorithmic}
 \end{algorithm}
 
-This concept can be generalized by considering different aggregation schemes. The following (meta-)algorithms are merely different aggregation schemes. Most, if not all, can be seen as minimizers of some posterior expected loss. I.e., they minimize some risk with respect to the posterior probabilities of $\{\hat{\hyp}^\ensembleInd(x) \}_{\ensembleInd=1}^\ensembleSize $.
+This concept can be generalized by considering different aggregation schemes. The following (meta-)algorithms are merely different aggregation schemes. Most, if not all, can be seen as minimizers of some posterior expected loss. I.e., they minimize some risk with respect to the posterior probabilities of $\{\estim{\hyp}^\ensembleInd(x) \}_{\ensembleInd=1}^\ensembleSize $.
 
 
 \subsection{Bayesian Model Averaging}
 The idea of \emph{Bayesian model averaging} is that of using the posterior mean as a predictor. 
 Computing the posterior mean can be quite a tedious task. 
 When dealing with hypotheses from the same parametric class, a more practical approach is that of \emph{inverse BIC weighting}. 
-This is justified by that fact that the BIC (\S\ref{sec:risk_estimation}) is approximately proportional to the posterior probability of $\{\hat{\hyp}^\ensembleInd(x)$.
+This is justified by that fact that the BIC (\S\ref{sec:risk_estimation}) is approximately proportional to the posterior probability of $\{\estim{\hyp}^\ensembleInd(x)$.
 
 
 \begin{algorithm}[H]
@@ -1017,10 +1017,10 @@ This is justified by that fact that the BIC (\S\ref{sec:risk_estimation}) is app
 \begin{algorithmic}
 \State For $\ensembleSize$ candidate learning algorithms.
 \For{$ \ensembleInd \in 1,\dots,\ensembleSize$}
-	\State $\hat{\hyp}^\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm.
-	\State $BIC^\ensembleInd \gets$ the BIC of $\hat{\hyp}^\ensembleInd(x)$.
+	\State $\estim{\hyp}^\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm.
+	\State $BIC^\ensembleInd \gets$ the BIC of $\estim{\hyp}^\ensembleInd(x)$.
 \EndFor
-\State $\bar{\hyp}(x) \gets$ the average of $\hat{\hyp}^\ensembleInd(x)$ inversely weighted by $BIC^\ensembleInd$. 
+\State $\bar{\hyp}(x) \gets$ the average of $\estim{\hyp}^\ensembleInd(x)$ inversely weighted by $BIC^\ensembleInd$. 
 \State \Return $\bar{\hyp}(x)$
 \end{algorithmic}
 \end{algorithm}
@@ -1041,10 +1041,10 @@ Here is  stacking example for a continuous $y$:
 \State For $\ensembleSize$ candidate learning algorithms.
 \For{$ i \in 1,\dots,n$}
 	\For{$ \ensembleInd \in 1,\dots \ensembleSize $}
-		\State $\hat{\hyp}^{(i)}_\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm, and without the $i$'th observation.
+		\State $\estim{\hyp}^{(i)}_\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm, and without the $i$'th observation.
 	\EndFor
 \EndFor
-\State $\bar{\hyp}(x_i) \gets$ the OLS prediction using $\{ \hat{\hyp}^{(i)}_\ensembleInd(x_i)\}_{\ensembleInd=1}^\ensembleSize$ as features. 
+\State $\bar{\hyp}(x_i) \gets$ the OLS prediction using $\{ \estim{\hyp}^{(i)}_\ensembleInd(x_i)\}_{\ensembleInd=1}^\ensembleSize$ as features. 
 \State \Return $\bar{\hyp}(x)$
 \end{algorithmic}
 \end{algorithm}
@@ -1066,9 +1066,9 @@ A \emph{random forrest} is such an algorithm, when CARTs are fitted and averaged
 \State Choose the number Bootstraps $\bootstraps$.
 \For{$ \bootstrap \in 1,\dots,\bootstraps$}
 	\State Generate a bootstrap sample of size $n$: $\sample_\bootstrap$.
-	\State Learn $\hat{\hyp}(x)_{\bootstrap}$ from $\sample_\bootstrap$.
+	\State Learn $\estim{\hyp}(x)_{\bootstrap}$ from $\sample_\bootstrap$.
 \EndFor
-\State $\bar{\hyp}(x) \gets$ the average of $\hat{\hyp}(x)_{\bootstrap}$.
+\State $\bar{\hyp}(x) \gets$ the average of $\estim{\hyp}(x)_{\bootstrap}$.
 \State \Return $\bar{\hyp}(x)$
 \end{algorithmic}
 \end{algorithm}
@@ -1127,7 +1127,7 @@ Much like the Kernel Smoothing regression, a \naive estimator is the moving aver
 A natural generalization, in the spirit of the Nadaraya-Watson smoother (Eq.(\ref{eq:nadaraya_watson})) is the \emph{Parzen} estimate:\marginnote{Parzen Estimate}
 \begin{align}
 \label{eq:parzen}
-	\hat{\pdf}(x):=\frac{1}{n \lambda} \sum_{i=1}^n \kernel_\lambda(x,x_i).
+	\estim{\pdf}(x):=\frac{1}{n \lambda} \sum_{i=1}^n \kernel_\lambda(x,x_i).
 \end{align}
 
 \begin{remark}
@@ -1231,9 +1231,9 @@ The fundamental idea behind Fisher's LDA (sometimes, just LDA) is that for dicho
 Estimating $\dist(x|y)$ thus amounts to the estimation of the mean and covariance, which are fairly simple problems that do not require too much data (relatively).
 
 The decision boundaries of this method turn out to be linear in $\featureS$. 
-Denoting the distance from the class centers by $\hat{\delta}:=(\hat{\mu}_1-\hat{\mu}_2)$, class thus 2 will be predicted if 
+Denoting the distance from the class centers by $\estim{\delta}:=(\estim{\mu}_1-\estim{\mu}_2)$, class thus 2 will be predicted if 
 \begin{align}
-	x' \hat{\Sigma}^{-1} \hat{\delta} > \frac{1}{2} \hat{\delta}' \hat{\Sigma}^{-1} \hat{\delta}
+	x' \estim{\Sigma}^{-1} \estim{\delta} > \frac{1}{2} \estim{\delta}' \estim{\Sigma}^{-1} \estim{\delta}
 \end{align}
 and class 1 otherwise.
 
@@ -1292,11 +1292,11 @@ We can thus drive the search with a CV scheme, but the computational burden migh
 \begin{algorithm}[H]
 \caption{Forward Search}
 \begin{algorithmic}
-\State Pick your favourite model selection criterion $\hat{\risk}(x)$.
-\While{$\hat{\risk}(x)$ keeps getting smaller}
-    \State $\hat{\hyp} \gets$ the model with the smallest $\hat{\risk}(x)$ after adding a \emph{single} variable.
+\State Pick your favourite model selection criterion $\estim{\risk}(x)$.
+\While{$\estim{\risk}(x)$ keeps getting smaller}
+    \State $\estim{\hyp} \gets$ the model with the smallest $\estim{\risk}(x)$ after adding a \emph{single} variable.
 \EndWhile
-\State \Return $\hat{\risk}(x)$.
+\State \Return $\estim{\risk}(x)$.
 \end{algorithmic}
 \end{algorithm}
 
@@ -1311,7 +1311,7 @@ The bottom line is however, that a \textbf{significant variable, does not make i
 
 \subsubsection{LASSO}
 We presented the LASSO in Section \ref{sec:lasso} as a regularized ERM problem.
-We claimed, without proof, that the $l_1$ regularization in fact performs soft coefficient thresholding. The estimated $\hat{\beta}_{LASSO}$ has thus many entries set to zero, acting as a model selection device. 
+We claimed, without proof, that the $l_1$ regularization in fact performs soft coefficient thresholding. The estimated $\estim{\beta}_{LASSO}$ has thus many entries set to zero, acting as a model selection device. 
 
 
 
@@ -1350,7 +1350,7 @@ More generally, PCA seeks to represent $x$ in the simplest manifold possible: a 
 The ERM problem is then:
 \begin{align}
 \label{eq:PCA}
-	& \hat{\projectMat}_\rank:= \argmin{\projectMat_\rank}{\frac{1}{n}\sum_i (x_i-\projectMat_\rank x_i)^2} .
+	& \estim{\projectMat}_\rank:= \argmin{\projectMat_\rank}{\frac{1}{n}\sum_i (x_i-\projectMat_\rank x_i)^2} .
 \end{align}
 
 Without going into the optimization details, it turns out that Eq.(\ref{eq:PCA}) has a closed form solution. 
@@ -1365,7 +1365,7 @@ $V$ is a $p \times p$ orthogonal matrix ($V'V=I_p$).
 The solution to Eq.(\ref{eq:PCA}) is 
 \begin{align}
 \label{eq:PCA_solution}
-	\hat{\projectMat}_\rank=V_\rank'V_\rank,
+	\estim{\projectMat}_\rank=V_\rank'V_\rank,
 \end{align}
 where $V_\rank$ are the first $\rank$ columns of $V$.
 
@@ -1380,7 +1380,7 @@ Here are some terms needed to understand PCA outputs:
 
 
 %\paragraph{Intuition}
-%The main point to clarify is why is does $\hat{\projectMat_\rank}$ in Eq.(\ref{eq:PCA_solution}) solve Eq.(\ref{eq:PCA})?
+%The main point to clarify is why is does $\estim{\projectMat_\rank}$ in Eq.(\ref{eq:PCA_solution}) solve Eq.(\ref{eq:PCA})?
 %The intuition we offer is via OLS.
 %As an OLS problem, we seek to predict $X$ with $X$, where $\beta$ is not a $p \times 1$ vector, but rather a $p \times p$ matrix of rank $\rank$.
 %X (X'X)^{-1} X'X
@@ -1480,6 +1480,7 @@ In this text we use the following notation conventions:
 \item[$\rv{x}$] A (possibly) vector valued random variable.
 \item[$X$] A matrix.
 \item[$\rv{X}$]  A matrix valued random variable (a random matrix).
+\item[$X'$] The matrix transpose of $X$.
 \item[$\norm{x}_2$] The $l_2$ norm of $x$: $\sqrt{\sum_j x_j^2}$.
 \item[$\norm{x}_1$] The $l_1$ norm of $x$: $\sum_j |x_j|$
 \item[$\sample$] A data sample.
