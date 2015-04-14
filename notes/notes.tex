@@ -271,15 +271,15 @@ If we set the loss function to be the negative log likelihood of the (true) samp
 \label{sec:learning}
 
 \subsection{Empirical Risk Minimization (ERM) and Inductive Bias}
-In Supervised Learning, or \emph{learning with teacher} problems where we want to extract the relation $y=\hyp(x)$ between attributes $x$ and some outcome $y$.
+In Supervised Learning, or \emph{learning with teacher},  we want to extract the relation $y=\hyp(x)$ between attributes $x$ and some outcome $y$.
 It is implicit, and essential, that the outcomes are observed. If this is not the case, see \emph{Unsupervised Learning }(\S\ref{sec:unsupervised}).
-The attributes, also know as features, or predictors, are assumed to belong to some \emph{feature space} $\featureS$. \marginnote{Feature Space}
+The attributes, also know as \emph{features}, or \emph{predictors}, are assumed to belong to some \emph{feature space} $\featureS$. \marginnote{Feature Space}
 
-Unlike classical statistics, we don't care to explain the causal process relating $x$ and $y$, we just want good predictions.  There is thus no need to assume the sampling distribution. The implied ERM problem is thus
+Unlike classical statistics, we don't care to explain the causal process relating $x$ and $y$, we just want good predictions.  There is thus no need to assume the sampling distribution. The implied ERM problem is
 \begin{align}
 	\estim{\hyp}(x) := \argmin{\hyp}{\riskn(\hyp(x))} = \argmin{\hyp}{\frac{1}{n} \sum_i \loss(y_i - \hyp(x_i))}.
 \end{align}
-Alas, there are clearly infinitely many $\hyp$ for which $\riskn(\estim{\hyp}(x))=0$, in particular, all those where $\estim{\hyp}(x_i)=y_i$.
+Alas, there are clearly infinitely many $\hyp$ for which $\riskn(\estim{\hyp}(x))=0$, in particular, all those where $\estim{\hyp}(x_i)=y_i, \forall i$.
 All these $\hyp$ feel like very bad predictors, as they \emph{overfit} the observed data, at a cost of generalizability.\marginnote{Overfitting}
 We formalize this intuition in Section~\ref{sec:desicion_theory}. 
 
@@ -289,14 +289,12 @@ There are several ways to introduce this bias, which can be combined:
 \begin{description}
 \item[Constrained Hypothesis Classes]
 We typically do not allow $\hyp$ to be ``any function'' but rather restrict it to belong to a certain class. In the machine learning terminology, $\hyp$ is a Hypothesis, and it belongs to $\hypclass$ which is the Hypothesis Class.
-\item[Regularization] We do not need to treat all $\hyp \in \hypclass$ equivalently. We might have prior preferences towards particular $\hyp$'s , typically simple $\hyp$'s, and we can introduce these preference in the learning process. This is called \emph{Regularization}.
+\item[Regularization] We do not need to treat all $\hyp \in \hypclass$ equivalently. We might have prior preferences towards particular $\hyp$'s , typically simple $\hyp$'s, and we can introduce these preferences in the learning process. This is called \emph{Regularization}.
 \item[Non ERM Approaches] Many learning problems can be cast as ERM problems, but another way to introduce bias is by learning $\hyp$ in a non-optimal manner. Inductive bias is thus introduced by the (non) optimization algorithm 
 Learning algorithms that cannot be cast as ERMs include: Nearest Neighbour (\S\ref{sec:knn}), Kernel Smoothing(\S\ref{sec:kernel}), Boosting (\S\ref{sec:boosting}).
 \end{description}
 
-
-
-We now proceed to show that many supervised learning algorithms are in fact ERMs with some type of inductive bias and regularization.
+We now proceed to show that many supervised learning algorithms are in fact ERMs with some type of inductive bias: constrained hypothesis class \andor or regularization \andor suboptimality.
 
 \subsection{Ordinary Least Squares (OLS)}
 \label{sec:ols}
@@ -304,7 +302,7 @@ As seen in Example~\ref{eg:OLS}, by adopting a squared error loss, and restricti
 In this case, learning $\hyp$ is effectively the same as learning $\beta$ as they are isomorphic, as will be the case in all hypothesis classes that admit a finite dimensional parametrization.
 
 \paragraph{Regularization}
-While the OLS problem seemingly has no regulaziation parameters, we are in no way restricted to the original $X$ matrix supplied to us. 
+While the OLS problem seemingly has no regularization parameters, we are in no way restricted to the original $X$ matrix supplied to us. 
 We are free to choose any subset of the $X$ variables. Selecting a subset of the $X$ variables is known as \emph{model selection}.\marginnote{Model Selection}.
 We will discuss many different methods to choose the regularization level, in this case, the variables in the OLS, in Section~\ref{sec:desicion_theory}.
 
@@ -312,7 +310,7 @@ We are not only free to select a subset of $X$s, but we can also augment $X$ wit
 The idea of basis augmentation is a useful and fundamental one that will revisit us throughout the course, even if we typically don't call it by its name.
 
 \begin{remark}[OLS and Linear Regression]
-In this text, we distinguish between OLS and Linear Regression. In these notes, we refer to linear regression when we assume that the data generating process it actually $y=x\beta+\varepsilon$, whereas in OLS we merely fit a linear function without claiming it is the data generating one.
+In this text, we distinguish between OLS and Linear Regression. We refer to Linear Regression when we assume that the data generating process it actually $\y=\x\beta+\varepsilon$, whereas in OLS we merely fit a linear function without claiming it is the \emph{true} relation between $\y$ and $\x$.
 \end{remark}
 
 
@@ -337,11 +335,10 @@ We can see that again, $\hypclass$ is restricted to be the space of linear funct
 The regularization of $\beta$ can have several interpretations and justifications.
 \begin{description}
 \item[A mathematical device] Strengthening the diagonal of $X'X$ makes is more easily invertible. This is a standard tool in applied mathematics called \emph{Tikhonov Regularization}. It is also helpful when dealing with multicolinearity, as $(X'X+\lambda I)$ is always invertible.
-\item[A Subjective Bayesian View] If we believe that $\beta$ should be small; say our beliefs can be quantified by $\rv \beta \sim \gauss{0,1/\lambda I}$, then the Ridge solution is actually the mean of our posterior believes on $\rv \beta|y$.
+\item[A Subjective Bayesian View] If we believe that $\beta$ should be small; say our beliefs can be quantified by $\rv \beta \sim \gauss{0,1/\lambda I}$, then the Ridge solution is actually the mean of our posterior beliefs on $\rv \beta|y$.
 \end{description}
 
-Whatever the justification, it can be easily shown that $\deriv{\risk(\lambda,\beta)}{\lambda}$ at $\lambda=0$ is negative, thus, we can only improve the predictions by introducing some small regularization (how small is small? see \S\ref{sec:desicion_theory}).
-
+Whatever justification you prefer, it can be easily shown that $\deriv{\risk(\lambda,\beta)}{\lambda}$ at $\lambda=0$ is negative, thus, predictions only improve by introducing some small regularization (how small is small? see \S\ref{sec:desicion_theory}).
 
 For more on Ridge regression see \cite{hastie_elements_2003}.
 
