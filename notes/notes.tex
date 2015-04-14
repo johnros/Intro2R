@@ -204,55 +204,48 @@ The underlying idea is that each realization of $X$ incurs some loss, and we see
 In the econometric literature, we dot not incur a loss, but rather a utility, we thus seek a policy that maximizes the average utility.
 
 \begin{definition}[Loss Function]
-The penalty for predicting $\theta$ when observing $x$.
-$\loss(\x;\theta)$
+The penalty for predicting $\theta$ when observing $x$: $$\loss(x;\theta).$$
 \end{definition}
-
-\begin{definition}[Risk Function]\marginnote{Risk}
-The expected loss:$\risk(\theta):=\expect{\loss(X;\theta)}$
+\begin{definition}[Risk Function]
+The expected loss: $$\risk(\theta):=\expect{\loss(\x;\theta)}.$$
 \end{definition}
-
-Then 
-\begin{align}
+Then the best prediction, $\theta^*$, being the minimizer of the expected risk is
+$$
 \label{eq:risk_min}
  \theta^*:= \argmin{\theta}{\risk(\theta)}.
-\end{align}
-
-
-
-As we do not know the distribution of $X$, we cannot solve Eq.(\ref{eq:risk_min}), so we minimize the \emph{empirical} risk. \marginnote{Empirical Risk}
-Define the empirical risk as $\riskn(\theta):=\expectn{\loss(X;\theta)}$, then 
-\begin{align}
+$$
+As we do not know the distribution of $\x$, we cannot solve Eq.(\ref{eq:risk_min}), so we minimize the \emph{empirical} risk.
+\begin{definition}[Empirical Risk]
+The average loss in the sample: $$\riskn(\theta):=\expectn{\loss(X;\theta)}=\frac{1}{n}\sum_i \loss(x_i,\theta).$$
+\end{definition}
+A prediction that can actually be computed with data is thus the empirical minimizer $\estim{\theta}$:
+$$
 \label{eq:empirical_risk_min}
  \estim{\theta}:= \argmin{\theta}{\riskn(\theta)}.
-\end{align}
-
-\begin{remark}
-The risk function, $\risk(\theta)$ defined above
-\end{remark}
-
+$$
 
 
 \begin{example}[Squared Loss]
-Let $\loss(X;\theta)=(X-\theta)^2$. Then 
+Let $\loss(x;\theta)=(x-\theta)^2$. Then 
 $
 	\risk(\theta) = 
-	\expect{(X-\theta)^2} = 
-	(\expect{X}-\theta)^2 + Var[X]. 
+	\expect{(\x-\theta)^2} = 
+	(\expect{\x}-\theta)^2 + Var[\x]. 
 $
-Clearly  $Var[X]$ does not depend on $\theta$  so that $\risk(\theta)$ is minimized by $\theta^*=\expect{X}$.
+Clearly  $Var[\x]$ does not depend on $\theta$  so that $\risk(\theta)$ is minimized by $\theta^*=\expect{\x}$.
 \textbf{We thus say that the expectation of a random variable is the minimizer of the squared loss.}
 
-How do we estimate the population expectation? Well a natural estimator is the empirical mean, which is also the minimizer of the empirical risk $\riskn(X)$. The proof is immediate by differentiating. 
+How do we estimate the population expectation? Well a natural estimator is the empirical mean, which is also the minimizer of the empirical risk $\riskn(x)$. The proof is immediate by differentiating. 
 \end{example}
 
 
-\begin{example}[Least Squares Regression]
+\begin{example}[Ordinary Least Squares (OLS)]
 \label{eg:OLS}
-Define the loss $\loss(Y,X;\beta):=\frac{1}{2}(Y-X\beta)^2$.
-Computing the risk, $\expect{\normII{Y-X\beta}^2}$ will require dealing with the $X$'s by either assuming the \emph{Generative Model}\footnote{A Generative Model is a supervised learning problem where the we use the assumed distribution of the $X$s and not only $Y|X$. The latter are know as Discriminative Models.}, as expectation is taken over $X$ and $Y$. \marginnote{Generative Model}
+Define the loss $\loss(y,x;\beta):=\frac{1}{2}(y-x\beta)^2$.
+Computing the risk, $\expect{\normII{\y-\x\beta}^2}$ will require dealing with the joint distribution of $(\x,\y)$.
 We don't really care about that right now. 
-We merely want to see that the empirical risk minimizer, is actually the classical OLS Regression. And well, it is, by definition...
+We merely want to see that the empirical risk minimizer, is actually the classical OLS problem. 
+And well, it is, by definition...
 \begin{align*}
 	\riskn(\beta)=\sum_{i=1}^n 	\frac{1}{2}(y-x_i\beta)^2 = \frac{1}{2}\normII{y-x\beta}^2.
 \end{align*}
