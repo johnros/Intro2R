@@ -57,11 +57,11 @@ $\Rightarrow \estim{\lambda}=1/\expectn{x}$ .
 
 \begin{example}[Linear Regression]
 
-Estimate $\beta$ in $\rv y \sim \gauss{X\beta,\sigma^2 I}$, a $p$ dimensional random vector.
+Estimate $\beta$ in $\y \sim \gauss{X\beta,\sigma^2 I}$, a $p$ dimensional random vector.
 $\expect{y}=X\beta$ and $\expectn{y}=y$.
 Clearly, moment matching won't work because no $\beta$ satisfies $X\beta=y$.
 A technical workaround:
-Since $\beta$ is $p$ dimensional, I need to find some $g(\rv y): \mathbb{R}^n \mapsto \mathbb{R}^p$.
+Since $\beta$ is $p$ dimensional, I need to find some $g(\y): \mathbb{R}^n \mapsto \mathbb{R}^p$.
 Well, $g(y):=Xy$ is such a mapping. I will use it, even though my technical justification is currently unsatisfactory. We thus have:
 $\expect{X'y}=X'X\beta$ which I match to $\expectn{X'y}=X'y$:
 $$
@@ -303,7 +303,7 @@ In this case, learning $\hyp$ is effectively the same as learning $\beta$ as the
 
 \paragraph{Regularization}
 While the OLS problem seemingly has no regularization parameters, we are in no way restricted to the original $X$ matrix supplied to us. 
-We are free to choose any subset of the $X$ variables. Selecting a subset of the $X$ variables is known as \emph{model selection}.\marginnote{Model Selection}.
+We are free to choose any subset of the $X$ variables. Selecting a subset of the $X$ variables is known as \emph{model selection}.\marginnote{Model Selection}
 We will discuss many different methods to choose the regularization level, in this case, the variables in the OLS, in Section~\ref{sec:desicion_theory}.
 
 We are not only free to select a subset of $X$s, but we can also augment $X$ with new variables, consisting of non linear transformation of the original ones. This is know as \emph{basis augmentation}. \marginnote{Basis Augmentation}
@@ -359,7 +359,7 @@ Eq.(\ref{eq:lasso}) does not have a closed form solution for $\estim{\beta}$ but
 The LASSO has gained much popularity as it has the property that $\estim{\beta}_{LASSO}$ has many zero entries. It is thus said to be \emph{sparse}\marginnote{Sparsity}.
 The sparsity property is very attractive as it acts as a model selection method, allowing to consider $X$s where $p>n$, and making predictions computationally efficient.
 
-The sparsity property can be demonstrated for the orthogonal design case ($X'X=I$) where $\estim{\beta}$ admits a closed form solution:
+The sparsity property can be demonstrated for the orthogonal design case ($X'X=I$), in which $\estim{\beta}$ admits a closed form solution:
 \begin{align}
 	\estim{\beta}_{j,LASSO} = sign(\estim{\beta}_{j,OLS}) \left[|\estim{\beta}_{j,OLS}|-\frac{\lambda}{2} \right]_+.
 \end{align}
@@ -374,10 +374,10 @@ The logistic regression is the first categorical prediction problem we consider.
 I.e., the outcome $y$ is not a continuous variable, but rather takes values in some finite set $\categories$. In the logistic regression problem, it can take two possible values.
 In the statistical literature, $y$ is encoded as $\categories=\set{0,1}$ and $\hyp$ is assumed to take to take the following form:
 \begin{align}
-	& P(\rv y=1|x) = \Psi(x\beta) \\
+	& P(\y=1|x) = \Psi(x\beta) \\
 	& \Psi(t) = \frac{1}{1+e^{-t}}
 \end{align}
-The hypothesis class $\hypclass$ is thus all $\hyp(x)=\Psi(x\beta)$.
+The hypothesis class is thus  $\hypclass=\set{\hyp:\hyp(x)=\Psi(x\beta)} $.
 
 In the $\set{0,1}$ encoding, the loss is the negative log likelihood, i.e.:
 \begin{align}
@@ -399,7 +399,7 @@ The plane $\plane$ is clearly invariant to the encoding of $y$.
 
 
 
-\begin{remark}[GLMs]
+\begin{remark}[Generalized Linear Models (GLM)]
 Logistic regression is a particular instance of the very developped theory of Generalized Linear Models.\marginnote{GLM}
 These models include the OLS, Probit Regression, Poisson Regression, Quasi Likelihood, Multinomial Regression, Proportional Odds regression and more.
 The ultimate reference on the matter is \cite{mccullagh_generalized_1989}.
@@ -411,7 +411,7 @@ The ultimate reference on the matter is \cite{mccullagh_generalized_1989}.
 \subsection{Regression Classifier}
 \label{sec:regression_classifier}
 Can we use the OLS framework for prediction? Yes! With proper encoding of $y$.
-Solving the same problem from Example~\ref{eg:OLS} by encoding $y$ as $\set{0,1}$ gives us the linear separating hyperplane $\plane: \set{x:x\estim{\beta}_{OLS}=0.5}$.
+Solving the same problem from Example~\ref{eg:OLS} by encoding $y$ as $\set{0,1}$ gives us the linear separating hyperplane $\plane= \set{x:x\estim{\beta}_{OLS}=0.5}$.
 
 \begin{remark}
 We can interpret $\estim{y}$ as the probability of an event, but there a slight technical difficulty as $\estim{y}$ might actually be smaller than $0$ or larger than $1$.
