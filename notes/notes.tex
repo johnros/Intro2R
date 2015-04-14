@@ -141,7 +141,7 @@ This example does show, however, the power of the ML method to deal with non i.i
 
 \begin{example}[Autoregression of order 1 (AR(1))]
 Estimate the drift parameter $a$,  in a discrete time Gaussian process where:
-$\rv x_{t+1}=\rv x_t+\rv \varepsilon; \rv \varepsilon \sim \gauss{0,\sigma^2} \Rightarrow \rv x_{t+1}|\rv x_t \sim \gauss{a x_t,\sigma^2}$.
+$\rv x_{t+1}=a \rv x_t+ \varepsilon; \varepsilon \sim \gauss{0,\sigma^2} \Rightarrow \rv x_{t+1}|\rv x_t \sim \gauss{a x_t,\sigma^2}$.
 
 We start with the conditional density at time $t+1$:
 $$
@@ -157,10 +157,10 @@ $$
     -\frac{1}{2 \sigma^2}\sum_{t=1}^T (x_{t+1}-a x_t)^2 
   \right).
 $$
-Differentiating with respect to $a$ and equating $0$ we get $\estim{a}_{ML}=\frac{\sum x_{t+1}x_{t}}{\sum x_t^2}$.
+Taking the log and differentiating with respect to $a$ and equating $0$ we get $\estim{a}_{ML}=\frac{\sum x_{t+1}x_{t}}{\sum x_t^2}$.
 
 We again see the power of the ML device.
-Could we have arrive to this estimator by intuiton alone? Hmmmm... maybe. 
+Could we have arrived to this estimator by intuiton alone? Hmmmm... maybe. 
 See that $Cov[X_{t+1},X_t] = a \; Var[X_t] \Rightarrow a=\frac{Cov[X_{t+1},X_t]}{Var[X_t]}$.
 So $a$ can also be derived using the moment matching method which is probably more intuitive.
 
@@ -184,7 +184,7 @@ $$
   \lik(\beta)= 
   p_{\beta,\sigma^2}(y) = 
   (2 \pi)^{-n/2} |\sigma^2 I|^{-1/2} \exp\left(
-    -\frac{1}{2 \sigma^2} \norm{y-X\beta}^2
+    -\frac{1}{2 \sigma^2} \normII{y-X\beta}^2
   \right)
 $$
 and $\estim{\beta}_{ML}$ equals 
@@ -242,11 +242,11 @@ How do we estimate the population expectation? Well a natural estimator is the e
 \begin{example}[Least Squares Regression]
 \label{eg:OLS}
 Define the loss $\loss(Y,X;\beta):=\frac{1}{2}(Y-X\beta)^2$.
-Computing the risk, $\expect{\norm{Y-X\beta}^2}$ will require dealing with the $X$'s by either assuming the \emph{Generative Model}\footnote{A Generative Model is a supervised learning problem where the we use the assumed distribution of the $X$s and not only $Y|X$. The latter are know as Discriminative Models.}, as expectation is taken over $X$ and $Y$. \marginnote{Generative Model}
+Computing the risk, $\expect{\normII{Y-X\beta}^2}$ will require dealing with the $X$'s by either assuming the \emph{Generative Model}\footnote{A Generative Model is a supervised learning problem where the we use the assumed distribution of the $X$s and not only $Y|X$. The latter are know as Discriminative Models.}, as expectation is taken over $X$ and $Y$. \marginnote{Generative Model}
 We don't really care about that right now. 
 We merely want to see that the empirical risk minimizer, is actually the classical OLS Regression. And well, it is, by definition...
 \begin{align*}
-	\riskn(\beta)=\sum_{i=1}^n 	\frac{1}{2}(y-x_i\beta)^2 = \frac{1}{2}\norm{y-x\beta}^2.
+	\riskn(\beta)=\sum_{i=1}^n 	\frac{1}{2}(y-x_i\beta)^2 = \frac{1}{2}\normII{y-x\beta}^2.
 \end{align*}
 Minimization is easiest with vector derivatives, but I will stick to regular derivatives:
 \begin{align*}
@@ -329,7 +329,7 @@ Most if not all extensions of OLS, such as Generalized Least Squared (GLS) and G
 Consider the Ridge regression problem:
 \begin{align}
 \label{eq:ridge}
-	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \frac{\lambda}{2}\norm{\beta}^2} \\
+	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \frac{\lambda}{2}\normII{\beta}^2} \\
 	& \estim{\beta}_{Ridge}= (X'X+\lambda I)^{-1} X'y
 \end{align}
 We can see that again, $\hypclass$ is restricted to be the space of linear functions of $x$, but we also add a regularization that favours linear functions with small coefficients.
@@ -352,7 +352,7 @@ For more on Ridge regression see \cite{hastie_elements_2003}.
 Consider the LASSO problem:
 \begin{align}
 \label{eq:lasso}
-	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \lambda \norm{\beta}^2_1} 
+	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \lambda \normI{\beta}} 
 \end{align}
 As can be seen, just like in Ridge regression, $\hypclass$ is restricted to linear functions. The regularization however differs. Instead of $l_2$ norm penalty, we use an $l_1$ norm penalty.
 Eq.(\ref{eq:lasso}) does not have a closed form solution for $\estim{\beta}$ but the LARS algorithm, a quadratic programming algorithm, solves it efficiently.
@@ -432,13 +432,13 @@ For our purposes, we present the ERM formulation of the problem, followed by the
 \begin{align}
 \label{eq:svc_ERM}
 	\min_{\beta,\beta_0} \set{
-		\sum_i \positive{1-y_i \hyp(x_i)} +\frac{\lambda}{2} \norm{\beta}_2^2
+		\sum_i \positive{1-y_i \hyp(x_i)} +\frac{\lambda}{2} \normII{\beta}^2
 	}.
 \end{align}
 Eq.(\ref{eq:svc_ERM}) thus reveals that the linear SVM is actually an ERM problem, over a linear hypothesis class, with what is called the \emph{hinge} loss function and $l_2$ regularization of $\beta$.
 
 
-\subsubsection{Geometrical motivation}
+\subsubsection{Geometrical Motivation for SVM}
 We now present Vapnik's The original geometric motivation \citep{vapnik_statistical_1998} for the formulation of the SVM problem for completeness. 
 
 We do not assume anything on the data, and seek for a hyperplane $\plane$ that seperates two classes. 
@@ -449,11 +449,11 @@ We call the minimal distance from $\plane$ to the data points, the \emph{Margin}
 
 To state the optimization problem, we need to note that $\hyp(x)=x\beta+\beta_0$ is not only the value of our classifier, but it is actually proportional to the signed distance of $x$ from $\plane$. 
 \begin{proof}
-The distance of $x$ to $\plane$ is defined as $\min_{x_0 \in \plane} \set{ \norm{x-x_0} }$.
-Note $\beta^*:=\beta/\norm{\beta}$ is a normal vector to $\plane$, since $\plane=\set{x: x\beta+\beta_0=0 }$, so that for $x_1,x_2 \in \plane \Rightarrow \beta(x_1-x_2)=0$.
+The distance of $x$ to $\plane$ is defined as $\min_{x_0 \in \plane} \set{ \normII{x-x_0} }$.
+Note $\beta^*:=\beta/\normII{\beta}$ is a normal vector to $\plane$, since $\plane=\set{x: x\beta+\beta_0=0 }$, so that for $x_1,x_2 \in \plane \Rightarrow \beta(x_1-x_2)=0$.
 Now $x-x_0$ is orthogonal to $\plane$ because $x_0$ is, by definition, the orthogonal projection of $x$ onto $\plane$.
-Since $x-x_0$ are both orthogonal to $\plane$, they are linearly dependent, so that by the Cauchy Schwarz inequality $\norm{\beta^*} \norm{x-x_0}= \norm{\beta^*(x-x_0)}$.
-Now recalling that $\norm{\beta^*}=1$ and $\beta^* x_0=-\beta_0/\norm{\beta}$ we have $\norm{x-x_0}=\frac{1}{\norm{\beta}} (x\beta+\beta_0)= \frac{1}{\norm{\beta}} \hyp(x)$.
+Since $x-x_0$ are both orthogonal to $\plane$, they are linearly dependent, so that by the Cauchy Schwarz inequality $\normII{\beta^*} \normII{x-x_0}= \normII{\beta^*(x-x_0)}$.
+Now recalling that $\normII{\beta^*}=1$ and $\beta^* x_0=-\beta_0/\normII{\beta}$ we have $\normII{x-x_0}=\frac{1}{\normII{\beta}} (x\beta+\beta_0)= \frac{1}{\normII{\beta}} \hyp(x)$.
 \end{proof}
 
 Using this fact, then $y_i \hyp(x_i)$ is the distance from $\plane$ to point $i$, positive for correct classifications and negative for incorrect classification. 
@@ -462,7 +462,7 @@ The (linear) support vector classifier is defined as the solution to
 \label{eq:svc_separable}
 	\max_{\beta,\beta_0} \set{ 
 		M \quad s.t. \quad 
-		\forall i: y_i \hyp(x_i) \geq M, \quad \norm{\beta}=1
+		\forall i: y_i \hyp(x_i) \geq M, \quad \normII{\beta}=1
 	}
 \end{align}
 
@@ -474,7 +474,7 @@ Eq.(\ref{eq:svc_separable}) now becomes \citep[Eq.(12.25)]{hastie_elements_2003}
 	\max_{\beta,\beta_0} \set{ 
 		M \quad s.t. \quad 
 		\forall i: y_i \hyp(x_i) \geq M(1-\xi_i), 
-		\: \norm{\beta}=1, 
+		\: \normII{\beta}=1, 
 		\: \sum_i \xi_i \leq C,
 		\:\forall i:\xi_i\ \geq 0
 	}
@@ -629,7 +629,7 @@ Regularization is achieved by penalizing the second derivative of $\hyp$, thus f
 Considering a single predictor, the ERM problem for \emph{Smoothing Spline}
 \begin{align}
 \label{eq:smoothing_spline}
-	 \argmin{\hyp}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2 + \lambda \norm{\nabla^2 f}_2^2  }.
+	 \argmin{\hyp}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2 + \lambda \normII{\nabla^2 f}^2  }.
 \end{align}
 
 It is quite surprising, and useful, that even though the optimization is performed over an infinite dimensional function space, the solution belongs to a finite dimensional parametric sub-space. 
@@ -1478,8 +1478,8 @@ In this text we use the following notation conventions:
 \item[$X$] A matrix.
 \item[$\rv{X}$]  A matrix valued random variable (a random matrix).
 \item[$X'$] The matrix transpose of $X$.
-\item[$\norm{x}_2$] The $l_2$ norm of $x$: $\sqrt{\sum_j x_j^2}$.
-\item[$\norm{x}_1$] The $l_1$ norm of $x$: $\sum_j |x_j|$
+\item[$\normII{x}$] The $l_2$ norm of $x$: $\sqrt{\sum_j x_j^2}$.
+\item[$\normI{x}$] The $l_1$ norm of $x$: $\sum_j |x_j|$
 \item[$\sample$] A data sample.
 \item[$\expect{x}$] The expectation of $\rv{x}$.
 \item[$\expectn{x}$] The empirical expectation (average) of the vector $x$.
