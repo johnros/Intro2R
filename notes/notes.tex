@@ -48,7 +48,7 @@ where $\expectn{g(x)}:=\frac{1}{n}  \sum_i g(x_i)$, is the empirical mean.
 
 \begin{example}[Exponential Rate]
 
-Estimate $\lambda$ in $\rv x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
+Estimate $\lambda$ in $\x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 $\expect{x}=1/\lambda$.
 $\Rightarrow \estim{\lambda}=1/\expectn{x}$ .
 
@@ -75,7 +75,7 @@ $$
 \label{sec:quantiles}
 
 The fundamental idea: match empirical quantiles to theoretical. 
-Denoting by $\cdf{x}{t}$ the CDF of $\rv{x}$, then $\icdf x \alpha$ is the $\alpha$ quantile of $\rv x$.
+Denoting by $\cdf{x}{t}$ the CDF of $\x$, then $\icdf x \alpha$ is the $\alpha$ quantile of $\x$.
 Also denoting by $\cdfn x t$ the Empirical CDF of $x_1,\dots, x_n$, then $\icdfn x \alpha$ is the $\alpha$ quantile of $x_1,\dots, x_n$.
 The quantile matching method thus implies estimating
 $$ \icdf x \alpha $$
@@ -83,7 +83,7 @@ by
 $$ \icdfn x \alpha  . $$
 
 \begin{example}[Exponential rate]
-Estimate $\lambda$ in $\rv x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
+Estimate $\lambda$ in $\x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 \begin{align*}
 	& \cdf x t = 1-\exp(-\lambda t) = \alpha \Rightarrow \\
 	& \icdf x \alpha = \frac{-\log(1-\alpha)}{\lambda} \Rightarrow \\
@@ -98,7 +98,7 @@ Estimate $\lambda$ in $\rv x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 \label{sec:ml}
 
 The fundamental idea is that if the data generating process (i.e., the \emph{sampling distribution}) can be assumed, then the observations are probably some high probability instance of this process, and not a low probability event:
-Let $\rv x_1,\dots,\rv x_n \sim P_\theta$, with density (or probability) $p_\theta(x_1,\dots,x_n)$.
+Let $\x_1,\dots,\x_n \sim P_\theta$, with density (or probability) $p_\theta(x_1,\dots,x_n)$.
 Denote the likelihood, as a function of $\theta$: $\lik(\theta): p_\theta(x_1,\dots,x_n)$.
 Then $$\estim{\theta}_{ML}:= argmax_{\theta}\set{ \lik(\theta) }.$$
 
@@ -121,7 +121,7 @@ By differentiating and equating $0$, we get $\estim{\lambda}_{ML}=1/\expectn{X}$
 \begin{example}[Discrete time Markov Chain]
 
 Estimate the transition probabilities,  $p_1$ and $p_2$ in a two state, $\set{0,1}$, discrete time, Markov chain where:
-$P(\rv x_{t+1}=1|x_{t}=0)=p_1$ and $P(\rv X_{t+1}=1|X_{t}=1)=p_2$.
+$P(\x_{t+1}=1|x_{t}=0)=p_1$ and $P(\x_{t+1}=1|X_{t}=1)=p_2$.
 The likelihood:
 $$
   \lik(p_1,p_2)=
@@ -141,11 +141,11 @@ This example does show, however, the power of the ML method to deal with non i.i
 
 \begin{example}[Autoregression of order 1 (AR(1))]
 Estimate the drift parameter $a$,  in a discrete time Gaussian process where:
-$\rv x_{t+1}=a \rv x_t+ \varepsilon; \varepsilon \sim \gauss{0,\sigma^2} \Rightarrow \rv x_{t+1}|\rv x_t \sim \gauss{a x_t,\sigma^2}$.
+$\x_{t+1}=a \x_t+ \varepsilon; \varepsilon \sim \gauss{0,\sigma^2} \Rightarrow \x_{t+1}|\x_t \sim \gauss{a x_t,\sigma^2}$.
 
 We start with the conditional density at time $t+1$:
 $$
-  p_{\rv x_{t+1}|\rv x_t=x_t}(x_{t+1}) = 
+  p_{\x_{t+1}|\x_t=x_t}(x_{t+1}) = 
   (2 \pi \sigma^2)^{-1/2} \exp \left( 
     -\frac{1}{2 \sigma^2}(x_{t+1}-a x_t)^2 
   \right).
@@ -203,8 +203,16 @@ M-Estimation, know as Empirical Risk Minimizaton (ERM) in the machine learning l
 The underlying idea is that each realization of $X$ incurs some loss, and we seek to find a "policy", in this case a parameter, $\theta^*$ that minimizes the average loss.
 In the econometric literature, we dot not incur a loss, but rather a utility, we thus seek a policy that maximizes the average utility.
 
-Define a loss function $\loss(X;\theta)$, and a risk function, being the expected loss, 
-$\risk(\theta):=\expect{\loss(X;\theta)}$. Then \marginnote{Risk}
+\begin{definition}[Loss Function]
+The penalty for predicting $\theta$ when observing $x$.
+$\loss(\x;\theta)$
+\end{definition}
+
+\begin{definition}[Risk Function]\marginnote{Risk}
+The expected loss:$\risk(\theta):=\expect{\loss(X;\theta)}$
+\end{definition}
+
+Then 
 \begin{align}
 \label{eq:risk_min}
  \theta^*:= \argmin{\theta}{\risk(\theta)}.
@@ -1474,20 +1482,20 @@ Here are some terms needed to understand PCA outputs:
 In this text we use the following notation conventions:
 \begin{description}
 \item[$x$] A scalar or vector.
-\item[$\rv{x}$] A (possibly) vector valued random variable.
+\item[$\x$] A (possibly) vector valued random variable.
 \item[$X$] A matrix.
-\item[$\rv{X}$]  A matrix valued random variable (a random matrix).
+\item[$\x$]  A matrix valued random variable (a random matrix).
 \item[$X'$] The matrix transpose of $X$.
 \item[$\normII{x}$] The $l_2$ norm of $x$: $\sqrt{\sum_j x_j^2}$.
 \item[$\normI{x}$] The $l_1$ norm of $x$: $\sum_j |x_j|$
 \item[$\sample$] A data sample.
-\item[$\expect{x}$] The expectation of $\rv{x}$.
+\item[$\expect{x}$] The expectation of $\x$.
 \item[$\expectn{x}$] The empirical expectation (average) of the vector $x$.
-\item[$\cdf{x}{t}$] The CDF of $\rv{x}$ at $t$.
+\item[$\cdf{x}{t}$] The CDF of $\x$ at $t$.
 \item[$\icdf{x}{\alpha}$] The inverse CDF at $\alpha$ (the quantile function).
 \item[$\cdfn{x}{t}$] The empirical CDF of data vector $x$.
 \item[$\icdfn{x}{\alpha}$] The empirical $\alpha$ quantile of the data vector $x$.
-\item[$\rv x \sim \dist$]  The random variable $\rv{x}$ is $\dist$ distributed. 
+\item[$\x \sim \dist$]  The random variable $\x$ is $\dist$ distributed. 
 \item[$\pdf(x)$] The density function of $\dist$ at $x$.
 \item[$\gauss{\mu,\sigma^2}$] The univariate Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
 \item[$\gauss{\mu,\Sigma}$] The multivariate Gaussian distribution with mean vector $\mu$ and covariance matrix $\Sigma$.
