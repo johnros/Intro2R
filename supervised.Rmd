@@ -30,6 +30,8 @@ missclassification <- function(tab) sum(tab[c(2,3)])/sum(tab)
 
 # OLS
 
+## OLS Regression
+
 Starting with OLS regression, and a split train-test data set:
 ```{r OLS Regression}
 prostate %>% names
@@ -83,16 +85,36 @@ MSE(errors)
 ```
 
 
-## Model Selection 
-Trying Bootstrapped, Cross Validated, and AIC:
-```{r OLS Model selection}
+### OLS Regression Model Selection 
+Trying Bootstrapped, Cross Validated, and AIC.
+
+AIC model selection: 
+```{r OLS AIC}
+step(ols.1, scope=model.scope, direction='backward', trace = TRUE)
+
+ols.0 <- lm(lcavol~1 ,data = prostate.train)
+model.scope <- list(upper=ols.1, lower=ols.0)
+step(ols.0, scope=model.scope, direction='forward', trace = TRUE)
+```
+
+
+Cross Validated Model Selection.
+```{r OLS CV}
+
+```
+
+
+Bootstrap model selection:
+```{r OLS bootstrap}
+
+
 
 ```
 
 
 
 
-Trying OLS classification
+## OLS Classification
 ```{r OLS Classification}
 names(spam)
 n <- nrow(spam)
@@ -120,7 +142,8 @@ missclassification(confusion.test)
 
 
 
-# Ridge
+# Ridge Regression
+
 ```{r Ridge I}
 library(ridge)
 
@@ -133,7 +156,7 @@ MSE( predict(ridge.1)- prostate.train$lcavol)
 MSE( predict(ridge.1, newdata = prostate.test)- prostate.test$lcavol)
 ```
 
-Another implementation:
+Another implementation, which also automatically chooses the tuning parameter $\lambda$:
 ```{r Ridge II}
 library(glmnet)
 y.train <- prostate.train$lcavol
@@ -152,7 +175,10 @@ MSE( predict(ridge.2, newx = X.test)- y.test)
 
 __Note__:  `glmnet` is slightly picky: I could not have created `y.train` using `select()` because I need a vector and not a `data.frame`. Also, `as.matrix` is there as `glmnet` expects a `matrix` class `x` argument.
 
-# LASSO
+
+
+
+# LASSO Regression
 ```{r LASSO}
 library(glmnet)
 y.train <- prostate.train$lcavol
@@ -170,7 +196,7 @@ MSE( predict(lasso.1, newx = X.test)- y.test)
 ```
 
 
-# Logistic Regression
+# Logistic Regression For Classification
 ```{r Logistic Regression}
 # Making train and test sets:
 train.prop <- 0.66
@@ -228,17 +254,55 @@ missclassification(confusion.test)
 
 
 # SVM
-```{r SVM}
+
+## Regression
+```{r SVM classification}
 library(e1071)
 
 
 ```
 
+# GAM Regression
+```{r GAM}
+
+```
 
 
 # Neural Net
 
-# Kernel Regression
+## Regression
+```{r NNET regression}
 
-# 
+```
+
+
+## Classification
+```{r NNET Classification}
+
+```
+
+
+# CART
+
+## Regression
+```{r Tree regression}
+
+```
+
+
+## Classification
+
+
+
+# Kernel Regression
+```{r kernel}
+
+```
+
+
+# Stacking
+```{r Stacking}
+
+```
+
 
