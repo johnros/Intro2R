@@ -291,7 +291,7 @@ There are several ways to introduce this bias, which can be combined:
 We typically do not allow $\hyp$ to be ``any function'' but rather restrict it to belong to a certain class. In the machine learning terminology, $\hyp$ is a Hypothesis, and it belongs to $\hypclass$ which is the Hypothesis Class.
 \item[Regularization] We do not need to treat all $\hyp \in \hypclass$ equivalently. We might have prior preferences towards particular $\hyp$'s , typically simple $\hyp$'s, and we can introduce these preferences in the learning process. This is called \emph{Regularization}.
 \item[Non ERM Approaches] Many learning problems can be cast as ERM problems, but another way to introduce bias is by learning $\hyp$ in a non-optimal manner. Inductive bias is thus introduced by the (non) optimization algorithm 
-Learning algorithms that cannot be cast as ERMs include: Nearest Neighbour (\S\ref{sec:knn}), Kernel Smoothing(\S\ref{sec:kernel}), Boosting (\S\ref{sec:boosting}).
+Learning algorithms that cannot be cast as ERMs include: Nearest Neighbour (\S\ref{sec:knn}), Kernel Regresson(\S\ref{sec:kernel}), Boosting (\S\ref{sec:boosting}).
 \end{description}
 
 We now proceed to show that many supervised learning algorithms are in fact ERMs with some type of inductive bias: constrained hypothesis class \andor or regularization \andor suboptimality.
@@ -532,7 +532,7 @@ The regularization is now performed by choosing $M$ and the class of $\set{g_m}_
 The ERM problem is the same as in Eq.(\ref{eq:GAM}), with the appropriate $\hyp$.
 
 \begin{remark}[Not a pure ERM]
-Just like the GAM problem, in the PPR problem $\set{g_m}_{m=1}^M$ are learned by kernel smoothing (\S\ref{sec:kernel}). Solving the PPR problem is thus a hybrid of ERM and Kernel smoothing algorithms.
+Just like the GAM problem, in the PPR problem $\set{g_m}_{m=1}^M$ are learned by Kernel Regresson (\S\ref{sec:kernel}). Solving the PPR problem is thus a hybrid of ERM and Kernel Regresson algorithms.
 \end{remark}
 
 \begin{remark}[Universal Approximator]
@@ -684,10 +684,10 @@ While KNN is a universal approximator, it is notoriously known to require many o
 
 
 
-\subsection{Kernel Smoothing}
+\subsection{Kernel Regression}
 \label{sec:kernel}
 
-Not to be confused with the Kernel Trick in Kernel SVM, Kernel PCA, and Kernel Regression.
+Not to be confused with the Kernel Trick in Kernel SVM, Kernel PCA, and Kernel Density Estimation.
 
 Kernel \emph{smoothing} is essentially a generalization of a moving average.
 It is also known as a \emph{scan statistic}, or \emph{searchlight statistic}.\marginnote{Scan Statistic}
@@ -712,19 +712,19 @@ Have no worries however, as even with these type of variables, one can define so
 
 
 \paragraph{Relation to KNN}
-There is an intimate relation between KNN and Kernel Smoothing. 
+There is an intimate relation between KNN and Kernel Regression. 
 Essentially, both predict the value of $y$ at some $x$ by averaging their neighbourhood. 
 Averaging can be weighted or not, in both cases.
 The important distinction is how neighbourhoods are defined.
 In KNN, the neighbourhood of $x$ is the k nearest data points. The radius of the neighbourhood thus varies, while the number of data points does not.
-In Kernel Smoothing, the neighbourhood of $x$ is all the data points in the support of the kernel. The radius of the neighbourhood is now fixed, while the number of data points can vary.
+In Kernel Regression, the neighbourhood of $x$ is all the data points in the support of the kernel. The radius of the neighbourhood is now fixed, while the number of data points can vary.
 
 
 
 
 \subsection{Local Likelihood and Local ERM}
 Although presented as two competing concepts, they can augment each other. 
-We have already seen that Kernel Smoothing plays a part within some ERM algorithms such as GAM~(\S\ref{sec:gam}) and PPR~(\S \ref{sec:ppr}).
+We have already seen that Kernel Regression plays a part within some ERM algorithms such as GAM~(\S\ref{sec:gam}) and PPR~(\S \ref{sec:ppr}).
 
 Another way to marry the two ideas, is by performing EMR only locally, in each neighbourhood of data points defined by a kernel. This idea is very powerful and leads to, e.g., the LOESS (\S \ref{sec:loess}) and \emph{Local Likelihood} methods.
 
@@ -736,8 +736,8 @@ Another way to marry the two ideas, is by performing EMR only locally, in each n
 While not the original historical motivation, we can think of LOESS as a kernel ERM problem. 
 I.e., minimizing the squared loss, in a sliding window, over some very simple hypothesis class, with weighted observations.
 
-It is more flexible than kernel smoothing.
-An intuition to this can be gained by thinking of kernel smoothing as fitting a local regression with an intercept only, while LOESS also allows local polynomials.
+It is more flexible than Kernel Regresson.
+An intuition to this can be gained by thinking of Kernel Regresson as fitting a local regression with an intercept only, while LOESS also allows local polynomials.
 
 It has several attractive statistical properties. In particular, it can also be used for estimation gradients more accurately than by using simple differences. 
 This flexibility however comes at a slight computational cost. 
@@ -1117,7 +1117,7 @@ If a parametric model cannot be assumed, we fall into the real of non-parametric
 
 \subsubsection{Kernel Density Estimation}
 
-Much like the Kernel Smoothing regression, a \naive estimator is the moving average.
+Much like the Kernel Regresson regression, a \naive estimator is the moving average.
 A natural generalization, in the spirit of the Nadaraya-Watson smoother (Eq.(\ref{eq:nadaraya_watson})) is the \emph{Parzen} estimate:\marginnote{Parzen Estimate}
 \begin{align}
 \label{eq:parzen}

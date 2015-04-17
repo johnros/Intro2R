@@ -83,6 +83,15 @@ MSE(errors)
 ```
 
 
+## Model Selection 
+Trying Bootstrapped, Cross Validated, and AIC:
+```{r OLS Model selection}
+
+```
+
+
+
+
 Trying OLS classification
 ```{r OLS Classification}
 names(spam)
@@ -229,5 +238,7 @@ library(e1071)
 
 # Neural Net
 
-# Kernel Smoothing
+# Kernel Regression
+
+# 
 
