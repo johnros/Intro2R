@@ -16,7 +16,7 @@ data("spam")
 You can now call `?prostate` and `?spam` to learn more about the variables in the data.
 
 We also load some utility packages and functions that we will require down the road. 
-```{r}
+```{r preamble}
 library(magrittr) # for piping
 library(dplyr) # for handeling data frames
 
@@ -31,7 +31,7 @@ missclassification <- function(tab) sum(tab[c(2,3)])/sum(tab)
 # OLS
 
 Starting with OLS regression, and a split train-test data set:
-```{r}
+```{r OLS Regression}
 prostate %>% names
 prostate.train <- prostate %>% filter(train) %>% select(-train)
 prostate.test <- prostate %>% filter(!train) %>% select(-train)
@@ -45,7 +45,7 @@ MSE( predict(ols.1, newdata = prostate.test)- prostate.test$lcavol)
 ```
 
 Now using cross validation to estimate the prediciton error:
-```{r}
+```{r Cross Validation}
 folds <- 5
 fold.assignment <- sample(1:5, nrow(prostate), replace = TRUE)
 errors <- NULL
@@ -64,7 +64,7 @@ MSE(errors)
 ```
 
 Also trying a bootstrap prediction error:
-```{r}
+```{r Bootstrap}
 B <- 20
 n <- nrow(prostate)
 errors <- NULL
@@ -84,7 +84,7 @@ MSE(errors)
 
 
 Trying OLS classification
-```{r}
+```{r OLS Classification}
 names(spam)
 n <- nrow(spam)
 spam.dummy <- spam %>% mutate(spam=as.numeric(spam=='spam'))
@@ -112,7 +112,7 @@ missclassification(confusion.test)
 
 
 # Ridge
-```{r}
+```{r Ridge I}
 library(ridge)
 
 ridge.1 <- linearRidge(lcavol~. ,data = prostate.train)
@@ -125,7 +125,7 @@ MSE( predict(ridge.1, newdata = prostate.test)- prostate.test$lcavol)
 ```
 
 Another implementation:
-```{r}
+```{r Ridge II}
 library(glmnet)
 y.train <- prostate.train$lcavol
 X.train <- prostate.train %>% select(-lcavol) %>% as.matrix
@@ -135,16 +135,16 @@ ridge.2 <- glmnet(x=X.train, y=y.train, alpha = 0)
 MSE( predict(ridge.2, newx =X.train)- y.train)
 
 # Test error:
-y.test <- prostate.test$lcavol
+y.test <- prostate.test$lcavol 
 X.test <- prostate.test %>% select(-lcavol) %>% as.matrix
 
 MSE( predict(ridge.2, newx = X.test)- y.test)
 ```
 
-
+__Note__:  `glmnet` is slightly picky: I could not have created `y.train` using `select()` because I need a vector and not a `data.frame`. Also, `as.matrix` is there as `glmnet` expects a `matrix` class `x` argument.
 
 # LASSO
-```{r}
+```{r LASSO}
 library(glmnet)
 y.train <- prostate.train$lcavol
 X.train <- prostate.train %>% select(-lcavol) %>% as.matrix
@@ -161,8 +161,69 @@ MSE( predict(lasso.1, newx = X.test)- y.test)
 ```
 
 
+# Logistic Regression
+```{r Logistic Regression}
+# Making train and test sets:
+train.prop <- 0.66
+train.ind <- c(TRUE,FALSE) %>% 
+  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
+spam.train <- spam[train.ind,]
+spam.test <- spam[!train.ind,]
+
+logistic.1 <- glm(spam~., data = spam.train, family = binomial)
+# numerical error. Probably due to too many predictors. 
+# Maybe regularizing the logistic regressio with Ridge or LASSO will make things better?
+```
+
+In the next chunk, we do $l_2$ and $l_1$ regularized logistic regression.
+Some techincal remarks are in order:
+
+- `glmnet` is picky with its inputs. This has already been discussed in the context of the LASSO regression above.
+- The `predict` function for `glmnet` objects returns a prediction (see below) for many candidate  regularization levels $\lambda$. We thus we `cv.glmnet` which does an automatic cross validated selection of the best regularization level. 
+```{r Regularized Logistic Regression}
+library(glmnet)
+y.train <- spam.train$spam
+X.train <- spam.train %>% select(-spam) %>% as.matrix
+# Ridge Regularization with CV selection of regularization:
+logistic.2 <- cv.glmnet(x=X.train, y=y.train, family = "binomial", alpha = 0)
+# LASSO Regularization with CV selection of regularization:
+logistic.3 <- cv.glmnet(x=X.train, y=y.train, family = "binomial", alpha = 1)
+
+
+# Train confusion matrix:
+.predictions.train <- predict(logistic.2, newx = X.train, type = 'class') 
+(confusion.train <- table(prediction=.predictions.train, truth=spam.train$spam))
+missclassification(confusion.train)
+
+.predictions.train <- predict(logistic.3, newx = X.train, type = 'class') 
+(confusion.train <- table(prediction=.predictions.train, truth=spam.train$spam))
+missclassification(confusion.train)
+
+
+
+# Test confusion matrix:
+y.test <- spam.test$spam
+X.test <- spam.test %>% select(-spam) %>% as.matrix
+
+
+.predictions.test <- predict(logistic.2, newx = X.test, type='class') 
+(confusion.test <- table(prediction=.predictions.test, truth=y.test))
+missclassification(confusion.test)
+
+.predictions.test <- predict(logistic.3, newx = X.test, type='class') 
+(confusion.test <- table(prediction=.predictions.test, truth=y.test))
+missclassification(confusion.test)
+```
+
+
+
 
 # SVM
+```{r SVM}
+library(e1071)
+
+
+```
 
 
 
