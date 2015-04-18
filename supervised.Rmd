@@ -35,6 +35,7 @@ missclassification <- function(tab) sum(tab[c(2,3)])/sum(tab)
 Starting with OLS regression, and a split train-test data set:
 ```{r OLS Regression}
 prostate %>% names
+
 prostate.train <- prostate %>% filter(train) %>% select(-train)
 prostate.test <- prostate %>% filter(!train) %>% select(-train)
 # now verify that your data looks as you would expect....
@@ -200,8 +201,7 @@ MSE( predict(lasso.1, newx = X.test)- y.test)
 ```{r Logistic Regression}
 # Making train and test sets:
 train.prop <- 0.66
-train.ind <- c(TRUE,FALSE) %>% 
-  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
+train.ind <- c(TRUE,FALSE) %>%  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
 spam.train <- spam[train.ind,]
 spam.test <- spam[!train.ind,]
 
@@ -234,8 +234,6 @@ missclassification(confusion.train)
 (confusion.train <- table(prediction=.predictions.train, truth=spam.train$spam))
 missclassification(confusion.train)
 
-
-
 # Test confusion matrix:
 y.test <- spam.test$spam
 X.test <- spam.test %>% select(-spam) %>% as.matrix
@@ -255,12 +253,43 @@ missclassification(confusion.test)
 
 # SVM
 
-## Regression
+## Classification
 ```{r SVM classification}
+train.prop <- 0.66
+train.ind <- c(TRUE,FALSE) %>%  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
+spam.train <- spam[train.ind,]
+spam.test <- spam[!train.ind,]
+
 library(e1071)
+svm.1 <- svm(spam~., data = spam.train)
 
+# Train confusion matrix:
+.predictions.train <- predict(svm.1) 
+(confusion.train <- table(prediction=.predictions.train, truth=spam.train$spam))
+missclassification(confusion.train)
 
+# Test confusion matrix:
+.predictions.test <- predict(svm.1, newdata = spam.test) 
+(confusion.test <- table(prediction=.predictions.test, truth=spam.test$spam))
+missclassification(confusion.test)
 ```
+
+
+## Regression
+```{r SVM regression}
+prostate.train <- prostate %>% filter(train) %>% select(-train)
+prostate.test <- prostate %>% filter(!train) %>% select(-train)
+
+svm.2 <- svm(lcavol~., data = prostate.train)
+
+# Train error:
+MSE( predict(svm.2)- prostate.train$lcavol)
+# Test error:
+MSE( predict(svm.2, newdata = prostate.test)- prostate.test$lcavol)
+```
+
+
+
 
 # GAM Regression
 ```{r GAM}
