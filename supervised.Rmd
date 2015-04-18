@@ -3,6 +3,7 @@ title: "Supervised Learning"
 author: "Jonathan Rosenblatt"
 date: "April 12, 2015"
 output: html_document
+  toc: true
 ---
 In these examples, two data sets from the `ElemStatLearn` package: `spam` for categorical predictions, and `prostate` for continuous predictions.
 In `spam` we will try to decide if a mail is spam or not. 
