@@ -104,15 +104,13 @@ step(ols.0, scope=model.scope, direction='forward', trace = TRUE)
 
 Cross Validated Model Selection.
 ```{r OLS CV}
-
+[TODO]
 ```
 
 
 Bootstrap model selection:
 ```{r OLS bootstrap}
-
-
-
+[TODO]
 ```
 
 
@@ -421,7 +419,7 @@ points(spline.1, type='l')
 I am not extracting train and test errors as the output of `smooth.spline` will require some tweaking for that.
 
 
-# Knn
+# KNN 
 
 ## Classification
 ```{r knn classification}
