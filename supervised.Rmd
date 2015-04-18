@@ -49,7 +49,7 @@ MSE( predict(ols.1)- prostate.train$lcavol)
 MSE( predict(ols.1, newdata = prostate.test)- prostate.test$lcavol)
 ```
 
-Now using cross validation to estimate the prediciton error:
+Now using cross validation to estimate the prediction error:
 ```{r Cross Validation}
 folds <- 5
 fold.assignment <- sample(1:5, nrow(prostate), replace = TRUE)
@@ -213,7 +213,7 @@ logistic.1 <- glm(spam~., data = spam.train, family = binomial)
 ```
 
 In the next chunk, we do $l_2$ and $l_1$ regularized logistic regression.
-Some techincal remarks are in order:
+Some technical remarks are in order:
 
 - `glmnet` is picky with its inputs. This has already been discussed in the context of the LASSO regression above.
 - The `predict` function for `glmnet` objects returns a prediction (see below) for many candidate  regularization levels $\lambda$. We thus we `cv.glmnet` which does an automatic cross validated selection of the best regularization level. 
