@@ -293,7 +293,19 @@ MSE( predict(svm.2, newdata = prostate.test)- prostate.test$lcavol)
 
 # GAM Regression
 ```{r GAM}
+# install.packages('mgcv')
+library(mgcv)
+form.1 <- lcavol~ s(lweight)+ s(age)+s(lbph)+s(svi)+s(lcp)+s(gleason)+s(pgg45)+s(lpsa)
+gam.1 <- gam(form.1, data = prostate.train)
 
+sort(abs(coef(ridge.1)), decreasing = TRUE)
+form.2 <- lcavol~  s(lweight)+ s(age)+s(lbph)+s(lcp)+s(pgg45)+s(lpsa)
+gam.2 <- gam(form.2, data = prostate.train)
+
+# Train error:
+MSE( predict(gam.2)- prostate.train$lcavol)
+# Test error:
+MSE( predict(gam.2, newdata = prostate.test)- prostate.test$lcavol)
 ```
 
 
