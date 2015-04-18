@@ -11,6 +11,7 @@ In `spam` we will try to decide if a mail is spam or not.
 In `prostate` we will try to predict the size of a cancerous tumor.
 
 ```{r}
+# install.packages(ElemStatLearn)
 library(ElemStatLearn)
 data("prostate")
 data("spam")
