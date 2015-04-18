@@ -373,26 +373,101 @@ missclassification(confusion.test)
 
 ## Regression
 ```{r Tree regression}
+library(rpart)
+tree.1 <- rpart(lcavol~., data=prostate.train)
 
+# Train error:
+MSE( predict(tree.1)- prostate.train$lcavol)
+# Test error:
+MSE( predict(tree.1, newdata = prostate.test)- prostate.test$lcavol)
 ```
 
+At this stage we should prune the tree using `prune()`...
 
 ## Classification
 ```{r Tree classification}
+train.prop <- 0.66
+train.ind <- c(TRUE,FALSE) %>%  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
+spam.train <- spam[train.ind,]
+spam.test <- spam[!train.ind,]
 
+tree.2 <- rpart(spam~., data=spam.train)
+
+# Train confusion matrix:
+.predictions.train <- predict(tree.2, type='class') 
+(confusion.train <- table(prediction=.predictions.train, truth=spam.train$spam))
+missclassification(confusion.train)
+
+# Test confusion matrix:
+.predictions.test <- predict(tree.2, newdata = spam.test, type='class') 
+(confusion.test <- table(prediction=.predictions.test, truth=spam.test$spam))
+missclassification(confusion.test)
 ```
 
+# Smoothing Splines
+I will demonstrate the method with a single predictor, so that we can visualize the smoothign that has been performed:
+
+```{r Smoothing Splines}
+y.train <- prostate.train$lcavol
+X.train <- prostate.train$age
+
+spline.1 <- smooth.spline(x=X.train, y=y.train)
+
+# Visualize the non linear hypothesis we have learned:
+plot(y.train~X.train, col='red', type='h')
+points(spline.1, type='l')
+```
+I am not extracting train and test errors as the output of `smooth.spline` will require some tweaking for that.
+
+
+# Knn
+
+## Classification
+```{r knn classification}
+library(class)
+y.train <- spam.train$spam
+X.train <- spam.train %>% select(-spam) %>% as.matrix
+y.test <- spam.test$spam
+X.test <- spam.test %>% select(-spam) %>% as.matrix
+
+knn.1 <- knn(train = X.train, test = X.test, cl =y.train, k = 1)
+
+# Test confusion matrix:
+.predictions.test <- knn.1 
+(confusion.test <- table(prediction=.predictions.test, truth=spam.test$spam))
+missclassification(confusion.test)
+```
+
+And now we would try to optimize `k` by trying different values.
 
 
 # Kernel Regression
+Kernel regression includes many particular algorithms. 
 ```{r kernel}
+install.packages('np')
+library(np)
 
+y.train <- prostate.train$lcavol
+X.train <- prostate.train %>% select(-lcavol) %>% as.matrix
+
+ksmooth.1 <- npreg(txdat =X.train, tydat = y.train)
+
+# Train error:
+MSE( predict(ksmooth.1)- prostate.train$lcavol)
 ```
+
+There is currently no method to make prediction on test data with this function.
+
 
 
 # Stacking
-```{r Stacking}
+As seen in the class notes, there are many ensenble methods.
+Stacking, in my view, is by far the most useful and coolest. It is thus the only one I present here.
 
+In this example, I will stack an OLS, a Tree, and a GAM.
+
+```{r Stacking}
+[TODO]
 ```
 
 
