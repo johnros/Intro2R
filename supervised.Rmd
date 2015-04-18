@@ -315,13 +315,57 @@ MSE( predict(gam.2, newdata = prostate.test)- prostate.test$lcavol)
 
 ## Regression
 ```{r NNET regression}
+library(nnet)
+nnet.1 <- nnet(lcavol~., size=20, data=prostate.train, rang = 0.1, decay = 5e-4, maxit = 1000)
 
+# Train error:
+MSE( predict(nnet.1)- prostate.train$lcavol)
+# Test error:
+MSE( predict(nnet.1, newdata = prostate.test)- prostate.test$lcavol)
 ```
+
+Let's automate the network size selection:
+```{r NNET validate}
+validate.nnet <- function(size){
+  .nnet <- nnet(lcavol~., size=size, data=prostate.train, rang = 0.1, decay = 5e-4, maxit = 200)
+  .train <- MSE( predict(.nnet)- prostate.train$lcavol)
+  .test <- MSE( predict(.nnet, newdata = prostate.test)- prostate.test$lcavol)
+  return(list(train=.train, test=.test))
+}
+
+validate.nnet(3)
+validate.nnet(4)
+validate.nnet(20)
+validate.nnet(50)
+
+sizes <- seq(2, 30)
+validate.sizes <- rep(NA, length(sizes))
+for (i in seq_along(sizes)){
+  validate.sizes[i] <- validate.nnet(sizes[i])$test
+}
+plot(validate.sizes~sizes, type='l')
+```
+What can I say... This plot is not what I would expect. Could be due to the random nature of the fitting algorithm.
+
 
 
 ## Classification
 ```{r NNET Classification}
+train.prop <- 0.66
+train.ind <- c(TRUE,FALSE) %>%  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
+spam.train <- spam[train.ind,]
+spam.test <- spam[!train.ind,]
+nnet.2 <- nnet(spam~., size=5, data=spam.train, rang = 0.1, decay = 5e-4, maxit = 1000)
 
+# Train confusion matrix:
+.predictions.train <- predict(nnet.2, type='class') 
+(confusion.train <- table(prediction=.predictions.train, truth=spam.train$spam))
+missclassification(confusion.train)
+
+# Test confusion matrix:
+.predictions.test <- predict(nnet.2, newdata = spam.test, type='class') 
+(confusion.test <- table(prediction=.predictions.test, truth=spam.test$spam))
+missclassification(confusion.test)
 ```
 
 
@@ -334,6 +378,9 @@ MSE( predict(gam.2, newdata = prostate.test)- prostate.test$lcavol)
 
 
 ## Classification
+```{r Tree classification}
+
+```
 
 
 
