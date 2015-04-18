@@ -6,7 +6,7 @@ output:
   html_document:
     toc: true
 ---
-In these examples, two data sets from the `ElemStatLearn` package: `spam` for categorical predictions, and `prostate` for continuous predictions.
+In these examples, I will use two data sets from the `ElemStatLearn` package: `spam` for categorical predictions (spam or not spam?), and `prostate` for continuous predictions (size of cancerous tumor).
 In `spam` we will try to decide if a mail is spam or not. 
 In `prostate` we will try to predict the size of a cancerous tumor.
 
@@ -405,7 +405,7 @@ missclassification(confusion.test)
 ```
 
 # Smoothing Splines
-I will demonstrate the method with a single predictor, so that we can visualize the smoothign that has been performed:
+I will demonstrate the method with a single predictor, so that we can visualize the smoothing that has been performed:
 
 ```{r Smoothing Splines}
 y.train <- prostate.train$lcavol
@@ -461,7 +461,7 @@ There is currently no method to make prediction on test data with this function.
 
 
 # Stacking
-As seen in the class notes, there are many ensenble methods.
+As seen in the class notes, there are many ensemble methods.
 Stacking, in my view, is by far the most useful and coolest. It is thus the only one I present here.
 
 In this example, I will stack an OLS, a Tree, and a GAM.
