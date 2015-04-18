@@ -16,17 +16,17 @@ library(ElemStatLearn)
 data("prostate")
 data("spam")
 ```
-You can now call `?prostate` and `?spam` to learn more about the variables in the data.
+You can now call `?prostate` and `?spam` to learn more about these data sets.
 
 We also load some utility packages and functions that we will require down the road. 
 ```{r preamble}
 library(magrittr) # for piping
 library(dplyr) # for handeling data frames
 
-l2 <- function(x) x^2 %>% sum %>% sqrt
-l1 <- function(x) abs(x) %>% sum 
-MSE <- function(x) x^2 %>% mean
-
+# My own utility functions:
+l2 <- function(x) x^2 %>% sum %>% sqrt 
+l1 <- function(x) abs(x) %>% sum  
+MSE <- function(x) x^2 %>% mean 
 missclassification <- function(tab) sum(tab[c(2,3)])/sum(tab)
 ```
 
