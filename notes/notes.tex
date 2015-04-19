@@ -57,15 +57,15 @@ $\Rightarrow \estim{\lambda}=1/\expectn{x}$ .
 
 \begin{example}[Linear Regression]
 
-Estimate $\beta$ in $\y \sim \gauss{X\beta,\sigma^2 I}$, a $p$ dimensional random vector.
-$\expect{y}=X\beta$ and $\expectn{y}=y$.
-Clearly, moment matching won't work because no $\beta$ satisfies $X\beta=y$.
+Estimate $\be$ in $\y \sim \gauss{X\be,\sigma^2 I}$, a $p$ dimensional random vector.
+$\expect{y}=X\be$ and $\expectn{y}=y$.
+Clearly, moment matching won't work because no $\be$ satisfies $X\be=y$.
 A technical workaround:
-Since $\beta$ is $p$ dimensional, I need to find some $g(\y): \mathbb{R}^n \mapsto \mathbb{R}^p$.
+Since $\be$ is $p$ dimensional, I need to find some $g(\y): \mathbb{R}^n \mapsto \mathbb{R}^p$.
 Well, $g(y):=Xy$ is such a mapping. I will use it, even though my technical justification is currently unsatisfactory. We thus have:
-$\expect{X'y}=X'X\beta$ which I match to $\expectn{X'y}=X'y$:
+$\expect{X'y}=X'X\be$ which I match to $\expectn{X'y}=X'y$:
 $$
-  X'X \beta = X' y \Rightarrow \estim{\beta}=(X'X)^{-1} X'y.
+  X'X \be = X' y \Rightarrow \estim{\be}=(X'X)^{-1} X'y.
 $$
 
 \end{example}
@@ -75,18 +75,18 @@ $$
 \label{sec:quantiles}
 
 The fundamental idea: match empirical quantiles to theoretical. 
-Denoting by $\cdf{x}{t}$ the CDF of $\x$, then $\icdf x \alpha$ is the $\alpha$ quantile of $\x$.
-Also denoting by $\cdfn x t$ the Empirical CDF of $x_1,\dots, x_n$, then $\icdfn x \alpha$ is the $\alpha$ quantile of $x_1,\dots, x_n$.
+Denoting by $\cdf{x}{t}$ the CDF of $\x$, then $\icdf x \al$ is the $\al$ quantile of $\x$.
+Also denoting by $\cdfn x t$ the Empirical CDF of $x_1,\dots, x_n$, then $\icdfn x \al$ is the $\al$ quantile of $x_1,\dots, x_n$.
 The quantile matching method thus implies estimating
-$$ \icdf x \alpha $$
+$$ \icdf x \al $$
 by 
-$$ \icdfn x \alpha  . $$
+$$ \icdfn x \al  . $$
 
 \begin{example}[Exponential rate]
 Estimate $\lambda$ in $\x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
 \begin{align*}
-	& \cdf x t = 1-\exp(-\lambda t) = \alpha \Rightarrow \\
-	& \icdf x \alpha = \frac{-\log(1-\alpha)}{\lambda} \Rightarrow \\
+	& \cdf x t = 1-\exp(-\lambda t) = \al \Rightarrow \\
+	& \icdf x \al = \frac{-\log(1-\al)}{\lambda} \Rightarrow \\
 	& \icdf{x}{0.5} = \frac{-\log(0.5)}{\lambda} \Rightarrow \\
 	& \estim{\lambda} = \frac{-\log(0.5)}{\icdfn{x}{0.5}}.
 \end{align*}
@@ -171,7 +171,7 @@ So $a$ can also be derived using the moment matching method which is probably mo
 
 \begin{example}[Linear Regression]
 
-Estimate $\beta$ in $Y \sim \gauss{X\beta,\sigma^2 I}$, a $p$ dimensional random vector.
+Estimate $\be$ in $Y \sim \gauss{X\be,\sigma^2 I}$, a $p$ dimensional random vector.
 Recalling the multivariate Gaussian PDF:
 $$
   p_{\mu,\Sigma}(y) = 
@@ -181,15 +181,15 @@ $$
 $$
 So in the regression setup:
 $$
-  \lik(\beta)= 
-  p_{\beta,\sigma^2}(y) = 
+  \lik(\be)= 
+  p_{\be,\sigma^2}(y) = 
   (2 \pi)^{-n/2} |\sigma^2 I|^{-1/2} \exp\left(
-    -\frac{1}{2 \sigma^2} \normII{y-X\beta}^2
+    -\frac{1}{2 \sigma^2} \normII{y-X\be}^2
   \right)
 $$
-and $\estim{\beta}_{ML}$ equals 
+and $\estim{\be}_{ML}$ equals 
 \begin{align}
-	\estim{\beta}_{ML}=(X'X)^{-1} X'y.
+	\estim{\be}_{ML}=(X'X)^{-1} X'y.
 \end{align}
 
 
@@ -200,7 +200,7 @@ and $\estim{\beta}_{ML}$ equals
 \label{sec:m_estimation}
 
 M-Estimation, know as Empirical Risk Minimizaton (ERM) in the machine learning literature, is a very wide framework which stems from statistical desicion theory.
-The underlying idea is that each realization of $X$ incurs some loss, and we seek to find a "policy", in this case a parameter, $\theta^*$ that minimizes the average loss.
+The underlying idea is that each realization of $\x$ incurs some loss, and we seek to find a "policy", in this case a parameter, $\theta^*$ that minimizes the average loss.
 In the econometric literature, we dot not incur a loss, but rather a utility, we thus seek a policy that maximizes the average utility.
 
 \begin{definition}[Loss Function]
@@ -241,22 +241,22 @@ How do we estimate the population expectation? Well a natural estimator is the e
 
 \begin{example}[Ordinary Least Squares (OLS)]
 \label{eg:OLS}
-Define the loss $\loss(y,x;\beta):=\frac{1}{2}(y-x\beta)^2$.
-Computing the risk, $\expect{\frac{1}{2} \normII{\y-\x\beta}^2}$ will require dealing with the joint distribution of $(\x,\y)$.
+Define the loss $\loss(y,x;\be):=\frac{1}{2}(y-x\be)^2$.
+Computing the risk, $\expect{\frac{1}{2} \normII{\y-\x\be}^2}$ will require dealing with the joint distribution of $(\x,\y)$.
 We don't really care about that right now. 
 We merely want to see that the empirical risk minimizer, is actually the classical OLS problem. 
 And well, it is (by definition actually):
 \begin{align*}
-	\riskn(\beta)=\sum_{i=1}^n 	\frac{1}{2}(y_i-x_i\beta)^2 = \frac{1}{2}\normII{y-x\beta}^2.
+	\riskn(\be)=\sum_{i=1}^n 	\frac{1}{2}(y_i-x_i\be)^2 = \frac{1}{2}\normII{y-x\be}^2.
 \end{align*}
 Minimization is easiest with vector derivatives, but I will stick to regular derivatives:
 \begin{align*}
-	\deriv{\riskn(\beta)}{{\beta_j}} = \sum_i \left[ (y_i-\sum_{j=1}^p x_{ij}\beta_j)(-x_{ij}) \right]
+	\deriv{\riskn(\be)}{{\be_j}} = \sum_i \left[ (y_i-\sum_{j=1}^p x_{ij}\be_j)(-x_{ij}) \right]
 \end{align*}
-Equating $0$ yields $\estim{\beta_j}=\frac{\sum_i y_i x_{ij}}{\sum_i x_{ij}^2}$.
+Equating $0$ yields $\estim{\be_j}=\frac{\sum_i y_i x_{ij}}{\sum_i x_{ij}^2}$.
 Solving for all $j$'s and putting in matrix notation we get
 \begin{align}
-	\estim{\beta}_{OLS}=(X'X)^{-1} X'y.
+	\estim{\be}_{OLS}=(X'X)^{-1} X'y.
 \end{align}
 
 \end{example}
@@ -299,7 +299,7 @@ We now proceed to show that many supervised learning algorithms are in fact ERMs
 \subsection{Ordinary Least Squares (OLS)}
 \label{sec:ols}
 As seen in Example~\ref{eg:OLS}, by adopting a squared error loss, and restricting $\hypclass$ by assuming $\hyp$ is a linear function of $x$, we get the OLS problem.
-In this case, learning $\hyp$ is effectively the same as learning $\beta$ as they are isomorphic, as will be the case in all hypothesis classes that admit a finite dimensional parametrization.
+In this case, learning $\hyp$ is effectively the same as learning $\be$ as they are isomorphic, as will be the case in all hypothesis classes that admit a finite dimensional parametrization.
 
 \paragraph{Regularization}
 While the OLS problem seemingly has no regularization parameters, we are in no way restricted to the original $X$ matrix supplied to us. 
@@ -310,7 +310,7 @@ We are not only free to select a subset of $X$s, but we can also augment $X$ wit
 The idea of basis augmentation is a useful and fundamental one that will revisit us throughout the course, even if we typically don't call it by its name.
 
 \begin{remark}[OLS and Linear Regression]
-In this text, we distinguish between OLS and Linear Regression. We refer to Linear Regression when we assume that the data generating process it actually $\y=\x\beta+\varepsilon$, whereas in OLS we merely fit a linear function without claiming it is the \emph{true} relation between $\y$ and $\x$.
+In this text, we distinguish between OLS and Linear Regression. We refer to Linear Regression when we assume that the data generating process it actually $\y=\x\be+\varepsilon$, whereas in OLS we merely fit a linear function without claiming it is the \emph{true} relation between $\y$ and $\x$.
 \end{remark}
 
 
@@ -327,18 +327,18 @@ Most if not all extensions of OLS, such as Generalized Least Squared (GLS) and G
 Consider the Ridge regression problem:
 \begin{align}
 \label{eq:ridge}
-	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \frac{\lambda}{2}\normII{\beta}^2} \\
-	& \estim{\beta}_{Ridge}= (X'X+\lambda I)^{-1} X'y
+	& \argmin{\be}{\frac{1}{n}\sum_i (y_i-x_i\be)^2 + \frac{\lambda}{2}\normII{\be}^2} \\
+	& \estim{\be}_{Ridge}= (X'X+\lambda I)^{-1} X'y
 \end{align}
 We can see that again, $\hypclass$ is restricted to be the space of linear functions of $x$, but we also add a regularization that favours linear functions with small coefficients.
 
-The regularization of $\beta$ can have several interpretations and justifications.
+The regularization of $\be$ can have several interpretations and justifications.
 \begin{description}
 \item[A mathematical device] Strengthening the diagonal of $X'X$ makes is more easily invertible. This is a standard tool in applied mathematics called \emph{Tikhonov Regularization}. It is also helpful when dealing with multicolinearity, as $(X'X+\lambda I)$ is always invertible.
-\item[A Subjective Bayesian View] If we believe that $\beta$ should be small; say our beliefs can be quantified by $\rv \beta \sim \gauss{0,1/\lambda I}$, then the Ridge solution is actually the mean of our posterior beliefs on $\rv \beta|y$.
+\item[A Subjective Bayesian View] If we believe that $\be$ should be small; say our beliefs can be quantified by $\rv \be \sim \gauss{0,1/\lambda I}$, then the Ridge solution is actually the mean of our posterior beliefs on $\rv \be|y$.
 \end{description}
 
-Whatever justification you prefer, it can be easily shown that $\deriv{\risk(\lambda,\beta)}{\lambda}$ at $\lambda=0$ is negative, thus, predictions only improve by introducing some small regularization (how small is small? see \S\ref{sec:desicion_theory}).
+Whatever justification you prefer, it can be easily shown that $\deriv{\risk(\lambda,\be)}{\lambda}$ at $\lambda=0$ is negative, thus, predictions only improve by introducing some small regularization (how small is small? see \S\ref{sec:desicion_theory}).
 
 For more on Ridge regression see \cite{hastie_elements_2003}.
 
@@ -349,19 +349,19 @@ For more on Ridge regression see \cite{hastie_elements_2003}.
 Consider the LASSO problem:
 \begin{align}
 \label{eq:lasso}
-	& \argmin{\beta}{\frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \lambda \normI{\beta}} 
+	& \argmin{\be}{\frac{1}{n}\sum_i (y_i-x_i\be)^2 + \lambda \normI{\be}} 
 \end{align}
 As can be seen, just like in Ridge regression, $\hypclass$ is restricted to linear functions. The regularization however differs. Instead of $l_2$ norm penalty, we use an $l_1$ norm penalty.
-Eq.(\ref{eq:lasso}) does not have a closed form solution for $\estim{\beta}$ but the LARS algorithm, a quadratic programming algorithm, solves it efficiently.
+Eq.(\ref{eq:lasso}) does not have a closed form solution for $\estim{\be}$ but the LARS algorithm, a quadratic programming algorithm, solves it efficiently.
 
 
 
-The LASSO has gained much popularity as it has the property that $\estim{\beta}_{LASSO}$ has many zero entries. It is thus said to be \emph{sparse}\marginnote{Sparsity}.
+The LASSO has gained much popularity as it has the property that $\estim{\be}_{LASSO}$ has many zero entries. It is thus said to be \emph{sparse}\marginnote{Sparsity}.
 The sparsity property is very attractive as it acts as a model selection method, allowing to consider $X$s where $p>n$, and making predictions computationally efficient.
 
-The sparsity property can be demonstrated for the orthogonal design case ($X'X=I$), in which $\estim{\beta}$ admits a closed form solution:
+The sparsity property can be demonstrated for the orthogonal design case ($X'X=I$), in which $\estim{\be}$ admits a closed form solution:
 \begin{align}
-	\estim{\beta}_{j,LASSO} = sign(\estim{\beta}_{j,OLS}) \left[|\estim{\beta}_{j,OLS}|-\frac{\lambda}{2} \right]_+.
+	\estim{\be}_{j,LASSO} = sign(\estim{\be}_{j,OLS}) \left[|\estim{\be}_{j,OLS}|-\frac{\lambda}{2} \right]_+.
 \end{align}
 We thus see that the LASSO actually performs \emph{soft thresholding} on the OLS estimates. \marginnote{Soft Thresholding}
 
@@ -374,26 +374,26 @@ The logistic regression is the first categorical prediction problem we consider.
 I.e., the outcome $y$ is not a continuous variable, but rather takes values in some finite set $\categories$. In the logistic regression problem, it can take two possible values.
 In the statistical literature, $y$ is encoded as $\categories=\set{0,1}$ and $\hyp$ is assumed to take to take the following form:
 \begin{align}
-	& P(\y=1|x) = \Psi(x\beta) \\
+	& P(\y=1|x) = \Psi(x\be) \\
 	& \Psi(t) = \frac{1}{1+e^{-t}}
 \end{align}
-The hypothesis class is thus  $\hypclass=\set{\hyp:\hyp(x)=\Psi(x\beta)} $.
+The hypothesis class is thus  $\hypclass=\set{\hyp:\hyp(x)=\Psi(x\be)} $.
 
 In the $\set{0,1}$ encoding, the loss is the negative log likelihood, i.e.:
 \begin{align}
-	\loss(y,x,\beta) = -\log \left[ \Psi(x\beta)^{y} (1-\Psi(x\beta))^{1-y}  \right].
+	\loss(y,x,\be) = -\log \left[ \Psi(x\be)^{y} (1-\Psi(x\be))^{1-y}  \right].
 \end{align}
 In the learning literature it is more common for $\set{1,-1}$ encoding of $y$ in which case the loss is 
 \begin{align}
-	\loss(y,x,\beta) = -\log \left[ 1+\exp(-y f(x))  \right].
+	\loss(y,x,\be) = -\log \left[ 1+\exp(-y f(x))  \right].
 \end{align}
 
 
 \paragraph{How to classify?}
-In the $\set{0,1}$ encoding, we predict class $1$ if $\Psi(x\beta)>0.5$ and class $0$ otherwise.
+In the $\set{0,1}$ encoding, we predict class $1$ if $\Psi(x\be)>0.5$ and class $0$ otherwise.
 The logistic problem thus defines a separating hyperplane $\plane$ between the classes: $\plane=\set{x:f(x)=0.5}$.
 
-In the $\set{1,-1}$ encoding, we predict class $1$ if $\Psi(x\beta)>0$ and class $0$ otherwise.
+In the $\set{1,-1}$ encoding, we predict class $1$ if $\Psi(x\be)>0$ and class $0$ otherwise.
 The plane $\plane$ is clearly invariant to the encoding of $y$.
 
 
@@ -411,7 +411,7 @@ The ultimate reference on the matter is \cite{mccullagh_generalized_1989}.
 \subsection{Regression Classifier}
 \label{sec:regression_classifier}
 Can we use the OLS framework for prediction? Yes! With proper encoding of $y$.
-Solving the same problem from Example~\ref{eg:OLS} by encoding $y$ as $\set{0,1}$ gives us the linear separating hyperplane $\plane= \set{x:x\estim{\beta}_{OLS}=0.5}$.
+Solving the same problem from Example~\ref{eg:OLS} by encoding $y$ as $\set{0,1}$ gives us the linear separating hyperplane $\plane= \set{x:x\estim{\be}_{OLS}=0.5}$.
 
 \begin{remark}
 We can interpret $\estim{y}$ as the probability of an event, but there a slight technical difficulty as $\estim{y}$ might actually be smaller than $0$ or larger than $1$.
@@ -428,11 +428,11 @@ For our purposes, we present the ERM formulation of the problem, followed by the
 
 \begin{align}
 \label{eq:svc_ERM}
-	\min_{\beta,\beta_0} \set{
-		\sum_i \positive{1-y_i \hyp(x_i)} +\frac{\lambda}{2} \normII{\beta}^2
+	\min_{\be,\be_0} \set{
+		\sum_i \positive{1-y_i \hyp(x_i)} +\frac{\lambda}{2} \normII{\be}^2
 	}.
 \end{align}
-Eq.(\ref{eq:svc_ERM}) thus reveals that the linear SVM is actually an ERM problem, over a linear hypothesis class, with what is called the \emph{hinge} loss function and $l_2$ regularization of $\beta$.
+Eq.(\ref{eq:svc_ERM}) thus reveals that the linear SVM is actually an ERM problem, over a linear hypothesis class, with what is called the \emph{hinge} loss function and $l_2$ regularization of $\be$.
 
 
 \subsubsection{Geometrical Motivation for SVM}
@@ -440,26 +440,26 @@ We now present Vapnik's The original geometric motivation \citep{vapnik_statisti
 
 We do not assume anything on the data, and seek for a hyperplane $\plane$ that seperates two classes. 
 Encode $y$ as $\categories=\set{-1,1}$.
-Define a plane $\plane=\set{x: \hyp(x)=0 }$, and assume a linear hypothesis class, $\hyp(x)=x\beta+\beta_0$.
+Define a plane $\plane=\set{x: \hyp(x)=0 }$, and assume a linear hypothesis class, $\hyp(x)=x\be+\be_0$.
 Now find the plane $\plane$ that maximizes the (sum of) distances to the data points.
 We call the minimal distance from $\plane$ to the data points, the \emph{Margin}, and denote it by $M$.
 
-To state the optimization problem, we need to note that $\hyp(x)=x\beta+\beta_0$ is not only the value of our classifier, but it is actually proportional to the signed distance of $x$ from $\plane$. 
+To state the optimization problem, we need to note that $\hyp(x)=x\be+\be_0$ is not only the value of our classifier, but it is actually proportional to the signed distance of $x$ from $\plane$. 
 \begin{proof}
 The distance of $x$ to $\plane$ is defined as $\min_{x_0 \in \plane} \set{ \normII{x-x_0} }$.
-Note $\beta^*:=\beta/\normII{\beta}$ is a normal vector to $\plane$, since $\plane=\set{x: x\beta+\beta_0=0 }$, so that for $x_1,x_2 \in \plane \Rightarrow \beta(x_1-x_2)=0$.
+Note $\be^*:=\be/\normII{\be}$ is a normal vector to $\plane$, since $\plane=\set{x: x\be+\be_0=0 }$, so that for $x_1,x_2 \in \plane \Rightarrow \be(x_1-x_2)=0$.
 Now $x-x_0$ is orthogonal to $\plane$ because $x_0$ is, by definition, the orthogonal projection of $x$ onto $\plane$.
-Since $x-x_0$ are both orthogonal to $\plane$, they are linearly dependent, so that by the Cauchy Schwarz inequality $\normII{\beta^*} \normII{x-x_0}= \normII{\beta^*(x-x_0)}$.
-Now recalling that $\normII{\beta^*}=1$ and $\beta^* x_0=-\beta_0/\normII{\beta}$ we have $\normII{x-x_0}=\frac{1}{\normII{\beta}} (x\beta+\beta_0)= \frac{1}{\normII{\beta}} \hyp(x)$.
+Since $x-x_0$ are both orthogonal to $\plane$, they are linearly dependent, so that by the Cauchy Schwarz inequality $\normII{\be^*} \normII{x-x_0}= \normII{\be^*(x-x_0)}$.
+Now recalling that $\normII{\be^*}=1$ and $\be^* x_0=-\be_0/\normII{\be}$ we have $\normII{x-x_0}=\frac{1}{\normII{\be}} (x\be+\be_0)= \frac{1}{\normII{\be}} \hyp(x)$.
 \end{proof}
 
 Using this fact, then $y_i \hyp(x_i)$ is the distance from $\plane$ to point $i$, positive for correct classifications and negative for incorrect classification. 
 The (linear) support vector classifier is defined as the solution to
 \begin{align}
 \label{eq:svc_separable}
-	\max_{\beta,\beta_0} \set{ 
+	\max_{\be,\be_0} \set{ 
 		M \quad s.t. \quad 
-		\forall i: y_i \hyp(x_i) \geq M, \quad \normII{\beta}=1
+		\forall i: y_i \hyp(x_i) \geq M, \quad \normII{\be}=1
 	}
 \end{align}
 
@@ -468,10 +468,10 @@ We thus replace $y_i \hyp(x_i) \geq M$ with $y_i \hyp(x_i) \geq M(1-\xi_i)$, for
 Eq.(\ref{eq:svc_separable}) now becomes \citep[Eq.(12.25)]{hastie_elements_2003}
 \begin{align}
 \label{eq:svc_non_separable}
-	\max_{\beta,\beta_0} \set{ 
+	\max_{\be,\be_0} \set{ 
 		M \quad s.t. \quad 
 		\forall i: y_i \hyp(x_i) \geq M(1-\xi_i), 
-		\: \normII{\beta}=1, 
+		\: \normII{\be}=1, 
 		\: \sum_i \xi_i \leq C,
 		\:\forall i:\xi_i\ \geq 0
 	}
@@ -482,10 +482,10 @@ See Section 12 in \cite{hastie_elements_2003} for more details on SVMs.
 
 
 \begin{remark}[Name Origins]
-SVM takes its name from the fact that $\estim{\beta}_{SVM}=\sum_i \estim{\alpha}_i y_i x_i$.
-The explicit form of $\estim{\alpha}_i$ can be found in \citep[Section 12.2.1]{hastie_elements_2003}.
-For our purpose, it suffices to note that $\estim{\alpha}_i$ will be $0$ for all data points far away from $\plane$.
-The data points for which $\estim{\alpha}_i>0$ are the \emph{support vectors}, which give the method its name.
+SVM takes its name from the fact that $\estim{\be}_{SVM}=\sum_i \estim{\al}_i y_i x_i$.
+The explicit form of $\estim{\al}_i$ can be found in \citep[Section 12.2.1]{hastie_elements_2003}.
+For our purpose, it suffices to note that $\estim{\al}_i$ will be $0$ for all data points far away from $\plane$.
+The data points for which $\estim{\al}_i>0$ are the \emph{support vectors}, which give the method its name.
 \end{remark}
 
 
@@ -505,7 +505,7 @@ Then again, if the assumed logistic model of the logistic regression, is actuall
 \subsection{Generalized Additive Models (GAMs)}
 \label{sec:gam}
 A way to allow for a more broad hypothesis calss $\hypclass$, that is still not too broad, so that overfitting is hopefully under control, is by allowing the predictor to be an additive combination of simple functions.
-We thus allow $\hyp(x)=\beta_0 + \sum_{j=1}^p f_j(x_j)$. We also not assume the exact form of $\set{f_j}_{j=1}^p$ but rather learn them from the data, while constraining them to take some simple form.
+We thus allow $\hyp(x)=\be_0 + \sum_{j=1}^p f_j(x_j)$. We also not assume the exact form of $\set{f_j}_{j=1}^p$ but rather learn them from the data, while constraining them to take some simple form.
 The ERM problem of GAMs is thus
 \begin{align}
 \label{eq:GAM}
@@ -547,9 +547,9 @@ By choosing a sufficiently large $M$, the class $\hypclass$ can approximate any 
 In the spirit of \cite[Section 11]{hastie_elements_2003}, we introduce the NNET model via the PPR model, and not through its historically original construction.
 In the language of Eq.(\ref{eq:PPR}), a single-layer--feed-forward neural network, is a model where $\set{g_m}_{m=1}^M$  are not learned from the data, but rather assumed a-priori. 
 \begin{align*}
-	g_m(x w_m):= \beta_m \sigma(\alpha_0 + x \alpha_m )
+	g_m(x w_m):= \be_m \sigma(\al_0 + x \al_m )
 \end{align*}
-where only $\set{w_m}_{m=1}^M = \set{\beta_m, \alpha_m}_{m=1}^M$ are learned from the data. 
+where only $\set{w_m}_{m=1}^M = \set{\be_m, \al_m}_{m=1}^M$ are learned from the data. 
 A typical \emph{activation function}\marginnote{Activation Function}, $\sigma(t)$ is the standard logistic CDF: $\sigma(t)=\frac{1}{1+e^{-t}}$. Another popular alternative are Gaussian radial functions.
 
 As can be seen, the NNET is merely a non-linear regression model.
@@ -1305,7 +1305,7 @@ The bottom line is however, that a \textbf{significant variable, does not make i
 
 \subsubsection{LASSO}
 We presented the LASSO in Section \ref{sec:lasso} as a regularized ERM problem.
-We claimed, without proof, that the $l_1$ regularization in fact performs soft coefficient thresholding. The estimated $\estim{\beta}_{LASSO}$ has thus many entries set to zero, acting as a model selection device. 
+We claimed, without proof, that the $l_1$ regularization in fact performs soft coefficient thresholding. The estimated $\estim{\be}_{LASSO}$ has thus many entries set to zero, acting as a model selection device. 
 
 
 
@@ -1322,8 +1322,13 @@ We claimed, without proof, that the $l_1$ regularization in fact performs soft c
 
 The idea of ERM also applies to unsupervised learning.
 If $\hyp(x)$ is low dimensional representation of $x$, mapping it to $\manifold$, we would seek some $\hyp$ that does not incur too much loss, on average. I.e., we seek to minimize $\risk(\hyp(x))$.
+
 As usual, we do not have access to the data generating process of $x$, so we typically content ourselves with the empirical risk minimization.
-In the context of unsupervised learing, the empirical risk is know as the \emph{reconstruction error}.\marginnote{Reconstruction Error}
+In the context of unsupervised learing, the empirical risk is known as the \emph{reconstruction error}.\marginnote{Reconstruction Error}
+
+The building blocks of a supervised learning problem were the hypothesis class $\hypclass$ and the loss function $\loss$, and the optimization scheme.
+In unsupervised learning, we have similar building blocks. We still have some loss function, penalizing for the poor reconstruction of the data. We can still solve an ERM problem, or replace the optimization by some other learning algorithm. The main difference is in that instead of some low dimensional mapping $\hyp:x \mapsto \estim{y}$, we learn a mapping  $\hyp:x \mapsto \estim{x}$.
+
 
 
 
@@ -1331,20 +1336,39 @@ In the context of unsupervised learing, the empirical risk is know as the \emph{
 \subsubsection{Principal Components Analysis (PCA)}
 
 PCA is such a basic technique, it has been rediscovered and renamed independently in many fields. 
-It can be found under the names of \emph{discrete Karhunen–Loève transform; Hotteling transform; proper orthogonal decomposition (POD); Eckart–Young theorem; Schmidt–Mirsky theorem;  empirical orthogonal functions; empirical eigenfunction decomposition;  empirical component analysis;  quasi-harmonic modes; quasiharmonic modes;  spectral decomposition;  empirical modal analysis;} and possibly more\footnote{Wikipedia: \url{http://en.wikipedia.org/wiki/Principal_component_analysis} }.
+It can be found under the names of \emph{discrete Karhunen–Loève Transform; Hotteling Transform; Proper Orthogonal Decomposition (POD); Eckart–Young Theorem; Schmidt–Mirsky Theorem;  Empirical Orthogonal Functions; Empirical Eigenfunction Decomposition;  Empirical Component Analysis;  Quasi-Harmonic Modes;  Spectral Decomposition;  Empirical Modal Analysis;} and possibly more\footnote{Wikipedia: \url{http://en.wikipedia.org/wiki/Principal_component_analysis} }.
 The many names are quite interesting as they offer an insight into the different problems that led to the (re)discovery of PCA.
 
 Starting with an example, consider human height and weight data. 
 While clearly two dimensional data, you don't really need both to understand how ``big'' are the people in the data. 
-This is because, height and weight vary mostly along a single dimension: the ``bigness'' of an individuals. 
-This is why, doctors use the Body Mass Index (BMI) as an indicator of size, instead of a two-dimensional measurement.
-Assume you now wish to give each individual a size index, that is a linear combination of height and weight. PCA does just that, it returns the linear combination that has the most variability, i.e., the combination which best distinguishes between individuals. 
+This is because, height and weight vary mostly along a single dimension, which can be interpreted as the ``bigness'' of an individual. 
+This is why, physicians use the Body Mass Index (BMI) as an indicator of size, instead of a two-dimensional measurement.
+Assume you now wish to give each individual a size index, that is a linear combination of height and weight: PCA does just that. It returns the linear combination that has the most variability, i.e., the combination which best distinguishes between individuals. 
 
-More generally, PCA seeks to represent $x$ in the simplest manifold possible: a linear subspace. Thus, $\manifold$ is simply a rank $\rank$ linear subspace in $\mathbb{R}^p$: $\hyp(x):=\projectMat_\rank x$ for $\projectMat_\rank$ a $\rank \times p$ matrix with rank $\rank$.
+
+\paragraph{Terminology}
+PCA has received much attention. As such, it has rich underlying theory and terminology.
+Here are some terms needed to understand PCA outputs:
+\begin{itemize}
+\item[Principal Components] 
+\item[Loadings] The weights of each data point in each principal component.
+\item[Scores] Also known as \emph{component scores}, or \emph{factor scores}, or simply \emph{factors}. The $\rank$ values of the transformed variables.
+\end{itemize}
+
+
+\subsubsection{Mathematics of PCA}
+
+PCA seeks to represent $x$ in the simplest manifold possible: a linear subspace. Thus, $\manifold$ is simply a rank $\rank$ linear subspace in $\mathbb{R}^p$.
+A low dimensional representation of the points in the data consists of decoding their low dimensional encoding. 
+Since we are dealing with linear spaces, encoding and decoding can be represented with matrices. 
+We thus denote the encoding $\featureS \mapsto \manifold$ operator by $\encode$, a $\rank \times p$ matrix.
+We also denote the decoding operator by $\manifold \mapsto \featureS$ by $\decode$, a $p \times \rank$ matrix. 
+The equivalent of the predictor function ($\hyp$) in this case is thus the decoding of the encoding: $\hyp(x_i)=\decode\encode x_i$.
+ 
 The ERM problem is then:
 \begin{align}
 \label{eq:PCA}
-	& \estim{\projectMat}_\rank:= \argmin{\projectMat_\rank}{\frac{1}{n}\sum_i (x_i-\projectMat_\rank x_i)^2} .
+	\argmin{\decode,\encode}{\frac{1}{n}\sum_i (x_i-\decode\encode x_i)^2} .
 \end{align}
 
 Without going into the optimization details, it turns out that Eq.(\ref{eq:PCA}) has a closed form solution. 
@@ -1359,28 +1383,24 @@ $V$ is a $p \times p$ orthogonal matrix ($V'V=I_p$).
 The solution to Eq.(\ref{eq:PCA}) is 
 \begin{align}
 \label{eq:PCA_solution}
-	\estim{\projectMat}_\rank=V_\rank'V_\rank,
+	\estim{\encode} =& V_\rank' \\
+	\estim{\decode} =& V_\rank,
 \end{align}
-where $V_\rank$ are the first $\rank$ columns of $V$.
+where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decomposition of $X$.
 
 
-\paragraph{Nomenclature}
-PCA has received much attention. As such, it has rich underlying theory and nomenclature.
-Here are some terms needed to understand PCA outputs:
-\begin{itemize}
-\item[Loadings] The weights of each data point in each component, i.e., the entries of the $\projectMat_\rank$ matrix.
-\item[Scores] Also known as \emph{component scores}, or \emph{factor scores}, or simply \emph{factors}. The $\rank$ values of the transformed variables.
-\end{itemize}
 
 
 %\paragraph{Intuition}
 %The main point to clarify is why is does $\estim{\projectMat_\rank}$ in Eq.(\ref{eq:PCA_solution}) solve Eq.(\ref{eq:PCA})?
 %The intuition we offer is via OLS.
-%As an OLS problem, we seek to predict $X$ with $X$, where $\beta$ is not a $p \times 1$ vector, but rather a $p \times p$ matrix of rank $\rank$.
+%As an OLS problem, we seek to predict $X$ with $X$, where $\be$ is not a $p \times 1$ vector, but rather a $p \times p$ matrix of rank $\rank$.
 %X (X'X)^{-1} X'X
 %
 %The intuition we offer is that because PCA is essentially a squared loss problem, it is solved by $\rank$ dimensional subspace that captures most of the variance in $X$. 
 %The variance in $X$ is clearly $X'X$ so we would like a low dimensional representation of $X$, $\projectMat_\rank X$, that conserves $X'X$ as much as it can.
+
+
 
 
 
@@ -1481,9 +1501,9 @@ In this text we use the following notation conventions:
 \item[$\expect{x}$] The expectation of $\x$.
 \item[$\expectn{x}$] The empirical expectation (average) of the vector $x$.
 \item[$\cdf{x}{t}$] The CDF of $\x$ at $t$.
-\item[$\icdf{x}{\alpha}$] The inverse CDF at $\alpha$ (the quantile function).
+\item[$\icdf{x}{\al}$] The inverse CDF at $\al$ (the quantile function).
 \item[$\cdfn{x}{t}$] The empirical CDF of data vector $x$.
-\item[$\icdfn{x}{\alpha}$] The empirical $\alpha$ quantile of the data vector $x$.
+\item[$\icdfn{x}{\al}$] The empirical $\al$ quantile of the data vector $x$.
 \item[$\x \sim \dist$]  The random variable $\x$ is $\dist$ distributed. 
 \item[$\pdf(x)$] The density function of $\dist$ at $x$.
 \item[$\gauss{\mu,\sigma^2}$] The univariate Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
