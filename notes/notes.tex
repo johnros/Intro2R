@@ -204,28 +204,44 @@ The underlying idea is that each realization of $\x$ incurs some loss, and we se
 In the econometric literature, we dot not incur a loss, but rather a utility, we thus seek a policy that maximizes the average utility.
 
 \begin{definition}[Loss Function]
-The penalty for predicting $\theta$ when observing $x$: $$\loss(x;\theta).$$
+The penalty for predicting $\theta$ when observing $x$: 
+\begin{align}
+	\loss(x;\theta).
+\end{align}
+
 \end{definition}
 \begin{definition}[Risk Function]
-The expected loss: $$\risk(\theta):=\expect{\loss(\x;\theta)}.$$
+The expected loss: 
+\begin{align}
+	\risk(\theta):=\expect{\loss(\x;\theta)}.
+\end{align}
+
 \end{definition}
 Then the best prediction, $\theta^*$, being the minimizer of the expected risk is
-$$
+\begin{align}
 \label{eq:risk_min}
  \theta^*:= \argmin{\theta}{\risk(\theta)}.
-$$
+\end{align}
+
 As we do not know the distribution of $\x$, we cannot solve Eq.(\ref{eq:risk_min}), so we minimize the \emph{empirical} risk.
 \begin{definition}[Empirical Risk]
-The average loss in the sample: $$\riskn(\theta):=\expectn{\loss(X;\theta)}=\frac{1}{n}\sum_i \loss(x_i,\theta).$$
+The average loss in the sample: 
+\begin{align}
+	\riskn(\theta):=\expectn{\loss(X;\theta)}=\frac{1}{n}\sum_i \loss(x_i,\theta).
+\end{align}
 \end{definition}
+
 A prediction that can actually be computed with data is thus the empirical minimizer $\estim{\theta}$:
-$$
+\begin{align}
 \label{eq:empirical_risk_min}
  \estim{\theta}:= \argmin{\theta}{\riskn(\theta)}.
-$$
+\end{align}
+
 
 
 \begin{example}[Squared Loss]
+\label{eg:squared_loss}
+
 Let $\loss(x;\theta)=(x-\theta)^2$. Then 
 $
 	\risk(\theta) = 
@@ -263,8 +279,27 @@ Solving for all $j$'s and putting in matrix notation we get
 
 
 \subsection{Notes}
-\paragraph{Maximum Likelhood} 
-If we set the loss function to be the negative log likelihood of the (true) sampling distribution, we see that maximum likelihood estimators in independent samples are actually a certain type of M-estimators.
+
+\subsubsection{Maximum Likelihood} 
+Maximum likelihood estimators are a particular instance of M-estimators, if we set the loss function to be the negative log likelihood of the (true) sampling distribution.
+
+
+\subsubsection{Choosing the Loss Function}
+While by far the most popular, we do not automatically revert to minimizing a squared error loss.
+There are several considerations when choosing the loss function.
+Most ERM learning methods can be applied with different loss functions. 
+
+The first consideration is computational complexity: if you choose a loss function that leads to a non-convex empirical risk, you are in trouble. There are no guarantees you will be able to find the risk minimizer in finite computing time.
+
+The second consideration is the nature of the outcome $y$. Some loss functions are more appropriate to continuous $y$'s and some for categorical $y$'s. Typical loss functions for continuous $y$'s are the squared loss, absolute loss, and hinge loss.
+Typical loss functions for categorical $y$'s are the Binomial likelihood loss (also known as the Cross Entropy, or Deviance), and the hinge loss. 
+
+A third consideration, which is rarely given the importance it should get, is ``What is the meaning of $\theta^*$''? Or, ``What are we actually estimating''?
+As we have seen in Example~\ref{eg:squared_loss}, the squared loss implies we are aiming to estimate the population mean.
+What are we estimating when we use the hinge loss? The binomial loss? 
+We will not discuss these matters, as we are discussing methods where these choices have already been made for us. 
+When the day you start thinking of your own learning algorithms, you will need to give some thought to this question.
+
 
 
 \section{From Estimation to Supervised Learning}
@@ -275,7 +310,7 @@ In Supervised Learning, or \emph{learning with teacher},  we want to extract the
 It is implicit, and essential, that the outcomes are observed. If this is not the case, see \emph{Unsupervised Learning }(\S\ref{sec:unsupervised}).
 The attributes, also know as \emph{features}, or \emph{predictors}, are assumed to belong to some \emph{feature space} $\featureS$. \marginnote{Feature Space}
 
-Unlike classical statistics, we don't care to explain the causal process relating $x$ and $y$, we just want good predictions.  There is thus no need to assume the sampling distribution. The implied ERM problem is
+Unlike classical statistics, we don't care to explain the causal process relating $x$ and $y$, we just want good predictions.  The implied ERM problem is
 \begin{align}
 	\estim{\hyp}(x) := \argmin{\hyp}{\riskn(\hyp(x))} = \argmin{\hyp}{\frac{1}{n} \sum_i \loss(y_i - \hyp(x_i))}.
 \end{align}
@@ -283,13 +318,13 @@ Alas, there are clearly infinitely many $\hyp$ for which $\riskn(\estim{\hyp}(x)
 All these $\hyp$ feel like very bad predictors, as they \emph{overfit} the observed data, at a cost of generalizability.\marginnote{Overfitting}
 We formalize this intuition in Section~\ref{sec:desicion_theory}. 
 
-We need to make sure that we do not learn overly complex poor predictors. 
+We need to make sure that we do not learn overly complex predictors, which generalize poorly to new data.
 Motivated by the fact that humans approach new problems equipped with their past experience, this regularization is called \emph{Inductive Bias}. \marginnote{Inductive Bias}
 There are several ways to introduce this bias, which can be combined:
 \begin{description}
 \item[Constrained Hypothesis Classes]
-We typically do not allow $\hyp$ to be ``any function'' but rather restrict it to belong to a certain class. In the machine learning terminology, $\hyp$ is a Hypothesis, and it belongs to $\hypclass$ which is the Hypothesis Class.
-\item[Regularization] We do not need to treat all $\hyp \in \hypclass$ equivalently. We might have prior preferences towards particular $\hyp$'s , typically simple $\hyp$'s, and we can introduce these preferences in the learning process. This is called \emph{Regularization}.
+We typically do not allow $\hyp$ to be ``any function'' but rather restrict it to belong to a certain class. In the machine learning terminology, $\hyp$ is a Hypothesis, and it belongs to $\hypclass$ which is the Hypothesis Class.\marginnote{Hypothesis}
+\item[Regularization] We do not need to treat all $\hyp \in \hypclass$ equivalently. We might have prior preferences towards particular $\hyp$'s , typically simple $\hyp$'s, and we can introduce these preferences in the learning process. This is called \emph{Regularization}.\marginnote{Regularization}
 \item[Non ERM Approaches] Many learning problems can be cast as ERM problems, but another way to introduce bias is by learning $\hyp$ in a non-optimal manner. Inductive bias is thus introduced by the (non) optimization algorithm 
 Learning algorithms that cannot be cast as ERMs include: Nearest Neighbour (\S\ref{sec:knn}), Kernel Regresson(\S\ref{sec:kernel}), Boosting (\S\ref{sec:boosting}).
 \end{description}
@@ -299,7 +334,7 @@ We now proceed to show that many supervised learning algorithms are in fact ERMs
 \subsection{Ordinary Least Squares (OLS)}
 \label{sec:ols}
 As seen in Example~\ref{eg:OLS}, by adopting a squared error loss, and restricting $\hypclass$ by assuming $\hyp$ is a linear function of $x$, we get the OLS problem.
-In this case, learning $\hyp$ is effectively the same as learning $\be$ as they are isomorphic, as will be the case in all hypothesis classes that admit a finite dimensional parametrization.
+In this case learning $\hyp$ is effectively the same as learning $\be$ as they are isomorphic, as will be the case in all hypothesis classes that admit a finite dimensional parametrization.
 
 \paragraph{Regularization}
 While the OLS problem seemingly has no regularization parameters, we are in no way restricted to the original $X$ matrix supplied to us. 
@@ -309,7 +344,10 @@ We will discuss many different methods to choose the regularization level, in th
 We are not only free to select a subset of $X$s, but we can also augment $X$ with new variables, consisting of non linear transformation of the original ones. This is know as \emph{basis augmentation}. \marginnote{Basis Augmentation}
 The idea of basis augmentation is a useful and fundamental one that will revisit us throughout the course, even if we typically don't call it by its name.
 
-\begin{remark}[OLS and Linear Regression]
+\begin{remark}[The Sampling Distribution]
+We wish to emphasize, that we never assume that the data is actually generated form the assumed hypothesis class. 
+This is why we will not be doing hypothesis testing on the model parameters: 
+
 In this text, we distinguish between OLS and Linear Regression. We refer to Linear Regression when we assume that the data generating process it actually $\y=\x\be+\varepsilon$, whereas in OLS we merely fit a linear function without claiming it is the \emph{true} relation between $\y$ and $\x$.
 \end{remark}
 

@@ -15,7 +15,7 @@
 \AtBeginDocument{\let\textlabel\label}
 
 \usepackage{marginnote}
-\renewcommand*{\marginfont}{\footnotesize}
+\renewcommand*{\marginfont}{\scriptsize }
 
 
 
@@ -47,7 +47,7 @@
 \newcommand{\rv}[1]{\mathbf{#1}} % A random variable
 \newcommand{\x}{\rv x} % The random variable x 
 \newcommand{\y}{\rv y} % The random variable y
-\newcommand{\expect}[1]{\mathbf{E}\left[ \rv{#1} \right]} % The expectation operator
+\newcommand{\expect}[1]{\mathbf{E}\left[ #1 \right]} % The expectation operator
 \newcommand{\expectg}[2]{\mathbf{E}_{\rv{#1}}\left[ \rv{#2} \right]} % An expectation w.r.t. a particular random variable.
 \newcommand{\expectn}[1]{\mathbb{E}\left[#1\right]} % The empirical expectation
 \newcommand{\gauss}[1]{\mathcal{N}\left(#1\right)} % The gaussian distribution
