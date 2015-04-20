@@ -1387,6 +1387,7 @@ In unsupervised learning, we have similar building blocks. We still have some lo
 
 
 \subsubsection{Principal Components Analysis (PCA)}
+\label{sec:pca}
 
 PCA is such a basic technique, it has been rediscovered and renamed independently in many fields. 
 It can be found under the names of \emph{discrete Karhunen–Loève Transform; Hotteling Transform; Proper Orthogonal Decomposition (POD); Eckart–Young Theorem; Schmidt–Mirsky Theorem;  Empirical Orthogonal Functions; Empirical Eigenfunction Decomposition;  Empirical Component Analysis;  Quasi-Harmonic Modes;  Spectral Decomposition;  Empirical Modal Analysis;} and possibly more\footnote{Wikipedia: \url{http://en.wikipedia.org/wiki/Principal_component_analysis} }.
@@ -1418,7 +1419,7 @@ Informally speaking, the data has some total variance. This variance can be deco
 Since the variance in the data consists of sums of squares, minimizing the distance from $X$ to $\manifold$, is the same as maximizing the variance of $X \project \manifold$, since their sum is fixed.
 
 
-\subsubsection{Mathematics of PCA}
+\paragraph{Mathematics of PCA}
 
 PCA seeks to represent $x$ in the simplest manifold possible: a linear subspace. Thus, $\manifold$ is simply a rank $\rank$ linear subspace in $\mathbb{R}^p$.
 A low dimensional representation of the points in the data consists of decoding their low dimensional encoding. 
@@ -1454,6 +1455,28 @@ where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decom
 
 
 
+\subsubsection{Kernel Principal Component Analysis (kPCA)}
+Back to the motivating example from the PCA section (\S\ref{sec:pca}): assume we want to construct a ``bigness'' index, that best separates between individuals, but we no longer constrain it to be a linear function of the height and weight ($x$).
+We could thus try to solve 
+\begin{align}
+\label{eq:kpca_wrong}
+	\argmin{g}{\frac{1}{n}\sum_i (x_i-g(x_i) )^2} .
+\end{align}
+Alas, just like in the supervised learning problem, without any constraints on $g$, this is a trivial problem, with poor generalizability properties.
+We thus add the constraint that $g$ is not too ``crazy'' by setting $\norm{g}=1$.
+This still requires solving an optimization problem in an infinite dimensional function space, which is computationally intractable. 
+It turns out, that for a particular class of functions $g$, the solution takes a simple form, and optimization even has a closed form solution. The class of such $g$'s is still large, and will require us to choose the subset of $g$'s in the class we use. 
+This is analogous to the choice of $\hypclass$ in supervised learning.
+
+
+\paragraph{Mathematics of kPCA}
+[TODO]
+
+
+\subsubsection{Sparse Principal Component Analysis (sPCA)}
+[TODO]
+
+
 
 \subsubsection{Multidimensional Scaling (MDS)}
 \label{sec:MDS}
@@ -1480,8 +1503,6 @@ For more on SOMs see Section 14.4 in \cite{hastie_elements_2003}.
 \subsubsection{ICA}
 [TODO]
 
-\subsubsection{kPCA}
-[TODO]
 
 \subsubsection{ISOmap}
 [TODO]
