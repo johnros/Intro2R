@@ -591,9 +591,9 @@ By choosing a sufficiently large $M$, the class $\hypclass$ can approximate any 
 In the spirit of \cite[Section 11]{hastie_elements_2003}, we introduce the NNET model via the PPR model, and not through its historically original construction.
 In the language of Eq.(\ref{eq:PPR}), a \emph{single-layer--feed-forward }neural network, is a model where $\set{g_m}_{m=1}^M$  are not learned from the data, but rather assumed a-priori. 
 \begin{align*}
-	g_m(x w_m):= \be_m \sigma(\al_0 + x \al_m )
+	g_m(x):= \be_m \sigma( x \al_m  )
 \end{align*}
-where only $\set{w_m}_{m=1}^M = \set{\be_m, \al_m}_{m=1}^M$ are learned from the data. 
+where only $\set{\be_m, \al_m}_{m=1}^M$ are learned from the data. 
 A typical \emph{activation function}\marginnote{Activation Function}, $\sigma(t)$ is the standard logistic CDF: $\sigma(t)=\frac{1}{1+e^{-t}}$. Another popular alternative are Gaussian radial functions.
 
 As can be seen, the NNET is merely a non-linear regression model.
@@ -1238,6 +1238,9 @@ See Section 14.3.10 in \cite{hastie_elements_2003}.
 [TODO]
 
 
+\subsection{Spectral Clustering}
+[TODO]
+
 
 \subsubsection{Association Rules}
 \label{sec:association}
@@ -1303,12 +1306,13 @@ This greatly simplifies things as estimating the univariate marginal distributio
 
 
 %%%%%%%%% Dimension Reduction %%%%%%%%%%%
+
 \section{Dimensionality Reduction}
 \label{sec:dim_reduce}
-The fundamental idea behind dimensionality reduction is that while $\featureS$ may be high dimensional, thus $\dist(X)$ hard to learn, there is hope that $x$ does not really vary in the whole space. 
-If the mass of $\dist(X)$ is concentrated around some low dimensional manifold $\manifold$, then the original problem might be approximated to learning the distribution of the projection $\dist(X \project \manifold)$ on $\manifold$. 
-If $\manifold$ is fairly low dimensional, we may now visualize and analyze $\dist(X \project \manifold)$ with fairly simple tools.
-Dimensionality reduction also reduces the memory required to represent the data. It is thus intimately related to \emph{lossy compression} in information theory.\marginnote{Lossy Compression}.
+The fundamental idea behind dimensionality reduction is that while $\featureS$ may be high dimensional, thus $\dist(X)$ hard to learn, there is hope that $\x$ does not really vary in the whole space. 
+If the mass of $\dist(x)$ is concentrated around some low dimensional manifold $\manifold$, then the original problem might be approximated to learning the distribution of the projection $\dist(X \project \manifold)$ on $\manifold$. 
+If $\manifold$ is fairly low dimensional, we may hope to visualize and understand $\dist(X \project \manifold)$ with fairly simple tools.
+Dimensionality reduction also reduces the memory required to represent the data. It is thus intimately related to \emph{lossy compression} in information theory.\marginnote{Lossy Compression}
 
 A similar reasoning justifies dimensionality reduction in supervised learning. While $\dist(X)$ might vary in the whole $\featureS$, but there might be only few directions which carry information on $y$. Learning $\dist(Y|X)$ can thus be well approximated by $\dist(Y|X \project \manifold)$.
 
@@ -1347,7 +1351,7 @@ We can thus drive the search with a CV scheme, but the computational burden migh
 
 \begin{remark}[Hypothesis Testing Driven Variable Selection]
 For a statistician , it is probably very natural to guide a forward search with hypothesis testing. I.e., at each iteration, insert the variable with the most significance. 
-Note however, that when interested in good predictions, we might actually gain accuracy by dropping a significant variable. This is a classica bias-variance tradeoff: dropping a true predictor adds bias, but reduces the variance as we have one less parameter to estimate. If the true effect is small, we can gain from this tradeoff. 
+Note however, that when interested in good predictions, we might actually gain accuracy by dropping a significant variable. This is a classical bias-variance tradeoff: dropping a true predictor adds bias, but reduces the variance as we have one less parameter to estimate. If the true effect is small, we can gain from this tradeoff. 
 This intuition is actually used as a model selection criterion \citep{foster_variable_2004}.
 The bottom line is however, that a \textbf{significant variable, does not make it a good predictor.} 
 \end{remark}
@@ -1370,13 +1374,13 @@ We claimed, without proof, that the $l_1$ regularization in fact performs soft c
 \label{sec:dim_reduce_unsupervised}
 
 The idea of ERM also applies to unsupervised learning.
-If $\hyp(x)$ is low dimensional representation of $x$, mapping it to $\manifold$, we would seek some $\hyp$ that does not incur too much loss, on average. I.e., we seek to minimize $\risk(\hyp(x))$.
+If $\hyp(x)$ is low dimensional representation of $x$, mapping it to $\manifold$, we would seek some $\hyp$ that does not incur too much loss, on average. I.e., we seek to minimize $\risk(\hyp)$.
 
 As usual, we do not have access to the data generating process of $x$, so we typically content ourselves with the empirical risk minimization.
 In the context of unsupervised learing, the empirical risk is known as the \emph{reconstruction error}.\marginnote{Reconstruction Error}
 
-The building blocks of a supervised learning problem were the hypothesis class $\hypclass$ and the loss function $\loss$, and the optimization scheme.
-In unsupervised learning, we have similar building blocks. We still have some loss function, penalizing for the poor reconstruction of the data. We can still solve an ERM problem, or replace the optimization by some other learning algorithm. The main difference is in that instead of some low dimensional mapping $\hyp:x \mapsto \estim{y}$, we learn a mapping  $\hyp:x \mapsto \estim{x}$.
+The building blocks of a supervised learning problem where the loss function $\loss$, the hypothesis class $\hypclass$, a regularization level, and the optimization scheme.
+In unsupervised learning, we have similar building blocks. We still have some loss function, regularized or not, penalizing for the poor reconstruction of the data. We can still solve an ERM problem, or replace the optimization by some other learning algorithm. The main difference is in that instead of some low dimensional mapping $\hyp:x \mapsto \estim{y}$, we learn a mapping  $\hyp:x \mapsto \estim{x}$.
 
 
 
@@ -1386,7 +1390,7 @@ In unsupervised learning, we have similar building blocks. We still have some lo
 
 PCA is such a basic technique, it has been rediscovered and renamed independently in many fields. 
 It can be found under the names of \emph{discrete Karhunen–Loève Transform; Hotteling Transform; Proper Orthogonal Decomposition (POD); Eckart–Young Theorem; Schmidt–Mirsky Theorem;  Empirical Orthogonal Functions; Empirical Eigenfunction Decomposition;  Empirical Component Analysis;  Quasi-Harmonic Modes;  Spectral Decomposition;  Empirical Modal Analysis;} and possibly more\footnote{Wikipedia: \url{http://en.wikipedia.org/wiki/Principal_component_analysis} }.
-The many names are quite interesting as they offer an insight into the different problems that led to the (re)discovery of PCA.
+The many names are quite interesting as they offer an insight into the different problems that led to its (re)discovery.
 
 Starting with an example, consider human height and weight data. 
 While clearly two dimensional data, you don't really need both to understand how ``big'' are the people in the data. 
@@ -1399,10 +1403,19 @@ Assume you now wish to give each individual a size index, that is a linear combi
 PCA has received much attention. As such, it has rich underlying theory and terminology.
 Here are some terms needed to understand PCA outputs:
 \begin{itemize}
-\item[Principal Components] 
-\item[Loadings] The weights of each data point in each principal component.
-\item[Scores] Also known as \emph{component scores}, or \emph{factor scores}, or simply \emph{factors}. The $\rank$ values of the transformed variables.
+\item[Principal Components] The linear combinations of the features, which best separate between observations. In our example- the ``bigness'' index of each individual. The first components captures the most variance, the second components, the second most-variance, etc. In terms of $\manifold$, the principal components are an orthogonal basis for $\manifold$.
+\item[Scores] Synonymous to Principal Components.
+\item[Loadings] The weights of each data point in each principal component. In our example, the importance of the height and weight in constructing the ``bigness'' index.
 \end{itemize}
+
+
+\paragraph{Intuition}
+Notice we have currently offered two motivations for PCA: 
+(i) Find linear combinations that best distinguish between observations, i.e., maximize variance. 
+(ii) Find the linear subspace the bets approximates the data.
+The reason these two problems are equivalent, is due to the use of the squares error.
+Informally speaking, the data has some total variance. This variance can be decomposed into the part captured in $\manifold$, and the part not captured\footnote{Analogous to $SST=SSR+SSE$ in linear regression.}. 
+Since the variance in the data consists of sums of squares, minimizing the distance from $X$ to $\manifold$, is the same as maximizing the variance of $X \project \manifold$, since their sum is fixed.
 
 
 \subsubsection{Mathematics of PCA}
@@ -1410,17 +1423,17 @@ Here are some terms needed to understand PCA outputs:
 PCA seeks to represent $x$ in the simplest manifold possible: a linear subspace. Thus, $\manifold$ is simply a rank $\rank$ linear subspace in $\mathbb{R}^p$.
 A low dimensional representation of the points in the data consists of decoding their low dimensional encoding. 
 Since we are dealing with linear spaces, encoding and decoding can be represented with matrices. 
-We thus denote the encoding $\featureS \mapsto \manifold$ operator by $\encode$, a $\rank \times p$ matrix.
-We also denote the decoding operator by $\manifold \mapsto \featureS$ by $\decode$, a $p \times \rank$ matrix. 
-The equivalent of the predictor function ($\hyp$) in this case is thus the decoding of the encoding: $\hyp(x_i)=\decode\encode x_i$.
+We thus denote the encoding operator by $\encode:\featureS \mapsto \reals^\rank$, a $\rank \times p$ matrix.
+We also denote the decoding operator by $\decode:\reals^\rank \mapsto \featureS$ , a $p \times \rank$ matrix. 
+Our predictor function ($\hyp$) in this case is $\hyp(x_i)=\decode\encode x_i$.
  
-The ERM problem is then:
+The ERM problem:
 \begin{align}
 \label{eq:PCA}
 	\argmin{\decode,\encode}{\frac{1}{n}\sum_i (x_i-\decode\encode x_i)^2} .
 \end{align}
 
-Without going into the optimization details, it turns out that Eq.(\ref{eq:PCA}) has a closed form solution. 
+Without proof, it turns out that Eq.(\ref{eq:PCA}) has a closed form solution. 
 This solution is typically presented using the Singular Value Decomposition (SVD) of $X$ we now define.\marginnote{SVD}
 \begin{definition}[SVD]
 Any $n \times p$ matrix $X$, can be decomposed into $X=UDV'$ where 
@@ -1440,39 +1453,25 @@ where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decom
 
 
 
-%\paragraph{Intuition}
-%The main point to clarify is why is does $\estim{\projectMat_\rank}$ in Eq.(\ref{eq:PCA_solution}) solve Eq.(\ref{eq:PCA})?
-%The intuition we offer is via OLS.
-%As an OLS problem, we seek to predict $X$ with $X$, where $\be$ is not a $p \times 1$ vector, but rather a $p \times p$ matrix of rank $\rank$.
-%X (X'X)^{-1} X'X
-%
-%The intuition we offer is that because PCA is essentially a squared loss problem, it is solved by $\rank$ dimensional subspace that captures most of the variance in $X$. 
-%The variance in $X$ is clearly $X'X$ so we would like a low dimensional representation of $X$, $\projectMat_\rank X$, that conserves $X'X$ as much as it can.
-
-
-
-
-
-
-
-\subsubsection{Random Projections}
-[TODO: Johnson-Lindenstrauss Lemma]
-
-
-
-\subsubsection{Compressed Sensing}
-\label{sec:compressed_sensing}
-[TODO]
-
-
 
 
 \subsubsection{Multidimensional Scaling (MDS)}
+\label{sec:MDS}
 [TODO]
 
 
-\subsubsection{Self Organizing Maps}
+\subsubsection{Graphical Models}
+\label{sec:graphical_model}
 [TODO]
+
+
+
+\subsubsection{Self Organizing Maps (SOM)}
+SOMs are aimed at learning low dimensional representations of data useful for clustering. 
+As such, they take the form of K-means clustering (\S\ref{sec:kmeans}), but not in the original space $\featureS$ but rather in a low dimensional representation $\manifold$.
+
+For more on SOMs see Section 14.4 in \cite{hastie_elements_2003}. 
+
 
 
 \subsubsection{Principal Curves}
@@ -1490,6 +1489,18 @@ where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decom
 
 \subsubsection{LLE}
 [TODO]
+
+
+
+\subsubsection{Random Projections}
+[TODO: Johnson-Lindenstrauss Lemma]
+
+
+
+\subsubsection{Compressed Sensing}
+\label{sec:compressed_sensing}
+[TODO]
+
 
 
 \subsubsection{Information Bottleneck}
