@@ -191,7 +191,7 @@ example(points)
 help(package='graphics')
 ```
 
-When your plotting gets serious, move to ggplot2 and ggvis as soon as possible.
+When your plotting gets serious, move to `ggplot2` and `ggvis` as soon as possible.
 
 
 
@@ -200,7 +200,7 @@ ___
 
 
 ## Data frame Manipulation 
-data.frames extend the matrix class, in that they allow the binding of vectors of several classes (with same length).
+`data.frames` extend the `matrix` class, in that they allow the binding of vectors of several classes (with same length).
 ```{r}
 x<- 1:100; y<- 3 + sin(x) 
 class(x) # R (high) level representation of an object.
@@ -225,7 +225,7 @@ length(frame1)
 length(x)
 
 str(frame1) # the inner structure of an object
-attributes(frame1) # get the objec's meta data
+attributes(frame1) # get the object's meta data
 ```
 
 ### Exctraction 
@@ -283,7 +283,7 @@ More about extraction: http://adv-r.had.co.nz/Subsetting.html
 
 ### dplyr package 
 `dplyr` makes the manupilation of data.frames a breeze.
-It is very fast, and straightforward 
+It is very fast, and straightforward to use.
 
 Install the package:
 ```{r}
@@ -423,9 +423,13 @@ Leaving dplyr for now...
 
 
 ## Data Import and export 
+
+__Note__: The [readr](https://github.com/hadley/readr) packge facilitates and accelerates data importing. This section should be updated to use it.
+
 For a complete review see:
 http://cran.r-project.org/doc/manuals/R-data.html
 also in  help.start() -> "Import and Export Manual" 
+
 
 ### Import from WEB 
 `read.table()` is the main importing workhorse.
@@ -545,7 +549,7 @@ class(tirgul.matrix[, 1]); class(tirgul.matrix[, 2]); class(tirgul.matrix[, 3]);
 summary(tirgul.matrix)
 ```
 
-Note: if re-writing an expression bothers you (as it should!), here are some solutions:
+Note: if copy-pasting an expression bothers you (as it should!), here are some solutions:
 ```{r}
 # The apply family of functions:
 sapply(tirgul.matrix, class)
@@ -579,7 +583,7 @@ tirgul1<- transform(tirgul1, age=age/365 )  #Does this revert back to years?
 with(tirgul1, mean(age) )
 ```
 
-Then again, many of these fnuctions are replaced by more friendly functions in the dplyr package (see below).
+Then again, many of these functions are replaced by more friendly functions in the `dplyr` package (see below).
 
 
 ## Sorting 
@@ -1068,7 +1072,7 @@ z<-func1(xy.grid, a0=5, a1=1, a2=3, 11); xyz=data.frame(xy.grid, z); plot3d(xyz,
 
 ```
 
-`lm()` is the major workhorse for OLS returning the solution to $(X'X)^{-1} X'y$.
+`lm()` is the main workhorse for OLS solving $(X'X)^{-1} X'y$ with the QR decomposition.
 ```{r}
 z<-func1(xy.grid, a0=5, a1=1, a2=3, .4)
 xyz=data.frame(xy.grid, z)
