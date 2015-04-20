@@ -373,13 +373,13 @@ Consider the Ridge regression problem:
 \end{align}
 We can see that again, $\hypclass$ is restricted to be the space of linear functions of $x$, but we also add a regularization that favours linear functions with small coefficients.
 
-The regularization of $\be$ can have several interpretations and justifications.
+The regularization of $\be$ can have several interpretations and justifications:
 \begin{description}
 \item[A mathematical device] Strengthening the diagonal of $X'X$ makes is more easily invertible. This is a standard tool in applied mathematics called \emph{Tikhonov Regularization}. It is also helpful when dealing with multicolinearity, as $(X'X+\lambda I)$ is always invertible.
 \item[A Subjective Bayesian View] If we believe that $\be$ should be small; say our beliefs can be quantified by $\rv \be \sim \gauss{0,1/\lambda I}$, then the Ridge solution is actually the mean of our posterior beliefs on $\rv \be|y$.
 \end{description}
 
-Whatever justification you prefer, it can be easily shown that $\deriv{\risk(\lambda,\be)}{\lambda}$ at $\lambda=0$ is negative, thus, predictions only improve by introducing some small regularization (how small is small? see \S\ref{sec:desicion_theory}).
+Whatever justification you prefer, it can be easily shown that $\deriv{\risk(\lambda,\be)}{\lambda}$ at $\lambda=0$ is negative, thus, predictions only improve by introducing some small regularization (how small is small? See \S\ref{sec:desicion_theory}).
 
 For more on Ridge regression see \cite{hastie_elements_2003}.
 
@@ -392,15 +392,15 @@ Consider the LASSO problem:
 \label{eq:lasso}
 	& \argmin{\be}{\frac{1}{n}\sum_i (y_i-x_i\be)^2 + \lambda \normI{\be}} 
 \end{align}
-As can be seen, just like in Ridge regression, $\hypclass$ is restricted to linear functions. The regularization however differs. Instead of $l_2$ norm penalty, we use an $l_1$ norm penalty.
-Eq.(\ref{eq:lasso}) does not have a closed form solution for $\estim{\be}$ but the LARS algorithm, a quadratic programming algorithm, solves it efficiently.
+As can be seen, just like in Ridge regression, $\hypclass$ is restricted to linear functions of $x$. The regularization however differs. Instead of $l_2$ norm penalty, we use an $l_1$ norm penalty.
+Eq.(\ref{eq:lasso}) does not have a closed form solution for $\estim{\be}_{LASSO}$ but the LARS algorithm, a quadratic programming algorithm, solves it efficiently.
 
 
 
 The LASSO has gained much popularity as it has the property that $\estim{\be}_{LASSO}$ has many zero entries. It is thus said to be \emph{sparse}\marginnote{Sparsity}.
 The sparsity property is very attractive as it acts as a model selection method, allowing to consider $X$s where $p>n$, and making predictions computationally efficient.
 
-The sparsity property can be demonstrated for the orthogonal design case ($X'X=I$), in which $\estim{\be}$ admits a closed form solution:
+The sparsity property can be demonstrated analytically for the orthogonal design case ($X'X=I$), in which $\estim{\be}$ admits a closed form solution:
 \begin{align}
 	\estim{\be}_{j,LASSO} = sign(\estim{\be}_{j,OLS}) \left[|\estim{\be}_{j,OLS}|-\frac{\lambda}{2} \right]_+.
 \end{align}
@@ -415,16 +415,18 @@ The logistic regression is the first categorical prediction problem we consider.
 I.e., the outcome $y$ is not a continuous variable, but rather takes values in some finite set $\categories$. In the logistic regression problem, it can take two possible values.
 In the statistical literature, $y$ is encoded as $\categories=\set{0,1}$ and $\hyp$ is assumed to take to take the following form:
 \begin{align}
-	& P(\y=1|x) = \Psi(x\be) \\
+	& p(x):= P(\y=1|x) = \Psi(x\be) \\
 	& \Psi(t) = \frac{1}{1+e^{-t}}
 \end{align}
 The hypothesis class is thus  $\hypclass=\set{\hyp:\hyp(x)=\Psi(x\be)} $.
 
 In the $\set{0,1}$ encoding, the loss is the negative log likelihood, i.e.:
 \begin{align}
-	\loss(y,x,\be) = -\log \left[ \Psi(x\be)^{y} (1-\Psi(x\be))^{1-y}  \right].
+	\loss(y,x,\be) = 
+	-\log \left[ p(x)^{y} (1-p(x))^{1-y}  \right] =
+	-\log \left[ \Psi(x\be)^{y} (1-\Psi(x\be))^{1-y}  \right].
 \end{align}
-In the learning literature it is more common for $\set{1,-1}$ encoding of $y$ in which case the loss is 
+In the learning literature it is more common for $\categories=\set{1,-1}$ encoding of $y$ in which case the loss is 
 \begin{align}
 	\loss(y,x,\be) = -\log \left[ 1+\exp(-y f(x))  \right].
 \end{align}
@@ -432,7 +434,7 @@ In the learning literature it is more common for $\set{1,-1}$ encoding of $y$ in
 
 \paragraph{How to classify?}
 In the $\set{0,1}$ encoding, we predict class $1$ if $\Psi(x\be)>0.5$ and class $0$ otherwise.
-The logistic problem thus defines a separating hyperplane $\plane$ between the classes: $\plane=\set{x:f(x)=0.5}$.
+The logistic problem thus defines a separating hyperplane $\plane \subset \featureS$ between the classes: $\plane=\set{x:f(x)=0.5}$.
 
 In the $\set{1,-1}$ encoding, we predict class $1$ if $\Psi(x\be)>0$ and class $0$ otherwise.
 The plane $\plane$ is clearly invariant to the encoding of $y$.
@@ -466,6 +468,7 @@ We can interpret $\estim{y}$ as the probability of an event, but there a slight 
 
 The literature typically presents the SVM method using the geometrical arguments that originally motivated the problem. 
 For our purposes, we present the ERM formulation of the problem, followed by the original arguments.
+Assuming a linear hypothesis class, $\hyp(x)=\be_0+\be x$, and $\categories=\set{-1,1}$ encoding, the SVM ERM problem is
 
 \begin{align}
 \label{eq:svc_ERM}
@@ -477,7 +480,7 @@ Eq.(\ref{eq:svc_ERM}) thus reveals that the linear SVM is actually an ERM proble
 
 
 \subsubsection{Geometrical Motivation for SVM}
-We now present Vapnik's The original geometric motivation \citep{vapnik_statistical_1998} for the formulation of the SVM problem for completeness. 
+For completeness, we present Vapnik's original geometric motivation \citep{vapnik_statistical_1998} for the formulation of the SVM problem. 
 
 We do not assume anything on the data, and seek for a hyperplane $\plane$ that seperates two classes. 
 Encode $y$ as $\categories=\set{-1,1}$.
@@ -534,7 +537,7 @@ The data points for which $\estim{\al}_i>0$ are the \emph{support vectors}, whic
 
 
 \begin{remark}[Solve the right problem]
-Comparing with the logistic regression, and the linear classifier, we see that the SVM cares only about the decision boundary $\plane$. Indeed, if only interested in predictions, estimating probabilities is a needless complication. As Put by Vapnik: 
+Comparing with the logistic regression, and the linear classifier, we see that the SVM cares only about the decision boundary $\plane$. Indeed, if only interested in \emph{predictions}, estimating \emph{probabilities} is a needless complication. As Put by Vapnik: 
 \begin{quote}
 When solving a given problem, try to avoid a more general problem as an intermediate
 step.
@@ -586,7 +589,7 @@ By choosing a sufficiently large $M$, the class $\hypclass$ can approximate any 
 \subsection{Neural Networks (NNETs)}
 \subsubsection{Single Hidden Layer}
 In the spirit of \cite[Section 11]{hastie_elements_2003}, we introduce the NNET model via the PPR model, and not through its historically original construction.
-In the language of Eq.(\ref{eq:PPR}), a single-layer--feed-forward neural network, is a model where $\set{g_m}_{m=1}^M$  are not learned from the data, but rather assumed a-priori. 
+In the language of Eq.(\ref{eq:PPR}), a \emph{single-layer--feed-forward }neural network, is a model where $\set{g_m}_{m=1}^M$  are not learned from the data, but rather assumed a-priori. 
 \begin{align*}
 	g_m(x w_m):= \be_m \sigma(\al_0 + x \al_m )
 \end{align*}
@@ -596,9 +599,10 @@ A typical \emph{activation function}\marginnote{Activation Function}, $\sigma(t)
 As can be seen, the NNET is merely a non-linear regression model.
 The parameters of which are often called \emph{weights}.
 
-NNETs have gained tremendous popularity, as it strikes a good balance between model complexity and regularity; particularly in the machine vision, sound analysis and natural language processing domains, where data samples are abundant.
+NNETs have gained tremendous popularity, as they strike a good balance between model complexity and regularity; particularly in the machine vision, sound analysis and natural language processing domains, where data samples are abundant.
 
 \paragraph{Loss Functions}
+Like any other ERM problem, we are free to choose the appropriate loss function.
 For regression the squared loss is used. For classification, one can still use the squared error (as in the Regression Classifier), or the binomial likelihood leading to what is know as the \emph{deviance}, or \emph{cross-entropy} loss.\marginnote{Deviance \& Cross Entropy}
 
 \paragraph{Universal Approximator}
@@ -643,6 +647,9 @@ For categorical outcomes, the loss function is called the \emph{impurity measure
 One can use either a misclassification error, the multinomial likelihood (knows as the deviance, or cross-entropy), or a first order approximation of the latter known as the \emph{Gini Index}.
 
 
+\paragraph{Universal Approximator}
+Like many other hypothesis classes, CART's $\hypclass$ can approximate any function, with large enough $M$.
+
 \paragraph{Dendogram}
 As CARTs are essentially decision trees, they can typically viewed as a hirarchy of if-then rules applied on the data.
 This type of visualization if called a \emph{dendogram}.\marginnote{Dendogram}
@@ -670,7 +677,7 @@ Considering a single predictor, the ERM problem for \emph{Smoothing Spline}
 	 \argmin{\hyp}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2 + \lambda \normII{\nabla^2 f}^2  }.
 \end{align}
 
-It is quite surprising, and useful, that even though the optimization is performed over an infinite dimensional function space, the solution belongs to a finite dimensional parametric sub-space. 
+It is quite surprising, and useful, that even though the optimization is performed over an \emph{infinite} dimensional function space, the solution belongs to a \emph{finite } dimensional parametric sub-space. 
 The magic continues! It turns out that the fitted values, $\set{\estim{\hyp}(x_i)}_{i=1}^n$ are linear in $\set{y_i}_{i=1}^n$. A fact that greatly facilitates the analysis of the statistical properties of these models.
 
 In the presence of $p>1$ predictors, Eq.(\ref{eq:smoothing_spline}) can be generalized as 
@@ -688,7 +695,7 @@ where $J$ is some matrix norm. A natural extension is the squared Frobenius norm
 \label{sec:non_erm}
 Up until now, we have focused on purely ERM, or hybrid ERM methods.
 Inductive bias, however, can also be introduced by avoiding the optimization approach of ERM.
-ERM decouples the motivation of a method and the particular learning algorithm (ultimately, some optimization algorithm).
+ERM decouples between the motivation of a method and the particular learning algorithm (ultimately, some optimization algorithm).
 In the following methods, the learning algorithm is an integral part of the method. 
 This restricts the learnable hypothesis class, thus acting as a regularizer.
 
@@ -730,7 +737,7 @@ While KNN is a universal approximator, it is notoriously known to require many o
 
 Not to be confused with the Kernel Trick in Kernel SVM, Kernel PCA, and Kernel Density Estimation.
 
-Kernel \emph{smoothing} is essentially a generalization of a moving average.
+Kernel \emph{Regression} is essentially a generalization of a moving average.
 It is also known as a \emph{scan statistic}, or \emph{searchlight statistic}.\marginnote{Scan Statistic}
 
 The \emph{Nadaraya-Watson} weighted average encompasses most if not all kernel smoothers and is defined as \marginnote{Nadaraya-Watson}
@@ -740,10 +747,11 @@ The \emph{Nadaraya-Watson} weighted average encompasses most if not all kernel s
 \end{align}
 where $\kernel_\lambda$ is the kernel function, which is merely a measure of the distance between the evaluation point $x$ and the data points $\set{ x_i }_{i=1}^n$ and weights the contribution of each $\set{ y_i }_{i=1}^n$ to the value at $x$.
 The denominator merely ensures the weights sum to $1$.
-Regularization is controlled by the $\lambda$ parameter.
+Regularization is controlled by some $\lambda$ parameter.
 
 The moving average in a window of width $\lambda$ is an instance where $\kernel_\lambda(x,x_i)$ is fixed in the window.
-The Band-Pass filter, popular in Electrical Engineering, is an instance of the Nadaraya-Watson smoother, with a Gaussian kernel [TODO: verify].\marginnote{Band Pass}
+The Band-Pass filter, popular in Electrical Engineering, is an instance of the Nadaraya-Watson smoother, with a Gaussian kernel. %[TODO: verify]
+\marginnote{Band Pass}
 
 
 \paragraph{Metric Spaces}
