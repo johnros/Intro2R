@@ -227,7 +227,7 @@ As we do not know the distribution of $\x$, we cannot solve Eq.(\ref{eq:risk_min
 \begin{definition}[Empirical Risk]
 The average loss in the sample: 
 \begin{align}
-	\riskn(\theta):=\expectn{\loss(X;\theta)}=\frac{1}{n}\sum_i \loss(x_i,\theta).
+	\riskn(\theta):=\expectn{\loss(x;\theta)}=\frac{1}{n}\sum_i \loss(x_i,\theta).
 \end{align}
 \end{definition}
 
@@ -344,11 +344,14 @@ We will discuss many different methods to choose the regularization level, in th
 We are not only free to select a subset of $X$s, but we can also augment $X$ with new variables, consisting of non linear transformation of the original ones. This is know as \emph{basis augmentation}. \marginnote{Basis Augmentation}
 The idea of basis augmentation is a useful and fundamental one that will revisit us throughout the course, even if we typically don't call it by its name.
 
-\begin{remark}[The Sampling Distribution]
-We wish to emphasize, that we never assume that the data is actually generated form the assumed hypothesis class. 
-This is why we will not be doing hypothesis testing on the model parameters: 
+\begin{remark}[No Sampling Distribution]
+We emphasize, that unlike the classical statistical literature, we never assumed any sampling distribution. 
+This is why we will not be doing hypothesis testing on the model parameters.
+ERM can be thus seen as \emph{exploratory} statistics. 
 
-In this text, we distinguish between OLS and Linear Regression. We refer to Linear Regression when we assume that the data generating process it actually $\y=\x\be+\varepsilon$, whereas in OLS we merely fit a linear function without claiming it is the \emph{true} relation between $\y$ and $\x$.
+In particular, we are not discussing hypothesis testing and confidence intervals for the OLS problem, for this same reason: because we are not assuming the data generating distribution. This, in contrast to the classical statistical literature where the linear model is both the data generating process, and the assume hypothesis class. 
+
+In statistical terminology, we may be fitting \emph{misspecified models}, we simply do not care about it, as long as predictions are good. \marginnote{Misspecified Model}
 \end{remark}
 
 
