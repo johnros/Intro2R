@@ -50,6 +50,8 @@
 \newcommand{\expect}[1]{\mathbf{E}\left[ #1 \right]} % The expectation operator
 \newcommand{\expectg}[2]{\mathbf{E}_{\rv{#1}}\left[ \rv{#2} \right]} % An expectation w.r.t. a particular random variable.
 \newcommand{\expectn}[1]{\mathbb{E}\left[#1\right]} % The empirical expectation
+\newcommand{\cov}[1]{\mathbf{C}ov \left[ #1 \right]} % The expectation operator
+\newcommand{\covn}[1]{\mathbb{C}ov \left[ #1 \right]} % The expectation operator
 \newcommand{\gauss}[1]{\mathcal{N}\left(#1\right)} % The gaussian distribution
 \newcommand{\cdf}[2]{F_\rv{#1} (#2)} % The CDF function
 \newcommand{\cdfn}[2]{\mathbb{F}_{#1}(#2)} % The empirical CDF function
@@ -70,8 +72,13 @@
 \newcommand{\riskn}{\mathbb{R}} % The empirical risk
 \newcommand{\deriv}[2]{\frac{\partial #1}{\partial #2}} % A derivative
 \newcommand{\argmin}[2]{argmin_{#1}\set{#2}} % The argmin operator
+\newcommand{\argmax}[2]{argmax_{#1}\set{#2}} % The argmin operator
 \newcommand{\hyp}{f} % A hypothesis
 \newcommand{\hypclass}{\mathcal{F}} % A hypothesis class
+\newcommand{\hilbert}{\mathcal{H}}
+\newcommand{\rkhs}{\hilbert_\kernel} % A hypothesis class
+\newcommand{\normrkhs}[1]{\norm{#1}_{\rkhs}}
+
 \newcommand{\plane}{\mathbb{L}} % A hypoerplane
 \newcommand{\categories}{\mathcal{G}} % The categories set.
 \newcommand{\positive}[1]{\left[ #1 \right]_+} % The positive part function

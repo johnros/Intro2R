@@ -326,7 +326,7 @@ There are several ways to introduce this bias, which can be combined:
 We typically do not allow $\hyp$ to be ``any function'' but rather restrict it to belong to a certain class. In the machine learning terminology, $\hyp$ is a Hypothesis, and it belongs to $\hypclass$ which is the Hypothesis Class.\marginnote{Hypothesis}
 \item[Regularization] We do not need to treat all $\hyp \in \hypclass$ equivalently. We might have prior preferences towards particular $\hyp$'s , typically simple $\hyp$'s, and we can introduce these preferences in the learning process. This is called \emph{Regularization}.\marginnote{Regularization}
 \item[Non ERM Approaches] Many learning problems can be cast as ERM problems, but another way to introduce bias is by learning $\hyp$ in a non-optimal manner. Inductive bias is thus introduced by the (non) optimization algorithm 
-Learning algorithms that cannot be cast as ERMs include: Nearest Neighbour (\S\ref{sec:knn}), Kernel Regresson(\S\ref{sec:kernel}), Boosting (\S\ref{sec:boosting}).
+Learning algorithms that cannot be cast as ERMs include: Nearest Neighbour (\S\ref{sec:knn}), Kernel Regression(\S\ref{sec:kernel}), Boosting (\S\ref{sec:boosting}).
 \end{description}
 
 We now proceed to show that many supervised learning algorithms are in fact ERMs with some type of inductive bias: constrained hypothesis class \andor or regularization \andor suboptimality.
@@ -735,7 +735,7 @@ While KNN is a universal approximator, it is notoriously known to require many o
 \subsection{Kernel Regression}
 \label{sec:kernel}
 
-Not to be confused with the Kernel Trick in Kernel SVM, Kernel PCA, and Kernel Density Estimation.
+Not to be confused with the Kernel Trick in Kernel SVM, Kernel PCA (\S\ref{sec:kpca}), and Kernel Density Estimation (\S\ref{sec:kernel_density}).
 
 Kernel \emph{Regression} is essentially a generalization of a moving average.
 It is also known as a \emph{scan statistic}, or \emph{searchlight statistic}.\marginnote{Scan Statistic}
@@ -1165,6 +1165,7 @@ Maximum Likelihood estimation being a particularly attractive approach.
 If a parametric model cannot be assumed, we fall into the real of non-parametric methods. As we saw for Supervised learning, these typically rely on pooling information from neighbourhoods of $\featureS$.
 
 \subsubsection{Kernel Density Estimation}
+\label{sec:kernel_density}
 
 Much like the Kernel Regresson regression, a \naive estimator is the moving average.
 A natural generalization, in the spirit of the Nadaraya-Watson smoother (Eq.(\ref{eq:nadaraya_watson})) is the \emph{Parzen} estimate:\marginnote{Parzen Estimate}
@@ -1397,7 +1398,7 @@ Starting with an example, consider human height and weight data.
 While clearly two dimensional data, you don't really need both to understand how ``big'' are the people in the data. 
 This is because, height and weight vary mostly along a single dimension, which can be interpreted as the ``bigness'' of an individual. 
 This is why, physicians use the Body Mass Index (BMI) as an indicator of size, instead of a two-dimensional measurement.
-Assume you now wish to give each individual a size index, that is a linear combination of height and weight: PCA does just that. It returns the linear combination that has the most variability, i.e., the combination which best distinguishes between individuals. 
+Assume you now wish to give each individual a size score, that is a linear combination of height and weight: PCA does just that. It returns the linear combination that has the most variability, i.e., the combination which best distinguishes between individuals. 
 
 
 \paragraph{Terminology}
@@ -1456,17 +1457,27 @@ where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decom
 
 
 \subsubsection{Kernel Principal Component Analysis (kPCA)}
-Back to the motivating example from the PCA section (\S\ref{sec:pca}): assume we want to construct a ``bigness'' index, that best separates between individuals, but we no longer constrain it to be a linear function of the height and weight ($x$).
+\label{sec:kpca}
+
+Back to the motivating example from the PCA section (\S\ref{sec:pca}): assume we want to construct a ``bigness'' score, that best separates between individuals, but we no longer constrain it to be a linear function of the height and weight.
 We could thus try to solve 
 \begin{align}
 \label{eq:kpca_wrong}
-	\argmin{g}{\frac{1}{n}\sum_i (x_i-g(x_i) )^2} .
+	\argmax{g}{\covn{g(X)}}
 \end{align}
-Alas, just like in the supervised learning problem, without any constraints on $g$, this is a trivial problem, with poor generalizability properties.
-We thus add the constraint that $g$ is not too ``crazy'' by setting $\norm{g}=1$.
-This still requires solving an optimization problem in an infinite dimensional function space, which is computationally intractable. 
-It turns out, that for a particular class of functions $g$, the solution takes a simple form, and optimization even has a closed form solution. The class of such $g$'s is still large, and will require us to choose the subset of $g$'s in the class we use. 
-This is analogous to the choice of $\hypclass$ in supervised learning.
+where $\covn{g(X)}$ is the empirical covariance of $g$ applied on each individual, i.e., row-wise on $X$.
+
+Alas, just like in the supervised learning problem, without any constraints on $g$, we might overfit \andor not be able to compute $g$ as optimization is done in a infinite dimensional space. 
+We also need to recall that if we allow for a $\rank$ dimensional score, then we have to solve Eq.(\ref{eq:kpca_wrong}) $\rank$ times.
+We thus have two matters to attend:
+(i) We need to constrain $g$ so that it does not overfit.
+(ii) We need the problem to be computable.
+This is precisely what kPCA does. 
+It turns out, that for a particular class of functions $g$, the optimal $g$'s take a simple form. 
+The classes of such $g$'s are known as Reproducing Kernel Hilbert Spaces. They are presented in Appendix~\ref{sec:rkhs}.
+
+The fundamental observation allowing the application of RKHS theory, is that the scores in the PCA problem, actually depend only on the similarities between individuals, as measured by their empirical correlation. 
+In kPCA we replace the measure of similarity with some other measure called the \emph{kernel}, chosen from a particular class, and then proceed as if we were solving a PCA problem.
 
 
 \paragraph{Mathematics of kPCA}
@@ -1579,8 +1590,10 @@ In this text we use the following notation conventions:
 \item[$\normII{x}$] The $l_2$ norm of $x$: $\sqrt{\sum_j x_j^2}$.
 \item[$\normI{x}$] The $l_1$ norm of $x$: $\sum_j |x_j|$
 \item[$\sample$] A data sample.
-\item[$\expect{x}$] The expectation of $\x$.
+\item[$\expect{\x}$] The expectation of $\x$.
 \item[$\expectn{x}$] The empirical expectation (average) of the vector $x$.
+\item[$\cov{\x}$] The covariance matrix of $\x$: $\expect{(\x-\expect{\x})(\x-\expect{\x})'}$.
+\item[$\covn{x}$] The empirical covariance matrix of x: $\expectn{(x-\expectn{x})(x-\expectn{x})'}$.
 \item[$\cdf{x}{t}$] The CDF of $\x$ at $t$.
 \item[$\icdf{x}{\al}$] The inverse CDF at $\al$ (the quantile function).
 \item[$\cdfn{x}{t}$] The empirical CDF of data vector $x$.
@@ -1607,6 +1620,75 @@ In this text we use the following notation conventions:
 \end{description}
 
 
+
+\section{The Kernel Trick and Reproducing Kernel Hilbert Spaces (RKHS)}
+\label{sec:rkhs}
+
+Think of smoothing splines (\S\ref{sec:smoothing_splines});
+It was quite magical that without constraining the hypothesis class $\hypclass$, the ERM problem in Eq.(\ref{eq:smoothing_spline}) has a finite dimensional closed form solution.
+The property of an infinite dimensional problem having a solution in a finite dimensional space is known as the \emph{kernel property} in the machine learning literature.\marginnote{Kernel Property}
+We with to generalize this observation and ask- which problems have the kernel property?
+Stating the general optimization problem:
+\begin{align}
+\label{eq:rkhs}
+	\argmin{\hyp}{\frac{1}{n} \sum_i \loss(y_i,\hyp(x_i)) + \lambda J(\hyp) }
+\end{align}
+The problem is then- what type of penalties $J(\hyp)$ will return simple solutions to Eq.(\ref{eq:rkhs}).
+The answer is: function that belong to =\emph{Reproducing Kernel Hilbert Space} function spaces. 
+RKHS's are denoted by $\rkhs$.
+They include many functions, but they are a rather ``small'' subset of the space of all possible functions.
+These spaces, and the functions therein, are defined by another function called a \emph{Kernel} denoted by $\kernel$. 
+Choosing a particular kernel defines the space and the functions therein.
+Choosing a particular kernel, also defines the form of $J$ in Eq.(\ref{eq:rkhs}).
+Put differently: for any choice of a kernel $\kernel$, there is a particular $J(\hyp)$ for which the solution of Eq.(\ref{eq:rkhs}) will be a function in $\rkhs$ and will be easily computable. 
+
+
+\subsection{Mathematics of RKHS}
+We now show how choosing a kernel $\kernel$ defines a space $\rkhs$, and a penalty $J(\hyp)$.
+
+A kernel is a non-negative symmetric function of two arguments: $\kernel(x,y): \reals^p \times \reals^p \mapsto \reals_+$.
+By fixing $y$, $\kernel(x,y)$ is a function with a single argument $x \mapsto \kernel(x,y)$.
+$\rkhs$ is merely the space of functions of $x$, spanned at given $y$'s: 
+\begin{align}
+\label{eq:rkhs_span}
+	\hyp(x):\sum_m \al_m \kernel(x,y_m)
+\end{align} 
+
+From linear algebra, you may know that positive definite matrices be diagonalized. 
+This analogy carries to $\kernel$, which admits an eigen-expansion: 
+\begin{align}
+\label{eq:rkhs_eigen}
+	\kernel(x,y)=\sum_{i=1}^\infty \gamma_i \phi(x) \phi(y)
+\end{align}
+Using Eqs.(\ref{eq:rkhs_eigen}) and (\ref{eq:rkhs_span}) we can thus expand elements $f$ of $\rkhs$: 
+\begin{align}
+	\hyp(x)=\sum_{i=1}^\infty c_i \phi(x)
+\end{align}
+where $c_i=\gamma_i \sum_m \alpha_m \phi(y)$.
+We also define a norm $\normrkhs{\hyp}^2$ in this space, which is induced by $\kernel$:
+\begin{align}
+\label{eq:rkhs_norm}
+	\normrkhs{\hyp}^2 := \sum_{i=1}^\infty \frac{c_i^2}{\gamma_i}
+\end{align}
+
+The penalty $J(\hyp)$ in Eq.(\ref{eq:rkhs}), is simply be $\normrkhs{\hyp}^2$.
+The $\hyp$'s that solve Eq.(\ref{eq:rkhs}) are guaranteed to have a simple form. They reside in an $n$ dimensional linear function space \citep{wahba_spline_1990}:
+\begin{align}
+	\hyp(x)=\sum_{i=1}^n \al_i \kernel(x,x_i)
+\end{align}
+
+The functions $\kernel(x,x_i)$ can be seen as a basis to the solution space. 
+The good news continue! Being only $n$ dimensional, the norms of these $\hyp$'s, do not require integration but rather only finite summation:
+\begin{align}
+	\normrkhs{\hyp}^2=\sum_{i=1}^n \sum_{j=1}^n \kernel(x_i,x_j) \al_i \al_{j} := \al' K \al.
+\end{align}
+
+Adding the above results, we can restate Eq.(\ref{eq:rkhs}) and say that when fixing $\kernel$ and using the appropriate $J$, we only need to solve: 
+\begin{align}	
+\label{eq:rkhs_simple}
+		\argmin{\al}{\frac{1}{n} \sum_i \loss(y_i-K_i \alpha) + \lambda \al' K \al }
+\end{align}
+which is a quadratic programming problem over an $n$ dimensional linear space, easily solvable with numeric routines.
 
 
 
