@@ -1262,6 +1262,8 @@ The \emph{Aprioiri} algorithm \cite{agraval_fast_1994}, is an example of such a 
 % Generative models %
 
 \section{Generative Models}
+\label{sec:generative}
+
 For the mere purpose of making a prediction, we do not need to learn the full data generating distribution $\dist(y,x)$. 
 Knowing this distribution, however, does permit to make predictions, via Bayes Theorem: 
 $\dist(y|x)=\frac{\dist(y,x)}{\int\dist(y,x)dy}$.
@@ -1536,13 +1538,19 @@ For more on SOMs see Section 14.4 in \cite{hastie_elements_2003}.
 [TODO]
 
 
-
+\begin{remark}[Information Bottleneck and ICA]
+[TODO]
+\end{remark}
 
 %%%%%%%%% Latent Space Models%%%%%%%%%%%
-\section{Latent Space Models}
+\section{Latent Space Generative Models}
 \label{sec:latent_space}
-[TODO]
 
+In the Generative Models section (\S\ref{sec:generative}) we deals with methods for supervised and unsupervised learning that explicitly assume the data generating process.
+In this section we pursue this idea, but allow the data generating process to depend on some unobservable quantities-- \emph{latent variables}.
+The fundamental idea is that while the data generating distribution may have a complicated form, when we condition on the unobserved variable, the distribution greatly simplifies. 
+
+The latent variables define a \emph{state}. This is why these models are also known as \emph{state space} models. A term coined by \citet{kalman_contributions_1960}.\marginnote{State-Space Models}
 
 \subsection{Mixtures}
 [TODO]
@@ -1554,6 +1562,8 @@ For more on SOMs see Section 14.4 in \cite{hastie_elements_2003}.
 
 
 \subsection{Factor Analysis (FA)}
+\label{sec:factor_analysis}
+
 Factor Analysis is solved very similarly to PCA (\S\ref{sec:pca}), so that the two are often confused and interchanged. 
 FA, however, stems from a rather different motivation than PCA.
 In can be seen as a descriptive method using some linear algebra properties.
@@ -1566,7 +1576,7 @@ The generative model is thus
 \label{eq:factor}
 	X=\loadings \latent+\varepsilon
 \end{align}
-Assuming a generative distribution on $\varepsilon$, we may try to estimate $\loadings \latent$ by maximum likelihood.
+Assuming a generative distribution on $\latent$ and $\varepsilon$, we may try to estimate $\loadings \latent$ by maximum likelihood.
 Sadly, recovering the particular latent attributes $\latent$ from $\estim{\loadings\latent}$ is still impossible as there are infinitely many such solutions. To see this, consider an orthogonal \emph{rotation} matrix $\rotation$ ($\rotation' \rotation=I$). For each such $\rotation$: $ \loadings \latent=\loadings \rotation' \rotation \latent = \loadings^* \latent^*$.
 
 The choice of $\rotation$ changes the interpretation of the latent attributes. This is why many researchers find FA an unsatisfactory inference tool.
@@ -1576,12 +1586,29 @@ The choice of $\rotation$ changes the interpretation of the latent attributes. T
 \paragraph{Terminology}
 \begin{description}
 \item[Factors] The unobserved attributes $\latent$.
-\item[Loadings] The $A$ matrix; the contribution of each attributed to the observed $X$.
+\item[Loadings] The $A$ matrix; the contribution of each attribute to the observed $X$.
 \item[Rotation] An orthogonal re-combination of the latent attributes $\latent$ and loadings, which changes the interpretation of the result.
 \end{description}
 
-\subsubsection{ICA}
+\subsection{Independent Component Analysis (ICA)}
+ICA aims at overcoming the non-uniquness of the latent attributes in FA (\S\ref{sec:factor_analysis}).
+The fundamental observation is that the non-uniqueness (i.e., non identifiability of $\latent$) stems from the fact that the independent Gaussian distribution is invariant under rotation. I.e. for $\rv \latent \sim \gauss{0,\sigma^2 I}$ is the same as that of $\rotation \rv \latent$. 
+By replacing the Gaussianity assumption on the distribution of $\rv \latent$, by some other multivariate distribution, coordinate-wise independent, we can identify $\latent$. 
+This is precisely what ICA does. 
+
+\begin{remark}[Blind Source Separation]
+ICA is a popular technique in signal processing, where $\latent$ is actually the signal (e.g. sound) produced by several different sources. Recovering $\latent$ is thus recovering the original signals mixing in the recorded $X$. This is known as \emph{blind source separation}.
+\end{remark}
+
+\begin{remark}[ICA and FA]
+The solutions to the ICA problem can ultimately be seen as a solution to the FA problem with a particular rotation $\rotation$.
+Put differently, by the formulation of the ICA problem, implies a specific rotation so that $\latent$ is identifiable. 
+\end{remark}
+
+\subsubsection{Mathematics of ICA}
 [TODO]
+
+For more on ICA, see \cite{hyvarinen_independent_2000}. 
 
 
 \subsection{Hidden Markov}
