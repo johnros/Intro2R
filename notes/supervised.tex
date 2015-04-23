@@ -1,0 +1,695 @@
+
+\chapter{Supervised Learning}
+
+\section{Supervised Learning By Empirical Risk Minimization (EMR)}
+\label{sec:learning}
+
+
+
+\subsection{Empirical Risk Minimization and Inductive Bias}
+In Supervised Learning, or \emph{learning with teacher},  we want to extract the relation $y=\hyp(x)$ between attributes $x$ and some outcome $y$.
+It is implicit, and essential, that the outcomes are observed. If this is not the case, see \emph{Unsupervised Learning }(\S\ref{sec:unsupervised}).
+The attributes, also know as \emph{features}, or \emph{predictors}, are assumed to belong to some \emph{feature space} $\featureS$. \marginnote{Feature Space}
+
+Unlike classical statistics, we don't care to explain the causal process relating $x$ and $y$, we just want good predictions.  The implied ERM problem is
+\begin{align}
+	\estim{\hyp}(x) := \argmin{\hyp}{\riskn(\hyp(x))} = \argmin{\hyp}{\frac{1}{n} \sum_i \loss(y_i - \hyp(x_i))}.
+\end{align}
+Alas, there are clearly infinitely many $\hyp$ for which $\riskn(\estim{\hyp}(x))=0$, in particular, all those where $\estim{\hyp}(x_i)=y_i, \forall i$.
+All these $\hyp$ feel like very bad predictors, as they \emph{overfit} the observed data, at a cost of generalizability.\marginnote{Overfitting}
+We formalize this intuition in Section~\ref{sec:desicion_theory}. 
+
+We need to make sure that we do not learn overly complex predictors, which generalize poorly to new data.
+Motivated by the fact that humans approach new problems equipped with their past experience, this regularization is called \emph{Inductive Bias}. \marginnote{Inductive Bias}
+There are several ways to introduce this bias, which can be combined:
+\begin{description}
+\item[Constrained Hypothesis Classes]
+We typically do not allow $\hyp$ to be ``any function'' but rather restrict it to belong to a certain class. In the machine learning terminology, $\hyp$ is a Hypothesis, and it belongs to $\hypclass$ which is the Hypothesis Class.\marginnote{Hypothesis}
+\item[Regularization] We do not need to treat all $\hyp \in \hypclass$ equivalently. We might have prior preferences towards particular $\hyp$'s , typically simple $\hyp$'s, and we can introduce these preferences in the learning process. This is called \emph{Regularization}.\marginnote{Regularization}
+\item[Non ERM Approaches] Many learning problems can be cast as ERM problems, but another way to introduce bias is by learning $\hyp$ in a non-optimal manner. Inductive bias is thus introduced by the (non) optimization algorithm 
+Learning algorithms that cannot be cast as ERMs include: Nearest Neighbour (\S\ref{sec:knn}), Kernel Regression(\S\ref{sec:kernel}), Boosting (\S\ref{sec:boosting}).
+\end{description}
+
+We now proceed to show that many supervised learning algorithms are in fact ERMs with some type of inductive bias: constrained hypothesis class \andor or regularization \andor suboptimality.
+
+\subsection{Ordinary Least Squares (OLS)}
+\label{sec:ols}
+As seen in Example~\ref{eg:OLS}, by adopting a squared error loss, and restricting $\hypclass$ by assuming $\hyp$ is a linear function of $x$, we get the OLS problem.
+In this case learning $\hyp$ is effectively the same as learning $\be$ as they are isomorphic, as will be the case in all hypothesis classes that admit a finite dimensional parametrization.
+
+\paragraph{Regularization}
+While the OLS problem seemingly has no regularization parameters, we are in no way restricted to the original $X$ matrix supplied to us. 
+We are free to choose any subset of the $X$ variables. Selecting a subset of the $X$ variables is known as \emph{model selection}.\marginnote{Model Selection}
+We will discuss many different methods to choose the regularization level, in this case, the variables in the OLS, in Section~\ref{sec:desicion_theory}.
+
+We are not only free to select a subset of $X$s, but we can also augment $X$ with new variables, consisting of non linear transformation of the original ones. This is know as \emph{basis augmentation}. \marginnote{Basis Augmentation}
+The idea of basis augmentation is a useful and fundamental one that will revisit us throughout the course, even if we typically don't call it by its name.
+
+\begin{remark}[No Sampling Distribution]
+We emphasize, that unlike the classical statistical literature, we never assumed any sampling distribution. 
+This is why we will not be doing hypothesis testing on the model parameters.
+ERM can be thus seen as \emph{exploratory} statistics. 
+
+In particular, we are not discussing hypothesis testing and confidence intervals for the OLS problem, for this same reason: because we are not assuming the data generating distribution. This, in contrast to the classical statistical literature where the linear model is both the data generating process, and the assume hypothesis class. 
+
+In statistical terminology, we may be fitting \emph{misspecified models}, we simply do not care about it, as long as predictions are good. \marginnote{Misspecified Model}
+\end{remark}
+
+
+\begin{remark}[OLS Extensions]
+Most if not all extensions of OLS, such as Generalized Least Squared (GLS) and Generalized Linear Models (\S\ref{sec:logistic}) are ERM problems. 
+\end{remark}
+
+
+
+
+\subsection{Ridge Regression}
+\label{sec:ridge}
+
+Consider the Ridge regression problem:
+\begin{align}
+\label{eq:ridge}
+	& \argmin{\be}{\frac{1}{n}\sum_i (y_i-x_i\be)^2 + \frac{\lambda}{2}\normII{\be}^2} \\
+	& \estim{\be}_{Ridge}= (X'X+\lambda I)^{-1} X'y
+\end{align}
+We can see that again, $\hypclass$ is restricted to be the space of linear functions of $x$, but we also add a regularization that favours linear functions with small coefficients.
+
+The regularization of $\be$ can have several interpretations and justifications:
+\begin{description}
+\item[A mathematical device] Strengthening the diagonal of $X'X$ makes is more easily invertible. This is a standard tool in applied mathematics called \emph{Tikhonov Regularization}. It is also helpful when dealing with multicolinearity, as $(X'X+\lambda I)$ is always invertible.
+\item[A Subjective Bayesian View] If we believe that $\be$ should be small; say our beliefs can be quantified by $\rv \be \sim \gauss{0,1/\lambda I}$, then the Ridge solution is actually the mean of our posterior beliefs on $\rv \be|y$.
+\end{description}
+
+Whatever justification you prefer, it can be easily shown that $\deriv{\risk(\lambda,\be)}{\lambda}$ at $\lambda=0$ is negative, thus, predictions only improve by introducing some small regularization (how small is small? See \S\ref{sec:desicion_theory}).
+
+For more on Ridge regression see \cite{hastie_elements_2003}.
+
+
+\subsection{LASSO}
+\label{sec:lasso}
+
+Consider the LASSO problem:
+\begin{align}
+\label{eq:lasso}
+	& \argmin{\be}{\frac{1}{n}\sum_i (y_i-x_i\be)^2 + \lambda \normI{\be}} 
+\end{align}
+As can be seen, just like in Ridge regression, $\hypclass$ is restricted to linear functions of $x$. The regularization however differs. Instead of $l_2$ norm penalty, we use an $l_1$ norm penalty.
+Eq.(\ref{eq:lasso}) does not have a closed form solution for $\estim{\be}_{LASSO}$ but the LARS algorithm, a quadratic programming algorithm, solves it efficiently.
+
+
+
+The LASSO has gained much popularity as it has the property that $\estim{\be}_{LASSO}$ has many zero entries. It is thus said to be \emph{sparse}\marginnote{Sparsity}.
+The sparsity property is very attractive as it acts as a model selection method, allowing to consider $X$s where $p>n$, and making predictions computationally efficient.
+
+The sparsity property can be demonstrated analytically for the orthogonal design case ($X'X=I$), in which $\estim{\be}$ admits a closed form solution:
+\begin{align}
+	\estim{\be}_{j,LASSO} = sign(\estim{\be}_{j,OLS}) \left[|\estim{\be}_{j,OLS}|-\frac{\lambda}{2} \right]_+.
+\end{align}
+We thus see that the LASSO actually performs \emph{soft thresholding} on the OLS estimates. \marginnote{Soft Thresholding}
+
+
+
+
+\subsection{Logistic Regression}
+\label{sec:logistic}
+The logistic regression is the first categorical prediction problem we consider. \marginnote{Categorical Prediction}
+I.e., the outcome $y$ is not a continuous variable, but rather takes values in some finite set $\categories$. In the logistic regression problem, it can take two possible values.
+In the statistical literature, $y$ is encoded as $\categories=\set{0,1}$ and $\hyp$ is assumed to take to take the following form:
+\begin{align}
+	& p(x):= P(\y=1|x) = \Psi(x\be) \\
+	& \Psi(t) = \frac{1}{1+e^{-t}}
+\end{align}
+The hypothesis class is thus  $\hypclass=\set{\hyp:\hyp(x)=\Psi(x\be)} $.
+
+In the $\set{0,1}$ encoding, the loss is the negative log likelihood, i.e.:
+\begin{align}
+	\loss(y,x,\be) = 
+	-\log \left[ p(x)^{y} (1-p(x))^{1-y}  \right] =
+	-\log \left[ \Psi(x\be)^{y} (1-\Psi(x\be))^{1-y}  \right].
+\end{align}
+In the learning literature it is more common for $\categories=\set{1,-1}$ encoding of $y$ in which case the loss is 
+\begin{align}
+	\loss(y,x,\be) = -\log \left[ 1+\exp(-y f(x))  \right].
+\end{align}
+
+
+\paragraph{How to classify?}
+In the $\set{0,1}$ encoding, we predict class $1$ if $\Psi(x\be)>0.5$ and class $0$ otherwise.
+The logistic problem thus defines a separating hyperplane $\plane \subset \featureS$ between the classes: $\plane=\set{x:f(x)=0.5}$.
+
+In the $\set{1,-1}$ encoding, we predict class $1$ if $\Psi(x\be)>0$ and class $0$ otherwise.
+The plane $\plane$ is clearly invariant to the encoding of $y$.
+
+
+
+
+\begin{remark}[Generalized Linear Models (GLM)]
+Logistic regression is a particular instance of the very developped theory of Generalized Linear Models.\marginnote{GLM}
+These models include the OLS, Probit Regression, Poisson Regression, Quasi Likelihood, Multinomial Regression, Proportional Odds regression and more.
+The ultimate reference on the matter is \cite{mccullagh_generalized_1989}.
+\end{remark}
+
+
+
+
+\subsection{Regression Classifier}
+\label{sec:regression_classifier}
+Can we use the OLS framework for prediction? Yes! With proper encoding of $y$.
+Solving the same problem from Example~\ref{eg:OLS} by encoding $y$ as $\set{0,1}$ gives us the linear separating hyperplane $\plane= \set{x:x\estim{\be}_{OLS}=0.5}$.
+
+\begin{remark}
+We can interpret $\estim{y}$ as the probability of an event, but there a slight technical difficulty as $\estim{y}$ might actually be smaller than $0$ or larger than $1$.
+\end{remark}
+
+
+
+
+\subsection{Linear Support Vector Machines (SVM)}
+\label{sec:svm}
+
+The literature typically presents the SVM method using the geometrical arguments that originally motivated the problem. 
+For our purposes, we present the ERM formulation of the problem, followed by the original arguments.
+Assuming a linear hypothesis class, $\hyp(x)=\be_0+\be x$, and $\categories=\set{-1,1}$ encoding, the SVM ERM problem is
+
+\begin{align}
+\label{eq:svc_ERM}
+	\min_{\be,\be_0} \set{
+		\sum_i \positive{1-y_i \hyp(x_i)} +\frac{\lambda}{2} \normII{\be}^2
+	}.
+\end{align}
+Eq.(\ref{eq:svc_ERM}) thus reveals that the linear SVM is actually an ERM problem, over a linear hypothesis class, with what is called the \emph{hinge} loss function and $l_2$ regularization of $\be$.
+
+
+\subsubsection{Geometrical Motivation for SVM}
+For completeness, we present Vapnik's original geometric motivation \citep{vapnik_statistical_1998} for the formulation of the SVM problem. 
+
+We do not assume anything on the data, and seek for a hyperplane $\plane$ that seperates two classes. 
+Encode $y$ as $\categories=\set{-1,1}$.
+Define a plane $\plane=\set{x: \hyp(x)=0 }$, and assume a linear hypothesis class, $\hyp(x)=x\be+\be_0$.
+Now find the plane $\plane$ that maximizes the (sum of) distances to the data points.
+We call the minimal distance from $\plane$ to the data points, the \emph{Margin}, and denote it by $M$.
+
+To state the optimization problem, we need to note that $\hyp(x)=x\be+\be_0$ is not only the value of our classifier, but it is actually proportional to the signed distance of $x$ from $\plane$. 
+\begin{proof}
+The distance of $x$ to $\plane$ is defined as $\min_{x_0 \in \plane} \set{ \normII{x-x_0} }$.
+Note $\be^*:=\be/\normII{\be}$ is a normal vector to $\plane$, since $\plane=\set{x: x\be+\be_0=0 }$, so that for $x_1,x_2 \in \plane \Rightarrow \be(x_1-x_2)=0$.
+Now $x-x_0$ is orthogonal to $\plane$ because $x_0$ is, by definition, the orthogonal projection of $x$ onto $\plane$.
+Since $x-x_0$ are both orthogonal to $\plane$, they are linearly dependent, so that by the Cauchy Schwarz inequality $\normII{\be^*} \normII{x-x_0}= \normII{\be^*(x-x_0)}$.
+Now recalling that $\normII{\be^*}=1$ and $\be^* x_0=-\be_0/\normII{\be}$ we have $\normII{x-x_0}=\frac{1}{\normII{\be}} (x\be+\be_0)= \frac{1}{\normII{\be}} \hyp(x)$.
+\end{proof}
+
+Using this fact, then $y_i \hyp(x_i)$ is the distance from $\plane$ to point $i$, positive for correct classifications and negative for incorrect classification. 
+The (linear) support vector classifier is defined as the solution to
+\begin{align}
+\label{eq:svc_separable}
+	\max_{\be,\be_0} \set{ 
+		M \quad s.t. \quad 
+		\forall i: y_i \hyp(x_i) \geq M, \quad \normII{\be}=1
+	}
+\end{align}
+
+If the data is not separable by a plane, which is typically the case, we need to allow some slack.
+We thus replace $y_i \hyp(x_i) \geq M$ with $y_i \hyp(x_i) \geq M(1-\xi_i)$, for $\xi_i>0$ but require that the missclassifications are controlled using a regularization parameter $C$: $\sum_i \xi_i \leq C$.
+Eq.(\ref{eq:svc_separable}) now becomes \citep[Eq.(12.25)]{hastie_elements_2003}
+\begin{align}
+\label{eq:svc_non_separable}
+	\max_{\be,\be_0} \set{ 
+		M \quad s.t. \quad 
+		\forall i: y_i \hyp(x_i) \geq M(1-\xi_i), 
+		\: \normII{\be}=1, 
+		\: \sum_i \xi_i \leq C,
+		\:\forall i:\xi_i\ \geq 0
+	}
+\end{align}
+
+
+See Section 12 in \cite{hastie_elements_2003} for more details on SVMs.
+
+
+\begin{remark}[Name Origins]
+SVM takes its name from the fact that $\estim{\be}_{SVM}=\sum_i \estim{\al}_i y_i x_i$.
+The explicit form of $\estim{\al}_i$ can be found in \citep[Section 12.2.1]{hastie_elements_2003}.
+For our purpose, it suffices to note that $\estim{\al}_i$ will be $0$ for all data points far away from $\plane$.
+The data points for which $\estim{\al}_i>0$ are the \emph{support vectors}, which give the method its name.
+\end{remark}
+
+
+
+
+
+\begin{remark}[Solve the right problem]
+Comparing with the logistic regression, and the linear classifier, we see that the SVM cares only about the decision boundary $\plane$. Indeed, if only interested in \emph{predictions}, estimating \emph{probabilities} is a needless complication. As Put by Vapnik: 
+\begin{quote}
+When solving a given problem, try to avoid a more general problem as an intermediate
+step.
+\end{quote}
+Then again, if the assumed logistic model of the logistic regression, is actually a good approximation of reality, then it will outperform the SVM as it borrows information from all of the data, and not only the support vectors. 
+\end{remark}
+
+
+\subsection{Generalized Additive Models (GAMs)}
+\label{sec:gam}
+A way to allow for a more broad hypothesis calss $\hypclass$, that is still not too broad, so that overfitting is hopefully under control, is by allowing the predictor to be an additive combination of simple functions.
+We thus allow $\hyp(x)=\be_0 + \sum_{j=1}^p f_j(x_j)$. We also not assume the exact form of $\set{f_j}_{j=1}^p$ but rather learn them from the data, while constraining them to take some simple form.
+The ERM problem of GAMs is thus
+\begin{align}
+\label{eq:GAM}
+	 \argmin{\hyp \in \hypclass}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2  }
+\end{align}
+where $\hyp$ is as defined above.
+
+\begin{remark}[Not a pure ERM]
+The learning of $\set{f_j}_{j=1}^p$ is in fact not performed by optimization, but rather by kernel smoothing (\S~\ref{sec:kernel}).
+The solution to Eq.(\ref{eq:GAM}) is not a pure ERM problem, but a hybrid between ERM and kernel smoothing.
+\end{remark}
+
+
+
+\subsection{Projection Pursuit Regression (PPR)}
+\label{sec:ppr}
+Another way to generalize the hypothesis class $\hypclass$, which generalizes the GAM model, is to allow $\hyp$ to be some simple function of a linear combination of the predictors. Let 
+\begin{align}
+\label{eq:PPR}
+	\hyp(x)=\sum_{m=1}^M g_m(w_m x)
+\end{align}
+where both $\set{g_m}_{m=1}^M$ and $\set{w_m}_{m=1}^M$ are learned from the data. 
+The regularization is now performed by choosing $M$ and the class of $\set{g_m}_{m=1}^M$.
+The ERM problem is the same as in Eq.(\ref{eq:GAM}), with the appropriate $\hyp$.
+
+\begin{remark}[Not a pure ERM]
+Just like the GAM problem, in the PPR problem $\set{g_m}_{m=1}^M$ are learned by Kernel Regresson (\S\ref{sec:kernel}). Solving the PPR problem is thus a hybrid of ERM and Kernel Regresson algorithms.
+\end{remark}
+
+\begin{remark}[Universal Approximator]
+By choosing a sufficiently large $M$, the class $\hypclass$ can approximate any continuous function. This property of the class is called a \emph{Universal Approximator}.\marginnote{Universal Approximator}
+\end{remark}
+
+
+
+
+\subsection{Neural Networks (NNETs)}
+\subsubsection{Single Hidden Layer}
+In the spirit of \cite[Section 11]{hastie_elements_2003}, we introduce the NNET model via the PPR model, and not through its historically original construction.
+In the language of Eq.(\ref{eq:PPR}), a \emph{single-layer--feed-forward }neural network, is a model where $\set{g_m}_{m=1}^M$  are not learned from the data, but rather assumed a-priori. 
+\begin{align*}
+	g_m(x):= \be_m \sigma( x \al_m  )
+\end{align*}
+where only $\set{\be_m, \al_m}_{m=1}^M$ are learned from the data. 
+A typical \emph{activation function}\marginnote{Activation Function}, $\sigma(t)$ is the standard logistic CDF: $\sigma(t)=\frac{1}{1+e^{-t}}$. Another popular alternative are Gaussian radial functions.
+
+As can be seen, the NNET is merely a non-linear regression model.
+The parameters of which are often called \emph{weights}.
+
+NNETs have gained tremendous popularity, as they strike a good balance between model complexity and regularity; particularly in the machine vision, sound analysis and natural language processing domains, where data samples are abundant.
+
+\paragraph{Loss Functions}
+Like any other ERM problem, we are free to choose the appropriate loss function.
+For regression the squared loss is used. For classification, one can still use the squared error (as in the Regression Classifier), or the binomial likelihood leading to what is know as the \emph{deviance}, or \emph{cross-entropy} loss.\marginnote{Deviance \& Cross Entropy}
+
+\paragraph{Universal Approximator}
+Like the PPR, even when $\set{g_m}_{m=1}^M$ are fixed beforehand, the class is still a universal approximator (although it might require a larger $M$ than PPR).
+
+\paragraph{Regularization}
+Regularization of the model is done via the selection of the $\sigma$, the number of nodes/variables in the network and the number of layers. More that one hidden layer leads to \emph{Deep Neural Networks} which offer even more flexibility at the cost of complexity, thus requiring many data samples for fitting.\marginnote{Deep Neural Networks}
+
+\paragraph{Back Propagation}
+The fitting of such models is done via a coordinate-wise gradient descent algorithm called \emph{back propagation}.
+
+\paragraph{Further Reading}
+For more on NNETs see \citep[Chapter 11]{hastie_elements_2003}.
+For a recent overview of Deep Learning in Neural Networks see \cite{schmidhuber_deep_2015}.
+
+
+
+
+\subsection{Classification and Regression Trees (CARTs)}
+CARTs are a type of ERM where $\hyp(x)$ include very non smooth functions that can be interpreted as "if-then" rules, also know as \emph{decision trees}.\marginnote{Decision Tree}
+
+The hypothesis class of CARTs includes functions of the form
+\begin{align}
+\label{eq:decision_list}
+	\hyp(x)=\sum_{m=1}^M c_m \indicator{x \in R_m}
+\end{align}
+where $I_A$ is the indicator function of the event $A$.
+The parameters of the model are the different conditions $\set{R_m}_{m=1}^M$ and the function's value at each condition $\set{c_m}_{m=1}^M$. 
+
+Regularization is done by the choice of $M$ which is called the \emph{tree depth}.\marginnote{Tree Depth}
+
+As $\hyp(x)$ is defined over indicator functions, CARTs have no difficulty to deal with categorical variables and even missing values, on top of the more standard continuous predictors. More on the many advantages of CARTs can be found in the references.
+
+\paragraph{Optimization}
+As searching over all possible partitions of the $x$'s to optimize $\set{R_m}_{m=1}^M$ is computationally impossible, optimization is done is a greedy fashion, by splitting on each variable $x_j$ at a time.
+The problem presented in Eq.~\ref{eq:decision_list} is actually a decision \emph{list}. It is the nature of the optimization that makes the solution a decision \emph{tree}.\marginnote{Decision List}
+
+
+\paragraph{Loss Functions}
+As usual, a squared loss can be used for continuous outcomes $y$.
+For categorical outcomes, the loss function is called the \emph{impurity measure}.\marginnote{Impurity Measure}
+One can use either a misclassification error, the multinomial likelihood (knows as the deviance, or cross-entropy), or a first order approximation of the latter known as the \emph{Gini Index}.
+
+
+\paragraph{Universal Approximator}
+Like many other hypothesis classes, CART's $\hypclass$ can approximate any function, with large enough $M$.
+
+\paragraph{Dendogram}
+As CARTs are essentially decision trees, they can typically viewed as a hirarchy of if-then rules applied on the data.
+This type of visualization if called a \emph{dendogram}.\marginnote{Dendogram}
+
+\paragraph{A Personal Note}
+While CARTs are very rich hypothesis classes, and easily interpretable, I have poor personal experience with them. 
+I suspect it is their very non smooth nature that is simply inadequate for the problems I have encountered.
+Then again, the Bagging algorithm, deals with this matter nicely by averaging many trees.\marginnote{Bagging}
+
+
+\paragraph{Further Reading}
+For more on CARTs and Bagging see \citep[Section 9]{hastie_elements_2003}.
+
+
+
+\subsection{Smoothing Splines}
+\label{sec:smoothing_splines}
+The GAM (\S\ref{sec:gam}) model is an example of learning a non-parametric model, since we did not constrain the parametric form of the functions $\set{f_j}_{j=1}^p$. The regularization was part of the optimization algorithm, and not explicit in the problem's definition.
+\emph{Smoothing Splines} is another non-parametric approach, since we do not assume the parametric form of $\set{f_j}_{j=1}^p$. 
+Unlike GAMs, however, the regularization is indeed explicit in the formulation of the problem. 
+Regularization is achieved by penalizing the second derivative of $\hyp$, thus forcing $\hyp$ to be smooth. 
+Considering a single predictor, the ERM problem for \emph{Smoothing Spline}
+\begin{align}
+\label{eq:smoothing_spline}
+	 \argmin{\hyp}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2 + \lambda \normII{\nabla^2 f}^2  }.
+\end{align}
+
+It is quite surprising, and useful, that even though the optimization is performed over an \emph{infinite} dimensional function space, the solution belongs to a \emph{finite } dimensional parametric sub-space. 
+The magic continues! It turns out that the fitted values, $\set{\estim{\hyp}(x_i)}_{i=1}^n$ are linear in $\set{y_i}_{i=1}^n$. A fact that greatly facilitates the analysis of the statistical properties of these models.
+
+In the presence of $p>1$ predictors, Eq.(\ref{eq:smoothing_spline}) can be generalized as 
+\begin{align}
+\label{eq:smoothing_spline_multi}
+	 \argmin{\hyp}{\frac{1}{n}\sum_i (y_i-\hyp(x_i))^2 + \lambda J(\nabla^2 f)  }.
+\end{align}
+where $J$ is some matrix norm. A natural extension is the squared Frobenius norm\footnote{The Frobenius matrix norm is the sum of squares over all elements: $\norm{A}^2_F=\sum_{i,j} A_{i,j}^2$ }, which returns a \emph{thin plate spline} as the risk minimizer.\marginnote{Thin Plate Spline}
+
+
+
+
+%%%%% NON ERM %%%%%%%%
+\section{Non ERM Supervised Learning}
+\label{sec:non_erm}
+Up until now, we have focused on purely ERM, or hybrid ERM methods.
+Inductive bias, however, can also be introduced by avoiding the optimization approach of ERM.
+ERM decouples between the motivation of a method and the particular learning algorithm (ultimately, some optimization algorithm).
+In the following methods, the learning algorithm is an integral part of the method. 
+This restricts the learnable hypothesis class, thus acting as a regularizer.
+
+Note that in most of the previous sections\footnote{Well, bar CARTs and Smoothing Splines}, the restriction of the hypothesis class $\hypclass$ has been imposed by some parametric representation of $\hypclass$, over which optimization is performed.
+The methods in this section do not impose any such parametrization. They are thus also known as \emph{non parametric}.\marginnote{Non Parametric}
+
+ 
+
+\subsection{k-Nearest Neighbour (KNN)}
+\label{sec:knn}
+The fundamental idea behind the KNN approach is that an observation is similar in $y$ to its surroundings in $x$. 
+So say I want to classify the type of a bird ($y$), I merely need to look at the classes of birds which are similar in their attributes ($x$'s). 
+Clearly this requires some notion of distance in the feature space $\featureS$, as typically all non-parametric methods do\footnote{Why is this the case? Well, because non parametric methods replace the idea of optimization in a parameter space, with the idea of similarity in neighbourhoods.}.
+
+The predicted value of a continuous $y$ at some point $x$ has the form
+\begin{align}
+\label{eq:knn}
+	\estim{y}(x)=\frac{1}{k}\sum_{i \in N_k(x) y_i}
+\end{align}
+where $N_k(x)$ are the indexes of the $k$ nearest observations to $x$ in $\featureS$.
+Eq.(\ref{eq:knn}) merely states that we predict $y$ to have the average value of the $y_i$'s in its neighbourhood.
+
+For a categorical $y$, we would replace the averaging with a majority vote of the classes in its neighbourhood.
+
+\paragraph{Regularization}
+The regularization of the KNN is performed by choice of $k$.
+
+\paragraph{Universal Approximator}
+KNN is a universal approximator, in that it can recover approximate any $\hyp$ relating $x$ to $y$.
+
+\paragraph{Sample Complexity}
+While KNN is a universal approximator, it is notoriously known to require many observations to recover even simple relations. With realistic sample sizes, the performance of KNN is typically dominated by other methods.
+
+
+
+
+\subsection{Kernel Regression}
+\label{sec:kernel}
+
+Not to be confused with the Kernel Trick in Kernel SVM, Kernel PCA (\S\ref{sec:kpca}), and Kernel Density Estimation (\S\ref{sec:kernel_density}).
+
+Kernel \emph{Regression} is essentially a generalization of a moving average.
+It is also known as a \emph{scan statistic}, or \emph{searchlight statistic}.\marginnote{Scan Statistic}
+
+The \emph{Nadaraya-Watson} weighted average encompasses most if not all kernel smoothers and is defined as \marginnote{Nadaraya-Watson}
+\begin{align}
+\label{eq:nadaraya_watson}
+	\estim{\hyp}(x):= \frac{\sum_i \kernel_\lambda(x,x_i)y_i}{\sum_i \kernel_\lambda(x,x_i)}
+\end{align}
+where $\kernel_\lambda$ is the kernel function, which is merely a measure of the distance between the evaluation point $x$ and the data points $\set{ x_i }_{i=1}^n$ and weights the contribution of each $\set{ y_i }_{i=1}^n$ to the value at $x$.
+The denominator merely ensures the weights sum to $1$.
+Regularization is controlled by some $\lambda$ parameter.
+
+The moving average in a window of width $\lambda$ is an instance where $\kernel_\lambda(x,x_i)$ is fixed in the window.
+The Band-Pass filter, popular in Electrical Engineering, is an instance of the Nadaraya-Watson smoother, with a Gaussian kernel. %[TODO: verify]
+\marginnote{Band Pass}
+
+
+\paragraph{Metric Spaces}
+Clearly, as $\kernel_\lambda(x,x_i)$ measures distances, it only makes sense if there indeed exists a notion of distance between the $x$'s, which is saying that the feature space $\featureS$ is a metric space. 
+This can be far from trivial when dealing with categorical predictors such as countries, genomes, gender, etc.
+Have no worries however, as even with these type of variables, one can define some notion of distance (not claiming it will prove useful in application).
+
+
+\paragraph{Relation to KNN}
+There is an intimate relation between KNN and Kernel Regression. 
+Essentially, both predict the value of $y$ at some $x$ by averaging their neighbourhood. 
+Averaging can be weighted or not, in both cases.
+The important distinction is how neighbourhoods are defined.
+In KNN, the neighbourhood of $x$ is the k nearest data points. The radius of the neighbourhood thus varies, while the number of data points does not.
+In Kernel Regression, the neighbourhood of $x$ is all the data points in the support of the kernel. The radius of the neighbourhood is now fixed, while the number of data points can vary.
+
+
+
+
+\subsection{Local Likelihood and Local ERM}
+Although presented as two competing concepts, they can augment each other. 
+We have already seen that Kernel Regression plays a part within some ERM algorithms such as GAM~(\S\ref{sec:gam}) and PPR~(\S \ref{sec:ppr}).
+
+Another way to marry the two ideas, is by performing EMR only locally, in each neighbourhood of data points defined by a kernel. This idea is very powerful and leads to, e.g., the LOESS (\S \ref{sec:loess}) and \emph{Local Likelihood} methods.
+
+
+
+\subsubsection{Local Regression (LOESS)}
+\label{sec:loess}
+
+While not the original historical motivation, we can think of LOESS as a kernel ERM problem. 
+I.e., minimizing the squared loss, in a sliding window, over some very simple hypothesis class, with weighted observations.
+
+It is more flexible than Kernel Regresson.
+An intuition to this can be gained by thinking of Kernel Regresson as fitting a local regression with an intercept only, while LOESS also allows local polynomials.
+
+It has several attractive statistical properties. In particular, it can also be used for estimation gradients more accurately than by using simple differences. 
+This flexibility however comes at a slight computational cost. 
+It is thus rare to see high dimensional ($p \geq 3$) LOESS fits, even though the theory can easily be generalized to higher dimensions.
+
+
+
+
+\subsection{Boosting}
+\label{sec:boosting}
+
+Boosting is not an ERM problem, but rather an (meta-)optimization scheme due to \cite{schapire_strength_1990}.
+A \emph{weak learner} is a learning algorithm slightly better than random guessing. 
+The fundamental idea in Boosting is that a \emph{strong learner} is obtained by starting with some weak learner, then training a series of these on the data, while re-weighting the data points inversely to the error, and then taking a weighted average of the series of learners as a (strong) predictor.
+
+The ADABoost algorithm \citep{freund_decision-theoretic_1997} is an instance of Boosted when applied to CARTs.\marginnote{ADABoost}
+
+It was initially quite surprising and magical that this heuristic algorithm can produce the great predictors it does. 
+It was later shown that ADABoost can be seen as a greedy, self regularizing, optimization algorithm to solving an ERM with log-likelihood loss \citep{friedman_additive_2000} over the CART hypothesis class.
+
+For more on Boosting and ADABoost see Chapter 10 in \cite{hastie_elements_2003}.
+
+
+
+% % % % % Dim Reduction % % % % %
+
+\section{Dimensionality Reduction}
+\label{sec:dim_reduce_supervised}
+We start with finding a low representation of $x$ that predicts $y$.
+For a general discussion of dimensionality reduction, see Appendix~\ref{apx:dim_reduce}.
+This practice has several different motivations. As a regularization device avoiding overfitting, and  as a computational device reducing memory and time complexity. 
+
+
+
+\subsection{Variable Selection}
+A trivial way of reducing the dimension of $x$ is by dropping some of it components. 
+Clearly, with $p$ variables, there are $2^p$ possible variable combinations. Searching over all possible variable combinations is called \emph{subset selection}, but is rarely performed in practice due to computational complexity. It more practical to perform a \emph{forward search}, i.e., a greedy search where we insert on variable at a time.\marginnote{Subset Selection}
+The search stops when the next variable does not improve the model's accuracy. 
+While tempting, measuring the accuracy using the empirical risk will certainly lead to overfitting (see Figure~\ref{fig:bias_variance}).
+We can thus drive the search with a CV scheme, but the computational burden might be overwhelming. Using some estimator of $\risk$ auch as AIC, BIC,... is a reasonable and practical way to guide the search.
+
+
+\begin{algorithm}[H]
+\caption{Forward Search}
+\begin{algorithmic}
+\State Pick your favourite model selection criterion $\estim{\risk}(x)$.
+\While{$\estim{\risk}(x)$ keeps getting smaller}
+    \State $\estim{\hyp} \gets$ the model with the smallest $\estim{\risk}(x)$ after adding a \emph{single} variable.
+\EndWhile
+\State \Return $\estim{\risk}(x)$.
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\begin{remark}[Hypothesis Testing Driven Variable Selection]
+For a statistician , it is probably very natural to guide a forward search with hypothesis testing. I.e., at each iteration, insert the variable with the most significance. 
+Note however, that when interested in good predictions, we might actually gain accuracy by dropping a significant variable. This is a classical bias-variance tradeoff: dropping a true predictor adds bias, but reduces the variance as we have one less parameter to estimate. If the true effect is small, we can gain from this tradeoff. 
+This intuition is actually used as a model selection criterion \citep{foster_variable_2004}.
+The bottom line is however, that a \textbf{significant variable, does not make it a good predictor.} 
+\end{remark}
+
+
+
+\subsection{LASSO}
+We presented the LASSO in Section \ref{sec:lasso} as a regularized ERM problem.
+We claimed, without proof, that the $l_1$ regularization in fact performs soft coefficient thresholding. The estimated $\estim{\be}_{LASSO}$ has thus many entries set to zero, acting as a model selection device. 
+
+
+
+\subsection{Partial Least Squares (PLS) and Canonical Correlation Analysis (CCA)}
+\label{sec:pls}
+\label{sec:cca}
+[TODO]
+
+
+
+
+% % %% Ensembels % % % % %
+\subsection{Ensembles}
+\label{sec:ensembles}
+
+This section follows the lines of Chapter 8 in \cite{hastie_elements_2003}.
+
+Our inductive bias constrains the hypothesis class so that we do not overfit the data. 
+It is overly optimistic to think that nature generates samples in accord with our own inductive bias.
+Ensemble learning is a ``meta'' class of algorithms, in which we do not confine ourselves to selecting a single $\hyp$ but rather to selecting (finitely) many, possibly from different classes, and them aggregating them into a single predictor.
+This is a very flexible framework that might actually return classifiers that do not belong to any of underlying hypothesis classes. As such, it is an \emph{improper learning} algorithm.\marginnote{Improper Learning}.
+
+One might consider many combinations of hypothesis classes, learning methods and aggregation schemes.
+Several celebrated algorithms fall in this class. 
+
+
+
+\begin{remark}
+As opposed to a \emph{strong learner}, a \emph{weak learner} is a learning algorithm that is only partially optimized for the observed data. 
+Some of the above algorithms are motivated by the idea of combining many weak learners from the same $\hypclass$ to return a strong learner. 
+Such is the Bagging algorithm. \marginnote{Weak/ Strong Learner}
+It has been noted, however, that it is preferable\footnote{Statistically, not necessarily computationally.}  to combine strong learners from different hypothesis classes, then to combine weak learners from the same hypothesis class \cite{gashler_decision_2008}.
+\end{remark}
+
+
+
+
+\subsection{Committee Methods}
+Considering a set of $\ensembleSize$ candidate learning algorithms, a \emph{committee method} is simply an average of the $\ensembleSize$ predictors:
+
+\begin{algorithm}[H]
+\caption{Commitee Methods}
+\label{algo:committee}
+\begin{algorithmic}
+\State For $\ensembleSize$ candidate learning algorithms.
+\For{$ \ensembleInd \in 1,\dots,\ensembleSize$}
+	\State $\estim{\hyp}^\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm.
+\EndFor
+\State $\bar{\hyp}(x) \gets$ the average of $\estim{\hyp}^\ensembleInd(x)$. 
+\State \Return $\bar{\hyp}(x)$
+\end{algorithmic}
+\end{algorithm}
+
+This concept can be generalized by considering different aggregation schemes. The following (meta-)algorithms are merely different aggregation schemes. Most, if not all, can be seen as minimizers of some posterior expected loss. I.e., they minimize some risk with respect to the posterior probabilities of $\set{\estim{\hyp}^\ensembleInd(x) }_{\ensembleInd=1}^\ensembleSize $.
+
+
+\subsection{Bayesian Model Averaging}
+The idea of \emph{Bayesian model averaging} is that of using the posterior mean as a predictor. 
+Computing the posterior mean can be quite a tedious task. 
+When dealing with hypotheses from the same parametric class, a more practical approach is that of \emph{inverse BIC weighting}. 
+This is justified by that fact that the BIC (\S\ref{sec:risk_estimation}) is approximately proportional to the posterior probability of $\estim{\hyp}^\ensembleInd(x)$.
+
+
+\begin{algorithm}[H]
+\caption{Model Averaging}
+\label{algo:model_averaging}
+\begin{algorithmic}
+\State For $\ensembleSize$ candidate learning algorithms.
+\For{$ \ensembleInd \in 1,\dots,\ensembleSize$}
+	\State $\estim{\hyp}^\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm.
+	\State $BIC^\ensembleInd \gets$ the BIC of $\estim{\hyp}^\ensembleInd(x)$.
+\EndFor
+\State $\bar{\hyp}(x) \gets$ the average of $\estim{\hyp}^\ensembleInd(x)$ inversely weighted by $BIC^\ensembleInd$. 
+\State \Return $\bar{\hyp}(x)$
+\end{algorithmic}
+\end{algorithm}
+
+$BIC$ is used as weights as it approximates the posterior 
+
+
+
+
+
+
+
+\subsection{Stacking}
+A simple and powerful (meta-)algorithm by which you train several predictors, and then use their predictions as features for a new predictor. 
+A built-in Jackknifing (or Cross Validation) ensures over-fit models are not overweighted.
+Here is  stacking example for a continuous $y$:
+
+\begin{algorithm}[H]
+\caption{Stacking}
+\label{algo:stacking}
+\begin{algorithmic}
+\State For $\ensembleSize$ candidate learning algorithms.
+\For{$ i \in 1,\dots,n$}
+	\For{$ \ensembleInd \in 1,\dots \ensembleSize $}
+		\State $\estim{\hyp}^{(i)}_\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm, and without the $i$'th observation.
+	\EndFor
+\EndFor
+\State $\bar{\hyp}(x_i) \gets$ the OLS prediction using $\set{ \estim{\hyp}^{(i)}_\ensembleInd(x_i)}_{\ensembleInd=1}^\ensembleSize$ as features. 
+\State \Return $\bar{\hyp}(x)$
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+
+
+
+\subsection{Bootstrap Averaging (Bagging)}
+
+Generates bootstrap samples and averages the learned predictors (see Algorithm~\ref{algo:bagging}). 
+While seemingly completely frequentist, the Bootstrap average can be seen as an estimator of the posterior mean for some non-parametric prior.
+
+A \emph{random forrest} is such an algorithm, when CARTs are fitted and averaged. \marginnote{Random Forrest}
+
+
+\begin{algorithm}[H]
+\caption{Bagging}
+\label{algo:bagging}
+\begin{algorithmic}
+\State Choose the number Bootstraps $\bootstraps$.
+\For{$ \bootstrap \in 1,\dots,\bootstraps$}
+	\State Generate a bootstrap sample of size $n$: $\sample_\bootstrap$.
+	\State Learn $\estim{\hyp}(x)_{\bootstrap}$ from $\sample_\bootstrap$.
+\EndFor
+\State $\bar{\hyp}(x) \gets$ the average of $\estim{\hyp}(x)_{\bootstrap}$.
+\State \Return $\bar{\hyp}(x)$
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\subsection{Boosting}
+The Boosting algorithm in Section~\ref{sec:boosting} might have the flavour of an Ensemble method, but it should be seen as a regularization scheme. Moving on...
+

@@ -1,0 +1,269 @@
+
+\chapter{Estimation}
+\label{sec:estimation} 
+In this section, we present several estimation principles. 
+Their properties are not discussed, as the section is merely a reminder and a preparation for what follows.
+These concepts and examples can be found in many introductory books to statistics. I particularly recommend \cite{wasserman_all_2004} or \cite{abramovich_statistical_2013}.
+
+\section{Moment matching}
+\label{sec:moment_matching}
+
+The fundamental idea: match empirical moments to theoretical. I.e., estimate
+$$ \expect{g(X)}   $$
+by 
+$$ \expectn{g(X)}   $$
+where $\expectn{g(x)}:=\frac{1}{n}  \sum_i g(x_i)$, is the empirical mean.
+
+\begin{example}[Exponential Rate]
+
+Estimate $\lambda$ in $\x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
+$\expect{x}=1/\lambda$.
+$\Rightarrow \estim{\lambda}=1/\expectn{x}$ .
+
+\end{example}
+
+
+\begin{example}[Linear Regression]
+
+Estimate $\be$ in $\y \sim \gauss{X\be,\sigma^2 I}$, a $p$ dimensional random vector.
+$\expect{y}=X\be$ and $\expectn{y}=y$.
+Clearly, moment matching won't work because no $\be$ satisfies $X\be=y$.
+A technical workaround:
+Since $\be$ is $p$ dimensional, I need to find some $g(\y): \mathbb{R}^n \mapsto \mathbb{R}^p$.
+Well, $g(y):=Xy$ is such a mapping. I will use it, even though my technical justification is currently unsatisfactory. We thus have:
+$\expect{X'y}=X'X\be$ which I match to $\expectn{X'y}=X'y$:
+$$
+  X'X \be = X' y \Rightarrow \estim{\be}=(X'X)^{-1} X'y.
+$$
+
+\end{example}
+
+
+\section{Quantile matching}
+\label{sec:quantiles}
+
+The fundamental idea: match empirical quantiles to theoretical. 
+Denoting by $\cdf{x}{t}$ the CDF of $\x$, then $\icdf x \al$ is the $\al$ quantile of $\x$.
+Also denoting by $\cdfn x t$ the Empirical CDF of $x_1,\dots, x_n$, then $\icdfn x \al$ is the $\al$ quantile of $x_1,\dots, x_n$.
+The quantile matching method thus implies estimating
+$$ \icdf x \al $$
+by 
+$$ \icdfn x \al  . $$
+
+\begin{example}[Exponential rate]
+Estimate $\lambda$ in $\x_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
+\begin{align*}
+	& \cdf x t = 1-\exp(-\lambda t) = \al \Rightarrow \\
+	& \icdf x \al = \frac{-\log(1-\al)}{\lambda} \Rightarrow \\
+	& \icdf{x}{0.5} = \frac{-\log(0.5)}{\lambda} \Rightarrow \\
+	& \estim{\lambda} = \frac{-\log(0.5)}{\icdfn{x}{0.5}}.
+\end{align*}
+
+\end{example}
+
+
+\section{Maximum Likelihood}
+\label{sec:ml}
+
+The fundamental idea is that if the data generating process (i.e., the \emph{sampling distribution}) can be assumed, then the observations are probably some high probability instance of this process, and not a low probability event:
+Let $\x_1,\dots,\x_n \sim P_\theta$, with density (or probability) $p_\theta(x_1,\dots,x_n)$.
+Denote the likelihood, as a function of $\theta$: $\lik(\theta): p_\theta(x_1,\dots,x_n)$.
+Then $$\estim{\theta}_{ML}:= argmax_{\theta}\set{ \lik(\theta) }.$$
+
+Using a monotone mapping such as the log, does not change the $argmax$. 
+Denote $$\loglik(\theta):=\log(\lik(\theta)).$$
+
+ 
+\begin{example}[Exponential rate]
+
+Estimate $\lambda$ in $X_i \sim exp(\lambda)$, $i=1,\dots,n$, i.i.d.
+Using the exponential PDF and the i.i.d. assumption
+$$ \lik(\lambda) = \lambda^n \exp(-\lambda \sum_i X_i), $$
+and 
+$$ \loglik(\lambda) = n \log(\lambda) -\lambda \sum_i X_i. $$
+
+By differentiating and equating $0$, we get $\estim{\lambda}_{ML}=1/\expectn{X}$.
+
+\end{example}
+
+\begin{example}[Discrete time Markov Chain]
+
+Estimate the transition probabilities,  $p_1$ and $p_2$ in a two state, $\set{0,1}$, discrete time, Markov chain where:
+$P(\x_{t+1}=1|x_{t}=0)=p_1$ and $P(\x_{t+1}=1|X_{t}=1)=p_2$.
+The likelihood:
+$$
+  \lik(p_1,p_2)=
+  P(X_2,\dots,X_T;X_1,p_1,p_2)=
+  \prod_{t=1}^T P(X_{t+1}=x_{t+1}|X_{t}=x_t).
+$$
+We denote $n_{ij}$ the total number of observed transitions from $i$ to $j$ and get that $\estim{p}_1=\frac{n_{01}}{n_{01}+n_{00}}$, and that $\estim{p}_2=\frac{n_{11}}{n_{11}+n_{10}}$.
+
+\begin{remark}[Confession]
+Well, this is a rather artificial example, as because of the Markov property, and the stationarity of the process, we only need to look at transition events, themselves Bernoulli distributed. 
+This example does show, however, the power of the ML method to deal with non i.i.d. samples. As does the next example.
+\end{remark}
+\end{example}
+
+
+
+
+\begin{example}[Autoregression of order 1 (AR(1))]
+Estimate the drift parameter $a$,  in a discrete time Gaussian process where:
+$\x_{t+1}=a \x_t+ \varepsilon; \varepsilon \sim \gauss{0,\sigma^2} \Rightarrow \x_{t+1}|\x_t \sim \gauss{a x_t,\sigma^2}$.
+
+We start with the conditional density at time $t+1$:
+$$
+  p_{\x_{t+1}|\x_t=x_t}(x_{t+1}) = 
+  (2 \pi \sigma^2)^{-1/2} \exp \left( 
+    -\frac{1}{2 \sigma^2}(x_{t+1}-a x_t)^2 
+  \right).
+$$
+Moving to the likelihood:
+$$
+  \lik(a) = 
+  (2 \pi \sigma^2)^{-T/2} \exp \left(
+    -\frac{1}{2 \sigma^2}\sum_{t=1}^T (x_{t+1}-a x_t)^2 
+  \right).
+$$
+Taking the log and differentiating with respect to $a$ and equating $0$ we get $\estim{a}_{ML}=\frac{\sum x_{t+1}x_{t}}{\sum x_t^2}$.
+
+We again see the power of the ML device.
+Could we have arrived to this estimator by intuiton alone? Hmmmm... maybe. 
+See that $Cov[X_{t+1},X_t] = a \; Var[X_t] \Rightarrow a=\frac{Cov[X_{t+1},X_t]}{Var[X_t]}$.
+So $a$ can also be derived using the moment matching method which is probably more intuitive.
+
+\end{example}
+
+
+
+
+\begin{example}[Linear Regression]
+
+Estimate $\be$ in $Y \sim \gauss{X\be,\sigma^2 I}$, a $p$ dimensional random vector.
+Recalling the multivariate Gaussian PDF:
+$$
+  p_{\mu,\Sigma}(y) = 
+  (2 \pi)^{-n/2} |\Sigma|^{-1/2} \exp\left(
+    -\frac{1}{2} (y-\mu)' \Sigma^{-1} (y-\mu)
+  \right)
+$$
+So in the regression setup:
+$$
+  \lik(\be)= 
+  p_{\be,\sigma^2}(y) = 
+  (2 \pi)^{-n/2} |\sigma^2 I|^{-1/2} \exp\left(
+    -\frac{1}{2 \sigma^2} \normII{y-X\be}^2
+  \right)
+$$
+and $\estim{\be}_{ML}$ equals 
+\begin{align}
+	\estim{\be}_{ML}=(X'X)^{-1} X'y.
+\end{align}
+
+
+\end{example}
+
+
+\section{M-Estimation and Empirical Risk Minimization}
+\label{sec:m_estimation}
+
+M-Estimation, know as Empirical Risk Minimizaton (ERM) in the machine learning literature, is a very wide framework which stems from statistical desicion theory.
+The underlying idea is that each realization of $\x$ incurs some loss, and we seek to find a "policy", in this case a parameter, $\theta^*$ that minimizes the average loss.
+In the econometric literature, we dot not incur a loss, but rather a utility, we thus seek a policy that maximizes the average utility.
+
+\begin{definition}[Loss Function]
+The penalty for predicting $\theta$ when observing $x$: 
+\begin{align}
+	\loss(x;\theta).
+\end{align}
+
+\end{definition}
+\begin{definition}[Risk Function]
+The expected loss: 
+\begin{align}
+	\risk(\theta):=\expect{\loss(\x;\theta)}.
+\end{align}
+
+\end{definition}
+Then the best prediction, $\theta^*$, being the minimizer of the expected risk is
+\begin{align}
+\label{eq:risk_min}
+ \theta^*:= \argmin{\theta}{\risk(\theta)}.
+\end{align}
+
+As we do not know the distribution of $\x$, we cannot solve Eq.(\ref{eq:risk_min}), so we minimize the \emph{empirical} risk.
+\begin{definition}[Empirical Risk]
+The average loss in the sample: 
+\begin{align}
+	\riskn(\theta):=\expectn{\loss(x;\theta)}=\frac{1}{n}\sum_i \loss(x_i,\theta).
+\end{align}
+\end{definition}
+
+A prediction that can actually be computed with data is thus the empirical minimizer $\estim{\theta}$:
+\begin{align}
+\label{eq:empirical_risk_min}
+ \estim{\theta}:= \argmin{\theta}{\riskn(\theta)}.
+\end{align}
+
+
+
+\begin{example}[Squared Loss]
+\label{eg:squared_loss}
+
+Let $\loss(x;\theta)=(x-\theta)^2$. Then 
+$
+	\risk(\theta) = 
+	\expect{(\x-\theta)^2} = 
+	(\expect{\x}-\theta)^2 + Var[\x]. 
+$
+Clearly  $Var[\x]$ does not depend on $\theta$  so that $\risk(\theta)$ is minimized by $\theta^*=\expect{\x}$.
+\textbf{We thus say that the expectation of a random variable is the minimizer of the squared loss.}
+
+How do we estimate the population expectation? Well a natural estimator is the empirical mean, which is also the minimizer of the empirical risk $\riskn(x)$. The proof is immediate by differentiating. 
+\end{example}
+
+
+\begin{example}[Ordinary Least Squares (OLS)]
+\label{eg:OLS}
+Define the loss $\loss(y,x;\be):=\frac{1}{2}(y-x\be)^2$.
+Computing the risk, $\expect{\frac{1}{2} \normII{\y-\x\be}^2}$ will require dealing with the joint distribution of $(\x,\y)$.
+We don't really care about that right now. 
+We merely want to see that the empirical risk minimizer, is actually the classical OLS problem. 
+And well, it is (by definition actually):
+\begin{align*}
+	\riskn(\be)=\sum_{i=1}^n 	\frac{1}{2}(y_i-x_i\be)^2 = \frac{1}{2}\normII{y-x\be}^2.
+\end{align*}
+Minimization is easiest with vector derivatives, but I will stick to regular derivatives:
+\begin{align*}
+	\deriv{\riskn(\be)}{{\be_j}} = \sum_i \left[ (y_i-\sum_{j=1}^p x_{ij}\be_j)(-x_{ij}) \right]
+\end{align*}
+Equating $0$ yields $\estim{\be_j}=\frac{\sum_i y_i x_{ij}}{\sum_i x_{ij}^2}$.
+Solving for all $j$'s and putting in matrix notation we get
+\begin{align}
+	\estim{\be}_{OLS}=(X'X)^{-1} X'y.
+\end{align}
+
+\end{example}
+
+
+\section{Notes}
+
+\subsection{Maximum Likelihood} 
+Maximum likelihood estimators are a particular instance of M-estimators, if we set the loss function to be the negative log likelihood of the (true) sampling distribution.
+
+
+\subsection{Choosing the Loss Function}
+While by far the most popular, we do not automatically revert to minimizing a squared error loss.
+There are several considerations when choosing the loss function.
+Most ERM learning methods can be applied with different loss functions. 
+
+The first consideration is computational complexity: if you choose a loss function that leads to a non-convex empirical risk, you are in trouble. There are no guarantees you will be able to find the risk minimizer in finite computing time.
+
+The second consideration is the nature of the outcome $y$. Some loss functions are more appropriate to continuous $y$'s and some for categorical $y$'s. Typical loss functions for continuous $y$'s are the squared loss, absolute loss, and hinge loss.
+Typical loss functions for categorical $y$'s are the Binomial likelihood loss (also known as the Cross Entropy, or Deviance), and the hinge loss. 
+
+A third consideration, which is rarely given the importance it should get, is ``What is the meaning of $\theta^*$''? Or, ``What are we actually estimating''?
+As we have seen in Example~\ref{eg:squared_loss}, the squared loss implies we are aiming to estimate the population mean.
+What are we estimating when we use the hinge loss? The binomial loss? 
+We will not discuss these matters, as we are discussing methods where these choices have already been made for us. 
+When the day you start thinking of your own learning algorithms, you will need to give some thought to this question.

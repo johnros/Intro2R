@@ -1,0 +1,179 @@
+
+% % % % % % RKHS % % % % %
+
+\chapter{The Kernel Trick and Reproducing Kernel Hilbert Spaces (RKHS)}
+\label{apx:rkhs}
+
+In the context of supervised learning the \emph{kernel trick} is a mathematical device that allows to learn very complicated predictors ($\hyp$) in a computationally efficient manner. 
+More generally, in the context of unsupervised learning, the kernel tricks allow to learn complicated non-linear mappings of the original features (and not only predictor functions). 
+
+Not all predictors and not all problem admit this trick. Then again, many do. 
+Methods for which it applies include:
+SVM's (\S\ref{sec:svm}), principal components analysis (\S\ref{sec:pca}), canonical correlation analysis (\S\ref{sec:cca}), ridge regression (\S\ref{sec:ridge}), spectral clustering (\S\ref{sec:spectral_clustering}), Gaussian processes\footnote{See the Bayesian interpretation below to see why they apply to Gaussian Processes.}, and more\footnote{This partial list is taken from Wikipedia: \url{http://en.wikipedia.org/wiki/Kernel_method}}.
+
+We now give an exposition of the method in the context of supervised learning. 
+
+
+Think of smoothing splines (\S\ref{sec:smoothing_splines});
+It was quite magical that without constraining the hypothesis class $\hypclass$, the ERM problem in Eq.(\ref{eq:smoothing_spline}) has a finite dimensional closed form solution.
+The property of an infinite dimensional problem having a solution in a finite dimensional space is known as the \emph{kernel property}.\marginnote{Kernel Property}
+We with to generalize this observation and ask- which problems have the kernel property?
+Stating the general optimization problem:
+\begin{align}
+\label{eq:rkhs}
+	\argmin{\hyp}{\frac{1}{n} \sum_i \loss(y_i,\hyp(x_i)) + \lambda J(\hyp) }
+\end{align}
+The problem is then- what type of penalties $J(\hyp)$ will return simple solutions to Eq.(\ref{eq:rkhs}).
+The answer is: function that belong to \emph{Reproducing Kernel Hilbert Space} function spaces. 
+RKHS's are denoted by $\rkhs$.
+They include many functions, but they are a rather ``small'' subset of the space of all possible functions.
+These spaces, and the functions therein, are defined by another function called a \emph{Kernel} denoted by $\kernel$. 
+Choosing a particular kernel defines the space and the functions therein.
+Choosing a particular kernel, also defines the form of $J$ in Eq.(\ref{eq:rkhs}).
+Put differently: for any choice of a kernel $\kernel$, there is a particular $J(\hyp)$ for which the solution of Eq.(\ref{eq:rkhs}) will be a function in $\rkhs$ and will be easily computable. 
+
+
+\section{Mathematics of RKHS}
+We now show how choosing a kernel $\kernel$ defines a space $\rkhs$, and a penalty $J(\hyp)$.
+
+A kernel is a non-negative symmetric function of two arguments: $\kernel(x,y): \reals^p \times \reals^p \mapsto \reals_+$.
+By fixing $y$, $\kernel(x,y)$ is a function with a single argument $x \mapsto \kernel(x,y)$.
+$\rkhs$ is merely the space of functions of $x$, spanned at given $y$'s: 
+\begin{align}
+\label{eq:rkhs_span}
+	\hyp(x):\sum_m \al_m \kernel(x,y_m)
+\end{align} 
+
+From linear algebra, you may know that positive definite matrices be diagonalized. 
+This analogy carries to $\kernel$, which admits an eigen-expansion: 
+\begin{align}
+\label{eq:rkhs_eigen}
+	\kernel(x,y)=\sum_{i=1}^\infty \gamma_i \phi(x) \phi(y)
+\end{align}
+Using Eqs.(\ref{eq:rkhs_eigen}) and (\ref{eq:rkhs_span}) we can thus expand elements $f$ of $\rkhs$: 
+\begin{align}
+	\hyp(x)=\sum_{i=1}^\infty c_i \phi(x)
+\end{align}
+where $c_i=\gamma_i \sum_m \alpha_m \phi(y)$.
+We also define a norm $\normrkhs{\hyp}^2$ in this space, which is induced by $\kernel$:
+\begin{align}
+\label{eq:rkhs_norm}
+	\normrkhs{\hyp}^2 := \sum_{i=1}^\infty \frac{c_i^2}{\gamma_i}
+\end{align}
+
+The penalty $J(\hyp)$ in Eq.(\ref{eq:rkhs}), is simply be $\normrkhs{\hyp}^2$.
+The $\hyp$'s that solve Eq.(\ref{eq:rkhs}) are guaranteed to have a simple form. They reside in an $n$ dimensional linear function space \citep{wahba_spline_1990}:
+\begin{align}
+	\hyp(x)=\sum_{i=1}^n \al_i \kernel(x,x_i)
+\end{align}
+
+The functions $\kernel(x,x_i)$ can be seen as a basis to the solution space. 
+The good news continue! Being only $n$ dimensional, the norms of these $\hyp$'s, do not require integration but rather only finite summation:
+\begin{align}
+	\normrkhs{\hyp}^2=\sum_{i=1}^n \sum_{j=1}^n \kernel(x_i,x_j) \al_i \al_{j} := \al' K \al.
+\end{align}
+
+Adding the above results, we can restate Eq.(\ref{eq:rkhs}) and say that when fixing $\kernel$ and using the appropriate $J$, we only need to solve: 
+\begin{align}	
+\label{eq:rkhs_simple}
+		\argmin{\al}{\frac{1}{n} \sum_i \loss(y_i-K_i \alpha) + \lambda \al' K \al }
+\end{align}
+which is a quadratic programming problem over an $n$ dimensional linear space, easily solvable with numeric routines.
+
+
+\subsection{The Bayesian View of RKHS}
+Just as the ridge regression (\S\ref{sec:ridge}) has a Bayesian interpretation, so does the kernel trick.
+Informally, the functions solving Eq.(\ref{eq:rkhs}) can be seen as the posterior mode if our prior beliefs postulate that the function we are trying to recover is a Gaussian zero-mean process with covariance given by $\kernel$.
+This view suggests the intuition that the regularization introduced by $J(\hyp)$ shrinks the estimated $\hyp$ towards a smoother function. At an extreme, where $\lambda\to\infty$, we will recover a constant function, since the the mode of our Gaussian process prior is at the origin of $\rkhs$.
+
+
+
+
+% % % % % % % % Generative models % % % % % % % %
+
+\chapter{Generative Models}
+\label{apx:generative_concept}
+
+By \emph{generative model} we mean that we specify the whole data distribution. This is particularly relevant to supervised learning where many methods only assume the distribution of $\dist(y|x)$ without stating the distribution of $\dist(x)$.
+Assuming only $\dist(y|x)$ is known as a \emph{discriminative model}, or \emph{discriminative analysis}.\marginnote{Descriminative Model}
+In a generative model, in contrast, we assume the whole $\dist(y,x)$.
+
+For the mere purpose of making a prediction, we do not need to learn $\dist(y,x)$. 
+Knowing this distribution, however, does permit to make predictions, via Bayes Theorem: 
+$\dist(y|x)=\frac{\dist(y,x)}{\int\dist(y,x)dy}$.
+Generative models make use of this relation to make predictions. 
+
+The generative distribution thus applies to both supervised and unsupervised methods alike.
+In the former, it is the actual object of interest. In the latter, it is a stage towards finding a predictor. 
+
+
+
+
+
+% % % % % % % % % Dimensionality Reduction % % % % % % %
+
+\chapter{Dimensionality Reduction}
+\label{apx:dim_reduce}
+
+Dimensionality reduction is a useful concept in both supervised and unsupervised learning. 
+
+The fundamental idea behind dimensionality reduction is that while $\featureS$ may be high dimensional, thus $\dist(x)$ hard to learn, there is hope that $\x$ does not really vary in the whole space. 
+If the mass of $\dist(x)$ is concentrated around some low dimensional manifold $\manifold$, then the original problem might be approximated to learning the distribution of the projection $\dist(X \project \manifold)$ on $\manifold$. 
+If $\manifold$ is fairly low dimensional, we may hope to visualize and understand $\dist(X \project \manifold)$ with fairly simple tools.
+Dimensionality reduction also reduces the memory required to represent the data. It is thus intimately related to \emph{lossy compression} in information theory.\marginnote{Lossy Compression}
+
+A similar reasoning justifies dimensionality reduction in supervised learning. 
+While $\dist(x)$ might vary in the whole $\featureS$, but there might be only few directions which carry information on $y$. Learning $\dist(y|x)$ can thus be well approximated by $\dist(y|x \project \manifold)$.
+
+
+\begin{remark}
+The subspace $\manifold$, which approximates $\dist(x)$ may differ than the one that approximates $\dist(y|x)$. Despite this, it is still quite common for a supervised learning problem to be preceded by an unsupervised dimensionality reduction stage.
+\end{remark}
+
+
+% % % % % % Notation % % % % %
+
+
+\chapter{Notation}
+\label{apx:notation}
+
+In this text we use the following notation conventions:
+\begin{description}
+\item[$x$] A scalar or vector.
+\item[$\x$] A (possibly) vector valued random variable.
+\item[$X$] A matrix.
+\item[$\x$]  A matrix valued random variable (a random matrix).
+\item[$X'$] The matrix transpose of $X$.
+\item[$\normII{x}$] The $l_2$ norm of $x$: $\sqrt{\sum_j x_j^2}$.
+\item[$\normI{x}$] The $l_1$ norm of $x$: $\sum_j |x_j|$
+\item[$\sample$] A data sample.
+\item[$\expect{\x}$] The expectation of $\x$.
+\item[$\expectn{x}$] The empirical expectation (average) of the vector $x$.
+\item[$\cov{\x}$] The covariance matrix of $\x$: $\expect{(\x-\expect{\x})(\x-\expect{\x})'}$.
+\item[$\covn{x}$] The empirical covariance matrix of x: $\expectn{(x-\expectn{x})(x-\expectn{x})'}$.
+\item[$\cdf{x}{t}$] The CDF of $\x$ at $t$.
+\item[$\icdf{x}{\al}$] The inverse CDF at $\al$ (the quantile function).
+\item[$\cdfn{x}{t}$] The empirical CDF of data vector $x$.
+\item[$\icdfn{x}{\al}$] The empirical $\al$ quantile of the data vector $x$.
+\item[$\x \sim \dist$]  The random variable $\x$ is $\dist$ distributed. 
+\item[$\pdf(x)$] The density function of $\dist$ at $x$.
+\item[$\gauss{\mu,\sigma^2}$] The univariate Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
+\item[$\gauss{\mu,\Sigma}$] The multivariate Gaussian distribution with mean vector $\mu$ and covariance matrix $\Sigma$.
+\item[$\lik(\theta)$] The likelihood function at $\theta$.
+\item[$\loglik(\theta)$] The log likelihood function at $\theta$.
+\item[$\loss(x,\theta)$] The loss function of $\theta$ at $x$.
+\item[$\risk(\theta)$]  The risk at $\theta$.
+\item[$\riskn(\theta)$] The empirical risk at $\theta$.
+\item[$\hyp(x)$] A prediction (hypothesis) at $x$.
+\item[$\hypclass$] The class of all hypotheses $\hyp$.
+\item[$\plane$] A hyperplane.
+\item[$\categories$] A set of categories. 
+\item[$\positive{t}$] The positive part of $t$.
+\item[$\kernel(x,y)$] A kernel function evaluated at $(x,y)$.
+\item[$\indicator{A}$] The indicator function of the set $A$.
+\item[$\manifold$] A manifold.
+\item[$\project$] A projection operator.
+
+\end{description}
+
+
