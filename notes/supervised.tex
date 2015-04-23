@@ -517,8 +517,8 @@ For more on Boosting and ADABoost see Chapter 10 in \cite{hastie_elements_2003}.
 \section{Dimensionality Reduction}
 \label{sec:dim_reduce_supervised}
 We start with finding a low representation of $x$ that predicts $y$.
-For a general discussion of dimensionality reduction, see Appendix~\ref{apx:dim_reduce}.
 This practice has several different motivations. As a regularization device avoiding overfitting, and  as a computational device reducing memory and time complexity. 
+For a general discussion of dimensionality reduction, see Appendix~\ref{apx:dim_reduce}.
 
 
 
@@ -554,7 +554,8 @@ The bottom line is however, that a \textbf{significant variable, does not make i
 
 \subsection{LASSO}
 We presented the LASSO in Section \ref{sec:lasso} as a regularized ERM problem.
-We claimed, without proof, that the $l_1$ regularization in fact performs soft coefficient thresholding. The estimated $\estim{\be}_{LASSO}$ has thus many entries set to zero, acting as a model selection device. 
+We claimed, without proof, that the $l_1$ regularization in fact performs soft coefficient thresholding. 
+The estimated $\estim{\be}_{LASSO}$ has thus many entries set to zero, acting as a model selection device and reducing the dimension of the problem.
 
 
 
@@ -687,6 +688,8 @@ A \emph{random forrest} is such an algorithm, when CARTs are fitted and averaged
 \State \Return $\bar{\hyp}(x)$
 \end{algorithmic}
 \end{algorithm}
+
+
 
 
 

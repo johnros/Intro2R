@@ -103,9 +103,8 @@ Knowing this distribution, however, does permit to make predictions, via Bayes T
 $\dist(y|x)=\frac{\dist(y,x)}{\int\dist(y,x)dy}$.
 Generative models make use of this relation to make predictions. 
 
-The generative distribution thus applies to both supervised and unsupervised methods alike.
-In the former, it is the actual object of interest. In the latter, it is a stage towards finding a predictor. 
-
+To gain some intuition, consider a supervised learning problem where the data has an equal number of samples per class. 
+Learning the distribution of $x$ withing each class, allows to a simple classification of a given $x$ to the class with highest probability. LDA (\S\ref{sec:lda}), QDA (\S\ref{sec:lda}), and \Naive Bayes (\S\ref{sec:naive_bayes}) follow this exact same rational.
 
 
 

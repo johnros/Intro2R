@@ -1,70 +1,45 @@
 
 \chapter{Unsupervised Learning}
 
-\section{Unsupervised Learning}
 \label{sec:unsupervised}
 
-Unlike Supervised Learning, in Unsupervised Learning there is not outcome variable. There is thus no notion of ``right'' and ``wrong''. 
-We merely want to learn the joint distribution of the data, $X \in \featureS$, and represent it in some way we can understand. 
+Unlike Supervised Learning, in Unsupervised Learning there is no outcome variable. 
+There is thus no notion of ``right'' and ``wrong''. 
+We merely want to learn the joint distribution of the data, $x \in \featureS$, and represent it in some way we can understand. 
 Well, maybe ``merely'' is not the right word, as learning the joint distribution of the data means that instead of learning the relation between a set $x$ and another, $y$, we now try to learn the relation between all pairs of variables in $x$, which is clearly more challenging. 
 
-Describing the data via it's joint distribution is the pinnacle, but would require many samples if $x$ has a high dimension (by high we mean $p>3$!). For higher dimensions we need to set more modest goals.
+Describing the data via it's joint distribution is the pinnacle, but would require many samples if $x$ has a high dimension (by high we mean $p>3$!). For higher dimensions we need to set more modest goals, which vary according to the purpose of the analysis.
 
-The different goals of unsupervised learning are
-\begin{description}
-\item[Density Estimation] Estimate the joint density of $x$ over $\featureS$.
-\item[Detect high density regions] Find feature combinations which tend to concentrate, hopefully, because the belong to homogenous and interpretable subgroups.
-\item[Find low dimensional representations] Find a low dimensional representation of the joint distribution. This allows the learning from realistic sample sizes, and analysis by, e.g., interpretable parameters and visualization.
-This goal is discussed in Appendix~\ref{apx:dim_reduce}.
-\end{description}
+The different goals of unsupervised learning can be
+\begin{enumerate}
+\item \textbf{Density Estimation}: Estimate $\dist(x)$.
+\item \textbf{High density regions}: Find feature combinations which tend to concentrate, hopefully, because the belong to homogenous and interpretable subgroups.
+\item \textbf{Low dimensional representation}: Find a low dimensional representation of the joint distribution. This allows the learning from realistic sample sizes, and analysis by, e.g., interpretable parameters and visualization.
+Since this also serves in supervised learning, it is discussed with more generality in Appendix~\ref{apx:dim_reduce}.
+\item \textbf{Cluster}: Assign observation to homogenous groups. In particular, the particular features of an observation are no longer of interest, once it has been assigned to a cluster.
+\end{enumerate}
 
 
 \paragraph{Relation to Supervised Classification}
-Any supervised classification problem can be solved, at least in theory, by solving an unsupervised. 
-I.e., estimate the joint distribution within each class, and then classify new observations to the highest density class, via Bayes rule. 
-This is known as a \emph{generative} model, as we try to learn the full data generating distribution, unlike the \emph{discriminative} models described above, where the distribution of the features $x$ is of no interest.
+Learning the joint data distribution, i.e., density estimation, is not only a goal for itself, but can serve for classification. 
+The full data generating distribution, in the context of \emph{supervised} learning is called the \emph{generative model}.\marginnote{Generative Model}
+See Appendix \ref{apx:generative_concept} for the usage of the estimated generative model for classification.
 
 
 
 
+\section{Cluster Analysis}
+\label{sec:cluster_analysis}
 
-\subsection{Density Estimation}
-\label{sec:density_estimation}
-
-\subsubsection{Parametric Density Estimation}
-Density estimation deals with the learning of the data generating distribution.
-If a parametric generative model can be assumed, this collapses to an unsupervised ERM problem. 
-Maximum Likelihood estimation being a particularly attractive approach.
-If a parametric model cannot be assumed, we fall into the real of non-parametric methods. As we saw for Supervised learning, these typically rely on pooling information from neighbourhoods of $\featureS$.
-
-\subsubsection{Kernel Density Estimation}
-\label{sec:kernel_density}
-
-Much like the Kernel Regresson regression, a \naive estimator is the moving average.
-A natural generalization, in the spirit of the Nadaraya-Watson smoother (Eq.(\ref{eq:nadaraya_watson})) is the \emph{Parzen} estimate:\marginnote{Parzen Estimate}
-\begin{align}
-\label{eq:parzen}
-	\estim{\pdf}(x):=\frac{1}{n \lambda} \sum_{i=1}^n \kernel_\lambda(x,x_i).
-\end{align}
-
-\begin{remark}
-If you have been convinced by the use of KNN (\S\ref{sec:knn}) for regression (or classification), there is no reason not to use it for density estimation. It will keep offering the same pros and cons as in KNN regression (or classification).
-\end{remark}
-
-As previously stated, these methods may fail when $x$ are high dimensional. We thus recur to other methods.
-
-
-\subsection{Detect High Density Regions- Cluster Analysis}
-When data data is high dimensional so that we cannot perform density estimation, or when we are merely interested in grouping observations, we can still detect high density regions where observations ``clump'' together. Hopefully, into meaningful homogenous groups.
-The following methods are thus also known a \emph{bump hunting} or \emph{mode finding}.\marginnote{Bump Hunting}
-They are all different heuristic algorithms that return high density regions. Either defined as groups of observations, or as regions in the feature space $\featureS$.
+In cluster analysis, we aim at assigning observations to (hopefully) homogenous and meaningful clusters. 
 
 Groups identified are called \emph{clusters}, thus these methods are known as \emph{cluster analysis}, or \emph{data segmentation} methods.
 
-Since these methods are aim at detecting data clustering, they clearly imply the availability of some measure of distance, or similarity, between data points. 
+Cluster analysis is typically easier than learning a joint distribution (\S\ref{sec:density_estimation}) or even detecting high density regions (\S\ref{sec:high_density}). We will see that for cluster analysis, we don't need the actual features of a data-point; as it will turn out, many methods only require some notion of distance between the points, and not their actual features. 
 
 
-\subsubsection{K Means Clustering}
+
+\subsection{K Means Clustering}
 \label{sec:kmeans}
 The idea behind K-means clustering is to find a representative point for each of K clusters, and assign each (unlabeled) data point to one of these clusters. As each cluster has a representative point, this is also a \emph{prototype method}.\marginnote{Prototype Methods}.
 The clusters are defined so that they minimize the average distance between all points to the center of the cluster.
@@ -86,7 +61,12 @@ In K-means, the clusters are first defined, and then similarities computed. This
 
 
 
-\paragraph{K-Medoids}
+
+
+\subsection{K-Medoids}
+\label{sec:k_medoids}
+
+
 If a Euclidean distance is inappropriate for a particular $\featureS$, or that robustness to corrupt observations is required, or that we wish to constrain the cluster centers to be actual observations, then the \emph{K-Medoids} algorithm is an adaptation of K-means that allows this.
 
 \begin{algorithm}[H]
@@ -107,14 +87,33 @@ If a Euclidean distance is inappropriate for a particular $\featureS$, or that r
 See Section 14.3.10 in \cite{hastie_elements_2003}.
 
 
-\subsubsection{Hierarchical Clustering}
+
+
+\subsection{Hierarchical Clustering}
 \label{sec:hierarchical}
 [TODO]
+
+
 
 
 \subsection{Spectral Clustering}
 \label{sec:spectral_clustering}
 [TODO]
+
+
+
+
+
+
+\section{Detect High Density Regions}
+\label{sec:high_density}
+
+When data data is high dimensional so that we cannot perform density estimation, or when we are merely interested in grouping observations, we can still detect high density regions where observations ``clump'' together. Hopefully, into meaningful homogenous groups.
+The following methods are thus also known a \emph{bump hunting} or \emph{mode finding}.\marginnote{Bump Hunting}
+They are all different heuristic algorithms that return high density regions. 
+
+Once high density regions have been detected, they could be assigned to clusters. Then again, assigning to clusters is typically an easier problem which can be solved directly (see \S\ref{sec:cluster_analysis}).
+
 
 
 \subsection{Association Rules}
@@ -132,10 +131,51 @@ The \emph{Aprioiri} algorithm \cite{agraval_fast_1994}, is an example of such a 
 
 
 
+% % % Density Estimation % % % % 
+\section{Density Estimation}
+\label{sec:density_estimation}
+
+
+
+
+\subsection{Parametric Density Estimation}
+Density estimation deals with the learning of the data generating distribution.
+If a parametric generative model can be assumed, this collapses to an unsupervised ERM problem. 
+Maximum Likelihood estimation being a particularly attractive approach.
+If a parametric model cannot be assumed, we fall into the real of non-parametric methods. As we saw for Supervised learning, these typically rely on pooling information from neighbourhoods of $\featureS$.
+
+
+
+
+\subsection{Kernel Density Estimation}
+\label{sec:kernel_density}
+
+Much like the Kernel Regresson regression, a \naive estimator is the moving average.
+A natural generalization, in the spirit of the Nadaraya-Watson smoother (Eq.(\ref{eq:nadaraya_watson})) is the \emph{Parzen} estimate:\marginnote{Parzen Estimate}
+\begin{align}
+\label{eq:parzen}
+	\estim{\pdf}(x):=\frac{1}{n \lambda} \sum_{i=1}^n \kernel_\lambda(x,x_i).
+\end{align}
+
+\begin{remark}
+If you have been convinced by the use of KNN (\S\ref{sec:knn}) for regression (or classification), there is no reason not to use it for density estimation. It will keep offering the same pros and cons as in KNN regression (or classification).
+\end{remark}
+
+As previously stated, these methods may fail when $x$ are high dimensional. We thus recur to other methods.
+
+
+
+
+
+
+
+
+
+
 
 % Generative models %
 
-\subsection{Generative Models}
+\section{Generative Models}
 \label{sec:generative}
 
 For the mere purpose of making a prediction, we do not need to learn the full data generating distribution $\dist(y,x)$. 
@@ -147,12 +187,13 @@ Since the generative distribution serves both in supervised and unsupervised lea
 
 
 
-\subsubsection{Density Estimation}
+\subsection{Density Estimation}
 Clearly, the trivial generative model is the density estimation, discussed in Section~\ref{sec:density_estimation}.
 
 
-\subsubsection{Fisher's Linear Discriminant Analysis (LDA)}
+\subsection{Fisher's Linear Discriminant Analysis (LDA)}
 \label{sec:lda}
+
 The fundamental idea behind Fisher's LDA (sometimes, just LDA) is that for dichotomous $y$'s: $\dist(x|y)$ is multivariate Gaussian, with the same covariance for all $y$.
 Estimating $\dist(x|y)$ thus amounts to the estimation of the mean and covariance, which are fairly simple problems that do not require too much data (relatively).
 
@@ -169,7 +210,8 @@ Interestingly, the two-class LDA, is the same as a regression classifier from  S
 
 
 
-\subsubsection{Fisher's Quadratic Discriminant Analysis (QDA)}
+\subsection{Fisher's Quadratic Discriminant Analysis (QDA)}
+\label{sec:qda}
 If you are uncomfortable with the fixed covariance assumption of LDA, one can relax thus assumption.
 This leads to QDA, which is more flexible than LDA, requiring slightly more data, but permitting the learning of a class of quadratic classifiers, and not only linear.
 
@@ -178,8 +220,9 @@ This leads to QDA, which is more flexible than LDA, requiring slightly more data
 
 
 
-\subsubsection{\Naive Bayes}
+\subsection{\Naive Bayes}
 \label{sec:naive_bayes}
+
 In LDA we dealt with the problem of estimating high dimensional distributions by adding the class-wise Gaussianity assumption. As Gaussians as fairly simple to learn from data, if there is any truth to this assumption, our life improved. 
 Another life-simplifying assumption, replacing the Gaussianity assumption, is that $\dist(x|y)$ is the product of the margins, i.e., the the features are independent within each class: $\dist(x|y)=\prod_{j=1}^p\dist(x_j|y)$
 This greatly simplifies things as estimating the univariate marginal distributions $\dist(x_j|y)$ is a fairly simple problem, which can be done non-parametrically by Kernel smoothing for continuous predictors (\S\ref{sec:kernel}), and simple relative frequencies for discrete predictors. 
