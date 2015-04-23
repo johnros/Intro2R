@@ -54,76 +54,53 @@ Inspiration from [here](http://www.r-bloggers.com/bigglm-on-your-big-data-set-in
 Download a fat data file:
 
 ```{r download_data}
-# download.file("http://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/BSAPUFS/Downloads/2010_Carrier_PUF.zip", "2010_Carrier_PUF.zip")
-# unzip(zipfile="2010_Carrier_PUF.zip")
+download.file("http://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/BSAPUFS/Downloads/2010_Carrier_PUF.zip", "2010_Carrier_PUF.zip")
+unzip(zipfile="2010_Carrier_PUF.zip")
 ```
 
-
+`data.table` package is much more efficient than `read.table' functions. 
+You should also consider the `readr` [package ](https://github.com/hadley/readr) which we did not document here (yet).
 ```{r import_data}
+# install.packages('data.table')
 library(data.table)
-data <- fread(input = "2010_BSA_Carrier_PUF.csv", 
+data <- data.table::fread(input = "2010_BSA_Carrier_PUF.csv", 
                    sep = ',',
                    header=TRUE)
 
-library(magrittr)
+library(magrittr) % # for piping syntax
 data %>% 
   setnames(c("sex", "age", "diagnose", "healthcare.procedure", "typeofservice", "service.count", "provider.type", "servicesprocessed", "place.served", "payment", "carrierline.count"))
+```
 
-
+Now verify the size of your data in memory:
+```{r}
 object.size(data)
+# But I prefer pryr:
+install.packages('pryr')
 pryr::object_size(data)
 ```
 
-There are many reasons to prefer `pryr::object_size`. Trust me.
-
-
-Is a copy of the object created? Nope.
+When does R create a copy of an object? Use `tracemem`
 ```{r tracemem}
 tracemem(data)
 .test <- glm(payment ~ sex + age + place.served, data = data[1:1e2,], family=poisson) 
 ```
 
 
-What is the change in memory allocation?
-```{r RAM_change}
-library(pryr)
-mem_change(
-  glm(payment ~ sex + age + place.served, data = data[1:1e2,], family=poisson) 
-    )
-```
-Yeah, but what about all those matrix multiplications in the process?!?
-We go do a line-by-line analysis.
-
+Profile each line of code for time and memory usage using [lineprof](https://github.com/hadley/lineprof)
 ```{r lineprof}
 # devtools::install_github("hadley/lineprof")
-
 prof <- lineprof::lineprof(
   glm(payment ~ sex + age + place.served, data = data)
   )
 lineprof::shine(prof)
 ```
 
-#############################################################################
-
-* `t`, the time (in seconds) spent on that line of code.
-
-* `r`, the memory (in megabytes) released by that line of code. While memory 
-  allocation is deterministic, memory release is stochastic: it depends on when 
-  the GC was run. This means that memory release only tells you that the memory 
-  released was no longer needed before this line.
-
-* `a`, the memory (in megabytes) allocated by that line of code.
-
-* `d`, the number of vector duplications that occurred. A vector duplication 
-  occurs when R copies a vector as a result of its copy on modify semantics.
-  
-##############################################################################
 
 
 
 
 But actually, I just like to have my Task-Manager constantly open:
-
 ```{r inspect_RAM}
 # Run and inspect RAM/CPU
 glm(payment ~ sex + age + place.served, data = data, family=poisson)
