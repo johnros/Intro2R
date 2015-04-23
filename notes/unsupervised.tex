@@ -104,6 +104,19 @@ See Section 14.3.10 in \cite{hastie_elements_2003}.
 
 
 
+\subsection{Self Organizing Maps (SOM)}
+SOMs are aimed at learning low dimensional representations of data useful for clustering. 
+As such, they take the form of K-means clustering (\S\ref{sec:kmeans}), but not in the original space $\featureS$ but rather in a low dimensional representation $\manifold$.
+
+For more on SOMs see Section 14.4 in \cite{hastie_elements_2003}. 
+
+
+
+
+
+
+
+
 
 \section{Detect High Density Regions}
 \label{sec:high_density}
@@ -135,22 +148,23 @@ The \emph{Aprioiri} algorithm \cite{agraval_fast_1994}, is an example of such a 
 \section{Density Estimation}
 \label{sec:density_estimation}
 
+We now aim at the possibly hardest target in unsupervised learning- estimating $\dist(x)$.
+As previously stated, learning $\dist$ is of interest for itself, but can also serve for classification (\S\ref{sec:generative}), for detecting high density regions (\S\ref{sec:high_density}), and for clustering (\S\ref{sec:cluster_analysis}).
+
 
 
 
 \subsection{Parametric Density Estimation}
-Density estimation deals with the learning of the data generating distribution.
-If a parametric generative model can be assumed, this collapses to an unsupervised ERM problem. 
-Maximum Likelihood estimation being a particularly attractive approach.
-If a parametric model cannot be assumed, we fall into the real of non-parametric methods. As we saw for Supervised learning, these typically rely on pooling information from neighbourhoods of $\featureS$.
-
+If a parametric generative model can be assumed, this collapses to the parameter estimation problem in the classical statistical literature (\S\ref{sec:estimation}). Maximum Likelihood estimation being a particularly attractive approach, but certainly not the only one.
+If a parametric model cannot be assumed, we fall into the realm of non-parametric methods. 
+As we saw for supervised learning, these typically rely on pooling information from neighbourhoods of $\featureS$.
 
 
 
 \subsection{Kernel Density Estimation}
 \label{sec:kernel_density}
 
-Much like the Kernel Regresson regression, a \naive estimator is the moving average.
+Much like the Kernel Regression regression, a \naive estimator is the moving average.
 A natural generalization, in the spirit of the Nadaraya-Watson smoother (Eq.(\ref{eq:nadaraya_watson})) is the \emph{Parzen} estimate:\marginnote{Parzen Estimate}
 \begin{align}
 \label{eq:parzen}
@@ -173,65 +187,9 @@ As previously stated, these methods may fail when $x$ are high dimensional. We t
 
 
 
-% Generative models %
-
-\section{Generative Models}
-\label{sec:generative}
-
-For the mere purpose of making a prediction, we do not need to learn the full data generating distribution $\dist(y,x)$. 
-Knowing this distribution, however, does permit to make predictions, via Bayes Theorem: 
-$\dist(y|x)=\frac{\dist(y,x)}{\int\dist(y,x)dy}$.
-Several supervised and unsupervised methods make use of this relation to make predictions. These are known as \emph{generative models} .
-Since the generative distribution serves both in supervised and unsupervised learning, we have dedicated it a section of its own.
-
-
-
-
-\subsection{Density Estimation}
-Clearly, the trivial generative model is the density estimation, discussed in Section~\ref{sec:density_estimation}.
-
-
-\subsection{Fisher's Linear Discriminant Analysis (LDA)}
-\label{sec:lda}
-
-The fundamental idea behind Fisher's LDA (sometimes, just LDA) is that for dichotomous $y$'s: $\dist(x|y)$ is multivariate Gaussian, with the same covariance for all $y$.
-Estimating $\dist(x|y)$ thus amounts to the estimation of the mean and covariance, which are fairly simple problems that do not require too much data (relatively).
-
-The decision boundaries of this method turn out to be linear in $\featureS$. 
-Denoting the distance from the class centers by $\estim{\delta}:=(\estim{\mu}_1-\estim{\mu}_2)$, class thus 2 will be predicted if 
-\begin{align}
-	x' \estim{\Sigma}^{-1} \estim{\delta} > \frac{1}{2} \estim{\delta}' \estim{\Sigma}^{-1} \estim{\delta}
-\end{align}
-and class 1 otherwise.
-
-
-\paragraph{Relation to OLS classification}
-Interestingly, the two-class LDA, is the same as a regression classifier from  Section~\ref{sec:regression_classifier} \cite[Eq. 4.11 ]{hastie_elements_2003}.
-
-
-
-\subsection{Fisher's Quadratic Discriminant Analysis (QDA)}
-\label{sec:qda}
-If you are uncomfortable with the fixed covariance assumption of LDA, one can relax thus assumption.
-This leads to QDA, which is more flexible than LDA, requiring slightly more data, but permitting the learning of a class of quadratic classifiers, and not only linear.
-
-
-
-
-
-
-\subsection{\Naive Bayes}
-\label{sec:naive_bayes}
-
-In LDA we dealt with the problem of estimating high dimensional distributions by adding the class-wise Gaussianity assumption. As Gaussians as fairly simple to learn from data, if there is any truth to this assumption, our life improved. 
-Another life-simplifying assumption, replacing the Gaussianity assumption, is that $\dist(x|y)$ is the product of the margins, i.e., the the features are independent within each class: $\dist(x|y)=\prod_{j=1}^p\dist(x_j|y)$
-This greatly simplifies things as estimating the univariate marginal distributions $\dist(x_j|y)$ is a fairly simple problem, which can be done non-parametrically by Kernel smoothing for continuous predictors (\S\ref{sec:kernel}), and simple relative frequencies for discrete predictors. 
-
-
-
 
 %%%%%%%%% Latent Space Generative Models %%%%%%%%%%%
-\subsection{Latent Space Generative Models}
+\section{Latent Space Generative Models}
 \label{sec:latent_space}
 
 In the Generative Models section (\S\ref{sec:generative}) we deals with methods for supervised and unsupervised learning that explicitly assume the data generating process.
@@ -240,16 +198,16 @@ The fundamental idea is that while the data generating distribution may have a c
 
 The latent variables define a \emph{state}. This is why these models are also known as \emph{state space} models. A term coined by \citet{kalman_contributions_1960}.\marginnote{State-Space Models}
 
-\subsubsection{Mixtures}
+\subsection{Mixtures}
 [TODO]
 
 
-\subsubsection{Regression Switching}
+\subsection{Regression Switching}
 [TODO]
 
 
 
-\subsubsection{Factor Analysis (FA)}
+\subsection{Factor Analysis (FA)}
 \label{sec:factor_analysis}
 
 Factor Analysis is solved very similarly to PCA (\S\ref{sec:pca}), so that the two are often confused and interchanged. 
@@ -281,7 +239,7 @@ The choice of $\rotation$ changes the interpretation of the latent attributes. T
 
 
 
-\subsubsection{Independent Component Analysis (ICA)}
+\subsection{Independent Component Analysis (ICA)}
 ICA aims at overcoming the non-uniquness of the latent attributes in FA (\S\ref{sec:factor_analysis}).
 The fundamental observation is that the non-uniqueness (i.e., non identifiability of $\latent$) stems from the fact that the independent Gaussian distribution is invariant under rotation. I.e. for $\rv \latent \sim \gauss{0,\sigma^2 I}$ is the same as that of $\rotation \rv \latent$. 
 By replacing the Gaussianity assumption on the distribution of $\rv \latent$, by some other multivariate distribution, coordinate-wise independent, we can identify $\latent$. 
@@ -296,24 +254,32 @@ The solutions to the ICA problem can ultimately be seen as a solution to the FA 
 Put differently, by the formulation of the ICA problem, implies a specific rotation so that $\latent$ is identifiable. 
 \end{remark}
 
+
+
 \paragraph{Mathematics of ICA}
 [TODO]
+
 
 For more on ICA, see \cite{hyvarinen_independent_2000}. 
 
 
-\subsubsection{Hidden Markov Models (HMM)}
+
+
+
+
+
+\subsection{Hidden Markov Models (HMM)}
 \label{sec:hmm}
 [TODO]
 
 
-\subsubsection{Collaborative Filtering}
+\subsection{Collaborative Filtering}
 \label{sec:collaborative_filtering}
 [TODO]
 
 
 
-\subsection{Dimensionality Reduction in Unsupervised Learning}
+\section{Dimensionality Reduction in Unsupervised Learning}
 \label{sec:dim_reduce_unsupervised}
 
 The idea of ERM also applies to unsupervised learning.
@@ -329,7 +295,7 @@ In unsupervised learning, we have similar building blocks. We still have some lo
 
 
 
-\subsubsection{Principal Components Analysis (PCA)}
+\subsection{Principal Components Analysis (PCA)}
 \label{sec:pca}
 
 PCA is such a basic technique, it has been rediscovered and renamed independently in many fields. 
@@ -398,7 +364,7 @@ where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decom
 
 
 
-\subsubsection{Kernel Principal Component Analysis (kPCA)}
+\subsection{Kernel Principal Component Analysis (kPCA)}
 \label{sec:kpca}
 
 Back to the motivating example from the PCA section (\S\ref{sec:pca}): assume we want to construct a ``bigness'' score, that best separates between individuals, but we no longer constrain it to be a linear function of the height and weight.
@@ -426,55 +392,57 @@ In kPCA we replace the measure of similarity with some other measure called the 
 [TODO]
 
 
-\subsubsection{Sparse Principal Component Analysis (sPCA)}
+
+
+
+\subsection{Sparse Principal Component Analysis (sPCA)}
 [TODO]
 
 
 
-\subsubsection{Multidimensional Scaling (MDS)}
+
+
+
+\subsection{Multidimensional Scaling (MDS)}
 \label{sec:MDS}
 [TODO]
 
 
-\subsubsection{Graphical Models}
+
+
+\subsection{Graphical Models}
 \label{sec:graphical_model}
 [TODO]
 
 
 
-\subsubsection{Self Organizing Maps (SOM)}
-SOMs are aimed at learning low dimensional representations of data useful for clustering. 
-As such, they take the form of K-means clustering (\S\ref{sec:kmeans}), but not in the original space $\featureS$ but rather in a low dimensional representation $\manifold$.
-
-For more on SOMs see Section 14.4 in \cite{hastie_elements_2003}. 
 
 
-
-\subsubsection{Principal Curves}
+\subsection{Principal Curves}
 [TODO]
 
 
-\subsubsection{ISOmap}
+\subsection{ISOmap}
 [TODO]
 
 
-\subsubsection{LLE}
+\subsection{LLE}
 [TODO]
 
 
 
-\subsubsection{Random Projections}
+\subsection{Random Projections}
 [TODO: Johnson-Lindenstrauss Lemma]
 
 
 
-\subsubsection{Compressed Sensing}
+\subsection{Compressed Sensing}
 \label{sec:compressed_sensing}
 [TODO]
 
 
 
-\subsubsection{Information Bottleneck}
+\subsection{Information Bottleneck}
 [TODO]
 
 

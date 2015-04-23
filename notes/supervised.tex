@@ -514,7 +514,7 @@ For more on Boosting and ADABoost see Chapter 10 in \cite{hastie_elements_2003}.
 
 % % % % % Dim Reduction % % % % %
 
-\section{Dimensionality Reduction}
+\section{Dimensionality Reduction In Supervised Learning}
 \label{sec:dim_reduce_supervised}
 We start with finding a low representation of $x$ that predicts $y$.
 This practice has several different motivations. As a regularization device avoiding overfitting, and  as a computational device reducing memory and time complexity. 
@@ -559,16 +559,73 @@ The estimated $\estim{\be}_{LASSO}$ has thus many entries set to zero, acting as
 
 
 
-\subsection{Partial Least Squares (PLS) and Canonical Correlation Analysis (CCA)}
-\label{sec:pls}
+\subsection{Canonical Correlation Analysis (CCA)}
 \label{sec:cca}
+[TODO]
+
+
+\subsection{Partial Least Squares (PLS) }
+\label{sec:pls}
 [TODO]
 
 
 
 
+
+
+% % % % % Generative Models % % % % %
+\section{Generative Models}
+\label{sec:generative}
+
+For the mere purpose of making a prediction, we do not need to learn the full data generating distribution $\dist(y,x)$. 
+Knowing this distribution, however, does permit to make predictions, via Bayes Theorem: 
+$\dist(y|x)=\frac{\dist(y,x)}{\int\dist(y,x)dy}$.
+Several supervised (and unsupervised) methods make use of this relation to make predictions. These are known as \emph{generative models} .
+Since the generative distribution serves both in supervised and unsupervised learning, we have dedicated it a section of its own (\S\ref{apx:generative_concept}).
+
+
+
+\subsection{Fisher's Linear Discriminant Analysis (LDA)}
+\label{sec:lda}
+
+The fundamental idea behind \emph{Fisher's LDA} (sometimes, just LDA) is that for dichotomous $y$'s: $\dist(x|y)$ is multivariate Gaussian, with the same covariance for all $y$.
+Estimating $\dist(x|y)$ thus amounts to the estimation of the mean and covariance, which are fairly simple problems that do not require too much data (relatively).
+
+The decision boundaries of this method turn out to be linear in $\featureS$. 
+Denoting the distance from the class centers by $\estim{\delta}:=(\estim{\mu}_1-\estim{\mu}_2)$, class thus 2 will be predicted if 
+\begin{align}
+	x' \estim{\Sigma}^{-1} \estim{\delta} > \frac{1}{2} \estim{\delta}' \estim{\Sigma}^{-1} \estim{\delta}
+\end{align}
+and class 1 otherwise.
+
+
+\paragraph{Relation to OLS classification}
+Interestingly, the two-class LDA, is the same as a regression classifier from  Section~\ref{sec:regression_classifier} \cite[Eq. 4.11 ]{hastie_elements_2003}.
+
+
+
+\subsection{Fisher's Quadratic Discriminant Analysis (QDA)}
+\label{sec:qda}
+If you are uncomfortable with the fixed covariance assumption of LDA, one can relax thus assumption.
+This leads to QDA, which is more flexible than LDA, requiring slightly more data, but permitting the learning of a class of quadratic classifiers, and not only linear.
+
+
+
+
+
+
+\subsection{\Naive Bayes}
+\label{sec:naive_bayes}
+
+In LDA (\S\ref{sec:lda}) we dealt with the problem of estimating high dimensional distributions by adding the class-wise Gaussianity assumption. As Gaussians as fairly simple to learn from data, if there is any truth to this assumption, our life improved. 
+Another life-simplifying assumption, replacing the Gaussianity assumption, is that $\dist(x|y)$ is the product of the margins, i.e., the the features are independent within each class: $\dist(x|y)=\prod_{j=1}^p\dist(x_j|y)$
+This greatly simplifies things as estimating the univariate marginal distributions $\dist(x_j|y)$ is a fairly simple problem, which can be done non-parametrically by Kernel smoothing for continuous predictors (\S\ref{sec:kernel}), and simple relative frequencies for discrete predictors. 
+
+
+
+
 % % %% Ensembels % % % % %
-\subsection{Ensembles}
+\section{Ensembles}
 \label{sec:ensembles}
 
 This section follows the lines of Chapter 8 in \cite{hastie_elements_2003}.
