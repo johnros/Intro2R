@@ -131,7 +131,7 @@ It is thus a *memory* constraint.
 Since the data easily fits in RAM, it can be fixed simply by a *streaming* algorithm. 
 
 
-The following object, can't even be stored in memory. 
+The following object, can't even be stored in RAM.
 Streaming *from RAM* will not solve the problem. 
 We will get back to this...
 ```{r}
@@ -145,11 +145,13 @@ We will get back to this...
  
 # Streaming Regression
 
+We now discover several R implementations of streaming algorithms, which overcome RAM constraints at a moderate CPU cost.
 
 ## biglm
 ```{r biglm}
+# install.packages('biglm')
 library(biglm)
-mymodel <- bigglm(payment ~ sex + age + place.served, 
+mymodel <- biglm::bigglm(payment ~ sex + age + place.served, 
                   data = data.2, 
                   family = poisson(), 
                   maxit=1e3)
@@ -166,7 +168,7 @@ Remarks:
 - `bigglm` is aimed at *memory* constraints. Not speed.
 
 
-## Exploit sparsity
+## Exploit sparsity in your data
 Very relevant to factors with many levels.
 ```{r}
 reps <- 1e6
@@ -199,8 +201,8 @@ all.equal(lm.2, unname(lm.1$coefficients), tolerance = 1e-12)
 
 
 # Streaming classification
-`LiblineaR`, and `RSofia` will stream from RAM your data for classification problems;
-mainly SVM.
+[LiblineaR](http://cran.r-project.org/web/packages/LiblineaR/index.html), and [RSofia](http://cran.r-project.org/web/packages/RSofia/index.html) will stream from RAM your data for classification problems;
+mainly SVMs.
 
 
 
@@ -208,27 +210,34 @@ mainly SVM.
 
 # Out of memory Regression
 
-What if it is not the *algorithm* that causes the problem, but merely importing my objects?
+What if it is not the __algorithm__ that causes the problem, but merely __importing__ my objects?
 
 
 ## ff
 The `ff` packages replaces R's in-RAM storage mechanism with on-disk (efficient) storage.
+First open a connection to the file, without actually importing it.
 ```{r}
+# install.packages('LaF')
 library(LaF)
 
-# Open connection to file:
 .dat <- laf_open_csv(filename = "2010_BSA_Carrier_PUF.csv",
                     column_types = c("integer", "integer", "categorical", "categorical", "categorical", "integer", "integer", "categorical", "integer", "integer", "integer"), 
                     column_names = c("sex", "age", "diagnose", "healthcare.procedure", "typeofservice", "service.count", "provider.type", "servicesprocessed", "place.served", "payment", "carrierline.count"), 
                     skip = 1)
-
-# Write data as ff object
+```
+Now write the data to HD as an ff object:
+```{r}
+# install.packages('ffbase')
 library(ffbase)
 data.ffdf <- laf_to_ffdf(laf = .dat)
-
+```
+Notice the minimial RAM allocation:
+```{r}
 object_size(data)
 object_size(data.ffdf)
 ```
+
+
 
 
 Caution: `base` functions are unaware of `ff`.
@@ -239,7 +248,7 @@ data.ffdf$age %>% table.ff
 ```
 
 
-Luckily, bigglm has it's `ff` version:
+Luckily, `bigglm` has it's `ff` version:
 ```{r biglm_regression}
 mymodel.ffdf.2 <- bigglm.ffdf(payment ~ sex + age + place.served, 
                               data = data.ffdf, 
@@ -280,15 +289,10 @@ And now I can run this MASSIVE regression:
 #                                maxit=1e3)
 ```
 Notes:
-- Notice again the quick release. 
 
-- Solving RAM constraints does not guarantee speed. 
-This particular problem is worth parallelizing.
-
+- Notice again the quick release when aborting process.
+- Solving RAM constraints does not guarantee speed. This particular problem is actually worth parallelizing.
 - SAS, SPSS, Revolutios-R,... all rely on similar ideas. 
-Currently, their "closed" versions are typically faster than the open `ff`. 
-Keep an eye on those benchmark reports.
-
 - Clearly, with so few variables I would be better of *subsampling*.
 
 
@@ -297,4 +301,3 @@ I do not know if there are `ff` versions of `LiblineaR` or `RSofia`.
 If you find out, let me know.
 
 
-Thank you.
