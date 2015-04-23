@@ -6,6 +6,6 @@ Some notes and code accompanying the Machine Learning course at BGU IE (2015B).
 - Supervised learning with R can be found in [supervised.Rmd](https://github.com/johnros/Intro2R/blob/master/supervised.Rmd).
 - Unsupervised learning with R can be found in [the near future].
 - Dimensionality reduction with R can be found in [the near future].
-- Memory efficient examples of learning with R can be found in [the near future]
+- Memory efficient examples of learning with R can be found in [massive_data.Rmd] (https://github.com/johnros/Intro2R/blob/master/massive_data.Rmd)
 
 
