@@ -294,7 +294,7 @@ Notes:
 - Solving RAM constraints does not guarantee speed. This particular problem is actually worth parallelizing.
 - SAS, SPSS, Revolutios-R,... all rely on similar ideas. 
 - Clearly, with so few variables I would be better of *subsampling*.
-
+- The [SOAR](http://cran.r-project.org/web/packages/SOAR/index.html) package also allows similar out-of-memory processing. 
 
 # Out of memory Classification
 I do not know if there are `ff` versions of `LiblineaR` or `RSofia`.
