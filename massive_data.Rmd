@@ -1,0 +1,323 @@
+---
+title: "Analyzing Massive Data Sets"
+author: "Jonathan Rosenblatt"
+date: "23/04/2015"
+output: 
+  html_document:
+    toc: true
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(cache=TRUE)
+```
+
+# Introduction
+
+When analyzing data, you may encounter several resource constraints:
+
+- Hard Disk Space: your data might not fit your HD. This matter is not discussed in this text.
+- RAM constraint: Your data fits in the HD but the implementation you are using of your favorite method needs more RAM that what you have. This is the main topic of this text, in which we demonstrate out-of-memory implementations of many popular algorithms.
+- CPU constraint: Your algorithms has all the memory it needs, it simply runs too slowly. Parralelizing the computation on more cores in your machines, or on more machines, is in order.
+
+## Disagnostics
+In order to diagnose the resource limit you are encoutering, make sure you always work with your task-manager (Windows) or top (linux) open. The cases where you get error messages from your software are easy to diagnose. In other cases, where computations never end, but no erros are thrown, check which resource is runnning low in your task-manager.
+
+
+## Terminology
+
+- In-memory: processing loads the required data into RAM.
+- Out-of-memory: processing is not done from RAM but rather from HD.
+- Batch algorithm: loads all the data when processing. 
+- Streaming algorithm: the algorithm progresses by processing a sinle observation at a time.
+- Mini-batch algorith: mid-way between batch and streaming. 
+- Swap file: a file in HD which mimiks RAM. 
+
+## Tips and Tricks
+
+1. For *batch* algorithms memory usage should not exceed $30%$.
+2. Swap files:
+  - NEVER use swap file.
+3. R releases memory only when needed, not when possible ("lazy" release).
+4. Don't count on R returning RAM to the operating system. Restart R if FACEBOOK slows down. 
+5. When you want to go pro- read [Hadley's memory usage guide](http://adv-r.had.co.nz/memory.html)
+
+
+
+
+## Bla bla... Let's see some code!
+
+Inspiration from [here](http://www.r-bloggers.com/bigglm-on-your-big-data-set-in-open-source-r-it-just-works-similar-as-in-sas/).
+
+
+Download a fat data file:
+
+```{r download_data}
+# download.file("http://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/BSAPUFS/Downloads/2010_Carrier_PUF.zip", "2010_Carrier_PUF.zip")
+# unzip(zipfile="2010_Carrier_PUF.zip")
+```
+
+
+```{r import_data}
+library(data.table)
+data <- fread(input = "2010_BSA_Carrier_PUF.csv", 
+                   sep = ',',
+                   header=TRUE)
+
+library(magrittr)
+data %>% 
+  setnames(c("sex", "age", "diagnose", "healthcare.procedure", "typeofservice", "service.count", "provider.type", "servicesprocessed", "place.served", "payment", "carrierline.count"))
+
+
+object.size(data)
+pryr::object_size(data)
+```
+
+There are many reasons to prefer `pryr::object_size`. Trust me.
+
+
+Is a copy of the object created? Nope.
+```{r tracemem}
+tracemem(data)
+.test <- glm(payment ~ sex + age + place.served, data = data[1:1e2,], family=poisson) 
+```
+
+
+What is the change in memory allocation?
+```{r RAM_change}
+library(pryr)
+mem_change(
+  glm(payment ~ sex + age + place.served, data = data[1:1e2,], family=poisson) 
+    )
+```
+Yeah, but what about all those matrix multiplications in the process?!?
+We go do a line-by-line analysis.
+
+```{r lineprof}
+# devtools::install_github("hadley/lineprof")
+
+prof <- lineprof::lineprof(
+  glm(payment ~ sex + age + place.served, data = data)
+  )
+lineprof::shine(prof)
+```
+
+#############################################################################
+
+* `t`, the time (in seconds) spent on that line of code.
+
+* `r`, the memory (in megabytes) released by that line of code. While memory 
+  allocation is deterministic, memory release is stochastic: it depends on when 
+  the GC was run. This means that memory release only tells you that the memory 
+  released was no longer needed before this line.
+
+* `a`, the memory (in megabytes) allocated by that line of code.
+
+* `d`, the number of vector duplications that occurred. A vector duplication 
+  occurs when R copies a vector as a result of its copy on modify semantics.
+  
+##############################################################################
+
+
+
+
+But actually, I just like to have my Task-Manager constantly open:
+
+```{r inspect_RAM}
+# Run and inspect RAM/CPU
+glm(payment ~ sex + age + place.served, data = data, family=poisson)
+```
+
+
+
+
+Now lets artificially scale the problem.
+Note: `copies` is small so that fitting can be done in real-time.
+To demonstrate the problem, I would have set `copies <- 10`.
+```{r artificial_scale}
+copies <- 2
+data.2 <- do.call(rbind, lapply(1:copies, function(x) data) )
+data.2 %>% dim
+data %>% object_size
+data.2 %>% object_size
+```
+
+
+
+When you run the following code at home, it will *not* show memory exhaustion, but will take a long time to run and to release when stopped.
+It is thus a *memory* constraint.
+```{r}
+## Don't run:
+## glm.2 <-glm(payment ~ sex + age + place.served, data = data.2, family=poisson)
+```
+Since the data easily fits in RAM, it can be fixed simply by a *streaming* algorithm. 
+
+
+The following object, can't even be stored in memory. 
+Streaming *from RAM* will not solve the problem. 
+We will get back to this...
+```{r}
+## Don't run:
+## copies <- 1e2
+## data.3 <- do.call(rbind, lapply(1:copies, function(x) data) )
+```
+
+
+
+ 
+# Streaming Regression
+
+
+## biglm
+```{r biglm}
+library(biglm)
+mymodel <- bigglm(payment ~ sex + age + place.served, 
+                  data = data.2, 
+                  family = poisson(), 
+                  maxit=1e3)
+
+# Too long! Quit the job and time the release.
+
+# For demonstration: OLS example with original data.
+mymodel <- bigglm(payment ~ sex + age + place.served, data =data )
+mymodel <- data %>% bigglm(payment ~ sex + age + place.served, data =. )
+```
+Remarks:
+- R is immediatly(!) available after quitting the job.
+- `bigglm` objects behave (almost) like `glm` objects w.r.t. `coef`, `summary`,...
+- `bigglm` is aimed at *memory* constraints. Not speed.
+
+
+## Exploit sparsity
+Very relevant to factors with many levels.
+```{r}
+reps <- 1e6
+y<-rnorm(reps)
+x<- letters %>% 
+  sample(reps, replace=TRUE) %>% 
+  factor
+
+X.1 <- model.matrix(~x-1) # Make dummy variable matrix
+
+library(MatrixModels)
+X.2<-as(x,"sparseMatrix") %>% t # Makes sparse dummy matrix
+
+dim(X.1)
+dim(X.2)
+
+object_size(X.1)
+object_size(X.2)
+```
+
+
+```{r}
+system.time(lm.1 <- lm(y ~ X.1))
+system.time(lm.1 <- lm.fit(y=y, x=X.1))
+system.time(lm.2 <- MatrixModels:::lm.fit.sparse(X.2,y))
+
+all.equal(lm.2, unname(lm.1$coefficients), tolerance = 1e-12)
+```
+
+
+
+# Streaming classification
+`LiblineaR`, and `RSofia` will stream from RAM your data for classification problems;
+mainly SVM.
+
+
+
+
+
+# Out of memory Regression
+
+What if it is not the *algorithm* that causes the problem, but merely importing my objects?
+
+
+## ff
+The `ff` packages replaces R's in-RAM storage mechanism with on-disk (efficient) storage.
+```{r}
+library(LaF)
+
+# Open connection to file:
+.dat <- laf_open_csv(filename = "2010_BSA_Carrier_PUF.csv",
+                    column_types = c("integer", "integer", "categorical", "categorical", "categorical", "integer", "integer", "categorical", "integer", "integer", "integer"), 
+                    column_names = c("sex", "age", "diagnose", "healthcare.procedure", "typeofservice", "service.count", "provider.type", "servicesprocessed", "place.served", "payment", "carrierline.count"), 
+                    skip = 1)
+
+# Write data as ff object
+library(ffbase)
+data.ffdf <- laf_to_ffdf(laf = .dat)
+
+object_size(data)
+object_size(data.ffdf)
+```
+
+
+Caution: `base` functions are unaware of `ff`.
+Adapted algorithms are required...
+```{r}
+data$age %>% table
+data.ffdf$age %>% table.ff
+```
+
+
+Luckily, bigglm has it's `ff` version:
+```{r biglm_regression}
+mymodel.ffdf.2 <- bigglm.ffdf(payment ~ sex + age + place.served, 
+                              data = data.ffdf, 
+                              family = poisson(), 
+                              maxit=1e3)
+
+# Again, too slow. Stop and run:
+mymodel.ffdf.2 <- bigglm.ffdf(payment ~ sex + age + place.served, 
+                              data = data.ffdf)
+```
+The previous can scale to any file I can store on disk (but might take a while).
+
+
+
+
+I will now inflate the data to a size that would not fit in RAM.
+```{r}
+copies <- 2e1
+data.2.ffdf <- do.call(rbind, lapply(1:copies, function(x) data.ffdf) )
+
+# Actual size:
+(sum(.rambytes[vmode(data.2.ffdf)]) * (nrow(data.2.ffdf) * 9.31322575 * 10^(-10))) %>%
+  round(4)  %>%
+  cat('Size in GB ',.)
+# In memory:
+object_size(data.2.ffdf)
+```
+
+
+
+And now I can run this MASSIVE regression:
+```{r biglm_ffdf_regression}
+## Do no run:
+
+#  mymodel.ffdf.2 <- bigglm.ffdf(payment ~ sex + age + place.served,                            
+#                                data = data.2.ffdf, 
+#                                family = poisson(), 
+#                                maxit=1e3)
+```
+Notes:
+- Notice again the quick release. 
+
+- Solving RAM constraints does not guarantee speed. 
+This particular problem is worth parallelizing.
+
+- SAS, SPSS, Revolutios-R,... all rely on similar ideas. 
+Currently, their "closed" versions are typically faster than the open `ff`. 
+Keep an eye on those benchmark reports.
+
+- Clearly, with so few variables I would be better of *subsampling*.
+
+
+# Out of memory Classification
+I do not know if there are `ff` versions of `LiblineaR` or `RSofia`.
+If you find out, let me know.
+
+
+Thank you.
