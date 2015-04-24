@@ -323,10 +323,11 @@ where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decom
 \subsection{Multidimensional Scaling (MDS)}
 \label{sec:mds}
 
-In MDS we take the network of distances (or similarities) between observations, and try to embed it in a lower dimensional \emph{linear} subspace, while preserving the original distances (or similarities).
-Unless the data is really of a low dimension, the embedding may distort the original distances (or\dots), and may even change the ordering of the observations. The good news is we will be able to visualize \andor cluster them in their new simplified representation. 
-MDS is very similar to PCA-like, as it is embeds the data in a linear subspace.  MDSs, however, differs in that it require only a similarity network $\similaritys$, or a dissimilarity network $\dissimilaritys$, and not the actual features $X$. 
-If the input of MDS is a network, using empirical covariance as a similarity measure, then MDS with ``classical scaling'' (see below) returns the exact same solution as PCA.
+In MDS we take the network of distances (or similarities) between observations, and try to embed it in a $\rank$ dimensional \emph{linear} subspace, while preserving the original distances (or similarities).
+Since the method mainly serves for visualizing data, it is most natural to use $\rank=2$. 
+The embedding will distort the original distances (or\dots), and may even change the ordering of the observations. The good news is we will be able to visualize \andor cluster them in their new simplified representation. 
+MDSs differs from PCA-like methods that it require only a similarity network $\similaritys$, or a dissimilarity network $\dissimilaritys$, and not the actual features $X$. 
+If the input of MDS is the empirical covariance similarity network, then MDS with ``classical scaling'' (see below) returns the exact same solution as PCA.
 
 The embedding is merely the assigning of each point to a location in some lower dimensional linear space. 
 The assignment is driven by a \emph{scale function} which penalizes for the average distortion over the pair-wise distances.
@@ -336,11 +337,11 @@ The assignment is driven by a \emph{scale function} which penalizes for the aver
 Starting with either a dissimilarity network $\dissimilaritys=(\dissimilarity_{i,j})$, or a similarity network $\similaritys=(\similarity_{i,j})$.
 Similarities can be thought of as correlations, and dissimilarities as distances (which are indeed the typical measures in use).
 Define $z_i \in \reals^\rank$ the location of point $i$ in the target linear space of rank $\rank$. 
-The $z_i$'s are set to minimize the some penalty for geometric deformation called the \emph{stress function}.
-Typical stresses include:
+The $z_i$'s are set to minimize some penalty for geometric deformation called the \emph{stress function}.
+Typical stress functions include:
 \begin{description}
 
-\item[Classical Scaling] Using the centred inner product (i.e. empirical covariance) as the similarity measure and minimizes the squared distortion:
+\item[Classical MDS] Using the centred inner product (i.e. empirical covariance) as the similarity measure and minimizes the squared distortion:
 $\similarity_{i,j}:= \scalar{x_i-\bar x}{x_j-\bar{x}}$ and the new location are given by
 \begin{align}
 \label{eq:mds_classical}
@@ -362,6 +363,13 @@ $\similarity_{i,j}:= \scalar{x_i-\bar x}{x_j-\bar{x}}$ and the new location are 
 \end{description}
 
 
+\begin{remark}[Terminology Caution]
+I have encountered several contradicting terminologies in the context of MDS.
+The presentation here adheres to \cite{hastie_elements_2003}. \cite{borg_modern_2005}, cited in  \href{http://en.wikipedia.org/wiki/Multidimensional_scaling}{Wikipedia}, use the term ``Classical MDS'' for the method with \emph{dissimilarities} as inputs, and not \emph{similarities}, as presented herein.
+\cite{borg_modern_2005} also use the term ``strain'' for the stress function in classical MDS.
+\end{remark}
+
+
 
 \begin{remark}[Classical and Least Squares MDS]
 Although they both minimize the squared distortion, working with $\similaritys$ or $\dissimilaritys$ lead to different solutions. 
@@ -369,7 +377,7 @@ In particular, Classical is a linear embedding while Stress is not.
 \end{remark}
 
 
-For more on MDS see Section 14.8 in \cite{hastie_elements_2003}.
+For more on MDS see Section 14.8 in \cite{hastie_elements_2003} or \cite{borg_modern_2005}.
 
 
 % % % % Non linear dimensionality reduction % % % % %
@@ -378,7 +386,8 @@ For more on MDS see Section 14.8 in \cite{hastie_elements_2003}.
 
 
 Section \ref{sec:dim_reduce_linear} deals with representing the data in a \emph{linear} sub space, i.e., they all aim at finding a basis which efficiently represents that data, with respect to some objective function. 
-In this section, we allow $\manifold$ to be non-linear. We we thus no longer be able to represent the data as a small set of coordinates. We will also have to give more attention to the matter of overfitting. 
+In this section, we allow $\manifold$ to be non-linear. 
+We thus no longer be able to represent the data as a small set of coordinates. We will also have to give more attention to the matter of overfitting. 
 
 
 \begin{remark}[Non Linear Dimensionality Reduction]
@@ -516,19 +525,23 @@ The choice of $\rotation$ changes the interpretation of the latent attributes. T
 \subsection{Independent Component Analysis (ICA)}
 \label{sec:ica}
 
-ICA aims at overcoming the non-uniquness of the latent attributes in FA (\S\ref{sec:factor_analysis}).
-It is a latent space model, as it aims at recovering the latent factors $\latent$.
+ICA is a latent space model as it assume data is generated as linear combination (mixing) of $\rank$ latent variables: $\loadings \latent$. 
+If we allow $\rank=p$ then we can assume that $X=\loadings\latent$. If $\rank<p$ we need to allow for some noise: $X=\loadings\latent+\varepsilon$.
 
-The fundamental observation is that the non-uniqueness (i.e., non identifiability of $\latent$) stems from the fact that the independent Gaussian distribution is invariant under rotation. 
-I.e. for $\rv \latent \sim \gauss{0,\sigma^2 I}$, and a rotation matrix $\rotation$, $\rv \latent$ has the same distribution as $\rotation \rv \latent$. 
-The combination of the non-Gaussianity and independence assumption on the distribution of $\rv \latent$ we allows to identify $\latent$ from $X$.
-Estimation can then be done using maximum likelihood, or an information theoretic criterion called \emph{infomax}.\marginnote{Infomax}
+ICA aims at overcoming the non-uniquness of the latent attributes in FA (\S\ref{sec:factor_analysis}).
+Like FA, and unlike PCA, it aims not only at reconstructing the data from a low dimensional approximation, but also at returning the latent generative variables $\latent$.
+Two assumptions distinguish ICA from FA, allowing the identification of $\latent$: 
+(i) The latent variables are \textbf{not} Gaussian distributed.
+(ii) The latent variables are statistically \emph{independent}.
+
+Being a generative model, estimation of $\latent$ can then be done using maximum likelihood, or an information theoretic criterion called \emph{infomax}.\marginnote{Infomax}
 
 
 \begin{remark}[Blind Source Separation]
 ICA is a popular technique in signal processing, where $\latent$ is actually the signal (e.g. sound) produced by several different sources. 
 Recovering $\latent$ is thus recovering the original signals mixing in the recorded $X$. This is known as \emph{blind source separation}.
 \end{remark}
+
 
 \begin{remark}[ICA and FA]
 The solutions to the ICA problem can ultimately be seen as a solution to the FA problem with a particular rotation $\rotation$.
