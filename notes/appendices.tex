@@ -81,7 +81,7 @@ Adding the above results, we can restate Eq.(\ref{eq:rkhs}) and say that when fi
 which is a quadratic programming problem over an $n$ dimensional linear space, easily solvable with numeric routines.
 
 
-\subsection{The Bayesian View of RKHS}
+\section{The Bayesian View of RKHS}
 Just as the ridge regression (\S\ref{sec:ridge}) has a Bayesian interpretation, so does the kernel trick.
 Informally, the functions solving Eq.(\ref{eq:rkhs}) can be seen as the posterior mode if our prior beliefs postulate that the function we are trying to recover is a Gaussian zero-mean process with covariance given by $\kernel$.
 This view suggests the intuition that the regularization introduced by $J(\hyp)$ shrinks the estimated $\hyp$ towards a smoother function. At an extreme, where $\lambda\to\infty$, we will recover a constant function, since the the mode of our Gaussian process prior is at the origin of $\rkhs$.
@@ -176,8 +176,8 @@ In this text we use the following notation conventions:
 
 \item[$\similarity_{ij}$] A similarity measure between observations $i$ and $j$. 
 \item[$\dissimilarity_{ij}$] A dissimilarity measure between observations $i$ and $j$. 
-\item[$\similaritys$] A weighted graph (network),i.e. matrix, of similarities between observations. 
-\item[$\dissimilaritys$] A weighted graph (network),i.e. matrix, of dissimilarities between observations. 
+\item[$\similaritys$] A weighted graph (network), i.e. matrix, of similarities between observations. 
+\item[$\dissimilaritys$] A weighted graph (network), i.e. matrix, of dissimilarities between observations. 
 
 
 \end{description}
