@@ -33,13 +33,15 @@ See Appendix \ref{apx:generative_concept} for the usage of the estimated generat
 
 In cluster analysis, we aim at assigning observations to (hopefully) homogenous and meaningful clusters. 
 
-Groups identified are called \emph{clusters}, thus these methods are known as \emph{cluster analysis}, or \emph{data segmentation} methods.
+Groups identified are called \emph{clusters}, so that these methods are known as \emph{cluster analysis}, or \emph{data segmentation} methods.
 
-Cluster analysis is typically easier than learning a joint distribution (\S\ref{sec:density_estimation}) or even detecting high density regions (\S\ref{sec:high_density}). We will see that for cluster analysis, we don't need the actual features of a data-point; as it will turn out, many methods only require some notion of distance between the points, and not their actual features. 
+Cluster analysis is typically easier than learning a joint distribution (\S\ref{sec:density_estimation}) or even detecting high density regions (\S\ref{sec:high_density}). 
+We will see that for cluster analysis, we don't need the actual features $X$; as it will turn out, many methods only require some notion of distance between the points, and not their actual features. 
+For this reason, clustering is intimately related to graphs and \emph{networks}\footnote{A graph describes a yes/no relation. A network is a weighted graph, which not only describes the existence of a relation, but also its strength.}, which capture only the similarity or dissimilarity of the observations, and not their actual features.\marginnote{Network}
 
 
 
-\subsection{K Means Clustering}
+\subsection{K-Means Clustering}
 \label{sec:kmeans}
 The idea behind K-means clustering is to find a representative point for each of K clusters, and assign each (unlabeled) data point to one of these clusters. As each cluster has a representative point, this is also a \emph{prototype method}.\marginnote{Prototype Methods}.
 The clusters are defined so that they minimize the average distance between all points to the center of the cluster.
@@ -63,7 +65,7 @@ In K-means, the clusters are first defined, and then similarities computed. This
 
 
 
-\subsection{K-Medoids}
+\subsection{K-Medoids Clustering}
 \label{sec:k_medoids}
 
 
@@ -89,9 +91,17 @@ See Section 14.3.10 in \cite{hastie_elements_2003}.
 
 
 
+
+
+
+
 \subsection{Hierarchical Clustering}
 \label{sec:hierarchical}
 [TODO]
+
+
+
+
 
 
 
@@ -105,8 +115,13 @@ See Section 14.3.10 in \cite{hastie_elements_2003}.
 
 
 \subsection{Self Organizing Maps (SOM)}
-SOMs are aimed at learning low dimensional representations of data useful for clustering. 
+\label{sec:som}
+SOMs are aimed at learning low dimensional representations of data useful for clustering, using the original features $X$.
 As such, they take the form of K-means clustering (\S\ref{sec:kmeans}), but not in the original space $\featureS$ but rather in a low dimensional representation $\manifold$.
+
+
+\paragraph{Mathematics of SOMs}
+[TODO]
 
 For more on SOMs see Section 14.4 in \cite{hastie_elements_2003}. 
 
@@ -179,6 +194,9 @@ As previously stated, these methods may fail when $x$ are high dimensional. We t
 
 
 
+\subsection{Graphical Models}
+\label{sec:graphical_model}
+[TODO]
 
 
 
@@ -191,17 +209,29 @@ As previously stated, these methods may fail when $x$ are high dimensional. We t
 
 
 
-\section{Dimensionality Reduction in Unsupervised Learning}
-\label{sec:dim_reduce_unsupervised}
 
-The idea of ERM also applies to unsupervised learning.
-If $\hyp(x)$ is low dimensional representation of $x$, mapping it to $\manifold$, we would seek some $\hyp$ that does not incur too much loss, on average. I.e., we seek to minimize $\risk(\hyp)$.
+
+
+
+
+\section{Dimensionality Reduction to Linear Subspaces}
+\label{sec:dim_reduce_linear}
+
+The idea of ERM and Inductive Bias also applies to unsupervised learning.
+If $\hyp(x)$ is low dimensional representation of $x$, mapping it to a ``simple'' manifold $\manifold$, we would seek some $\hyp$ that does not incur too much loss, on average. I.e., we seek to minimize $\risk(\hyp)$.
 
 As usual, we do not have access to the data generating process of $x$, so we typically content ourselves with the empirical risk minimization.
 In the context of unsupervised learing, the empirical risk is known as the \emph{reconstruction error}.\marginnote{Reconstruction Error}
 
-The building blocks of a supervised learning problem where the loss function $\loss$, the hypothesis class $\hypclass$, a regularization level, and the optimization scheme.
+The building blocks of a supervised learning problem are: 
+(i) the loss function $\loss$,
+(ii) the hypothesis class $\hypclass$, 
+(iii) a regularization level, and
+(iv) the optimization scheme.
 In unsupervised learning, we have similar building blocks. We still have some loss function, regularized or not, penalizing for the poor reconstruction of the data. We can still solve an ERM problem, or replace the optimization by some other learning algorithm. The main difference is in that instead of some low dimensional mapping $\hyp:x \mapsto \estim{y}$, we learn a mapping  $\hyp:x \mapsto \estim{x}$.
+
+
+For a general discussion of the idea of dimensionality reduction see Appendix~\ref{apx:dim_reduce}.
 
 
 
@@ -240,7 +270,7 @@ Informally speaking, the data has some total variance. This variance can be deco
 Since the variance in the data consists of sums of squares, minimizing the distance from $X$ to $\manifold$, is the same as maximizing the variance of $X \project \manifold$, since their sum is fixed.
 
 
-\paragraph{Mathematics of PCA}
+\subsubsection{Mathematics of PCA}
 
 PCA seeks to represent $x$ in the simplest manifold possible: a linear subspace. Thus, $\manifold$ is simply a rank $\rank$ linear subspace in $\mathbb{R}^p$.
 A low dimensional representation of the points in the data consists of decoding their low dimensional encoding. 
@@ -276,6 +306,55 @@ where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decom
 
 
 
+
+
+
+
+\subsection{Sparse Principal Component Analysis (sPCA)}
+[TODO]
+
+
+
+
+
+
+\subsection{Multidimensional Scaling (MDS)}
+\label{sec:MDS}
+
+In MDS we take a distance network between observations, and try to embed it in a lower dimensional linear subspace, while preserving the original distances.
+Unless the data really is of a low dimension, the embedding may distort the original distances, and may even change the ordering of the observations. The good news is we will be able to visualize \andor cluster them in their new simplified representation. 
+If employed for the purpose of clustering, it is very similar in nature to SOMs (\S\ref{sec:som}), but differs in that it requires only the similarity network $\similaritys$, and not the actual features $X$. 
+
+The embedding is merely the assigning of each point to a location in some lower dimensional space. The assignment is driven by a \emph{stress function} which penalizes for the average distortion in pair-wise distances.
+
+
+\paragraph{Mathematics of MDS}
+Starting with either a dissimilarity network $\dissimilaritys=(\dissimilarity_{i,j})$, or a similarity network $\similaritys=(\similarity_{i,j})$.
+Similarities can be though of as correlations, and dissimilarities as Euclidean distances (which are indeed the typical measures in use).
+Define $z_i \in \reals^\rank$ the location of point $i$ in the target linear space of rank $\rank$. 
+The $z_i$'s are set to minimize the \emph{stress} function.
+Typical stress functions include:
+\begin{description}
+\item[Classical Scaling] Using the centred inner product (i.e. empirical covariance) as the similarity measure and squared error for stress:
+$\similarity_{i,j}:= (x_i-\bar x)'(x_j-\bar{x})$ and the new location are given by
+\begin{align}
+\label{eq:stress_classical}
+	 \argmin{z_1,\dots,z_n}{arg2}
+\end{align}
+\item[Kruskal-Shepard Scaling] Using squared error for stress:
+\item[Sammon Mapping] Using the proportion of squared error for stress:
+\end{description}
+
+
+
+For more on MDS see Section 14.8 in \cite{hastie_elements_2003}.
+
+
+% % % % Non linear dimensionality reduction % % % % %
+\section{Dimensionality Reduction to Non Linear Subspaces}
+\label{sec:dim_reduce_nonlinear}
+
+
 \subsection{Kernel Principal Component Analysis (kPCA)}
 \label{sec:kpca}
 
@@ -302,31 +381,6 @@ In kPCA we replace the measure of similarity with some other measure called the 
 
 \paragraph{Mathematics of kPCA}
 [TODO]
-
-
-
-
-
-\subsection{Sparse Principal Component Analysis (sPCA)}
-[TODO]
-
-
-
-
-
-
-\subsection{Multidimensional Scaling (MDS)}
-\label{sec:MDS}
-[TODO]
-
-
-
-
-\subsection{Graphical Models}
-\label{sec:graphical_model}
-[TODO]
-
-
 
 
 
@@ -366,7 +420,10 @@ In kPCA we replace the measure of similarity with some other measure called the 
 
 
 
-%%%%%%%%% Latent Space Generative Models %%%%%%%%%%%
+%%%%%%%%% Generative Models %%%%%%%%%%%
+
+
+
 \section{Latent Space Generative Models}
 \label{sec:latent_space}
 
