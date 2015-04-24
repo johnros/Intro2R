@@ -240,6 +240,14 @@ For a general discussion of the idea of dimensionality reduction see Appendix~\r
 \end{remark}
 
 
+\begin{remark}[Dimensionality Reduction and Latent Space Generative Models]
+ The methods in this section allow us to approximate the data in a lower dimension. 
+ They take $X$ as inputs, and return an approximated $X$. 
+ If we seek to interpret the parameters/coordinates of our data in its low dimensional representation we need to be cautious as it is probably not unique. For this purpose, see the Latent Space Generative Models Section (\S\ref{sec:latent_space}).
+\end{remark}
+
+
+
 
 \subsection{Principal Components Analysis (PCA)}
 \label{sec:pca}
@@ -272,6 +280,17 @@ Notice we have currently offered two motivations for PCA:
 The reason these two problems are equivalent, is due to the use of the squares error.
 Informally speaking, the data has some total variance. This variance can be decomposed into the part captured in $\manifold$, and the part not captured\footnote{Analogous to $SST=SSR+SSE$ in linear regression.}. 
 Since the variance in the data consists of sums of squares, minimizing the distance from $X$ to $\manifold$, is the same as maximizing the variance of $X \project \manifold$, since their sum is fixed.
+
+
+\begin{remark}[PCA as a Graph Method]
+\label{remark:pca_as_graph}
+While the PCA problem is cast in the terms of $X$, its solution only depends on the correlations between individuals $XX'$.
+This has several implications:
+(i) All data sets with the same correlations, will lead to the same solution, irrespective of the precise features $X$. It is also quite magical that we can linearly approximate the data just be knowing the similarities, and without the features $X$ themselves.
+(ii) Seeing the correlations as a similarity graph $\similaritys$, we can take inspiration from the PCA solution and apply it to arbitrary similarity graphs. This is precisely the idea underlying Spectral Clustering (\S\ref{sec:spectral_clustering}) and kPCA (\S\ref{sec:kpca}).
+\end{remark}
+
+
 
 
 \subsubsection{Mathematics of PCA}
@@ -393,32 +412,39 @@ We thus no longer be able to represent the data as a small set of coordinates. W
 \begin{remark}[Non Linear Dimensionality Reduction]
 	The term Non Linear Dimensionality Reduction (NLDR) deals with the nature of the embedding operation, and not with the structure of the target manifold $\manifold$ (see also Remark \ref{remark:linear}).\marginnote{NLDR}
 	In this section, we use the first interpretation, meaning that $\manifold$ is a non-linear subspace.
-	Cases of a non-linear embedding (NLDR) into a linear manifold are discussed in Section~\ref{sec:dim_reduce_linear}.
+	Cases of a non-linear embedding (NLDR) into a linear manifold $\manifold$ are discussed in Section~\ref{sec:dim_reduce_linear}.
 \end{remark}
+
+
+
+
 
 
 \subsection{Kernel Principal Component Analysis (kPCA)}
 \label{sec:kpca}
 
 Back to the motivating example from the PCA section (\S\ref{sec:pca}): assume we want to construct a ``bigness'' score, that best separates between individuals, but we no longer constrain it to be a linear function of the height and weight.
-We could thus try to solve 
+Recalling that the best discrimination between observations means maximizing the variance of the \emph{scores} given to individuals, we could thus try to solve 
 \begin{align}
 \label{eq:kpca_wrong}
 	\argmax{g}{\covn{g(X)}}
 \end{align}
-where $\covn{g(X)}$ is the empirical covariance of $g$ applied on each individual, i.e., row-wise on $X$.
+where $g(x)$ maps an individual's features to a score.
 
 Alas, just like in the supervised learning problem, without any constraints on $g$, we might overfit \andor not be able to compute $g$ as optimization is done in a infinite dimensional space. 
 We also need to recall that if we allow for a $\rank$ dimensional score, then we have to solve Eq.(\ref{eq:kpca_wrong}) $\rank$ times.
 We thus have two matters to attend:
-(i) We need to constrain $g$ so that it does not overfit.
+(i) We need to constrain $g(x)$ so that it does not overfit.
 (ii) We need the problem to be computable.
-This is precisely what kPCA does. 
-It turns out, that for a particular class of functions $g$, the optimal $g$'s take a simple form. 
-The classes of such $g$'s are known as Reproducing Kernel Hilbert Spaces. They are presented in Appendix~\ref{apx:rkhs}.
+This is precisely the goal of kPCA. 
 
-The fundamental observation allowing the application of RKHS theory, is that the scores in the PCA problem, actually depend only on the similarities between individuals, as measured by their empirical correlation. 
-In kPCA we replace the measure of similarity with some other measure called the \emph{kernel}, chosen from a particular class, and then proceed as if we were solving a PCA problem.
+We have already encountered a similar problem with Smoothing Splines (\S\ref{sec:smoothing_splines}). It is thus not surprising that the solution has the same form. 
+Namely, for a particular class of functions $g$, the optimal $g$'s take a simple form. 
+The classes of such $g$'s are known as Reproducing Kernel Hilbert Spaces. 
+They are presented in Appendix~\ref{apx:rkhs}.
+
+Just like in the PCA problem (Remark~\ref{remark:pca_as_graph}), if choosing an appropriate $g$, we will be able to approximate the data knowing only the similarities between individuals $\similaritys$, without their particular attributes $X$. 
+In kPCA similarities are measured using a particular class of function called the \emph{kernel}, and then proceed as if we were solving a PCA problem.
 
 
 \paragraph{Mathematics of kPCA}
