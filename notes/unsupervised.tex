@@ -440,6 +440,20 @@ I currently do not think is the case.
 
 
 
+\subsection{Random Projections}
+\label{sec:random_projections}
+
+What if instead of optimizing a linear embedding of the features with respect to some criterion, such as PCA (\S\ref{sec:pca}), or FA (\S\ref{sec:factor_analysis}), we simply apply a random linear mapping $W X$. How bad will the distances between the observations be distorted? 
+It turns out that not too much!
+The Johnson-Lindenstrauss Lemma \citep{johnson_extensions_1984} quantifies this distortion, essentially implying that we may reduce the dimension of our data in a very \naive manner, while still conserving pair-wise similarities $\similaritys$ between observations.
+ 
+
+
+
+
+
+
+
 % % % % Non linear dimensionality reduction % % % % %
 \section{Non-Linear-Space Embeddings}
 \label{sec:dim_reduce_nonlinear}
@@ -457,8 +471,6 @@ We will thus no longer be able to represent the data by its coordinates in some 
 	This section deals with embeddings into a non-linear subspace, regardless of the nature of the embedding operator.
 	Cases of non-linear embeddings (NLDR) into a \emph{linear} manifolds $\manifold$ belong in Section~\ref{sec:dim_reduce_linear}.
 \end{remark}
-
-
 
 
 
@@ -501,17 +513,6 @@ They are discussed in Appendix~\ref{apx:rkhs}.
 [TODO]
 
 
-
-
-
-\subsection{Random Projections}
-[TODO: Johnson-Lindenstrauss Lemma]
-
-
-
-\subsection{Compressed Sensing}
-\label{sec:compressed_sensing}
-[TODO]
 
 
 
@@ -583,6 +584,9 @@ The choice of $\rotation$ changes the interpretation of the latent attributes. T
 For a brief review of Factor Analysis see \cite{hastie_elements_2003}.
 For an full exposition, and a discussion of the differences with PCA, see \cite{jolliffe_principal_2002}.
 
+
+
+
 \subsection{Independent Component Analysis (ICA)}
 \label{sec:ica}
 
@@ -626,10 +630,18 @@ For a detailed review see \cite{hyvarinen_independent_2000}.
 
 
 
+
+
 \subsection{Exploratory Projection Pursuit}
 \label{sec:exploratpory_ppr}
 [TODO]
 
+
+
+
+\subsection{Compressed Sensing}
+\label{sec:compressed_sensing}
+[TODO]
 
 
 
