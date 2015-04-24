@@ -116,7 +116,7 @@ See Section 14.3.10 in \cite{hastie_elements_2003}.
 
 \subsection{Self Organizing Maps (SOM)}
 \label{sec:som}
-SOMs are aimed at learning low dimensional representations of data useful for clustering, using the original features $X$.
+SOMs, also known as \emph{Kohonen maps}, and \emph{self organizing feature maps} (SOFM), are aimed at learning low dimensional representations of data useful for clustering, using the original features $X$.\marginnote{Kohonen Map}
 As such, they take the form of K-means clustering (\S\ref{sec:kmeans}), but not in the original space $\featureS$ but rather in a low dimensional representation $\manifold$.
 
 
@@ -214,8 +214,9 @@ As previously stated, these methods may fail when $x$ are high dimensional. We t
 
 
 
-\section{Linear Dimensionality Reduction}
+\section{Dimensionality Reduction to Linear Spaces}
 \label{sec:dim_reduce_linear}
+
 
 The idea of ERM and Inductive Bias also applies to unsupervised learning.
 If $\hyp(x)$ is low dimensional representation of $x$, mapping it to a ``simple'' manifold $\manifold$, we would seek some $\hyp$ that does not incur too much loss, on average. I.e., we seek to minimize $\risk(\hyp)$.
@@ -233,7 +234,10 @@ In unsupervised learning, we have similar building blocks. We still have some lo
 
 For a general discussion of the idea of dimensionality reduction see Appendix~\ref{apx:dim_reduce}.
 
-
+\begin{remark}[Interpreting ``Linear'']
+\label{remark:linear}
+	Two interpretations of ``linear'' can be found in the literature. It may refer to the nature of the low dimensional space approximating the data, or to the nature of the embedding operation. In this text, we use the first interpretation, meaning that $\manifold$ is a linear subspace, even if the embedding operation is non linear.
+\end{remark}
 
 
 
@@ -332,8 +336,8 @@ The assignment is driven by a \emph{scale function} which penalizes for the aver
 Starting with either a dissimilarity network $\dissimilaritys=(\dissimilarity_{i,j})$, or a similarity network $\similaritys=(\similarity_{i,j})$.
 Similarities can be thought of as correlations, and dissimilarities as distances (which are indeed the typical measures in use).
 Define $z_i \in \reals^\rank$ the location of point $i$ in the target linear space of rank $\rank$. 
-The $z_i$'s are set to minimize the some penalty for geometric deformation called \emph{scaling functions}.
-Typical scalings include:
+The $z_i$'s are set to minimize the some penalty for geometric deformation called the \emph{stress function}.
+Typical stresses include:
 \begin{description}
 
 \item[Classical Scaling] Using the centred inner product (i.e. empirical covariance) as the similarity measure and minimizes the squared distortion:
@@ -343,13 +347,13 @@ $\similarity_{i,j}:= \scalar{x_i-\bar x}{x_j-\bar{x}}$ and the new location are 
 	 \argmin{z_1,\dots,z_n}{\sum_{i,j=1}^{n} (\similarity_{i,j}-\scalar{z_i-\bar z}{z_j-\bar{z}} )^2}.
 \end{align}
 
-\item[Stress Function] Also known as \emph{least squares} and \emph{Kruskal-Shepard}. Also minimizes the squared distortion. 
+\item[Least Squares] Also known as \emph{Kruskal-Shepard}. Also minimizes the squared distortion. 
 \begin{align}
 \label{eq:mds_stress}
 	 \argmin{z_1,\dots,z_n}{\sum_{i \neq j} (\dissimilarity_{i,j}-\norm{z_i-z_j} )^2}.
 \end{align}
 
-\item[Sammon Mapping] Aims at minimizing the \emph{proportion} of distortion:
+\item[Sammon Mapping] Also known as \emph{Sammon's stress}, aims at minimizing the \emph{proportion} of distortion:
 \begin{align}
 \label{eq:mds_sammon}
 	 \argmin{z_1,\dots,z_n}{\sum_{i \neq j} \frac{(\dissimilarity_{i,j}-\norm{z_i-z_j} )^2}{\dissimilarity_{i,j}}}.
@@ -359,7 +363,7 @@ $\similarity_{i,j}:= \scalar{x_i-\bar x}{x_j-\bar{x}}$ and the new location are 
 
 
 
-\begin{remark}[Classical and Stress MDS]
+\begin{remark}[Classical and Least Squares MDS]
 Although they both minimize the squared distortion, working with $\similaritys$ or $\dissimilaritys$ lead to different solutions. 
 In particular, Classical is a linear embedding while Stress is not. 
 \end{remark}
@@ -369,11 +373,20 @@ For more on MDS see Section 14.8 in \cite{hastie_elements_2003}.
 
 
 % % % % Non linear dimensionality reduction % % % % %
-\section{Non Linear Dimensionality Reduction (NLDR)}
+\section{Dimensionality Reduction to Non Linear Spaces}
 \label{sec:dim_reduce_nonlinear}
+
 
 Section \ref{sec:dim_reduce_linear} deals with representing the data in a \emph{linear} sub space, i.e., they all aim at finding a basis which efficiently represents that data, with respect to some objective function. 
 In this section, we allow $\manifold$ to be non-linear. We we thus no longer be able to represent the data as a small set of coordinates. We will also have to give more attention to the matter of overfitting. 
+
+
+\begin{remark}[Non Linear Dimensionality Reduction]
+	The term Non linear Dimensionality Deduction (NLDR) deals with the nature of the embedding operation, and not with the structure of the target manifold $\manifold$ (see also Remark \ref{remark:linear}).\marginnote{NLDR}
+	In this section, we use the first interpretation, meaning that $\manifold$ is a non-linear subspace.
+	Cases of a non-linear embedding (NLDR) into a linear manifold are discussed in Section~\ref{sec:dim_reduce_linear}.
+\end{remark}
+
 
 \subsection{Kernel Principal Component Analysis (kPCA)}
 \label{sec:kpca}
@@ -468,10 +481,6 @@ The fundamental idea is that while the data generating distribution may have a c
 [TODO]
 
 
-\subsection{Regression Switching}
-[TODO]
-
-
 
 \subsection{Factor Analysis (FA)}
 \label{sec:factor_analysis}
@@ -539,6 +548,13 @@ For more on ICA, see \cite{hyvarinen_independent_2000}.
 
 \subsection{Exploratory Projection Pursuit}
 \label{sec:exploratpory_ppr}
+[TODO]
+
+
+
+
+\subsection{Generative Topographic Map (GTM)}
+\label{sec:gtm}
 [TODO]
 
 
