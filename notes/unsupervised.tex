@@ -263,13 +263,14 @@ This is why, physicians use the Body Mass Index (BMI) as an indicator of size, i
 Assume you now wish to give each individual a size score, that is a linear combination of height and weight: PCA does just that. It returns the linear combination that has the most variability, i.e., the combination which best distinguishes between individuals. 
 
 
+
 \paragraph{Terminology}
 PCA has received much attention. As such, it has rich underlying theory and terminology.
 Here are some terms needed to understand PCA outputs:
 \begin{itemize}
 \item \textbf{Principal Components}:  The linear combinations of the features, which best separate between observations. In our example- the ``bigness'' index of each individual. The first components captures the most variance, the second components, the second most-variance, etc. In terms of $\manifold$, the principal components are an orthogonal basis for $\manifold$.
 \item \textbf{Scores}: Synonymous to Principal Components.
-\item \textbf{Loadings}: The weights of each data point in each principal component. In our example, the importance of the height and weight in constructing the ``bigness'' index.
+\item \textbf{Loadings}: The weights of each data point in each principal component. In our example, the importance of the height and weight in constructing the ``bigness'' score.
 \end{itemize}
 
 
@@ -281,19 +282,13 @@ The reason these two problems are equivalent, is due to the use of the squares e
 Informally speaking, the data has some total variance. This variance can be decomposed into the part captured in $\manifold$, and the part not captured\footnote{Analogous to $SST=SSR+SSE$ in linear regression.}. 
 Since the variance in the data consists of sums of squares, minimizing the distance from $X$ to $\manifold$, is the same as maximizing the variance of $X \project \manifold$, since their sum is fixed.
 
-
-\begin{remark}[PCA as a Graph Method]
-\label{remark:pca_as_graph}
-While the PCA problem is cast in the terms of $X$, its solution only depends on the correlations between individuals $XX'$.
-This has several implications:
-(i) All data sets with the same correlations, will lead to the same solution, irrespective of the precise features $X$. It is also quite magical that we can linearly approximate the data just be knowing the similarities, and without the features $X$ themselves.
-(ii) Seeing the correlations as a similarity graph $\similaritys$, we can take inspiration from the PCA solution and apply it to arbitrary similarity graphs. This is precisely the idea underlying Spectral Clustering (\S\ref{sec:spectral_clustering}) and kPCA (\S\ref{sec:kpca}).
-\end{remark}
+Historically, the derivation of PCA as a linear space embedding, (i), is due to \cite{pearson_liii._1901}. 
+The variance maximizing combinations, (ii), is due to \cite{hotelling_analysis_1933}.
 
 
+\paragraph{Mathematics of PCA}
 
-
-\subsubsection{Mathematics of PCA}
+[TODO: discuss the problems arising from the different motivations]
 
 PCA seeks to represent $x$ in the simplest manifold possible: a linear subspace. Thus, $\manifold$ is simply a rank $\rank$ linear subspace in $\mathbb{R}^p$.
 A low dimensional representation of the points in the data consists of decoding their low dimensional encoding. 
@@ -328,11 +323,24 @@ where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decom
 
 
 
+\begin{remark}[PCA as a Graph Method]
+\label{remark:pca_as_graph}
+While the PCA problem is cast in the terms of $X$, its solution only depends on the correlations between individuals $XX'$.
+This has several implications:
+(i) All data sets with the same correlations, will lead to the same solution, irrespective of the precise features $X$. It is also quite magical that we can linearly approximate the data just be knowing the similarities, and without the features $X$ themselves.
+(ii) Seeing the correlations as a similarity graph $\similaritys$, we can take inspiration from the PCA solution and apply it to arbitrary similarity graphs. This is precisely the idea underlying Spectral Clustering (\S\ref{sec:spectral_clustering}) and kPCA (\S\ref{sec:kpca}).
+\end{remark}
+
+
 
 
 \subsection{Sparse Principal Component Analysis (sPCA)}
 \label{sec:spca}
-[TODO]
+
+When analyzing the PCA results, we often with to understand which features contribute to which component. 
+This is much easier when the loadings, $\loadings$ are sparse, i.e., include many zeroes. 
+This is the purpose of sPCA. 
+We will not go into the technical detail, but merely state that sPCA performs this, \`a-la LASSO style, by means of $l_1$ regularization.
 
 
 
@@ -541,21 +549,25 @@ The choice of $\rotation$ changes the interpretation of the latent attributes. T
 \paragraph{FA Terminology}
 \begin{itemize}
 \item \textbf{Factors}: The unobserved attributes $\latent$.
-\item \textbf{Loadings}: The $A$ matrix; the contribution of each attribute to the observed $X$.
+\item \textbf{Loadings}: The $\loadings$ matrix; the contribution of each attribute to the observed $X$.
 \item \textbf{Rotation}: An orthogonal re-combination of the latent attributes $\latent$ and loadings, which changes the interpretation of the result.
 \end{itemize}
 
 
-
+For a brief review of Factor Analysis see \cite{hastie_elements_2003}.
+For an full exposition, and a discussion of the differences with PCA, see \cite{jolliffe_principal_2002}.
 
 \subsection{Independent Component Analysis (ICA)}
 \label{sec:ica}
 
-ICA is a latent space model as it assume data is generated as linear combination (mixing) of $\rank$ latent variables: $\loadings \latent$. 
-If we allow $\rank=p$ then we can assume that $X=\loadings\latent$. If $\rank<p$ we need to allow for some noise: $X=\loadings\latent+\varepsilon$.
+ICA is a family of latent space model as it assume data is generated as some function of the latent variables $\latent$. 
+In many cases this function is assumed to be linear in $\latent$ so that ICA is compared, if not confused, with PCA or FA. 
 
-ICA aims at overcoming the non-uniquness of the latent attributes in FA (\S\ref{sec:factor_analysis}).
-Like FA, and unlike PCA, it aims not only at reconstructing the data from a low dimensional approximation, but also at returning the latent generative variables $\latent$.
+The fundamental idea of ICA is that $\latent$ has a joint distribution of independent variables. 
+This is a stronger assumption that the typical FA assumption where the distribution of $\latent$ is merely uncorrelated. 
+
+This independence assumption solves the the non-uniquness of the latent attributes in FA (\S\ref{sec:factor_analysis}).
+
 Two assumptions distinguish ICA from FA, allowing the identification of $\latent$: 
 (i) The latent variables are \textbf{not} Gaussian distributed.
 (ii) The latent variables are statistically \emph{independent}.
@@ -570,16 +582,19 @@ Recovering $\latent$ is thus recovering the original signals mixing in the recor
 
 
 \begin{remark}[ICA and FA]
-The solutions to the ICA problem can ultimately be seen as a solution to the FA problem with a particular rotation $\rotation$.
-Put differently, by the formulation of the ICA problem, implies a specific rotation so that $\latent$ is identifiable. 
+The solutions to the (linear) ICA problem can ultimately be seen as a solution to the FA problem with a particular rotation $\rotation$ implied by the independence assumption.
+Put differently, the formulation of the (linear) ICA problem, implies a unique rotation, so that $\latent$ is identifiable. 
 \end{remark}
+
+For a brief and general discussion of ICA see \cite{jolliffe_principal_2002}.
+For an brief exposition of the linear ICA see \cite{hastie_elements_2003}. 
+For a detailed review see \cite{hyvarinen_independent_2000}. 
 
 
 
 \paragraph{Mathematics of ICA}
 [TODO]
 
-For more on ICA, see \cite{hyvarinen_independent_2000}. 
 
 
 
@@ -592,9 +607,13 @@ For more on ICA, see \cite{hyvarinen_independent_2000}.
 
 
 
+
+
 \subsection{Generative Topographic Map (GTM)}
 \label{sec:gtm}
 [TODO]
+
+
 
 
 
@@ -614,12 +633,15 @@ For more on ICA, see \cite{hyvarinen_independent_2000}.
 
 
 % % % % Random Graphs % % % % %
-\section{Random Graphs}
+\section{Random Graph Models}
 \label{sec:random_graphs}
 
-We have already seen that for the purpose of clustering, we only need some proximity graph between observations, and not the whole features. 
+There are several occasions in which our date does not consist of the classical features $X$, but rather directly given as a similarity (disimilarity) graph. This can happen when the data itself is a graph, such as social networks, communication networks, protein interactions networks, etc. It may also be the case that the original data is indeed given as features, which was used to compute a similarity (disimilarity) graph. Indeed, We have already seen that for the purpose of clustering, we only need some proximity graph between observations, and not the whole features. 
+
 Random Graphs are a class of \emph{generative models}, but unlike other generative methods, the model does not specify a distribution over the features, but rather a distribution over the proximity measures.
 For this, it is  intimately related to \emph{random graph} and \emph{random matrix} theory.
+
+For a review of random graph models see \cite{goldenberg_survey_2010}.
 
 
 \subsection{\erdos \renyi}
