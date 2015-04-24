@@ -304,36 +304,6 @@ where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decom
 
 
 
-\subsection{Independent Component Analysis (ICA)}
-\label{sec:ica}
-
-ICA aims at overcoming the non-uniquness of the latent attributes in FA (\S\ref{sec:factor_analysis}).
-The fundamental observation is that the non-uniqueness (i.e., non identifiability of $\latent$) stems from the fact that the independent Gaussian distribution is invariant under rotation. I.e. for $\rv \latent \sim \gauss{0,\sigma^2 I}$ is the same as that of $\rotation \rv \latent$. 
-By replacing the Gaussianity assumption on the distribution of $\rv \latent$, by some other multivariate distribution, coordinate-wise independent, we can identify $\latent$. 
-This is precisely what ICA does. 
-
-\begin{remark}[Blind Source Separation]
-ICA is a popular technique in signal processing, where $\latent$ is actually the signal (e.g. sound) produced by several different sources. Recovering $\latent$ is thus recovering the original signals mixing in the recorded $X$. This is known as \emph{blind source separation}.
-\end{remark}
-
-\begin{remark}[ICA and FA]
-The solutions to the ICA problem can ultimately be seen as a solution to the FA problem with a particular rotation $\rotation$.
-Put differently, by the formulation of the ICA problem, implies a specific rotation so that $\latent$ is identifiable. 
-\end{remark}
-
-
-
-\paragraph{Mathematics of ICA}
-In FA (\S\ref{sec:factor_analysis}) we assumed that the data is a mixing ($\loadings$) of some low dimensional unobservable attributes ($\latent$), up to some personal non modeled attributes ($\varepsilon$): $X=AS+\varepsilon$.
-We then assumed that the latent attributes are multivariate Gaussian and solved a likelihood problem.
-In ICA, we do not assume a generative model.  
-
-
-For more on ICA, see \cite{hyvarinen_independent_2000}. 
-
-
-
-
 
 
 
@@ -519,15 +489,44 @@ Sadly, recovering the particular latent attributes $\latent$ from $\estim{\loadi
 The choice of $\rotation$ changes the interpretation of the latent attributes. This is why many researchers find FA an unsatisfactory inference tool.
 
 
-
-\paragraph{PCA Terminology}
+\paragraph{FA Terminology}
 \begin{itemize}
-\item Factors: The unobserved attributes $\latent$.
-\item Loadings: The $A$ matrix; the contribution of each attribute to the observed $X$.
-\item Rotation: An orthogonal re-combination of the latent attributes $\latent$ and loadings, which changes the interpretation of the result.
+\item \textbf{Factors}: The unobserved attributes $\latent$.
+\item \textbf{Loadings}: The $A$ matrix; the contribution of each attribute to the observed $X$.
+\item \textbf{Rotation}: An orthogonal re-combination of the latent attributes $\latent$ and loadings, which changes the interpretation of the result.
 \end{itemize}
 
 
+
+
+\subsection{Independent Component Analysis (ICA)}
+\label{sec:ica}
+
+ICA aims at overcoming the non-uniquness of the latent attributes in FA (\S\ref{sec:factor_analysis}).
+It is a latent space model, as it aims at recovering the latent factors $\latent$.
+
+The fundamental observation is that the non-uniqueness (i.e., non identifiability of $\latent$) stems from the fact that the independent Gaussian distribution is invariant under rotation. 
+I.e. for $\rv \latent \sim \gauss{0,\sigma^2 I}$, and a rotation matrix $\rotation$, $\rv \latent$ has the same distribution as $\rotation \rv \latent$. 
+The combination of the non-Gaussianity and independence assumption on the distribution of $\rv \latent$ we allows to identify $\latent$ from $X$.
+Estimation can then be done using maximum likelihood, or an information theoretic criterion called \emph{infomax}.\marginnote{Infomax}
+
+
+\begin{remark}[Blind Source Separation]
+ICA is a popular technique in signal processing, where $\latent$ is actually the signal (e.g. sound) produced by several different sources. 
+Recovering $\latent$ is thus recovering the original signals mixing in the recorded $X$. This is known as \emph{blind source separation}.
+\end{remark}
+
+\begin{remark}[ICA and FA]
+The solutions to the ICA problem can ultimately be seen as a solution to the FA problem with a particular rotation $\rotation$.
+Put differently, by the formulation of the ICA problem, implies a specific rotation so that $\latent$ is identifiable. 
+\end{remark}
+
+
+
+\paragraph{Mathematics of ICA}
+[TODO]
+
+For more on ICA, see \cite{hyvarinen_independent_2000}. 
 
 
 
