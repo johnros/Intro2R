@@ -411,6 +411,35 @@ You may want to check my question in \href{http://stats.stackexchange.com/questi
 
 
 
+
+\subsection{Local MDS}
+\label{sec:localMDS}
+Local MDS is motivated by the observation that if the data does not lay in a globally convex subspace, then global distances are a very distorted measure, whereas geodesic distances should be used instead. 
+Their solution is to compute $\dissimilaritys$ using only local distances, and then calling upon MDS.
+
+\begin{remark}[The Non-Linearity of Local MDS]
+\label{remark:linearity_of_localMDS}
+Local MDS is typically considered a non-linear-space embedding, thus belonging to Section \ref{sec:dim_reduce_nonlinear}.
+I currently do not think is the case, as it is presented as a linear space embedding.
+Maybe Remark \ref{remark:nldr} can explain the confusion in terminology.
+\end{remark}
+
+
+
+\subsection{Isometric Feature Mapping (Isomap)}
+\label{sec:isomap}
+
+Isomap, also known as \emph{principal coordinate analysis}, is another method intimately related to MDS(\S\ref{sec:mds}).\marginnote{Principal Coordinate Analysis}
+
+Isomap follows the same motivation as Local MDS (\S\ref{sec:localMDS}), but with a different algorithm to compute the dissimilarity matrix $\dissimilaritys$.
+
+\begin{remark}[The Non-Linearity of Isomap]
+Just like Local MDS, Isomap is typically considered a non-linear-space embedding (see Remark \ref{remark:linearity_of_localMDS}).
+I currently do not think is the case.
+\end{remark}
+
+
+
 % % % % Non linear dimensionality reduction % % % % %
 \section{Non-Linear-Space Embeddings}
 \label{sec:dim_reduce_nonlinear}
@@ -422,6 +451,7 @@ We will thus no longer be able to represent the data by its coordinates in some 
 
 
 \begin{remark}[Non Linear Dimensionality Reduction]
+\label{remark:nldr}
 	Do not let the title of this section be confused with the term Non-Linear Dimensionality-Reduction (NLDR).
 	NLDR deals with the nature of the \emph{embedding} operation, and not with the structure of the target manifold $\manifold$ (see also Remark \ref{remark:linear}).\marginnote{NLDR}
 	This section deals with embeddings into a non-linear subspace, regardless of the nature of the embedding operator.
@@ -460,21 +490,17 @@ They are discussed in Appendix~\ref{apx:rkhs}.
 \paragraph{Mathematics of kPCA}
 [TODO]
 
+
+
 \subsection{Principal Curves}
 [TODO]
 
-
-\subsection{Isometric Feature Mapping (Isomap)}
-Isomap is intimately related to MDS with Classical Scaling (\S\ref{sec:mds}).
-the fundamental difference, is that that in MDS similarities are measured using the empirical covariance, while in Isomap, similarities 
 
 
 \subsection{Local Linear Embedding (LLE)}
 [TODO]
 
 
-\subsection{Local MDS}
-[TODO]
 
 
 
