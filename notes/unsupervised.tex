@@ -255,9 +255,9 @@ Assume you now wish to give each individual a size score, that is a linear combi
 PCA has received much attention. As such, it has rich underlying theory and terminology.
 Here are some terms needed to understand PCA outputs:
 \begin{itemize}
-\item[Principal Components] The linear combinations of the features, which best separate between observations. In our example- the ``bigness'' index of each individual. The first components captures the most variance, the second components, the second most-variance, etc. In terms of $\manifold$, the principal components are an orthogonal basis for $\manifold$.
-\item[Scores] Synonymous to Principal Components.
-\item[Loadings] The weights of each data point in each principal component. In our example, the importance of the height and weight in constructing the ``bigness'' index.
+\item \textbf{Principal Components}:  The linear combinations of the features, which best separate between observations. In our example- the ``bigness'' index of each individual. The first components captures the most variance, the second components, the second most-variance, etc. In terms of $\manifold$, the principal components are an orthogonal basis for $\manifold$.
+\item \textbf{Scores}: Synonymous to Principal Components.
+\item \textbf{Loadings}: The weights of each data point in each principal component. In our example, the importance of the height and weight in constructing the ``bigness'' index.
 \end{itemize}
 
 
@@ -311,6 +311,7 @@ where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decom
 
 
 \subsection{Sparse Principal Component Analysis (sPCA)}
+\label{sec:spca}
 [TODO]
 
 
@@ -319,35 +320,51 @@ where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decom
 
 
 \subsection{Multidimensional Scaling (MDS)}
-\label{sec:MDS}
+\label{sec:mds}
 
-In MDS we take a distance network between observations, and try to embed it in a lower dimensional linear subspace, while preserving the original distances.
-Unless the data really is of a low dimension, the embedding may distort the original distances, and may even change the ordering of the observations. The good news is we will be able to visualize \andor cluster them in their new simplified representation. 
-If employed for the purpose of clustering, it is very similar in nature to SOMs (\S\ref{sec:som}), but differs in that it requires only the similarity network $\similaritys$, and not the actual features $X$. 
+In MDS we take the network of distances (or similarities) between observations, and try to embed it in a lower dimensional \emph{linear} subspace, while preserving the original distances (or similarities).
+Unless the data is really of a low dimension, the embedding may distort the original distances (or\dots), and may even change the ordering of the observations. The good news is we will be able to visualize \andor cluster them in their new simplified representation. 
+MDS is very similar to PCA-like, as it is embeds the data in a linear subspace.  MDSs, however, differs in that it require only a similarity network $\similaritys$, or a dissimilarity network $\dissimilaritys$, and not the actual features $X$. 
+If the input of MDS is a network, using empirical covariance as a similarity measure, then MDS with ``classical scaling'' (see below) returns the exact same solution as PCA.
 
-The embedding is merely the assigning of each point to a location in some lower dimensional space. The assignment is driven by a \emph{stress function} which penalizes for the average distortion in pair-wise distances.
+The embedding is merely the assigning of each point to a location in some lower dimensional linear space. 
+The assignment is driven by a \emph{scale function} which penalizes for the average distortion over the pair-wise distances.
 
 
 \paragraph{Mathematics of MDS}
 Starting with either a dissimilarity network $\dissimilaritys=(\dissimilarity_{i,j})$, or a similarity network $\similaritys=(\similarity_{i,j})$.
-Similarities can be though of as correlations, and dissimilarities as Euclidean distances (which are indeed the typical measures in use).
+Similarities can be thought of as correlations, and dissimilarities as distances (which are indeed the typical measures in use).
 Define $z_i \in \reals^\rank$ the location of point $i$ in the target linear space of rank $\rank$. 
-The $z_i$'s are set to minimize the \emph{stress} function.
-Typical stress functions include:
+The $z_i$'s are set to minimize the some penalty for geometric deformation called \emph{scaling functions}.
+Typical scalings include:
 \begin{description}
-\item[Classical Scaling] Using the centred inner product (i.e. empirical covariance) as the similarity measure and squared error for stress:
+
+\item[Classical Scaling] Using the centred inner product (i.e. empirical covariance) as the similarity measure and minimizes the squared distortion:
 $\similarity_{i,j}:= \scalar{x_i-\bar x}{x_j-\bar{x}}$ and the new location are given by
 \begin{align}
-\label{eq:stress_classical}
+\label{eq:mds_classical}
 	 \argmin{z_1,\dots,z_n}{\sum_{i,j=1}^{n} (\similarity_{i,j}-\scalar{z_i-\bar z}{z_j-\bar{z}} )^2}.
 \end{align}
-\item[Kruskal-Shepard Scaling] Using squared error for stress:
-\item[Sammon Mapping] Using the proportion of squared error for stress:
+
+\item[Stress Function] Also known as \emph{least squares} and \emph{Kruskal-Shepard}. Also minimizes the squared distortion. 
+\begin{align}
+\label{eq:mds_stress}
+	 \argmin{z_1,\dots,z_n}{\sum_{i \neq j} (\dissimilarity_{i,j}-\norm{z_i-z_j} )^2}.
+\end{align}
+
+\item[Sammon Mapping] Aims at minimizing the \emph{proportion} of distortion:
+\begin{align}
+\label{eq:mds_sammon}
+	 \argmin{z_1,\dots,z_n}{\sum_{i \neq j} \frac{(\dissimilarity_{i,j}-\norm{z_i-z_j} )^2}{\dissimilarity_{i,j}}}.
+\end{align}
+
 \end{description}
 
 
-\begin{remark}[MDS and PCA]
-content...
+
+\begin{remark}[Classical and Stress MDS]
+Although they both minimize the squared distortion, working with $\similaritys$ or $\dissimilaritys$ lead to different solutions. 
+In particular, Classical is a linear embedding while Stress is not. 
 \end{remark}
 
 
@@ -358,6 +375,8 @@ For more on MDS see Section 14.8 in \cite{hastie_elements_2003}.
 \section{Dimensionality Reduction to Non Linear Subspaces}
 \label{sec:dim_reduce_nonlinear}
 
+Section \ref{sec:dim_reduce_linear} deals with representing the data in a \emph{linear} sub space, i.e., they all aim at finding a basis which efficiently represents that data, with respect to some objective function. 
+In this section, we allow $\manifold$ to be non-linear. We we thus no longer be able to represent the data as a small set of coordinates. We will also have to give more attention to the matter of overfitting. 
 
 \subsection{Kernel Principal Component Analysis (kPCA)}
 \label{sec:kpca}
@@ -501,8 +520,10 @@ Put differently, by the formulation of the ICA problem, implies a specific rotat
 
 
 
-\subsubsection{Mathematics of ICA}
-[TODO]
+\paragraph{Mathematics of ICA}
+In FA (\S\ref{sec:factor_analysis}) we assumed that the data is a mixing ($\loadings$) of some low dimensional unobservable attributes ($\latent$), up to some personal non modeled attributes ($\varepsilon$): $X=AS+\varepsilon$.
+We then assumed that the latent attributes are multivariate Gaussian and solved a likelihood problem.
+In ICA, 
 
 
 For more on ICA, see \cite{hyvarinen_independent_2000}. 
@@ -510,6 +531,9 @@ For more on ICA, see \cite{hyvarinen_independent_2000}.
 
 
 
+\subsection{Exploratory Projection Pursuit}
+\label{sec:exploratpory_ppr}
+[TODO]
 
 
 
