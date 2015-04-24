@@ -336,15 +336,19 @@ The $z_i$'s are set to minimize the \emph{stress} function.
 Typical stress functions include:
 \begin{description}
 \item[Classical Scaling] Using the centred inner product (i.e. empirical covariance) as the similarity measure and squared error for stress:
-$\similarity_{i,j}:= (x_i-\bar x)'(x_j-\bar{x})$ and the new location are given by
+$\similarity_{i,j}:= \scalar{x_i-\bar x}{x_j-\bar{x}}$ and the new location are given by
 \begin{align}
 \label{eq:stress_classical}
-	 \argmin{z_1,\dots,z_n}{arg2}
+	 \argmin{z_1,\dots,z_n}{\sum_{i,j=1}^{n} (\similarity_{i,j}-\scalar{z_i-\bar z}{z_j-\bar{z}} )^2}.
 \end{align}
 \item[Kruskal-Shepard Scaling] Using squared error for stress:
 \item[Sammon Mapping] Using the proportion of squared error for stress:
 \end{description}
 
+
+\begin{remark}[MDS and PCA]
+content...
+\end{remark}
 
 
 For more on MDS see Section 14.8 in \cite{hastie_elements_2003}.
@@ -512,6 +516,28 @@ For more on ICA, see \cite{hyvarinen_independent_2000}.
 \subsection{Hidden Markov Models (HMM)}
 \label{sec:hmm}
 [TODO]
+
+
+
+
+
+\subsection{Random Graphs}
+\label{sec:random_graphs}
+[TODO]
+
+
+\subsubsection{\erdos \renyi}
+[TODO]
+
+
+
+\subsubsection{Exponential Random Graphs (ERGMs)}
+[TODO]
+
+
+\begin{remark}[Relation to Spectral Clustering]
+[TODO]
+\end{remark}
 
 
 \subsection{Collaborative Filtering}
