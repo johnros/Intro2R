@@ -214,7 +214,7 @@ As previously stated, these methods may fail when $x$ are high dimensional. We t
 
 
 
-\section{Dimensionality Reduction to Linear Subspaces}
+\section{Linear Dimensionality Reduction}
 \label{sec:dim_reduce_linear}
 
 The idea of ERM and Inductive Bias also applies to unsupervised learning.
@@ -369,7 +369,7 @@ For more on MDS see Section 14.8 in \cite{hastie_elements_2003}.
 
 
 % % % % Non linear dimensionality reduction % % % % %
-\section{Dimensionality Reduction to Non Linear Subspaces}
+\section{Non Linear Dimensionality Reduction (NLDR)}
 \label{sec:dim_reduce_nonlinear}
 
 Section \ref{sec:dim_reduce_linear} deals with representing the data in a \emph{linear} sub space, i.e., they all aim at finding a basis which efficiently represents that data, with respect to some objective function. 
@@ -408,11 +408,16 @@ In kPCA we replace the measure of similarity with some other measure called the 
 [TODO]
 
 
-\subsection{ISOmap}
+\subsection{Isometric Feature Mapping (Isomap)}
+Isomap is intimately related to MDS with Classical Scaling (\S\ref{sec:mds}).
+the fundamental difference, is that that in MDS similarities are measured using the empirical covariance, while in Isomap, similarities 
+
+
+\subsection{Local Linear Embedding (LLE)}
 [TODO]
 
 
-\subsection{LLE}
+\subsection{Local MDS}
 [TODO]
 
 
