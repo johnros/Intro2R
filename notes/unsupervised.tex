@@ -214,7 +214,7 @@ As previously stated, these methods may fail when $x$ are high dimensional. We t
 
 
 
-\section{Dimensionality Reduction to Linear Spaces}
+\section{Linear-Space Embeddings}
 \label{sec:dim_reduce_linear}
 
 
@@ -350,18 +350,23 @@ We will not go into the technical detail, but merely state that sPCA performs th
 \subsection{Multidimensional Scaling (MDS)}
 \label{sec:mds}
 
-In MDS we take the network of distances (or similarities) between observations, and try to embed it in a $\rank$ dimensional \emph{linear} subspace, while preserving the original distances (or similarities).
-Since the method mainly serves for visualizing data, it is most natural to use $\rank=2$. 
-The embedding will distort the original distances (or\dots), and may even change the ordering of the observations. The good news is we will be able to visualize \andor cluster them in their new simplified representation. 
-MDSs differs from PCA-like methods that it require only a similarity network $\similaritys$, or a dissimilarity network $\dissimilaritys$, and not the actual features $X$. 
+MDS aims at representing a network\footnote{The term Graph is typically used in this context instead of Network. But a graph allows only yes/no relations, while a network, which is a weighted graph, allows a continous measure of similarity (or dissimilarity). It is thus more appropriate.} of distances (or similarities) between observations, by embedding the observations in a $\rank$ dimensional \emph{linear} subspace, while preserving the original distances.
+The network may be obtained by computing some similarity (or dissimilarity) measure with the raw features $X$, or simply because the data itself is a network (social, communication, etc.).
+
+Since MDS mainly serves for visualizing data, it is most natural to use $\rank=2$. 
+The embedding will distort the original distances (or\dots), and may even change the ordering of the observations. The good news is that it is easier to visualize \andor cluster them in their new simplified representation. 
+
 If the input of MDS is the empirical covariance similarity network, then MDS with ``classical scaling'' (see below) returns the exact same solution as PCA.
 
-The embedding is merely the assigning of each point to a location in some lower dimensional linear space. 
-The assignment is driven by a \emph{scale function} which penalizes for the average distortion over the pair-wise distances.
+The embedding is merely the assigning of each point to a location in some lower dimensional linear space $\manifold$. 
+The assignment is driven by a \emph{stress function} which penalizes for the average distortion created by the embedding.
+The different types of MDSs, such as \emph{Classical MDS}, and \emph{Sammon Mappings}, differ in the stress function driving the embedding.
+
+For more on MDS see Section 14.8 in \cite{hastie_elements_2003} or \cite{borg_modern_2005}.
 
 
 \paragraph{Mathematics of MDS}
-Starting with either a dissimilarity network $\dissimilaritys=(\dissimilarity_{i,j})$, or a similarity network $\similaritys=(\similarity_{i,j})$.
+We start with either a dissimilarity network $\dissimilaritys=(\dissimilarity_{i,j})$, or a similarity network $\similaritys=(\similarity_{i,j})$.
 Similarities can be thought of as correlations, and dissimilarities as distances (which are indeed the typical measures in use).
 Define $z_i \in \reals^\rank$ the location of point $i$ in the target linear space of rank $\rank$. 
 The $z_i$'s are set to minimize some penalty for geometric deformation called the \emph{stress function}.
@@ -390,37 +395,37 @@ $\similarity_{i,j}:= \scalar{x_i-\bar x}{x_j-\bar{x}}$ and the new location are 
 \end{description}
 
 
-\begin{remark}[Terminology Caution]
-I have encountered several contradicting terminologies in the context of MDS.
-The presentation here adheres to \cite{hastie_elements_2003}. \cite{borg_modern_2005}, cited in  \href{http://en.wikipedia.org/wiki/Multidimensional_scaling}{Wikipedia}, use the term ``Classical MDS'' for the method with \emph{dissimilarities} as inputs, and not \emph{similarities}, as presented herein.
-\cite{borg_modern_2005} also use the term ``strain'' for the stress function in classical MDS.
-\end{remark}
-
-
-
 \begin{remark}[Classical and Least Squares MDS]
 Although they both minimize the squared distortion, working with $\similaritys$ or $\dissimilaritys$ lead to different solutions. 
 In particular, Classical is a linear embedding while Stress is not. 
 \end{remark}
 
 
-For more on MDS see Section 14.8 in \cite{hastie_elements_2003} or \cite{borg_modern_2005}.
+
+\begin{remark}[Terminology Caution]
+I have encountered several contradicting terminologies in the context of MDS.
+The presentation here adheres to \cite{hastie_elements_2003}. \cite{borg_modern_2005}, cited in  \href{http://en.wikipedia.org/wiki/Multidimensional_scaling}{Wikipedia}, use the term ``Classical MDS'' for the method with \emph{dissimilarities} as inputs, and not \emph{similarities}, as presented herein.
+\cite{borg_modern_2005} also use the term ``strain'' for the stress function in classical MDS.
+You may want to check my question in \href{http://stats.stackexchange.com/questions/148137/similarities-and-dissimilarities-in-multidimensional-scaling}{CrossValidated} regarding this matter.
+\end{remark}
+
 
 
 % % % % Non linear dimensionality reduction % % % % %
-\section{Dimensionality Reduction to Non Linear Spaces}
+\section{Non-Linear-Space Embeddings}
 \label{sec:dim_reduce_nonlinear}
 
 
-Section \ref{sec:dim_reduce_linear} deals with representing the data in a \emph{linear} sub space, i.e., they all aim at finding a basis which efficiently represents that data, with respect to some objective function. 
+Section \ref{sec:dim_reduce_linear} deals with representing the data in a \emph{linear} sub space $\manifold$. They all aim at finding a basis which efficiently represents that data, with respect to some target function. 
 In this section, we allow $\manifold$ to be non-linear. 
-We thus no longer be able to represent the data as a small set of coordinates. We will also have to give more attention to the matter of overfitting. 
+We will thus no longer be able to represent the data by its coordinates in some basis.
 
 
 \begin{remark}[Non Linear Dimensionality Reduction]
-	The term Non Linear Dimensionality Reduction (NLDR) deals with the nature of the embedding operation, and not with the structure of the target manifold $\manifold$ (see also Remark \ref{remark:linear}).\marginnote{NLDR}
-	In this section, we use the first interpretation, meaning that $\manifold$ is a non-linear subspace.
-	Cases of a non-linear embedding (NLDR) into a linear manifold $\manifold$ are discussed in Section~\ref{sec:dim_reduce_linear}.
+	Do not let the title of this section be confused with the term Non-Linear Dimensionality-Reduction (NLDR).
+	NLDR deals with the nature of the \emph{embedding} operation, and not with the structure of the target manifold $\manifold$ (see also Remark \ref{remark:linear}).\marginnote{NLDR}
+	This section deals with embeddings into a non-linear subspace, regardless of the nature of the embedding operator.
+	Cases of non-linear embeddings (NLDR) into a \emph{linear} manifolds $\manifold$ belong in Section~\ref{sec:dim_reduce_linear}.
 \end{remark}
 
 
@@ -432,33 +437,28 @@ We thus no longer be able to represent the data as a small set of coordinates. W
 \label{sec:kpca}
 
 Back to the motivating example from the PCA section (\S\ref{sec:pca}): assume we want to construct a ``bigness'' score, that best separates between individuals, but we no longer constrain it to be a linear function of the height and weight.
-Recalling that the best discrimination between observations means maximizing the variance of the \emph{scores} given to individuals, we could thus try to solve 
+Recalling that the best discrimination between observations means maximizing the variance of the \emph{scores} given to individuals, we could try to find the best separating score $g(x)$ by solving 
 \begin{align}
 \label{eq:kpca_wrong}
 	\argmax{g}{\covn{g(X)}}
 \end{align}
-where $g(x)$ maps an individual's features to a score.
+where $g(x)$ maps an individual's features to a score in $\manifold$.
 
-Alas, just like in the supervised learning problem, without any constraints on $g$, we might overfit \andor not be able to compute $g$ as optimization is done in a infinite dimensional space. 
-We also need to recall that if we allow for a $\rank$ dimensional score, then we have to solve Eq.(\ref{eq:kpca_wrong}) $\rank$ times.
+Alas, just like in the supervised learning problem, without any constraints on $\manifold$, thus on $g$, we might overfit \andor not be able to compute $g$ as optimization is done in a infinite dimensional space. 
 We thus have two matters to attend:
 (i) We need to constrain $g(x)$ so that it does not overfit.
 (ii) We need the problem to be computable.
 This is precisely the goal of kPCA. 
 
 We have already encountered a similar problem with Smoothing Splines (\S\ref{sec:smoothing_splines}). It is thus not surprising that the solution has the same form. 
-Namely, for a particular class of functions $g$, the optimal $g$'s take a simple form. 
-The classes of such $g$'s are known as Reproducing Kernel Hilbert Spaces. 
-They are presented in Appendix~\ref{apx:rkhs}.
+Namely, if we choose the right $g$'s, the solution of Eq.(\ref{eq:kpca_wrong}) takes a very simple form. 
+The classes of such $g$'s are known as Reproducing Kernel Hilbert Spaces (RKHS). 
+They are discussed in Appendix~\ref{apx:rkhs}.
 
-Just like in the PCA problem (Remark~\ref{remark:pca_as_graph}), if choosing an appropriate $g$, we will be able to approximate the data knowing only the similarities between individuals $\similaritys$, without their particular attributes $X$. 
-In kPCA similarities are measured using a particular class of function called the \emph{kernel}, and then proceed as if we were solving a PCA problem.
 
 
 \paragraph{Mathematics of kPCA}
 [TODO]
-
-
 
 \subsection{Principal Curves}
 [TODO]
