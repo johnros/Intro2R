@@ -142,7 +142,7 @@ car_data <-
 c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21)
 10:21 							
 seq(from=10, to=21, by=1) 							
-x seq(from=10, to=21, by=2) 								
+x <- seq(from=10, to=21, by=2) 								
 x <- c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21) 	
 x
 ```
@@ -306,7 +306,7 @@ flights[flights$month == 1 & flights$day == 1, ] # old style
 flights %>% filter(month == 1, day == 1) # dplyr with magrittr style (yes!)
 
 filter(flights, month == 1 | month == 2)
-sli1ce(flights, 1:10) # selects rows
+slice(flights, 1:10) # selects rows
 
 arrange(flights, year, month, day) # sort
 arrange(flights, desc(arr_delay)) # sort descending
