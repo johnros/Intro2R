@@ -593,7 +593,7 @@ The choice of $\rotation$ changes the interpretation of the latent attributes. T
 
 \paragraph{FA Terminology}
 \begin{itemize}
-\item \textbf{Factors}: The unobserved attributes $\latent$.
+\item \textbf{Factors}: The unobserved attributes $\latent$. Not to be confused with the \emph{principal components} in the context of PCA.
 \item \textbf{Loadings}: The $\loadings$ matrix; the contribution of each attribute to the observed $X$.
 \item \textbf{Rotation}: An orthogonal re-combination of the latent attributes $\latent$ and loadings, which changes the interpretation of the result.
 \end{itemize}
@@ -608,12 +608,11 @@ For an full exposition, and a discussion of the differences with PCA, see \cite{
 \subsection{Independent Component Analysis (ICA)}
 \label{sec:ica}
 
-ICA is a family of latent space model as it assume data is generated as some function of the latent variables $\latent$. 
+ICA is a family of latent space models as it assumes data is generated as some function of the latent variables $\latent$. 
 In many cases this function is assumed to be linear in $\latent$ so that ICA is compared, if not confused, with PCA or FA. 
 
-The fundamental idea of ICA is that $\latent$ has a joint distribution of independent variables. 
-This is a stronger assumption that the typical FA assumption where the distribution of $\latent$ is merely uncorrelated. 
-
+The fundamental idea of ICA is that $\latent$ has a joint distribution of \emph{independent} variables. 
+This is a stronger assumption that the typical FA assumption where the distribution of $\latent$ is merely assumed to be uncorrelated. 
 This independence assumption solves the the non-uniquness of the latent attributes in FA (\S\ref{sec:factor_analysis}).
 
 Two assumptions distinguish ICA from FA, allowing the identification of $\latent$: 
@@ -623,10 +622,9 @@ Two assumptions distinguish ICA from FA, allowing the identification of $\latent
 Being a generative model, estimation of $\latent$ can then be done using maximum likelihood, or an information theoretic criterion called \emph{infomax}.\marginnote{Infomax}
 
 
-\begin{remark}[Blind Source Separation]
+
 ICA is a popular technique in signal processing, where $\latent$ is actually the signal (e.g. sound) produced by several different sources. 
-Recovering $\latent$ is thus recovering the original signals mixing in the recorded $X$. This is known as \emph{blind source separation}.
-\end{remark}
+Recovering $\latent$ is thus recovering the original signals mixing in the recorded $X$. This is known as \emph{blind source separation}.\marginnote{Blind Source Seperation}
 
 
 \begin{remark}[ICA and FA]
