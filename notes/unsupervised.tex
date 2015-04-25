@@ -143,11 +143,6 @@ There are several way to divide clusters. All amount to considering some homogen
 
 
 
-\subsection{Spectral Clustering}
-\label{sec:spectral_clustering}
-[TODO]
-
-
 
 
 
@@ -166,6 +161,31 @@ As such, they can be seen as the marriage of K-means clustering (\S\ref{sec:kmea
 For more on SOMs see Section 14.4 in \cite{hastie_elements_2003}. 
 
 
+
+
+\subsection{Spectral Clustering}
+\label{sec:spectral_clustering}
+
+Spectral clustering is tailored for situations where \naive similarity measures $\similaritys$, such as the empirical covariances used in PCA, fail to capture the true notion of distances in the data, as it lay in some non convex set. 
+
+For some intuition, let $X$ be $n$ images of facial expressions of the same individual. It would be quite miraculous if the Euclidean distance were to capture the true notion of distance between facial expressions. 
+
+Spectral clustering can be decomposed into the following building blocks:
+\begin{enumerate}
+\item Compute the similarity graph $\similaritys$, using some \emph{local} measure of similarity.
+\item Convert the similarity graph $\similaritys$ to a dissimilarity graph $\dissimilaritys$ called the \emph{graph-laplacian}.\marginnote{Graph Laplacian}
+\item Embed the data in a low dimensional linear space using a spectral decomposition (\`a-la PCA) of the graph-laplacian.
+\item Employ clustering techniques such as K-means (\S\ref{sec:kmeans}) on the low dimensional representation.
+\end{enumerate}
+
+The idea of using \emph{local} measures of similarity re-appears in several dimensionality reduction techniques such as LocalMDS (\S\ref{sec:localMDS}), Isomap (\S\ref{sec:isomap}) and LLE (\S\ref{sec:lle}).
+Perhaps the most popular method is that of \emph{mutual K-nearest-neighbor graph}.\marginnote{Mutual K-Nearest-Neighbor Graph}
+
+The idea of the spectral decomposition, i.e. diagonalization, of similarity measures is not a new one, and already appears in the solution to the PCA problem (\S\ref{sec:pca}). In PCA, the solution is given by using the empirical covariances as similarities. 
+
+The idea of clustering in a low dimensional representation of the data is a powerful one. 
+Spectral clustering bundles the embedding and the clustering together, but the stages can be decoupled. Any dimensionality reduction technique can be followed by a clustering technique.
+SOMs (\S\ref{sec:som}) should be noted as a technique where the dimensionality reduction and the clustering \emph{cannot} be decoupled. Indeed, in SOMs, the dimensionality reduction is driven explicitly by the clustering performance.  
 
 
 
@@ -553,6 +573,8 @@ They are discussed in Appendix~\ref{apx:rkhs}.
 
 
 \subsection{Local Linear Embedding (LLE)}
+\label{sec:lle}
+
 LLE aims at finding linear subspaces that are good approximations of small neighbourhoods of the whole data $X$.
 It is similar in spirit to Isomap (\S\ref{sec:isomap}) and LocalMDS (\S\ref{sec:localMDS}).
 It differs, however, in the way similarities are computed, and in the way embeddings are performed. 
