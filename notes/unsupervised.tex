@@ -48,19 +48,22 @@ Groups identified are called \emph{clusters}, so that these methods are known as
 
 Cluster analysis is typically easier than learning a joint distribution (\S\ref{sec:density_estimation}) or even detecting high density regions (\S\ref{sec:high_density}). 
 We will see that for cluster analysis, we don't need the actual features $X$; as it will turn out, many methods only require some notion of distance between the points, and not their actual features. 
-For this reason, clustering is intimately related to graphs and \emph{networks}\footnote{A graph describes a yes/no relation. A network is a weighted graph, which not only describes the existence of a relation, but also its strength.}, which capture only the similarity or dissimilarity of the observations, and not their actual features.\marginnote{Network}
+For this reason, clustering is intimately related to graph, or \emph{network}\footnote{A graph describes a yes/no relation. A network is a weighted graph, which not only describes the existence of a relation, but also its strength.} partitioning problems.
 
 
 
 \subsection{K-Means Clustering}
 \label{sec:kmeans}
-The idea behind K-means clustering is to find a representative point for each of K clusters, and assign each (unlabeled) data point to one of these clusters. As each cluster has a representative point, this is also a \emph{prototype method}.\marginnote{Prototype Methods}.
+The goal behind K-means clustering is finding a representative point for each of K clusters, and assign each (unlabelled) data point to one of these clusters. As each cluster has a representative point, this is also a \emph{prototype method}.\marginnote{Prototype Methods}.
 The clusters are defined so that they minimize the average distance between all points to the center of the cluster.
+
+K-means clustering requires the raw features $X$ as inputs, and not only a similarity graph. This is evident when examining Algorithm~\ref{algo:kmeans}.
 
 In K-means, the clusters are first defined, and then similarities computed. This is thus a \emph{top-down} method.\marginnote{Top Down Clustering}
 
 \begin{algorithm}[H]
 \caption{K-Means}
+\label{algo:kmeans}
 \begin{algorithmic}
 \State Choose the number of clusters $K$.
 \State Arbitrarily assign points to clusters.
@@ -150,8 +153,11 @@ There are several way to divide clusters. All amount to considering some homogen
 
 \subsection{Self Organizing Maps (SOM)}
 \label{sec:som}
-SOMs, also known as \emph{Kohonen maps}, and \emph{self organizing feature maps} (SOFM), are aimed at learning low dimensional representations of data useful for clustering, using the original features $X$.\marginnote{Kohonen Map}
-As such, they take the form of K-means clustering (\S\ref{sec:kmeans}), but not in the original space $\featureS$ but rather in a low dimensional representation $\manifold$.
+SOMs, also known as \emph{Kohonen maps}, and \emph{self organizing feature maps} (SOFM), and \emph{constrained topological map}. 
+They are a dimensionality reduction method, which driven by the quality of clustering.
+The method requires the original features $X$, and not only a similarity graph. \marginnote{Kohonen Map}
+As such, they can be seen as the marriage of K-means clustering (\S\ref{sec:kmeans}) with dimensionality reduction (\S\ref{sec:dim_reduce_linear}).
+
 
 
 \paragraph{Mathematics of SOMs}
@@ -167,12 +173,11 @@ For more on SOMs see Section 14.4 in \cite{hastie_elements_2003}.
 
 
 
-\section{Detect High Density Regions}
+\section{High Density Regions}
 \label{sec:high_density}
 
-When data data is high dimensional so that we cannot perform density estimation, or when we are merely interested in grouping observations, we can still detect high density regions where observations ``clump'' together. Hopefully, into meaningful homogenous groups.
-The following methods are thus also known a \emph{bump hunting} or \emph{mode finding}.\marginnote{Bump Hunting}
-They are all different heuristic algorithms that return high density regions. 
+When data is high dimensional a full blown density estimation may be statistically and computationally impractical.
+We can still, however, aim at detecting regions in $\featureS$ with high probability (which would have been trivial have we had a density estimate).
 
 Once high density regions have been detected, they could be assigned to clusters. Then again, assigning to clusters is typically an easier problem which can be solved directly (see \S\ref{sec:cluster_analysis}).
 
@@ -378,7 +383,8 @@ We will not go into the technical detail, but merely state that sPCA performs th
 
 
 
-
+\subsection{Self Organizing Maps (SOM)}
+SOMs, already discussed in Section~\ref{sec:som}, are a linear-subspace dimensionality reduction method, aimed at good clustering. 
 
 
 \subsection{Multidimensional Scaling (MDS)}
