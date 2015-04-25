@@ -20,11 +20,17 @@ Since this also serves in supervised learning, it is discussed with more general
 \end{enumerate}
 
 
-\paragraph{Relation to Supervised Classification}
+\begin{remark}[Relation to Supervised Classification]
 Learning the joint data distribution, i.e., density estimation, is not only a goal for itself, but can serve for classification. 
 The full data generating distribution, in the context of \emph{supervised} learning is called the \emph{generative model}.\marginnote{Generative Model}
 See Appendix \ref{apx:generative_concept} for the usage of the estimated generative model for classification.
+\end{remark}
 
+
+\begin{remark}[Unsupervised Learning in the ERM framework]
+Many unsupervised learning problems, can be cast in the ERM framework.
+This has not been done in the current version of our text due to both time constraints, and compatibility with the referenced literature.
+\end{remark}
 
 
 
@@ -97,7 +103,17 @@ See Section 14.3.10 in \cite{hastie_elements_2003}.
 
 \subsection{Hierarchical Clustering}
 \label{sec:hierarchical}
-[TODO]
+
+A class of greedy algorithms for two-class clustering. 
+We stress that unlike k-means, the method is the algorithm itself and cannot be case as an optimization (ERM) problem.
+These algorithms take similarity (dissimilarity) graphs as inputs.
+Two main sub-classes of algorithms can be identified: \emph{agglomerative}, and \emph{divisive}.
+
+\subsubsection{Agglomerative Clustering}
+Agglomerative clustering algorithms
+
+\subsubsection{Divisive Clustering}
+
 
 
 
@@ -629,12 +645,12 @@ Recovering $\latent$ is thus recovering the original signals mixing in the recor
 
 \begin{remark}[ICA and FA]
 The solutions to the (linear) ICA problem can ultimately be seen as a solution to the FA problem with a particular rotation $\rotation$ implied by the independence assumption.
-Put differently, the formulation of the (linear) ICA problem, implies a unique rotation, so that $\latent$ is identifiable. 
+Put differently, the formulation of the (linear) ICA problem, implies a unique rotation. 
 \end{remark}
 
-For a brief and general discussion of ICA see \cite{jolliffe_principal_2002}.
-For an brief exposition of the linear ICA see \cite{hastie_elements_2003}. 
-For a detailed review see \cite{hyvarinen_independent_2000}. 
+For a general discussion of ICA see \cite{jolliffe_principal_2002}.
+For a brief exposition of the linear ICA see \cite{hastie_elements_2003}. 
+For a detailed review of ICA see \cite{hyvarinen_independent_2000}. 
 
 
 
