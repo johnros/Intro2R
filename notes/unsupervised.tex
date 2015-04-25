@@ -601,13 +601,14 @@ In particular, as the name may suggest, LLE performs local embeddings to linear 
 \label{sec:latent_space}
 
 We have already met generative models for supervised learning (\S\ref{sec:generative}), and for unsupervised learning (\S\ref{sec:density_estimation}).
-We now discuss a class of generative models, that can be seen as a dimensionality device. 
+We now discuss a class of generative models, that can be seen as a dimensionality reduction device. 
 The following models and methods assume that the data generating process is governed by some low dimensional unobservable \emph{state}, also known as \emph{latent variable}, or \emph{hidden variable}.
-The latent variables define a \emph{state}. This is why these models are also known as \emph{state space} models. A term coined by \citet{kalman_contributions_1960}.\marginnote{State-Space Models}
+This is why these models are also known as \emph{state space} models. A term coined by  \citet{kalman_contributions_1960}.\marginnote{State-Space Models}
 
-This specification allows us to:
+The simplification of the generative model from its original high-dimension allows us to:
 (i) \emph{Interpret} the data generating process via its states. 
 (ii) \emph{Formulate} the density estimation problem as a low dimensional problem, we can actually hope to solve, even when the data itself is very high dimensional.
+(iii) \emph{Visualize} the data. 
 
 The fundamental idea is that while the data generating distribution may have a complicated form, when we condition on the unobserved variable, the distribution greatly simplifies. 
 
@@ -730,6 +731,14 @@ For a detailed review of ICA see \cite{hyvarinen_independent_2000}.
 [TODO]
 
 
+
+
+\subsection{Latent Space Graphical Models}
+\label{sec:latent_graphical}
+
+The idea of simplifying a complicated distribution by conditioning on some latent variable can be compounded with the idea of a graphical model (\S\ref{sec:graphical_models}). 
+Put differently, the generative model can be a simple graphical model when conditioned on some latent variable.
+We do not pursue this avenue further, and refer the reader to Section 17.4.2 in \cite{hastie_elements_2003}.
 
 
 \subsection{Collaborative Filtering}
