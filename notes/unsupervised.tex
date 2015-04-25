@@ -403,7 +403,6 @@ In particular, Classical is a linear embedding while Stress is not.
 
 
 
-
 \subsection{Local MDS}
 \label{sec:localMDS}
 Local MDS is motivated by the observation that if the data does not lay in a globally convex subspace, then global distances are a very distorted measure, whereas geodesic distances should be used instead. 
@@ -567,11 +566,10 @@ The fundamental idea is that while the data generating distribution may have a c
 \subsection{Factor Analysis (FA)}
 \label{sec:factor_analysis}
 
-Factor Analysis is solved very similarly to PCA (\S\ref{sec:pca}), so that the two are often confused and interchanged. 
+Factor Analysis is solved very similarly to PCA (\S\ref{sec:pca}), so that the two are often confused. 
 FA, however, stems from a rather different motivation than PCA.
-In can be seen as a descriptive method using some linear algebra properties.
-FA is a generative method, estimable using maximum likelihood. In some cases, the two methods can collapse to the same problem. 
-We already know this can happen as we have seen that the Linear Regression problem with Gaussian disturbances can collapse to an OLS problem. 
+PCA is motivated by finding variable combinations (scores) with most variance. 
+FA is a generative method, aimed at finding uncorrelated latent attributes. 
 
 In FA we assume that the observed $X$'s depend linearly on a set of $\rank$ independent latent (i.e. unobservable) attributes we denote with $\latent$.
 The generative model is thus
@@ -580,9 +578,17 @@ The generative model is thus
 	X=\loadings \latent+\varepsilon
 \end{align}
 Assuming a generative distribution on $\latent$ and $\varepsilon$, we may try to estimate $\loadings \latent$ by maximum likelihood.
-Sadly, recovering the particular latent attributes $\latent$ from $\estim{\loadings\latent}$ is still impossible as there are infinitely many such solutions. To see this, consider an orthogonal \emph{rotation} matrix $\rotation$ ($\rotation' \rotation=I$). For each such $\rotation$: $ \loadings \latent=\loadings \rotation' \rotation \latent = \loadings^* \latent^*$.
+Recovering the particular latent attributes $\latent$ from $\estim{\loadings\latent}$ is still impossible as there are infinitely many such solutions. To see this, consider an orthogonal \emph{rotation} matrix $\rotation$ ($\rotation' \rotation=I$). For each such $\rotation$: $ \loadings \latent=\loadings \rotation' \rotation \latent = \loadings^* \latent^*$.
 
 The choice of $\rotation$ changes the interpretation of the latent attributes. This is why many researchers find FA an unsatisfactory inference tool.
+
+\begin{remark}[Identifiability in PCA]
+	The non-uniqueness (non-identifiability) of the FA solution under variable rotation is never mentioned in the PCA context. Why is this?
+	This is because the methods have different purposes. 
+	Generative latent variables, as in FA, are only defined up to rotations. They are thus not unique. 
+	Combinations with maximal variance, as in PCA, are unique. There is no room for rotations.
+\end{remark}
+
 
 
 \paragraph{FA Terminology}
