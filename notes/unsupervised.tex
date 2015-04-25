@@ -553,8 +553,10 @@ They are discussed in Appendix~\ref{apx:rkhs}.
 
 
 \subsection{Local Linear Embedding (LLE)}
-[TODO]
-
+LLE aims at finding linear subspaces that are good approximations of small neighbourhoods of the whole data $X$.
+It is similar in spirit to Isomap (\S\ref{sec:isomap}) and LocalMDS (\S\ref{sec:localMDS}).
+It differs, however, in the way similarities are computed, and in the way embeddings are performed. 
+In particular, as the name may suggest, LLE performs local embeddings to linear subspaces. The resulting approximating manifold $\manifold$, being the ``stitching'' of many linear spaces, is ultimately non linear.
 
 
 
