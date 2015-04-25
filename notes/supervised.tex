@@ -351,10 +351,6 @@ One can use either a misclassification error, the multinomial likelihood (knows 
 \paragraph{Universal Approximator}
 Like many other hypothesis classes, CART's $\hypclass$ can approximate any function, with large enough $M$.
 
-\paragraph{Dendogram}
-As CARTs are essentially decision trees, they can typically viewed as a hirarchy of if-then rules applied on the data.
-This type of visualization if called a \emph{dendogram}.\marginnote{Dendogram}
-
 \paragraph{A Personal Note}
 While CARTs are very rich hypothesis classes, and easily interpretable, I have poor personal experience with them. 
 I suspect it is their very non smooth nature that is simply inadequate for the problems I have encountered.
@@ -363,6 +359,12 @@ Then again, the Bagging algorithm, deals with this matter nicely by averaging ma
 
 \paragraph{Further Reading}
 For more on CARTs and Bagging see \citep[Section 9]{hastie_elements_2003}.
+
+
+\subsubsection{Dendogram}
+\label{sec:dendogram}
+As CARTs are essentially decision trees, they can typically viewed as a hirarchy of if-then rules applied on the data.
+This type of visualization if called a \emph{dendogram}.\marginnote{Dendogram}
 
 
 

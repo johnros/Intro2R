@@ -34,6 +34,11 @@ This has not been done in the current version of our text due to both time const
 
 
 
+
+
+
+
+
 \section{Cluster Analysis}
 \label{sec:cluster_analysis}
 
@@ -104,15 +109,28 @@ See Section 14.3.10 in \cite{hastie_elements_2003}.
 \subsection{Hierarchical Clustering}
 \label{sec:hierarchical}
 
-A class of greedy algorithms for two-class clustering. 
-We stress that unlike k-means, the method is the algorithm itself and cannot be case as an optimization (ERM) problem.
 These algorithms take similarity (dissimilarity) graphs as inputs.
-Two main sub-classes of algorithms can be identified: \emph{agglomerative}, and \emph{divisive}.
+Hierarchical clustering is a class of greedy graph-partitioning algorithms. 
+Being hierarchical by design, they have the attractive property that the evolution of the clustering can be presented with a dendogram (\S\ref{sec:dendogram}).  
+Unlike k-means, the method is the algorithm itself and cannot be cast as an optimization (ERM) problem.
+Also, it does not require an a-priori choice of the number of cluster.
 
+For more on hierarchical clustering see Section 14.3.12 in \cite{hastie_elements_2003}.
+
+Two main sub-classes of algorithms can be identified: \emph{agglomerative}, and \emph{divisive}.
 \subsubsection{Agglomerative Clustering}
-Agglomerative clustering algorithms
+Agglomerative clustering algorithms are bottom-up algorithm which build clusters by joining smaller clusters. 
+To decide which clusters are joined at each iteration some measure of closeness between clusters is required. 
+\begin{description}
+\item[Single Linkage] Cluster distance is defined by the distance between the two \textbf{closest} members.
+\item[Complete Linkage] Cluster distance is defined by the distance between the two \textbf{farthest} members.
+\item[Group Average] Cluster distance is defined by the \textbf{average} distance between members.
+\end{description}
+
 
 \subsubsection{Divisive Clustering}
+Divisive clustering algorithms are top-down algorithm which build clusters by splitting larger clusters. 
+There are several way to divide clusters. All amount to considering some homogeneity measure on the set of all possible divisions. As this is typically computationally intense, greedy algorithms can be employed.
 
 
 
