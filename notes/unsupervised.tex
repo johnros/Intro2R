@@ -234,10 +234,22 @@ As previously stated, these methods may fail when $x$ are high dimensional. We t
 
 
 \subsection{Graphical Models}
-\label{sec:graphical_model}
-[TODO]
+\label{sec:graphical_models}
+
+Graphical models are graphs that represent joint distributions\footnote{Unlike \emph{graph data}, where the graph is the data itself, and not a distribution.}
+For our purposes, we discuss only \emph{undirected graphical models}, also known as \emph{Markov random fields}, or \emph{Markov networks}.
+The reason these models are interesting, and particularly for the purpose of density estimation, is that missing edges in a graphical model represents conditional independencies between random variables. 
+If the graph structure can be assumed, and hopefully has many missing edges, then the dimension of the density estimation problem can be reduced. 
+
+In the cases the graph structure cannot be assumed, then our goal becomes the learning of the graph structure from the data. I.e., learning the (conditional) independencies between the variables. For a multivariate Gaussian distribution, this amounts to estimating the covariance, while imposing some sparsity assumption. 
+An important fact in this regard is that in the multivariate Gaussian case, missing edges in the graphical model, mean zero entries in the inverse covariance matrix. This fact sets the bridge between learning a the structure of a graphical model, and (sparse) covariance estimation.
+
+\begin{remark}[Restricted Bolzmann Machine]
+In this context it is also worth mentioning the Restricted Boltzmann Machine (RBM), which is a multivariate distribution with particular class of graphical structure, motivated from Neural Networks. \marginnote{Restricted Bolzmann Machine}
+\end{remark}
 
 
+For a more detailed review of Graphical Models, see Chapters 17 and 20 in \cite{wasserman_all_2004}. 
 
 
 
