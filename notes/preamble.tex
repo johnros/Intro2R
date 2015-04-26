@@ -70,14 +70,15 @@
 \newcommand{\norm}[1]{\Vert #1 \Vert} % The norm operator
 \newcommand{\normII}[1]{\norm{#1}_2} % The norm operator
 \newcommand{\normI}[1]{\norm{#1}_1} % The norm operator
+\newcommand{\normF}[1]{\norm{#1}_{Frob}} % The Frobenius matrix norm
 \newcommand{\lik}{\mathcal{L}} % The likelihood function
 \newcommand{\loglik}{L} % The log likelihood function
 \newcommand{\loss}{l} % A loss function
 \newcommand{\risk}{R} % The risk function
 \newcommand{\riskn}{\mathbb{R}} % The empirical risk
 \newcommand{\deriv}[2]{\frac{\partial #1}{\partial #2}} % A derivative
-\newcommand{\argmin}[2]{argmin_{#1}\set{#2}} % The argmin operator
-\newcommand{\argmax}[2]{argmax_{#1}\set{#2}} % The argmin operator
+\newcommand{\argmin}[2]{\mathop{argmin} _{#1}\set{#2}} % The argmin operator
+\newcommand{\argmax}[2]{\mathop{argmax}_{#1}\set{#2}} % The argmin operator
 \newcommand{\hyp}{f} % A hypothesis
 \newcommand{\hypclass}{\mathcal{F}} % A hypothesis class
 \newcommand{\hilbert}{\mathcal{H}}
@@ -111,8 +112,7 @@
 \newcommand{\rank}{q} % A subspace rank.
 \newcommand{\encode}{E} % a linear encoding matrix
 \newcommand{\decode}{D} % a linear decoding matrix
-
-
+\DeclareMathOperator{\Tr}{Tr}
 \newcommand{\ensembleSize}{M} % Size of a hypothesis ensemble.
 \newcommand{\ensembleInd}{m} % Index of a hypothesis in an ensemble.
 

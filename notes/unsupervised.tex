@@ -308,6 +308,8 @@ In unsupervised learning, we have similar building blocks. We still have some lo
 
 For a general discussion of the idea of dimensionality reduction see Appendix~\ref{apx:dim_reduce}.
 
+Many dimensionality reduction methods, if not all, take inspiration from the origins of PCA. It is thus strongly recommended to read the PCA section (\S\ref{sec:pca}) before proceeding.
+
 \begin{remark}[Interpreting ``Linear'']
 \label{remark:linear}
 	Two interpretations of ``linear'' can be found in the literature. It may refer to the nature of the low dimensional space approximating the data, or to the nature of the embedding operation. In this text, we use the first interpretation, meaning that $\manifold$ is a linear subspace, even if the embedding operation is non linear.
@@ -336,6 +338,11 @@ This is because, height and weight vary mostly along a single dimension, which c
 This is why, physicians use the Body Mass Index (BMI) as an indicator of size, instead of a two-dimensional measurement.
 Assume you now wish to give each individual a size score, that is a linear combination of height and weight: PCA does just that. It returns the linear combination that has the most variability, i.e., the combination which best distinguishes between individuals. 
 
+The variance maximizing motivation above was the one that guided Hotelling \citep{hotelling_analysis_1933}.
+About $30$ years before him, Karl Pearson \citep{pearson_liii._1901} derived the same procedure with a different motivation in mind. Pearson was also trying to give each individual a score. He did not care about variance maximization, however. He simply wanted a small set of coordinates in some (linear) space that approximates the original features well. As it turns out, the best linear-space approximation of $X$ is also the variance maximizing one. Pearson and Hotelling thus arrived to the same solution, with different motivations. This matter is revisited in Section 
+
+
+
 
 
 \paragraph{Terminology}
@@ -348,7 +355,9 @@ Here are some terms needed to understand PCA outputs:
 \end{itemize}
 
 
-\paragraph{Intuition}
+\subsubsection{Intuition}
+\label{sec:pca_intuition}
+
 Notice we have currently offered two motivations for PCA: 
 (i) Find linear combinations that best distinguish between observations, i.e., maximize variance. 
 (ii) Find the linear subspace the bets approximates the data.
@@ -356,55 +365,95 @@ The reason these two problems are equivalent, is due to the use of the squares e
 Informally speaking, the data has some total variance. This variance can be decomposed into the part captured in $\manifold$, and the part not captured\footnote{Analogous to $SST=SSR+SSE$ in linear regression.}. 
 Since the variance in the data consists of sums of squares, minimizing the distance from $X$ to $\manifold$, is the same as maximizing the variance of $X \project \manifold$, since their sum is fixed.
 
-Historically, the derivation of PCA as a linear space embedding, (i), is due to \cite{pearson_liii._1901}. 
-The variance maximizing combinations, (ii), is due to \cite{hotelling_analysis_1933}.
 
 
-\paragraph{Mathematics of PCA}
+\subsubsection{Mathematics of PCA}
+\label{sec:pca_mathematics}
+We now present the derivation of PCA from the two different motivations.
 
-[TODO: discuss the problems arising from the different motivations]
 
-PCA seeks to represent $x$ in the simplest manifold possible: a linear subspace. Thus, $\manifold$ is simply a rank $\rank$ linear subspace in $\mathbb{R}^p$.
-A low dimensional representation of the points in the data consists of decoding their low dimensional encoding. 
-Since we are dealing with linear spaces, encoding and decoding can be represented with matrices. 
-We thus denote the encoding operator by $\encode:\featureS \mapsto \reals^\rank$, a $\rank \times p$ matrix.
-We also denote the decoding operator by $\decode:\reals^\rank \mapsto \featureS$ , a $p \times \rank$ matrix. 
-Our predictor function ($\hyp$) in this case is $\hyp(x_i)=\decode\encode x_i$.
- 
-The ERM problem:
+
+
+\paragraph{The Variance Maximization View}
+Starting with the first principal component.
+If $\cov{x}=\Sigma$ then for a fixed vector $v$: $\cov{vx}=v \Sigma v'$.
+Maximizing w.r.t. $v$ does not make sense as $\cov{vx}$ will explode. 
+It is most convenient, mathematically, to constrain the $l_2$ norm: $\normII{v}^2=1$.
+Maximizing under a constraint, using Lagrange-Multipliers: 
 \begin{align}
-\label{eq:PCA}
-	\argmin{\decode,\encode}{\frac{1}{n}\sum_i (x_i-\decode\encode x_i)^2} .
+ \argmax{v}{v \Sigma v' - \lambda (\normII{v}^2-1)}.
 \end{align}
-
-Without proof, it turns out that Eq.(\ref{eq:PCA}) has a closed form solution. 
-This solution is typically presented using the Singular Value Decomposition (SVD) of $X$ we now define.\marginnote{SVD}
-\begin{definition}[SVD]
-Any $n \times p$ matrix $X$, can be decomposed into $X=UDV'$ where 
-$U$ is an $n \times p$ orthogonal matrix ($U'U=I_p$); 
-$D$ is a $p \times p$ diagonal matrix with diagonal elements $d_1 \geq d_2 \geq \dots \geq d_p$;
-$V$ is a $p \times p$ orthogonal matrix ($V'V=I_p$).
-\end{definition}
-
-The solution to Eq.(\ref{eq:PCA}) is 
+Differentiating w.r.t $v$ and equating zero: 
 \begin{align}
-\label{eq:PCA_solution}
-	\estim{\encode} =& V_\rank' \\
-	\estim{\decode} =& V_\rank,
+	(\Sigma- \lambda I)v'=0
 \end{align}
-where $V_\rank$ are the first $\rank$ columns of $V$ in the Singular Value Decomposition of $X$.
+So the $P$ solutions for $v$ are the eigen-vectors of $\Sigma$. Which of them to pick? 
+To find a \emph{global} maximum we return to the original problem, as plug our result:
+\begin{align}
+\label{eq:pca_maximal_variance}
+ \argmax{v:\normII{v}^2=1}{v \Sigma v' }=\argmax{\lambda}{v \lambda v' }
+\end{align}
+so that the global maximum is obtained with the largest eigen-value $\lambda$.
+
+Readers familiar with matrix norms will recognize that this is simply the derivation of the operator norm of $\Sigma$.
+
+The second principal component can be found by solving the same problem, with the additional constraint of $v_2$ orthogonal to $v_1$.
+
+The last missing ingredient is that instead of the true covariance between the features, $\Sigma$, we use the (scaled) empirical covariance $X'X$.
 
 
 
 
-\begin{remark}[PCA as a Graph Method]
-\label{remark:pca_as_graph}
-While the PCA problem is cast in the terms of $X$, its solution only depends on the correlations between individuals $XX'$.
-This has several implications:
-(i) All data sets with the same correlations, will lead to the same solution, irrespective of the precise features $X$. It is also quite magical that we can linearly approximate the data just be knowing the similarities, and without the features $X$ themselves.
-(ii) Seeing the correlations as a similarity graph $\similaritys$, we can take inspiration from the PCA solution and apply it to arbitrary similarity graphs. This is precisely the idea underlying Spectral Clustering (\S\ref{sec:spectral_clustering}) and kPCA (\S\ref{sec:kpca}).
+\paragraph{The Linear-Space Embedding View}
+We now seek to find a sequence of $p$ approximations to $X$ that lay in $1,\dots,p$ dimensional linear subspaces, with respect to a least squares loss. For simplicity of exposition, we will assume that $X$ has been mean centred. 
+The $\rank$'th problem to solve is thus
+\begin{align}
+\label{eq:pca_erm}
+	\argmin{\hyp_\rank}{\normF{X-\hyp_\rank(X)}}.
+\end{align}
+Since $\hyp_rank$ is a map from $\reals^p$ to some rank-$\rank$ linear subspace, it must have the form $\hyp_\rank(X)=\projectMat_\rank X$ where $\projectMat_\rank$ is a $n \times n$ matrix of rank $\rank$.
+Since Eq.(\ref{eq:pca_erm}) minimizes sums of (squared) Euclidean distances, $\projectMat_\rank$ has to be an orthogonal projection, thus symmetric. As such it can decomposed into an outer product $\projectMat_\rank=V_\rank V'_\rank$ where $V_\rank$ is full rank $n \times \rank$ matrix \citep[Eq.(5.13.4)]{meyer_matrix_2001}.
+Under the $\rank$-space constraint, and squared error, Eq.(\ref{eq:pca_erm}) collapses to 
+\begin{align}
+\label{eq:pca_erm2}
+	\argmin{V_\rank}{\normF{X-V_\rank V'_\rank(X)}}.
+\end{align}
+Using some algebraic identities \cite[Eq.(23.3)]{shalev-shwartz_understanding_2014} Eq.(\ref{eq:pca_erm2}) is equivalent to 
+\begin{align}
+\label{eq:pca_erm3}
+	\argmax{V_\rank}{\Tr(V'_\rank XX' V_\rank)}.		
+\end{align}
+At this point we should note that the linear-space embedding problem has collapsed to the variance maximization problem! 
+If you do not see this, just set $\rank=1$ and compare to Eq.(\ref{eq:pca_maximal_variance}), recalling that $X'X$ estimates the features' covariance $\Sigma$.
+
+\begin{remark}[PCA and SVD]
+The solution to PCA is typically presented in literature using a matrix decomposition called Singular Value Decomposition (SVD). \marginnote{SVD}
+Using SVD facilitates the computation of the solution, and perhaps adds more insight into what PCA is doing. Because it is not an essential part of the PCA problem, but rather the means for the solution, we do not pursue this avenue herein, and refer the reader to Section 14.5.1 in \citep{hastie_elements_2003}.
 \end{remark}
 
+
+
+
+
+
+\subsubsection{PCA as a Graph Method}
+\label{remark:pca_as_graph}
+Starting from the maximal variance motivation, it is perhaps not surprising that PCA depends only on the similarities between features, as measured by their empirical covariance. The linearity of the target manifold was there by assumption. 
+
+Following the linear-space embedding motivation, it is was surprising that the solutions depend only on the empirical covariances. This fact can be attributed to the use of squared error loss, which implied we were trying to decompose the total variance into the part in $\manifold_\rank$ and the orthogonal part.
+
+From both motivations we see that the values of $X$ are of no importance given $X'X$, which can be informally thought of as a sufficient statistic\footnote{It is not a proper sufficient statistic as no generative model has been assumed.}.  
+
+In-turn, $X'X$ depends only on the empirical covariances between \emph{individuals} ($\similaritys=XX'$), or on the Euclidean distances between individuals ($\dissimilaritys=(\norm{x_i-x_j})$).
+
+The fact that the linear-space embedding of the data depends only on one of these three, has laid a bridge between feature embedding, such as PCA, and \emph{graph embedding} methods such as MDS (\S\ref{sec:mds}).
+The building blocks of all these graph-based dimensionality reduction methods are:
+\begin{enumerate}
+\item Compute some similarity graph $\similaritys$ (or dissimilarity graph $\dissimilaritys$) from the raw features.
+\item Call upon graph embedding theory to map the data points into the target manifold $\manifold$.
+\end{enumerate}
+
+We now prove that the PCA solution can be cast in terms of the empirical covariance between variables ($\hat{\Sigma}=X'X$), the covariance between individuals ($\similaritys=XX'$) or the Euclidean distances ($\dissimilaritys=\norm{x_i-x_j}$).
 
 
 
