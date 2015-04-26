@@ -426,11 +426,6 @@ Using some algebraic identities \cite[Eq.(23.3)]{shalev-shwartz_understanding_20
 At this point we should note that the linear-space embedding problem has collapsed to the variance maximization problem! 
 If you do not see this, just set $\rank=1$ and compare to Eq.(\ref{eq:pca_maximal_variance}), recalling that $X'X$ estimates the features' covariance $\Sigma$.
 
-\begin{remark}[PCA and SVD]
-The solution to PCA is typically presented in literature using a matrix decomposition called Singular Value Decomposition (SVD). \marginnote{SVD}
-Using SVD facilitates the computation of the solution, and perhaps adds more insight into what PCA is doing. Because it is not an essential part of the PCA problem, but rather the means for the solution, we do not pursue this avenue herein, and refer the reader to Section 14.5.1 in \citep{hastie_elements_2003}.
-\end{remark}
-
 
 
 
@@ -446,14 +441,63 @@ From both motivations we see that the values of $X$ are of no importance given $
 
 In-turn, $X'X$ depends only on the empirical covariances between \emph{individuals} ($\similaritys=XX'$), or on the Euclidean distances between individuals ($\dissimilaritys=(\norm{x_i-x_j})$).
 
-The fact that the linear-space embedding of the data depends only on one of these three, has laid a bridge between feature embedding, such as PCA, and \emph{graph embedding} methods such as MDS (\S\ref{sec:mds}).
 The building blocks of all these graph-based dimensionality reduction methods are:
 \begin{enumerate}
 \item Compute some similarity graph $\similaritys$ (or dissimilarity graph $\dissimilaritys$) from the raw features.
 \item Call upon graph embedding theory to map the data points into the target manifold $\manifold$.
 \end{enumerate}
+The fact that the linear-space embedding of the data depends only some similarity graph has laid a bridge between feature embedding, such as PCA, and \emph{graph embedding} methods such as MDS (\S\ref{sec:mds}).
+Moreover, it has opened the door for replacing the covariance similarity, with many other similarity measures. 
+Classic MDS (\S\ref{sec:mds}) is simply PCA when starting from $\similaritys$, thus viewed as a graph embedding problem.
+kPCA (\S\ref{sec:kpca}) plugs kernel similarities (\S\ref{apx:rkhs}) instead of covariance similarities. 
+Isomap (\S\ref{sec:isomap}), LocalMDS (\S\ref{sec:localMDS}), and LLE (\S\ref{sec:lle}) follow a similar motivation using \emph{local} measures of similarity.
+Spectral Clustering (\S\ref{sec:spectral_clustering}) does some linear-space embedding \`a-la PCA, then wrapping up with a clustering algorithm in $\manifold$ \`a-la K-means. 
 
-We now prove that the PCA solution can be cast in terms of the empirical covariance between variables ($\hat{\Sigma}=X'X$), the covariance between individuals ($\similaritys=XX'$) or the Euclidean distances ($\dissimilaritys=\norm{x_i-x_j}$).
+
+
+We now prove that the PCA solution can be cast in terms of the covariance between individuals ($\similaritys=XX'$) or the Euclidean distances ($\dissimilaritys=\norm{x_i-x_j}$).
+In particular, we show that all the information on the location (mean) of $X$, needed for the PCA reconstruction, is actually encoded in $\similaritys$ (or $\dissimilaritys$).
+
+The following exposition takes from \cite[Section 18.5.2]{hastie_elements_2003}
+
+
+\paragraph{PCA with the Covariance Similarity Graph}
+To begin, we need to cast the solution to the PCA problem in Eq.(\ref{eq:pca_erm3}) using the Singular Value Decomposition (SVD).\marginnote{SVD}
+
+\begin{definition}[SVD]
+Any $n \times p$ matrix $X$, can be decomposed into $X=UDV'$ where 
+$U$ is an $n \times p$ orthogonal matrix ($U'U=I_p$); 
+$D$ is a $p \times p$ diagonal matrix with diagonal elements $d_1 \geq d_2 \geq \dots \geq d_p$;
+$V$ is a $p \times p$ orthogonal matrix ($V'V=I_p$).
+\end{definition}
+
+For mean centered $X$, the series of embeddings $\hyp_\rank(X)$ for $\rank=1,\dots,\pagebreak$ resulting from Eq.(\ref{eq:pca_erm3}) is given by $\hyp_\rank(X)=U_\rank D_\rank$, where $U_\rank$ $D_\rank$ are the $\rank$ leading columns of $U$ and $D$ respectively. $UD$ is thus the sequence of all solutions.
+
+Now denoting $\similaritys=XX'$ and calling SVD: $\similaritys=U D^2 U'$. 
+We thus see that by decomposing $\similaritys$ we can recover $U$, $D$, and thus $\hyp_\rank(X)$.
+
+If $X$ is not mean centred, the relation still holds, but we skip the presentation.
+
+
+\paragraph{PCA with the Euclidean Distance Dissimilarity Graph}
+Can we convert Euclidean distances to empirical covariances? Yes!
+
+Denote the matrix of distances of a non-centred $X$: $\dissimilaritys^2=(\norm{x_i-x_j}^2)$.
+\begin{align}
+	\dissimilaritys^2_{i,j} =& \norm{x_i-x_j}^2 \\
+	=& \normII{x_i-\bar{x}}+\normII{x_j-\bar{x}}-2 \scalar{x_i-\bar{x}}{x_j-\bar{x}} \\
+	=& \normII{x_i-\bar{x}}+\normII{x_j-\bar{x}}-2 \similaritys_{i,j}
+\end{align}
+where $\similaritys_{i,j}$ is the empirical covariance between individual $i$ and $j$.
+We thus have 
+\begin{align}
+	\similaritys= - (I-M) \frac{\dissimilaritys^2}{2} (I-M)
+\end{align}
+where $M$ is the centring matrix: $M:= \frac{1}{n} \ones \ones'$, and $\ones$ an $n$ vector of $1$'s.
+
+
+
+
 
 
 
@@ -464,6 +508,10 @@ When analyzing the PCA results, we often with to understand which features contr
 This is much easier when the loadings, $\loadings$ are sparse, i.e., include many zeroes. 
 This is the purpose of sPCA. 
 We will not go into the technical detail, but merely state that sPCA performs this, \`a-la LASSO style, by means of $l_1$ regularization.
+
+
+
+
 
 
 
