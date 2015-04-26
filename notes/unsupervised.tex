@@ -498,6 +498,14 @@ where $M$ is the centring matrix: $M:= \frac{1}{n} \ones \ones'$, and $\ones$ an
 
 
 
+\subsection{Random Projections}
+\label{sec:random_projections}
+
+What if instead of optimizing a linear embedding of the features with respect to some criterion, such as PCA (\S\ref{sec:pca}), or FA (\S\ref{sec:factor_analysis}), we simply apply a random linear mapping $W X$. How bad will the distances between the observations be distorted? 
+It turns out that not too much!
+The Johnson-Lindenstrauss Lemma \citep{johnson_extensions_1984} quantifies this distortion, essentially implying that we may reduce the dimension of our data in a very \naive manner, while still conserving pair-wise similarities $\similaritys$ between observations.
+ 
+
 
 
 
@@ -602,14 +610,6 @@ I currently do not think is the case.
 \end{remark}
 
 
-
-\subsection{Random Projections}
-\label{sec:random_projections}
-
-What if instead of optimizing a linear embedding of the features with respect to some criterion, such as PCA (\S\ref{sec:pca}), or FA (\S\ref{sec:factor_analysis}), we simply apply a random linear mapping $W X$. How bad will the distances between the observations be distorted? 
-It turns out that not too much!
-The Johnson-Lindenstrauss Lemma \citep{johnson_extensions_1984} quantifies this distortion, essentially implying that we may reduce the dimension of our data in a very \naive manner, while still conserving pair-wise similarities $\similaritys$ between observations.
- 
 
 
 
