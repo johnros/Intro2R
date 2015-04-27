@@ -553,8 +553,19 @@ Both `MASS` have a function called `select`. I will thus try avoid the two packa
 
 
 
-
-
-
 # Naive Bayes
+```{r Naive Bayes}
+library(e1071)
+nb.1 <- naiveBayes(spam~., data = spam.train)
+
+# Train confusion matrix:
+.predictions.train <- predict(nb.1, newdata = spam.train)
+(confusion.train <- table(prediction=.predictions.train, truth=spam.train$spam))
+missclassification(confusion.train)
+
+# Test confusion matrix:
+.predictions.test <- predict(nb.1, newdata = spam.test)
+(confusion.test <- table(prediction=.predictions.test, truth=spam.test$spam))
+missclassification(confusion.test)
+```
 
