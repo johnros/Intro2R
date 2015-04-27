@@ -11,10 +11,7 @@ In `spam` we will try to decide if a mail is spam or not.
 In `prostate` we will try to predict the size of a cancerous tumor.
 
 ```{r}
-# install.packages(ElemStatLearn)
-library(ElemStatLearn)
-data("prostate")
-data("spam")
+source('make_samples.R')
 ```
 You can now call `?prostate` and `?spam` to learn more about these data sets.
 
@@ -36,8 +33,6 @@ We also initialize the random number generator so that we all get the same resul
 set.seed(2015)
 ```
 
-
-
 # OLS
 
 ## OLS Regression
@@ -45,9 +40,6 @@ set.seed(2015)
 Starting with OLS regression, and a split train-test data set:
 ```{r OLS Regression}
 prostate %>% names
-
-prostate.train <- prostate %>% filter(train) %>% select(-train)
-prostate.test <- prostate %>% filter(!train) %>% select(-train)
 # now verify that your data looks as you would expect....
 
 ols.1 <- lm(lcavol~. ,data = prostate.train)
@@ -97,7 +89,48 @@ MSE(errors)
 
 
 ### OLS Regression Model Selection 
-Trying Bootstrapped, Cross Validated, and AIC.
+
+
+Best subset selection
+```{r best subset}
+# install.packages('leaps')
+library(leaps)
+
+regfit.full <- prostate.train %>% regsubsets(lcavol~.,data = .)
+summary(regfit.full)
+plot(regfit.full, scale = "Cp")
+```
+
+
+
+Train-Validate-Test Model Selection.
+Example taken from [here](https://lagunita.stanford.edu/c4x/HumanitiesScience/StatLearning/asset/ch6.html)
+```{r OLS TVT model selection}
+model.n <- regfit.full %>% summary %>% length
+X.train.named <- prostate.train %>% model.matrix(lcavol ~ ., data = .)  
+X.test.named <- prostate.test %>% model.matrix(lcavol ~ ., data = .)  
+View(X.test.named)
+
+val.errors <- rep(NA, model.n)
+train.errors <- rep(NA, model.n)
+for (i in 1:model.n) {
+    coefi <- coef(regfit.full, id = i)
+    
+    pred <-  X.train.named[, names(coefi)] %*% coefi
+    train.errors[i] <- MSE(y.train - pred)
+
+    pred <-  X.test.named[, names(coefi)] %*% coefi
+    val.errors[i] <- MSE(y.test - pred)
+}
+plot(train.errors, ylab = "MSE", pch = 19, type = "b")
+points(val.errors, pch = 19, type = "b", col="blue")
+
+legend("topright", 
+       legend = c("Training", "Validation"), 
+       col = c("blue", "black"), 
+       pch = 19)
+```
+
 
 AIC model selection: 
 ```{r OLS AIC}
@@ -125,34 +158,23 @@ Bootstrap model selection:
 
 ## OLS Classification
 ```{r OLS Classification}
-names(spam)
-n <- nrow(spam)
-spam.dummy <- spam %>% mutate(spam=as.numeric(spam=='spam'))
-
 # Making train and test sets:
-train.prop <- 0.66
-train.ind <- c(TRUE,FALSE) %>% 
-  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
-spam.train <- spam.dummy[train.ind,]
-spam.test <- spam.dummy[!train.ind,]
-
-ols.2 <- lm(spam~., data = spam.train)
+ols.2 <- lm(spam~., data = spam.train.dummy)
 
 # Train confusion matrix:
 .predictions.train <- predict(ols.2) > 0.5
-(confusion.train <- table(prediction=.predictions.train, truth=spam.train$spam))
+(confusion.train <- table(prediction=.predictions.train, truth=spam.train.dummy$spam))
 missclassification(confusion.train)
 
 # Test confusion matrix:
-.predictions.test <- predict(ols.2, newdata = spam.test) > 0.5
-(confusion.test <- table(prediction=.predictions.test, truth=spam.test$spam))
+.predictions.test <- predict(ols.2, newdata = spam.test.dummy) > 0.5
+(confusion.test <- table(prediction=.predictions.test, truth=spam.test.dummy$spam))
 missclassification(confusion.test)
 ```
 
 
 
 # Ridge Regression
-
 ```{r Ridge I}
 library(ridge)
 
@@ -168,17 +190,12 @@ MSE( predict(ridge.1, newdata = prostate.test)- prostate.test$lcavol)
 Another implementation, which also automatically chooses the tuning parameter $\lambda$:
 ```{r Ridge II}
 library(glmnet)
-y.train <- prostate.train$lcavol
-X.train <- prostate.train %>% select(-lcavol) %>% as.matrix
 ridge.2 <- glmnet(x=X.train, y=y.train, alpha = 0)
 
 # Train error:
 MSE( predict(ridge.2, newx =X.train)- y.train)
 
 # Test error:
-y.test <- prostate.test$lcavol 
-X.test <- prostate.test %>% select(-lcavol) %>% as.matrix
-
 MSE( predict(ridge.2, newx = X.test)- y.test)
 ```
 
@@ -190,29 +207,18 @@ __Note__:  `glmnet` is slightly picky: I could not have created `y.train` using 
 # LASSO Regression
 ```{r LASSO}
 library(glmnet)
-y.train <- prostate.train$lcavol
-X.train <- prostate.train %>% select(-lcavol) %>% as.matrix
 lasso.1 <- glmnet(x=X.train, y=y.train, alpha = 1)
 
 # Train error:
 MSE( predict(lasso.1, newx =X.train)- y.train)
 
 # Test error:
-y.test <- prostate.test$lcavol
-X.test <- prostate.test %>% select(-lcavol) %>% as.matrix
-
 MSE( predict(lasso.1, newx = X.test)- y.test)
 ```
 
 
 # Logistic Regression For Classification
 ```{r Logistic Regression}
-# Making train and test sets:
-train.prop <- 0.66
-train.ind <- c(TRUE,FALSE) %>%  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
-spam.train <- spam[train.ind,]
-spam.test <- spam[!train.ind,]
-
 logistic.1 <- glm(spam~., data = spam.train, family = binomial)
 # numerical error. Probably due to too many predictors. 
 # Maybe regularizing the logistic regressio with Ridge or LASSO will make things better?
@@ -225,30 +231,24 @@ Some technical remarks are in order:
 - The `predict` function for `glmnet` objects returns a prediction (see below) for many candidate  regularization levels $\lambda$. We thus we `cv.glmnet` which does an automatic cross validated selection of the best regularization level. 
 ```{r Regularized Logistic Regression}
 library(glmnet)
-y.train <- spam.train$spam
-X.train <- spam.train %>% select(-spam) %>% as.matrix
 # Ridge Regularization with CV selection of regularization:
-logistic.2 <- cv.glmnet(x=X.train, y=y.train, family = "binomial", alpha = 0)
+logistic.2 <- cv.glmnet(x=X.train.spam, y=y.train.spam, family = "binomial", alpha = 0)
 # LASSO Regularization with CV selection of regularization:
-logistic.3 <- cv.glmnet(x=X.train, y=y.train, family = "binomial", alpha = 1)
+logistic.3 <- cv.glmnet(x=X.train.spam, y=y.train.spam, family = "binomial", alpha = 1)
 
 
 # Train confusion matrix:
-.predictions.train <- predict(logistic.2, newx = X.train, type = 'class') 
+.predictions.train <- predict(logistic.2, newx = X.train.spam, type = 'class') 
 (confusion.train <- table(prediction=.predictions.train, truth=spam.train$spam))
 missclassification(confusion.train)
 
-.predictions.train <- predict(logistic.3, newx = X.train, type = 'class') 
+.predictions.train <- predict(logistic.3, newx = X.train.spam, type = 'class') 
 (confusion.train <- table(prediction=.predictions.train, truth=spam.train$spam))
 missclassification(confusion.train)
 
 # Test confusion matrix:
-y.test <- spam.test$spam
-X.test <- spam.test %>% select(-spam) %>% as.matrix
-
-
-.predictions.test <- predict(logistic.2, newx = X.test, type='class') 
-(confusion.test <- table(prediction=.predictions.test, truth=y.test))
+.predictions.test <- predict(logistic.2, newx = X.test.spam, type='class') 
+(confusion.test <- table(prediction=.predictions.test, truth=y.test.spam))
 missclassification(confusion.test)
 
 .predictions.test <- predict(logistic.3, newx = X.test, type='class') 
@@ -263,11 +263,6 @@ missclassification(confusion.test)
 
 ## Classification
 ```{r SVM classification}
-train.prop <- 0.66
-train.ind <- c(TRUE,FALSE) %>%  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
-spam.train <- spam[train.ind,]
-spam.test <- spam[!train.ind,]
-
 library(e1071)
 svm.1 <- svm(spam~., data = spam.train)
 
@@ -285,9 +280,6 @@ missclassification(confusion.test)
 
 ## Regression
 ```{r SVM regression}
-prostate.train <- prostate %>% filter(train) %>% select(-train)
-prostate.test <- prostate %>% filter(!train) %>% select(-train)
-
 svm.2 <- svm(lcavol~., data = prostate.train)
 
 # Train error:
@@ -317,6 +309,9 @@ MSE( predict(gam.2, newdata = prostate.test)- prostate.test$lcavol)
 ```
 
 
+
+
+
 # Neural Net
 
 ## Regression
@@ -329,6 +324,7 @@ MSE( predict(nnet.1)- prostate.train$lcavol)
 # Test error:
 MSE( predict(nnet.1, newdata = prostate.test)- prostate.test$lcavol)
 ```
+
 
 Let's automate the network size selection:
 ```{r NNET validate}
@@ -357,10 +353,6 @@ What can I say... This plot is not what I would expect. Could be due to the rand
 
 ## Classification
 ```{r NNET Classification}
-train.prop <- 0.66
-train.ind <- c(TRUE,FALSE) %>%  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
-spam.train <- spam[train.ind,]
-spam.test <- spam[!train.ind,]
 nnet.2 <- nnet(spam~., size=5, data=spam.train, rang = 0.1, decay = 5e-4, maxit = 1000)
 
 # Train confusion matrix:
@@ -392,11 +384,6 @@ At this stage we should prune the tree using `prune()`...
 
 ## Classification
 ```{r Tree classification}
-train.prop <- 0.66
-train.ind <- c(TRUE,FALSE) %>%  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
-spam.train <- spam[train.ind,]
-spam.test <- spam[!train.ind,]
-
 tree.2 <- rpart(spam~., data=spam.train)
 
 # Train confusion matrix:
@@ -414,9 +401,6 @@ missclassification(confusion.test)
 I will demonstrate the method with a single predictor, so that we can visualize the smoothing that has been performed:
 
 ```{r Smoothing Splines}
-y.train <- prostate.train$lcavol
-X.train <- prostate.train$age
-
 spline.1 <- smooth.spline(x=X.train, y=y.train)
 
 # Visualize the non linear hypothesis we have learned:
@@ -432,12 +416,7 @@ I am not extracting train and test errors as the output of `smooth.spline` will 
 ## Classification
 ```{r knn classification}
 library(class)
-y.train <- spam.train$spam
-X.train <- spam.train %>% select(-spam) %>% as.matrix
-y.test <- spam.test$spam
-X.test <- spam.test %>% select(-spam) %>% as.matrix
-
-knn.1 <- knn(train = X.train, test = X.test, cl =y.train, k = 1)
+knn.1 <- knn(train = X.train.spam, test = X.test.spam, cl =y.train.spam, k = 1)
 
 # Test confusion matrix:
 .predictions.test <- knn.1 
@@ -453,10 +432,6 @@ Kernel regression includes many particular algorithms.
 ```{r kernel}
 # install.packages('np')
 library(np)
-
-y.train <- prostate.train$lcavol
-X.train <- prostate.train %>% select(-lcavol) %>% as.matrix
-
 ksmooth.1 <- npreg(txdat =X.train, tydat = y.train)
 
 # Train error:
@@ -474,58 +449,46 @@ Stacking, in my view, is by far the most useful and coolest. It is thus the only
 The following example is adapted from [James E. Yonamine](http://jayyonamine.com/?p=456).
 
 ```{r Stacking}
-train.prop <- 0.66
-train.ind <- c(TRUE,FALSE) %>% 
-  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
-spam.train <- spam[train.ind,]
-spam.test <- spam[!train.ind,]
-y.train <- spam.train$spam
-X.train <- spam.train %>% select(-spam) %>% as.matrix
-y.test <- spam.test$spam
-X.test <- spam.test %>% select(-spam) %>% as.matrix
-
- 
-
 #####step 1: train models ####
 #logits
-logistic.2 <- cv.glmnet(x=X.train, y=y.train, family = "binomial", alpha = 0)
-logistic.3 <- cv.glmnet(x=X.train, y=y.train, family = "binomial", alpha = 1)
+logistic.2 <- cv.glmnet(x=X.train.spam, y=y.train.spam, family = "binomial", alpha = 0)
+logistic.3 <- cv.glmnet(x=X.train.spam, y=y.train.spam, family = "binomial", alpha = 1)
  
 
 # Learning Vector Quantization (LVQ)
-my.codebook<-lvqinit(x=X.train, cl=y.train, size=10, prior=c(0.5,0.5),k = 2)
-my.codebook<-lvq1(x=X.train, cl=y.train, codebk=my.codebook, niter = 100 * nrow(my.codebook$x), alpha = 0.03)
+my.codebook<-lvqinit(x=X.train.spam, cl=y.train.spam, size=10, prior=c(0.5,0.5),k = 2)
+my.codebook<-lvq1(x=X.train.spam, cl=y.train.spam, codebk=my.codebook, niter = 100 * nrow(my.codebook$x), alpha = 0.03)
  
 # SVM
 library('e1071')
-svm.fit <- svm(y=y.train, x=X.train, probability=TRUE)
+svm.fit <- svm(y=y.train.spam, x=X.train.spam, probability=TRUE)
 
 
  
 #####step 2a: build predictions for data.train####
 train.predict<- cbind(
-  predict(logistic.2, newx=X.train, type="response"),
-  predict(logistic.3, newx=X.train, type="response"),
-  knn1(train=my.codebook$x, test=X.train, cl=my.codebook$cl),
-  predict(svm.fit, X.train, probability=TRUE)
+  predict(logistic.2, newx=X.train.spam, type="response"),
+  predict(logistic.3, newx=X.train.spam, type="response"),
+  knn1(train=my.codebook$x, test=X.train.spam, cl=my.codebook$cl),
+  predict(svm.fit, X.train.spam, probability=TRUE)
 )
 
 ####step 2b: build predictions for data.test####
 test.predict <- cbind(
-  predict(logistic.2, newx=X.test, type="response"),
-  predict(logistic.3, newx=X.test, type="response"),
-  predict(svm.fit, newdata = X.test, probability = TRUE),
-  knn1(train=my.codebook$x, test=X.test, cl=my.codebook$cl)
+  predict(logistic.2, newx=X.test.spam, type="response"),
+  predict(logistic.3, newx=X.test.spam, type="response"),
+  predict(svm.fit, newdata = X.test.spam, probability = TRUE),
+  knn1(train=my.codebook$x, test=X.test.spam, cl=my.codebook$cl)
 )
 
  
 ####step 3: train SVM on train.predict####
-final <- svm(y=y.train, x=train.predict, probability=TRUE)
+final <- svm(y=y.train.spam, x=train.predict, probability=TRUE)
 
 ####step 4: use trained SVM to make predictions with test.predict####
 final.predict <- predict(final, test.predict, probability=TRUE)
 results<-as.matrix(final.predict)
-table(results, y.test)
+table(results, y.test.spam)
 ```
 
 
