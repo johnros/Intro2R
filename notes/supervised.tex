@@ -514,6 +514,13 @@ For more on Boosting and ADABoost see Chapter 10 in \cite{hastie_elements_2003}.
 
 
 
+\subsection{Learning Vector Quantizations (LVQ)}
+[TODO]
+
+
+
+
+
 % % % % % Dim Reduction % % % % %
 
 \section{Dimensionality Reduction In Supervised Learning}
@@ -715,8 +722,8 @@ Here is  stacking example for a continuous $y$:
 	\For{$ \ensembleInd \in 1,\dots \ensembleSize $}
 		\State $\estim{\hyp}^{(i)}_\ensembleInd(x) \gets$ the predictor learned with the $\ensembleInd$'th algorithm, and without the $i$'th observation.
 	\EndFor
+	\State $\bar{\hyp}(x_i) \gets$ the OLS prediction using $\set{ \estim{\hyp}^{(i)}_\ensembleInd(x_i)}_{\ensembleInd=1}^\ensembleSize$ as features. 
 \EndFor
-\State $\bar{\hyp}(x_i) \gets$ the OLS prediction using $\set{ \estim{\hyp}^{(i)}_\ensembleInd(x_i)}_{\ensembleInd=1}^\ensembleSize$ as features. 
 \State \Return $\bar{\hyp}(x)$
 \end{algorithmic}
 \end{algorithm}

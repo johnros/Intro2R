@@ -20,6 +20,7 @@ You can now call `?prostate` and `?spam` to learn more about these data sets.
 
 We also load some utility packages and functions that we will require down the road. 
 ```{r preamble}
+rm(list=ls())
 library(magrittr) # for piping
 library(dplyr) # for handeling data frames
 
@@ -29,6 +30,12 @@ l1 <- function(x) abs(x) %>% sum
 MSE <- function(x) x^2 %>% mean 
 missclassification <- function(tab) sum(tab[c(2,3)])/sum(tab)
 ```
+
+We also initialize the random number generator so that we all get the same results (at least upon a first run)
+```{r set seed}
+set.seed(2015)
+```
+
 
 
 # OLS
@@ -419,6 +426,7 @@ points(spline.1, type='l')
 I am not extracting train and test errors as the output of `smooth.spline` will require some tweaking for that.
 
 
+
 # KNN 
 
 ## Classification
@@ -443,7 +451,7 @@ And now we would try to optimize `k` by trying different values.
 # Kernel Regression
 Kernel regression includes many particular algorithms. 
 ```{r kernel}
-install.packages('np')
+# install.packages('np')
 library(np)
 
 y.train <- prostate.train$lcavol
@@ -463,10 +471,90 @@ There is currently no method to make prediction on test data with this function.
 As seen in the class notes, there are many ensemble methods.
 Stacking, in my view, is by far the most useful and coolest. It is thus the only one I present here.
 
-In this example, I will stack an OLS, a Tree, and a GAM.
+The following example is adapted from [James E. Yonamine](http://jayyonamine.com/?p=456).
 
 ```{r Stacking}
-[TODO]
+train.prop <- 0.66
+train.ind <- c(TRUE,FALSE) %>% 
+  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
+spam.train <- spam[train.ind,]
+spam.test <- spam[!train.ind,]
+y.train <- spam.train$spam
+X.train <- spam.train %>% select(-spam) %>% as.matrix
+y.test <- spam.test$spam
+X.test <- spam.test %>% select(-spam) %>% as.matrix
+
+ 
+
+#####step 1: train models ####
+#logits
+logistic.2 <- cv.glmnet(x=X.train, y=y.train, family = "binomial", alpha = 0)
+logistic.3 <- cv.glmnet(x=X.train, y=y.train, family = "binomial", alpha = 1)
+ 
+
+# Learning Vector Quantization (LVQ)
+my.codebook<-lvqinit(x=X.train, cl=y.train, size=10, prior=c(0.5,0.5),k = 2)
+my.codebook<-lvq1(x=X.train, cl=y.train, codebk=my.codebook, niter = 100 * nrow(my.codebook$x), alpha = 0.03)
+ 
+# SVM
+library('e1071')
+svm.fit <- svm(y=y.train, x=X.train, probability=TRUE)
+
+
+ 
+#####step 2a: build predictions for data.train####
+train.predict<- cbind(
+  predict(logistic.2, newx=X.train, type="response"),
+  predict(logistic.3, newx=X.train, type="response"),
+  knn1(train=my.codebook$x, test=X.train, cl=my.codebook$cl),
+  predict(svm.fit, X.train, probability=TRUE)
+)
+
+####step 2b: build predictions for data.test####
+test.predict <- cbind(
+  predict(logistic.2, newx=X.test, type="response"),
+  predict(logistic.3, newx=X.test, type="response"),
+  predict(svm.fit, newdata = X.test, probability = TRUE),
+  knn1(train=my.codebook$x, test=X.test, cl=my.codebook$cl)
+)
+
+ 
+####step 3: train SVM on train.predict####
+final <- svm(y=y.train, x=train.predict, probability=TRUE)
+
+####step 4: use trained SVM to make predictions with test.predict####
+final.predict <- predict(final, test.predict, probability=TRUE)
+results<-as.matrix(final.predict)
+table(results, y.test)
 ```
 
+
+
+
+
+# Fisher's LDA
+```{r LDA}
+library(MASS) 
+lda.1 <- lda(spam~., spam.train)
+
+# Train confusion matrix:
+.predictions.train <- predict(lda.1)$class
+(confusion.train <- table(prediction=.predictions.train, truth=spam.train$spam))
+missclassification(confusion.train)
+
+# Test confusion matrix:
+.predictions.test <- predict(lda.1, newdata = spam.test)$class
+(confusion.test <- table(prediction=.predictions.test, truth=spam.test$spam))
+missclassification(confusion.test)
+```
+
+__Caution__:
+Both `MASS` have a function called `select`. I will thus try avoid the two packages being loaded at once, or call the functionby its full name: `MASS::select` or `dplyr::select'.
+
+
+
+
+
+
+# Naive Bayes
 
