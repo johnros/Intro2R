@@ -843,7 +843,56 @@ For a detailed review of ICA see \cite{hyvarinen_independent_2000}.
 
 
 \subsection{Mixtures}
-[TODO]
+A very simply, perhaps the simplest, class of latent variable generative models, is that of Finite Mixtures. 
+In a finite mixture, the fundamental assumption is that the observed data is sampled from $K$ unobserved classes. Each class, having some simple joint distribution. 
+Being unobserved, we cannot directly learn the conditional simple distributions, without somehow learning the class assignments. 
+The likelihood function of such data, is thus the \emph{marginal} probability over all possible classes, thus a \emph{mixture}.
+The good news is that a very complex generative model, may be much more easy to learn and interpret if we can assume, or approximately assume, it is actually a finite mixture.
+
+The probability density of a mixture of $K$ classes, each with density $\pdf_k(x)$, is given by  
+\begin{align}
+\label{eq:mixture}
+	\pdf(x)=\sum_{k=1}^{K} \pi_k \pdf_k(x)
+\end{align}
+where $\pi_k$ is the probability of class $k$.
+
+
+
+\begin{remark}[Finite Mixture Distributions]
+While very simple to understand, mixture distributions are an unpleasant probabilistic creature. 
+Because the probability mass (or density) function is additive in the underlying mixing components, is has a very challenging functional form.
+For instance- the likelihood problem with be non-convex with multiple local extrema, so that numerical optimization schemes are not guaranteed to converge.
+It may also be the case that the likelihood is unbounded, so that the local extrema are not a global extrema, complicating our attempts at maximum likelihood estimation. 
+Hypothesis testing for the number of mixing components is also very challenging as classical statistical theory assumptions do not apply.
+\end{remark}
+
+
+\begin{remark}[Mixtures And the Expectation Maximization Algorithm (EM)]
+As previously stated, the likelihood function of mixtures is typically non convex. 
+It's optimization is typically done with a numerical algorithm called the Expectation Maximization (EM) algorithm.
+Roughly speaking, the idea behind the EM, is that in each iteration observations are assigned to classes, the simple conditional distributions learned, then reasigned using the learnt parameters, etc.\ until convergence.
+Even though convergence to an optimum is not guaranteed, it is by far the most popular framework for learning mixtures.
+\end{remark}
+
+
+
+\begin{remark}[Mixtures For Clustering]
+Because the output of learning a mixture, is a density like Eq.(\ref{eq:mixture}), a learnt mixture can easily serve for clustering by a simple application of Bayes rule. Simple assign an observation to the cluster with highest (posterior) probability:
+\begin{align}
+\label{eq:mixture_posterior}
+	\prob{x \in k|x}=\frac{\pi_k \pdf_k(x)}{\pdf(x)}
+\end{align}
+\end{remark}
+
+
+
+\begin{remark}[Mixture in Supervise Learning]
+The generative models underlying several supervised learning methods, are actually finite mixtures.
+Fisher's LDA (\S\ref{sec:lda}) implies a finite mixture of Gaussians, with the same covariance and different means.
+Fisher's QDA (\S\ref{sec:qda}) implies a finite mixture of Gaussian, with different covariance and different means.
+\Naive Bayes (\S\ref{sec:naive_bayes}) implies a mixture of some distribution, with independent components.
+\end{remark}
+
 
 
 
