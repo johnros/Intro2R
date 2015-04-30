@@ -899,7 +899,16 @@ Fisher's QDA (\S\ref{sec:qda}) implies a finite mixture of Gaussian, with differ
 
 \subsection{Hidden Markov Models (HMM)}
 \label{sec:hmm}
-[TODO]
+Hidden Markov Models may have two possible interpretations.
+
+The first, and perhaps most common, is as a generalization of the mixture model in the case the generative model assumes dependencies between $x_i$'s and we wish to use a mixture model. 
+In this case, we need to model and learn the transition probabilities between states (or classes, are we previously referred to the hidden states of a mixture). 
+Assuming the transition between states follows a \emph{Markov process}, i.e., the probabilities of transition depends only upon the current state, the resulting model is an \emph{hidden Markov model}, or \emph{hidden Markov chain}.
+\marginnote{Markov Process}
+
+The second, is as a generalization of the Graphical Models (\S\ref{sec:graphical_models}). 
+This generalization is known a \emph{latent space graphical model} (\S\ref{sec:latent_graphical}). 
+In this case, the Markov property does not describe the process of transition between states, but rather a property of the conditional distribution in each state ($\pdf_k(x)$). 
 
 
 
