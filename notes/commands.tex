@@ -1,0 +1,100 @@
+
+% Custom commands
+
+\newcommand{\naive}{na\"{\i}ve }
+\newcommand{\Naive}{Na\"{\i}ve }
+\newcommand{\andor}{and\textbackslash or }
+\newcommand{\erdos}{Erd\H{o}s }
+\newcommand{\renyi}{R\`enyi }
+
+
+\newcommand{\al}{\alpha}
+\newcommand{\be}{\beta}
+
+\newcommand{\set}[1]{\left\{ #1 \right\}} % A set
+\newcommand{\rv}[1]{\mathbf{#1}} % A random variable
+\newcommand{\x}{\rv x} % The random variable x 
+\newcommand{\y}{\rv y} % The random variable y
+\newcommand{\expect}[1]{\mathbf{E}\left[ #1 \right]} % The expectation operator
+\newcommand{\expectg}[2]{\mathbf{E}_{\rv{#1}}\left[ \rv{#2} \right]} % An expectation w.r.t. a particular random variable.
+\newcommand{\expectn}[1]{\mathbb{E}\left[#1\right]} % The empirical expectation
+\newcommand{\cov}[1]{\mathbf{C}ov \left[ #1 \right]} % The expectation operator
+\newcommand{\covn}[1]{\mathbb{C}ov \left[ #1 \right]} % The expectation operator
+\newcommand{\gauss}[1]{\mathcal{N}\left(#1\right)} % The gaussian distribution
+\newcommand{\cdf}[2]{F_\rv{#1} (#2)} % The CDF function
+\newcommand{\cdfn}[2]{\mathbb{F}_{#1}(#2)} % The empirical CDF function
+\newcommand{\icdf}[2]{F_\rv{#1}^{-1} (#2)} % The invecrse CDF function
+\newcommand{\icdfn}[2]{\mathbb{F}^{-1}_{#1}(#2)} % The inverse empirical CDF function
+\newcommand{\pdf}{p} % The probability density function
+\newcommand{\prob}[1]{P\left( #1 \right)} % the probability of an event
+\newcommand{\dist}{P} % The proabaiblity distribution
+\newcommand{\entropy}{H} % entropy
+\newcommand{\mutual}{I} % mutual information
+
+\newcommand{\estim}[1]{\widehat{#1}} % An estimator
+
+\newcommand{\norm}[1]{\Vert #1 \Vert} % The norm operator
+\newcommand{\normII}[1]{\norm{#1}_2} % The norm operator
+\newcommand{\normI}[1]{\norm{#1}_1} % The norm operator
+\newcommand{\normF}[1]{\norm{#1}_{Frob}} % The Frobenius matrix norm
+\newcommand{\ones}{\textbf{1}} % Vector of ones.
+\newcommand{\lik}{\mathcal{L}} % The likelihood function
+\newcommand{\loglik}{L} % The log likelihood function
+\newcommand{\loss}{l} % A loss function
+\newcommand{\risk}{R} % The risk function
+\newcommand{\riskn}{\mathbb{R}} % The empirical risk
+\newcommand{\deriv}[2]{\frac{\partial #1}{\partial #2}} % A derivative
+\newcommand{\argmin}[2]{\mathop{argmin} _{#1}\set{#2}} % The argmin operator
+\newcommand{\argmax}[2]{\mathop{argmax}_{#1}\set{#2}} % The argmin operator
+\newcommand{\hyp}{f} % A hypothesis
+\newcommand{\hypclass}{\mathcal{F}} % A hypothesis class
+\newcommand{\hilbert}{\mathcal{H}}
+\newcommand{\rkhs}{\hilbert_\kernel} % A hypothesis class
+\newcommand{\normrkhs}[1]{\norm{#1}_{\rkhs}} % the RKHS function norm
+
+
+\newcommand{\plane}{\mathbb{L}} % A hypoerplane
+\newcommand{\categories}{\mathcal{G}} % The categories set.
+\newcommand{\positive}[1]{\left[ #1 \right]_+} % The positive part function
+\newcommand{\kernel}{\mathcal{K}} % A kernel function
+\newcommand{\featureS}{\mathcal{X}} % The feature space
+\newcommand{\indicator}[1]{I_{\set{#1}}} % The indicator function.
+\newcommand{\reals}{\mathbb{R}} % the set of real numbers
+
+
+
+\newcommand{\latent}{S} % latent variables matrix
+\newcommand{\loadings}{A} % factor loadings matrix
+\newcommand{\rotation}{R}  % rotation matrix
+\newcommand{\similaritys}{\mathfrak{S}} % a similarity graph
+\newcommand{\similarity}{s} % A similarity measure.
+\newcommand{\dissimilarity}{d} % A dissimilarity measure.
+\newcommand{\dissimilaritys}{\mathfrak{D}} % a dissimilarity graph
+\newcommand{\scalar}[2]{\left< #1,#2 \right>} % a scalar product
+
+
+
+\newcommand{\manifold}{\mathcal{M}} % A manifold.
+\newcommand{\project}{\hookrightarrow} % The orthogonal projection operator.
+\newcommand{\projectMat}{H} % A projection matrix.
+\newcommand{\rank}{q} % A subspace rank.
+\newcommand{\encode}{E} % a linear encoding matrix
+\newcommand{\decode}{D} % a linear decoding matrix
+\DeclareMathOperator{\Tr}{Tr}
+\newcommand{\ensembleSize}{M} % Size of a hypothesis ensemble.
+\newcommand{\ensembleInd}{m} % Index of a hypothesis in an ensemble.
+
+
+\newcommand{\sample}{\mathcal{S}} % A data sample.
+\newcommand{\test}{\risk(\hyp)} % The test error (risk)
+\newcommand{\train}{\riskn(\hyp)} % The train error (empirical risk)
+\newcommand{\insample}{\bar{\risk}(\hyp)} % The in-sample test error.
+\newcommand{\EPE}{\risk(\hat{\hyp}_n)} % The out-of-sample test error.
+\newcommand{\folds}{K} % Cross validation folds 
+\newcommand{\fold}{k} % Index of a fold
+\newcommand{\bootstraps}{B} % Bootstrap samples
+\newcommand{\bootstrap}{{b^*}} % Index of a bootstrap replication
+
+
+\newcommand{\rankings}{\mathcal{R}} % Rankings, for colaborative filtering.
+\newcommand{\ranking}{r} % Rankings, for colaborative filtering.
