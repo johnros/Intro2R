@@ -155,7 +155,8 @@ SOMs, also known as \emph{Kohonen maps}, and \emph{self organizing feature maps}
 They are a dimensionality reduction method, which driven by the quality of clustering.
 Unlike many similarity based dimensionality reduction methods, it requires the original features $X$, and not only a similarity graph. \marginnote{Kohonen Map}
 
-SOMs can be seen as the marriage of K-means clustering (\S\ref{sec:kmeans}) with dimensionality reduction (\S\ref{sec:dim_reduce_linear}).
+SOMs is an algorithm. It cannot be cast as an optimization problem. 
+It can be seen as the marriage of K-means clustering (\S\ref{sec:kmeans}) with a non-linear space embedding (\S\ref{sec:dim_reduce_nonlinear}).
 
 
 
@@ -521,8 +522,6 @@ We will not go into the technical detail, but merely state that sPCA performs th
 
 
 
-\subsection{Self Organizing Maps (SOM)}
-SOMs, already discussed in Section~\ref{sec:som}, are a linear-subspace dimensionality reduction method, aimed at good clustering. 
 
 
 \subsection{Multidimensional Scaling (MDS)}
@@ -665,8 +664,25 @@ They are discussed in Appendix~\ref{apx:rkhs}.
 
 
 
-\subsection{Principal Curves}
-[TODO]
+
+\subsection{Self Organizing Maps (SOM)}
+SOMs, already discussed in Section~\ref{sec:som}, are a non-linear-subspace dimensionality reduction method, aimed at good clustering. 
+It is non-linear because the algorithm (which cannot be cast as an ERM problem) returns an embedding into a non-linear manifold.
+
+
+
+\subsection{Principal Curves and Surfaces}
+Principal curves (or surfaces), is an algorithm. It cannot be cast as an optimization problem.
+Being a non-linear space embedding method, the algorithm iterates until it returns a curve of a surface.
+In the curve case, it will return a curve with the \emph{self consistency} property. I.e., a curve with a path that is the average of all it's closest data points.\marginnote{Self Consisntecy}
+Roughly speaking, one can think of this curve as a parametrized function, connecting all the k-means cluster centres in the smoothest way possible.
+Using the same, slightly inaccurate depiction, a principal surface is a \emph{surface} connecting these k-means cluster centres.
+We stress that in both cases, the output is a continuous parametrization of the curve or the surface.
+
+It is highly uncommon to approximate the data with surfaces (manifolds) with a dimension larger than $2$, as typically the method is used for projecting the data before visualizing \andor clustering.
+
+
+
 
 
 
