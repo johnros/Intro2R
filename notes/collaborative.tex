@@ -1,0 +1,72 @@
+\chapter{Recommender Systems and Collaborative Filtering}
+\label{sec:collaborative_filtering}
+
+
+% % % % recommender systems % % % % % % %
+\section{Recommender Systems}
+
+A recommender system is a software that, as the name suggests, gives recommendations to the user. 
+Notable examples include Book recommendations by Amazon, and film recommendations by Netflix.
+The two main approaches to recommender systems include \emph{content filtering} and \emph{collaborative filtering}.
+
+
+
+% % % % Content filtering % % % % % %
+\section{Content Filtering}
+
+In content filtering, the system is assume to have some backround information on the user (say, because he logged in), and uses
+this information to give him recommendations.
+The recommendation in this case, is approached as a supervised learning problem: 
+the system learns to predict a product's rating ($y$) based on the user's features ($x$).
+It then computes the rating for many candidate products and recommends a set with high predicted ratings.
+
+
+
+% % % % colaborative filtering % % % % %
+\section{Collaborative Filtering}
+
+Unlike content filtering, in \emph{collaborative filtering}, there is no external information on the user or the products, besides the ratings of other users. 
+The term collaborative filtering, was coined by the authors of the first such system-- Tapestry \citep{goldberg_using_1992}. 
+
+Collaborative filtering can be approached as a supervised learning problem, or as an unsupervised learning problem. This is because it is neither. 
+It is essentially a \emph{missing data} problem.\marginnote{Missing Data}
+To see this consider a matrix of rankings, $\rankings$ where the $i,j$'th entry, $\ranking_{i,j}$, is the ranking of user $i$ movie $j$. 
+Predicting $\ranking_{i,j'}$, i.e., the ranking of a currently unseen movie, is essentially an imputation of a missing value.
+
+
+The two main approaches to collaborative filtering include \emph{neighbourhood methods}, and \emph{latent factor models} \cite{koren_matrix_2009}.
+
+\subsubsection{Neighbourhood Methods}
+The neighbourhood methods to collaborative filtering rest on the assumption that similar individuals have similar tastes. 
+If someone similar to individual $i$ has seen movie $j'$, then $i$ should have a similar opinion.
+
+The notion of using the neighbourhood of a data point is not a new one. We have seen it being used for supervised learning in kernel regression (\S\ref{sec:kernel}) and KNN (\S\ref{sec:knn}).
+
+Neighbourhood methods for collaborative filtering, or missing data imputation in general, can thus be seen as supervised learning problems, and solved in the same way.
+
+
+\begin{remark}[Collaborative Filtering and Other Supervised Learning Methods]
+If you are wondering, why only neighbourhood methods for supervised learning apply to collaborative filtering, you are right.
+Any supervised learning method can be applied to impute entries in $\rankings$. Neighbourhood 
+methods are merely the most popular.
+\end{remark}
+
+
+\subsubsection{Latent Factor Models}
+The latent factor approach to collaborative filtering rests on the assumption that the rankings are a function of some latent user attributes and latent movie attributes. 
+This idea is not a new one, as we have seen it in the context of unsupervised learning in factor analysis (FA) (\S\ref{sec:factor_analysis}), independent component analysis (ICA) (\S\ref{sec:ica}), and other latent space generative models.
+From the relation between FA and PCA, it should also come as no surprise that collaborative filtering can also be viewed as a matrix approximation problem. 
+When approximating the rankings matrix ($\rankings$) with some simple manifold $\manifold$, en-passant, we also impute the missing entries in $\rankings$.
+
+We now see that collaborative filtering, and missing data imputation in general, can also be approached as an unsupervised learning problem. 
+
+
+
+\section{The Relation Between Supervised and Unsupervised Learning}
+It may be surprising that collaborative filtering can be seen as both an unsupervised and a supervised learning problem.
+But these are not mutually exclusive problems. 
+In fact, the relation has already been implied in the introduction to the unsupervised learning section (\S\ref{sec:unsupervised}), and we now make it explicit.
+
+In unsupervised learning we try to learn the joint distribution of $x$, i.e., try to learn the relationship between any variable in $x$ to the rest, we may see it as several supervised learning problems. In each, a different variable in $x$ plays the role of $y$. 
+
+Many unsupervised learning methods can be seen in this light. We, however, will not be exploring this avenue right now.
