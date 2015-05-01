@@ -1,0 +1,57 @@
+\addvspace {10\p@ }
+\contentsline {example}{\numberline {2.1.1}Example\thmtformatoptarg {Exponential Rate}}{8}{example.2.1.1}
+\contentsline {example}{\numberline {2.1.2}Example\thmtformatoptarg {Linear Regression}}{8}{example.2.1.2}
+\contentsline {example}{\numberline {2.2.1}Example\thmtformatoptarg {Exponential rate}}{9}{example.2.2.1}
+\contentsline {example}{\numberline {2.3.1}Example\thmtformatoptarg {Exponential rate}}{9}{example.2.3.1}
+\contentsline {example}{\numberline {2.3.2}Example\thmtformatoptarg {Discrete time Markov Chain}}{10}{example.2.3.2}
+\contentsline {remark}{\numberline {2.3.1}Remark\thmtformatoptarg {Confession}}{10}{remark.2.3.1}
+\contentsline {example}{\numberline {2.3.3}Example\thmtformatoptarg {Autoregression of order 1 (AR(1))}}{10}{example.2.3.3}
+\contentsline {example}{\numberline {2.3.4}Example\thmtformatoptarg {Linear Regression}}{11}{example.2.3.4}
+\contentsline {definition}{\numberline {2.1}Definition\thmtformatoptarg {Loss Function}}{11}{definition.2.1}
+\contentsline {definition}{\numberline {2.2}Definition\thmtformatoptarg {Risk Function}}{11}{definition.2.2}
+\contentsline {definition}{\numberline {2.3}Definition\thmtformatoptarg {Empirical Risk}}{12}{definition.2.3}
+\contentsline {example}{\numberline {2.4.1}Example\thmtformatoptarg {Squared Loss}}{12}{example.2.4.1}
+\contentsline {example}{\numberline {2.4.2}Example\thmtformatoptarg {Ordinary Least Squares (OLS)}}{12}{example.2.4.2}
+\addvspace {10\p@ }
+\contentsline {remark}{\numberline {3.1.1}Remark\thmtformatoptarg {No Sampling Distribution}}{15}{remark.3.1.1}
+\contentsline {remark}{\numberline {3.1.2}Remark\thmtformatoptarg {OLS Extensions}}{16}{remark.3.1.2}
+\contentsline {remark}{\numberline {3.1.3}Remark\thmtformatoptarg {Generalized Linear Models (GLM)}}{18}{remark.3.1.3}
+\contentsline {remark}{\numberline {3.1.4}Remark}{18}{remark.3.1.4}
+\contentsline {remark}{\numberline {3.1.5}Remark\thmtformatoptarg {Name Origins}}{19}{remark.3.1.5}
+\contentsline {remark}{\numberline {3.1.6}Remark\thmtformatoptarg {Solve the right problem}}{20}{remark.3.1.6}
+\contentsline {remark}{\numberline {3.1.7}Remark\thmtformatoptarg {Not a pure ERM}}{20}{remark.3.1.7}
+\contentsline {remark}{\numberline {3.1.8}Remark\thmtformatoptarg {Not a pure ERM}}{21}{remark.3.1.8}
+\contentsline {remark}{\numberline {3.1.9}Remark\thmtformatoptarg {Universal Approximator}}{21}{remark.3.1.9}
+\contentsline {remark}{\numberline {3.3.1}Remark\thmtformatoptarg {Hypothesis Testing Driven Variable Selection}}{28}{remark.3.3.1}
+\contentsline {remark}{\numberline {3.4.1}Remark\thmtformatoptarg {LDA and OLS classification}}{29}{remark.3.4.1}
+\contentsline {remark}{\numberline {3.5.1}Remark}{30}{remark.3.5.1}
+\addvspace {10\p@ }
+\contentsline {remark}{\numberline {4.2.1}Remark}{36}{remark.4.2.1}
+\addvspace {10\p@ }
+\contentsline {remark}{\numberline {5.0.1}Remark\thmtformatoptarg {Relation to Supervised Classification}}{40}{remark.5.0.1}
+\contentsline {remark}{\numberline {5.0.2}Remark\thmtformatoptarg {Unsupervised Learning in the ERM framework}}{40}{remark.5.0.2}
+\contentsline {remark}{\numberline {5.3.1}Remark}{45}{remark.5.3.1}
+\contentsline {remark}{\numberline {5.3.2}Remark\thmtformatoptarg {Restricted Bolzmann Machine}}{45}{remark.5.3.2}
+\contentsline {remark}{\numberline {5.4.1}Remark\thmtformatoptarg {Interpreting ``Linear''}}{46}{remark.5.4.1}
+\contentsline {remark}{\numberline {5.4.2}Remark\thmtformatoptarg {Dimensionality Reduction and Latent Space Generative Models}}{46}{remark.5.4.2}
+\contentsline {definition}{\numberline {5.1}Definition\thmtformatoptarg {SVD}}{50}{definition.5.1}
+\contentsline {remark}{\numberline {5.4.3}Remark\thmtformatoptarg {Classical and Least Squares MDS}}{53}{remark.5.4.3}
+\contentsline {remark}{\numberline {5.4.4}Remark\thmtformatoptarg {The Non-Linearity of Local MDS}}{53}{remark.5.4.4}
+\contentsline {remark}{\numberline {5.4.5}Remark\thmtformatoptarg {The Non-Linearity of Isomap}}{53}{remark.5.4.5}
+\contentsline {remark}{\numberline {5.5.1}Remark\thmtformatoptarg {Non Linear Dimensionality Reduction}}{54}{remark.5.5.1}
+\contentsline {remark}{\numberline {5.5.2}Remark\thmtformatoptarg {Information Bottleneck and ICA}}{55}{remark.5.5.2}
+\contentsline {remark}{\numberline {5.6.1}Remark\thmtformatoptarg {Identifiability in PCA}}{56}{remark.5.6.1}
+\contentsline {remark}{\numberline {5.6.2}Remark\thmtformatoptarg {ICA and FA}}{57}{remark.5.6.2}
+\contentsline {remark}{\numberline {5.6.3}Remark\thmtformatoptarg {Finite Mixture Distributions}}{59}{remark.5.6.3}
+\contentsline {remark}{\numberline {5.6.4}Remark\thmtformatoptarg {Mixtures And the Expectation Maximization Algorithm (EM)}}{60}{remark.5.6.4}
+\contentsline {remark}{\numberline {5.6.5}Remark\thmtformatoptarg {Mixtures For Clustering}}{60}{remark.5.6.5}
+\contentsline {remark}{\numberline {5.6.6}Remark\thmtformatoptarg {Mixture in Supervise Learning}}{60}{remark.5.6.6}
+\contentsline {remark}{\numberline {5.7.1}Remark\thmtformatoptarg {Relation to Spectral Clustering}}{62}{remark.5.7.1}
+\addvspace {10\p@ }
+\contentsline {remark}{\numberline {6.3.1}Remark\thmtformatoptarg {Collaborative Filtering and Other Supervised Learning Methods}}{64}{remark.6.3.1}
+\addvspace {10\p@ }
+\contentsline {remark}{\numberline {C.0.1}Remark}{70}{remark.C.0.1}
+\addvspace {10\p@ }
+\contentsline {definition}{\numberline {D.1}Definition\thmtformatoptarg {Entropy}}{72}{definition.D.1}
+\contentsline {definition}{\numberline {D.2}Definition\thmtformatoptarg {Mutual Information}}{72}{definition.D.2}
+\contentsline {definition}{\numberline {D.3}Definition\thmtformatoptarg {Kullback\IeC {\textendash }Leibler Divergence}}{72}{definition.D.3}
