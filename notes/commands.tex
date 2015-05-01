@@ -1,3 +1,17 @@
+% Custom environments
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{prop}{Proposition}[section]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{example}{Example}[section]
+
+
+
 
 % Custom commands
 
@@ -29,7 +43,7 @@
 \newcommand{\prob}[1]{P\left( #1 \right)} % the probability of an event
 \newcommand{\dist}{P} % The proabaiblity distribution
 \newcommand{\entropy}{H} % entropy
-\newcommand{\mutual}{I} % mutual information
+\newcommand{\mutual}[2]{I\left(#1;#2\right)} % mutual information
 
 \newcommand{\estim}[1]{\widehat{#1}} % An estimator
 
@@ -63,7 +77,8 @@
 
 
 
-\newcommand{\latent}{S} % latent variables matrix
+\newcommand{\latent}{\rv{s}} % latent variables matrix
+\newcommand{\latentn}{S} % latent variables matrix
 \newcommand{\loadings}{A} % factor loadings matrix
 \newcommand{\rotation}{R}  % rotation matrix
 \newcommand{\similaritys}{\mathfrak{S}} % a similarity graph
@@ -98,3 +113,5 @@
 
 \newcommand{\rankings}{\mathcal{R}} % Rankings, for colaborative filtering.
 \newcommand{\ranking}{r} % Rankings, for colaborative filtering.
+\newcommand{\kl}[2]{D_{KL}\left(#1 \Vert #2 \right)}
+\newcommand{\ortho}{\mathbb{O}} % space of orthogonal matrices

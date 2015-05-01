@@ -797,6 +797,7 @@ For an full exposition, and a discussion of the differences with PCA, see \cite{
 
 ICA is a family of latent space models as it assumes data is generated as some function of the latent variables $\latent$. 
 In many cases this function is assumed to be linear in $\latent$ so that ICA is compared, if not confused, with PCA or FA. 
+In its most popular form, $X$ is assume to be a \emph{linear} function of the latent independent components.
 
 The fundamental idea of ICA is that $\latent$ has a joint distribution of \emph{independent} variables. 
 This is a stronger assumption that the typical FA assumption where the distribution of $\latent$ is merely assumed to be uncorrelated. 
@@ -817,6 +818,7 @@ Recovering $\latent$ is thus recovering the original signals mixing in the recor
 \begin{remark}[ICA and FA]
 The solutions to the (linear) ICA problem can ultimately be seen as a solution to the FA problem with a particular rotation $\rotation$ implied by the independence assumption.
 Put differently, the formulation of the (linear) ICA problem, implies a unique rotation. 
+This illustrated in the mathematics of ICA below
 \end{remark}
 
 For a general discussion of ICA see \cite{jolliffe_principal_2002}.
@@ -826,11 +828,40 @@ For a detailed review of ICA see \cite{hyvarinen_independent_2000}.
 
 
 \paragraph{Mathematics of ICA}
-[TODO]
+We will first analyze the population problem, i.e., in terms of random variables. 
+We thus replace the data $X$, with the random vector $\x$.
+We will then take the intuition from the population problem, and apply it to the observed data.
+We also consider the simplest case where:
+\begin{itemize}
+\item $\x=\loadings \latent$, implying that $\x$ is \emph{linear} in the latent components, and the latent space is of dimension $\rank=p$.
+\item $\x$ has been pre-whitented, so that $\cov{\x}=I$.
+\item Distance between distributions are measured using the Kullback-Leibler divergence (KL): $\kl{\x}{\latent}$.
+\end{itemize}
+This setup thus implies that the latent factors can be recovered by applying the inverse mixing: $\latent=\loadings'\x$.
 
+The optimization problem in this simple ICA is to find an orthogonal matrix $\loadings$, for which:
+(i) the components of $\loadings'\x$ are independent;
+(ii) $\loadings'\x$ is a good approximation of $\x$.
+Formally: 
+\begin{align}
+\label{eq:ica_optimization}
+	\argmin{\loadings \text{ orthogonal} \;; \loadings'\x \text{ independent}}{\kl{\loadings'\x}{\x}}
+\end{align}
+where $\ortho$ is a space of orthogonal matrices. 
 
+By enforcing the independence constraint in Eq.(\ref{eq:ica_optimization}), and due to the properties of the KL divergence, we get the following optimization problem:
+\begin{align}
+\label{eq:ica_optimization2}
+	\argmin{\loadings \text{ orthogonal}}{\sum_{j=1}^{\rank} \entropy(\loadings_j\x)- \entropy(\x)}
+\end{align}
+where $\entropy$ denotes the Entropy (Definition \ref{def:entropy}).
+Now, $\entropy(\x)$ is obviously fixed, so we need to minimize $\entropy(\loadings_j\x)$. 
+A classical result in information theory, is that the Gaussian distribution has the maximal entropy. 
+Minimizing $\entropy(\loadings_j\x)$ can thus be interpreted as finding a matrix $\loadings$ such that its columns return random variables, $\loadings_j\x$, that are as \emph{non-Gaussian} as possible.
 
-
+This is where the population analysis ends. 
+The insight we take from it, is that finding independent components, is actually finding non-Gaussian combinations of $\x$. 
+The different implementations of ICA, indeed look for a matrix $\loadings$ which returns the most non-Gaussian combinations of the observed $X$. 
 
 
 

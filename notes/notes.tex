@@ -1,4 +1,27 @@
-\input{preamble}
+\documentclass[12pt,a4paper]{report}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{amsthm}
+\usepackage{natbib}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{hyperref}
+\AtBeginDocument{\let\textlabel\label}
+
+\usepackage{marginnote}
+\renewcommand*{\marginfont}{\scriptsize }
+
+\usepackage{thmtools} % for lists of theorems
+
+
+\input{commands}
+
 
 \author{Jonathan Rosenblatt}
 \title{Class Notes (experimental)}
@@ -11,10 +34,17 @@
 \tableofcontents
 
 
+
+
+
 %%%%%%%%% Algorithms %%%%%%%%%%%
 \newpage
 \listofalgorithms
 \addcontentsline{toc}{chapter}{List of Algorithms}
+
+\renewcommand{\listtheoremname}{List of Definitions}
+\listoftheorems[ignoreall,show={definition}]
+
 
 
 \chapter{Introduction}
