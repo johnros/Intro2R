@@ -30,28 +30,33 @@
 \addvspace {10\p@ }
 \contentsline {remark}{\numberline {5.0.1}Remark\thmtformatoptarg {Relation to Supervised Classification}}{40}{remark.5.0.1}
 \contentsline {remark}{\numberline {5.0.2}Remark\thmtformatoptarg {Unsupervised Learning in the ERM framework}}{40}{remark.5.0.2}
+\contentsline {remark}{\numberline {5.0.3}Remark\thmtformatoptarg {Graph Method or Feature Methods?}}{40}{remark.5.0.3}
 \contentsline {remark}{\numberline {5.3.1}Remark}{45}{remark.5.3.1}
-\contentsline {remark}{\numberline {5.3.2}Remark\thmtformatoptarg {Restricted Bolzmann Machine}}{45}{remark.5.3.2}
-\contentsline {remark}{\numberline {5.4.1}Remark\thmtformatoptarg {Interpreting ``Linear''}}{46}{remark.5.4.1}
-\contentsline {remark}{\numberline {5.4.2}Remark\thmtformatoptarg {Dimensionality Reduction and Latent Space Generative Models}}{46}{remark.5.4.2}
-\contentsline {definition}{\numberline {5.1}Definition\thmtformatoptarg {SVD}}{50}{definition.5.1}
-\contentsline {remark}{\numberline {5.4.3}Remark\thmtformatoptarg {Classical and Least Squares MDS}}{53}{remark.5.4.3}
-\contentsline {remark}{\numberline {5.4.4}Remark\thmtformatoptarg {The Non-Linearity of Local MDS}}{53}{remark.5.4.4}
-\contentsline {remark}{\numberline {5.4.5}Remark\thmtformatoptarg {The Non-Linearity of Isomap}}{53}{remark.5.4.5}
-\contentsline {remark}{\numberline {5.5.1}Remark\thmtformatoptarg {Non Linear Dimensionality Reduction}}{54}{remark.5.5.1}
-\contentsline {remark}{\numberline {5.5.2}Remark\thmtformatoptarg {Information Bottleneck and ICA}}{55}{remark.5.5.2}
-\contentsline {remark}{\numberline {5.6.1}Remark\thmtformatoptarg {Identifiability in PCA}}{56}{remark.5.6.1}
-\contentsline {remark}{\numberline {5.6.2}Remark\thmtformatoptarg {ICA and FA}}{57}{remark.5.6.2}
-\contentsline {remark}{\numberline {5.6.3}Remark\thmtformatoptarg {Finite Mixture Distributions}}{59}{remark.5.6.3}
-\contentsline {remark}{\numberline {5.6.4}Remark\thmtformatoptarg {Mixtures And the Expectation Maximization Algorithm (EM)}}{60}{remark.5.6.4}
-\contentsline {remark}{\numberline {5.6.5}Remark\thmtformatoptarg {Mixtures For Clustering}}{60}{remark.5.6.5}
-\contentsline {remark}{\numberline {5.6.6}Remark\thmtformatoptarg {Mixture in Supervise Learning}}{60}{remark.5.6.6}
-\contentsline {remark}{\numberline {5.7.1}Remark\thmtformatoptarg {Relation to Spectral Clustering}}{62}{remark.5.7.1}
+\contentsline {remark}{\numberline {5.3.2}Remark\thmtformatoptarg {Restricted Bolzmann Machine}}{46}{remark.5.3.2}
+\contentsline {remark}{\numberline {5.4.1}Remark\thmtformatoptarg {Interpreting ``Linear''}}{47}{remark.5.4.1}
+\contentsline {remark}{\numberline {5.4.2}Remark\thmtformatoptarg {Dimensionality Reduction and Latent Space Generative Models}}{47}{remark.5.4.2}
+\contentsline {definition}{\numberline {5.1}Definition\thmtformatoptarg {SVD}}{51}{definition.5.1}
+\contentsline {remark}{\numberline {5.4.3}Remark\thmtformatoptarg {Classical and Least Squares MDS}}{54}{remark.5.4.3}
+\contentsline {remark}{\numberline {5.4.4}Remark\thmtformatoptarg {The Non-Linearity of Local MDS}}{54}{remark.5.4.4}
+\contentsline {remark}{\numberline {5.4.5}Remark\thmtformatoptarg {The Non-Linearity of Isomap}}{54}{remark.5.4.5}
+\contentsline {remark}{\numberline {5.5.1}Remark\thmtformatoptarg {Non Linear Dimensionality Reduction}}{55}{remark.5.5.1}
+\contentsline {remark}{\numberline {5.5.2}Remark\thmtformatoptarg {Information Bottleneck and ICA}}{56}{remark.5.5.2}
+\contentsline {remark}{\numberline {5.6.1}Remark\thmtformatoptarg {Identifiability in PCA}}{57}{remark.5.6.1}
+\contentsline {remark}{\numberline {5.6.2}Remark\thmtformatoptarg {Non Linear FA}}{58}{remark.5.6.2}
+\contentsline {remark}{\numberline {5.6.3}Remark\thmtformatoptarg {ICA and FA}}{59}{remark.5.6.3}
+\contentsline {example}{\numberline {5.6.1}Example\thmtformatoptarg {Intelligence Measure}}{60}{example.5.6.1}
+\contentsline {remark}{\numberline {5.6.4}Remark\thmtformatoptarg {Projection Pursuit and ICA}}{60}{remark.5.6.4}
+\contentsline {remark}{\numberline {5.6.5}Remark\thmtformatoptarg {Exploratory Projection Pursuit and ICA}}{61}{remark.5.6.5}
+\contentsline {remark}{\numberline {5.6.6}Remark\thmtformatoptarg {Finite Mixture Distributions}}{61}{remark.5.6.6}
+\contentsline {remark}{\numberline {5.6.7}Remark\thmtformatoptarg {Mixtures And the Expectation Maximization Algorithm (EM)}}{62}{remark.5.6.7}
+\contentsline {remark}{\numberline {5.6.8}Remark\thmtformatoptarg {Mixtures For Clustering}}{62}{remark.5.6.8}
+\contentsline {remark}{\numberline {5.6.9}Remark\thmtformatoptarg {Mixture in Supervise Learning}}{62}{remark.5.6.9}
+\contentsline {remark}{\numberline {5.7.1}Remark\thmtformatoptarg {Relation to Spectral Clustering}}{64}{remark.5.7.1}
 \addvspace {10\p@ }
-\contentsline {remark}{\numberline {6.3.1}Remark\thmtformatoptarg {Collaborative Filtering and Other Supervised Learning Methods}}{64}{remark.6.3.1}
+\contentsline {remark}{\numberline {6.3.1}Remark\thmtformatoptarg {Collaborative Filtering and Other Supervised Learning Methods}}{66}{remark.6.3.1}
 \addvspace {10\p@ }
-\contentsline {remark}{\numberline {C.0.1}Remark}{70}{remark.C.0.1}
+\contentsline {remark}{\numberline {C.0.1}Remark}{72}{remark.C.0.1}
 \addvspace {10\p@ }
-\contentsline {definition}{\numberline {D.1}Definition\thmtformatoptarg {Entropy}}{72}{definition.D.1}
-\contentsline {definition}{\numberline {D.2}Definition\thmtformatoptarg {Mutual Information}}{72}{definition.D.2}
-\contentsline {definition}{\numberline {D.3}Definition\thmtformatoptarg {Kullback\IeC {\textendash }Leibler Divergence}}{72}{definition.D.3}
+\contentsline {definition}{\numberline {D.1}Definition\thmtformatoptarg {Entropy}}{74}{definition.D.1}
+\contentsline {definition}{\numberline {D.2}Definition\thmtformatoptarg {Mutual Information}}{74}{definition.D.2}
+\contentsline {definition}{\numberline {D.3}Definition\thmtformatoptarg {Kullback\IeC {\textendash }Leibler Divergence}}{74}{definition.D.3}

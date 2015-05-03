@@ -3,6 +3,7 @@
 
 \label{sec:unsupervised}
 
+
 Unlike Supervised Learning, in Unsupervised Learning there is no outcome variable. 
 There is thus no notion of ``right'' and ``wrong''. 
 We merely want to learn the joint distribution of the data, $x \in \featureS$, and represent it in some way we can understand. 
@@ -35,6 +36,26 @@ Many unsupervised learning problems, can be cast in the ERM framework.
 This has not been done in the current version of our text due to both time constraints, and compatibility with the referenced literature.
 \end{remark}
 
+
+\begin{remark}[Graph Method or Feature Methods?]
+As we will see, some methods only require a similarity graph ($\similaritys$), while other require the underlying features ($X$).
+What is better?
+Well, there is no single answer to the question.
+Here are some pros and cons:
+\begin{enumerate}
+\item Computational complexity: 
+Storing $X$ requires $n \times p$ memory units\footnote{ I hope that readers familiar digital storage will forgive my non-rigorous treatment of storage modes.}.
+Storing $\similaritys$ will require $n \times n$ memory units.
+Most algorithms have \emph{streaming} versions. Meaning that the solutions can be iteratively obtained by processing only parts of $X$ or $\similaritys$ at a time. \marginnote{Streaming Algorithm}
+The computational complexity of each method can thus vary depending on $n$,$p$, and the particular algorithm implementing the method. 
+No approach dominates the other.
+
+\item Data reconstruction or space reconstruction:
+Methods taking $\similaritys$ inputs, return an embedding. They thus apply only to the observed points.
+Methods taking $\featureS$ typically return an embedding \emph{function}. The result can thus effortlessly be applied to new points. Put differently, they embed the hole $\featureS$ into $\manifold$ and not only $X$. 
+Exceptions do exist. PCA (\S\ref{sec:pca}) for instance, can take $\similaritys$ and return an embedding function.
+\end{enumerate}
+\end{remark}
 
 
 
@@ -791,6 +812,16 @@ For an full exposition, and a discussion of the differences with PCA, see \cite{
 
 
 
+\begin{remark}[Non Linear FA]
+The FA method presented herein deals with features that are linear in the latent factors. 
+It is obviously possible to generalize the framework to deal with non-linear functions of the latent factors. 
+This practice is, however, quite uncommon.
+\end{remark}
+
+
+\paragraph{Mathematics of FA}
+
+
 
 \subsection{Independent Component Analysis (ICA)}
 \label{sec:ica}
@@ -868,7 +899,41 @@ The different implementations of ICA, indeed look for a matrix $\loadings$ which
 
 \subsection{Exploratory Projection Pursuit}
 \label{sec:exploratpory_ppr}
-[TODO]
+
+The fundamental idea of Exploratory Projection Pursuit, first presented in \cite{friedman_projection_1974}, is that if the data were pure noise in some high dimension, then almost any projection will look the same. 
+If, however, the data were not pure noise, then projections in the direction of the signal, would show structure. 
+
+\begin{example}[Intelligence Measure]
+\label{eg:intelligence}
+
+Assume respondents answer $p$ questions: $x_i \in \reals^p$. 
+Also assume, their responses are some linear function $\loadings \in \reals^p$ of a single attribute, $s_i$. 
+We can think of $s_i$ as the subject's ``intelligence''.
+We thus have 
+\begin{align}
+	x_i = s_i A + \varepsilon_i
+\end{align}
+We now seek a single linear combination of answers, a projection $u \in \reals^p$, which helps us visualize, understand, and possibly cluster individuals. 
+By assumption, $x_i u = s_i \loadings u + \varepsilon_i u$.
+For any $u$ that is orthogonal to $\loadings$ then $\loadings u$ will vanish and the index $x_i u$ is dominated by $\varepsilon_i u$, also close to zero. Moreover, $\varepsilon_i u$ will probably look Gaussian due to the CLT.
+For projections $u$ that are similar to $\loadings$, then $\loadings u$ will be large and the different $x_i u$'s will spread nicely on a line, since it amplifies $s_i$.
+
+\end{example}
+
+
+\begin{remark}[Projection Pursuit and ICA]
+From the Example~\ref{eg:intelligence} we note that $x_i u$ will look Gaussian for all rotations, $u$, that do not capture signal.
+This observation motivated \citet{friedman_projection_1974} to find $u$'s so that they depart from Gaussianity. 
+It turns out that the ICA problem (\S\ref{sec:ica}), while having a different motivation, also culminates in finding rotations that maximally depart from Gaussianity.
+For this, both ICA and Exploratory Projection Pursuit, can be seen as similar solutions to the problem of finding informative rotations in factor analysis (\S\ref{sec:factor_analysis}).
+\end{remark}
+
+
+
+\begin{remark}[Exploratory Projection Pursuit and ICA]
+We have seen that the mathematics of the ICA problem (Eq.(\ref{eq:ica_optimization2})), leads to the same intuition as in \cite{friedman_projection_1974}. 
+The seek for non-Gaussian projections can thus be interpreted as the seek for stochastic independent components, or for deterministic structure in the data.
+\end{remark}
 
 
 
