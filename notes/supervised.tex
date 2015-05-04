@@ -568,16 +568,76 @@ The estimated $\estim{\be}_{LASSO}$ has thus many entries set to zero, acting as
 
 
 
-\subsection{Canonical Correlation Analysis (CCA)}
-\label{sec:cca}
-[TODO]
+
+
+\subsection{Principal Component Regression (PCAR)}
+\label{sec:pca_regression}
+
+A very general framework to reduce the dimension of a supervised learning problem, is to find a low dimensional representation of the features $X$, and use that representation as the new features.
+By combining the simplest building blocks of supervised and unsupervised learning, namely, OLS an PCA, we get PCA regression.
+
+PCA regression is a very simple idea that works as follows:
+\begin{algorithm}[H]
+\caption{PCA Regression}
+\label{algo:pca_regression}
+\begin{algorithmic}
+\State $X_{\rank} \gets$ A rank $\rank$ approximation of $X$ using PCA.
+\State $\hat{\be}_{PCAR} \gets$ OLS estimates of $\beta$ using $y$ and $X_\rank$.
+\State \Return $\hat{\be}_{PCAR}$
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\begin{remark}[PCAR and Ridge Regression]
+It turns out there is an intimate relation between PCAR and Ridge Regression.
+We refer the reader to Section 3.6 in \cite{hastie_elements_2003}.
+\end{remark}
+
+
+
 
 
 \subsection{Partial Least Squares (PLS) }
 \label{sec:pls}
+
+Thinking of PCAR (\S\ref{sec:pca_regression}), there is no guarantee that directions that capture the variability in $\x$, are the same one capturing information about $\y$.
+The decoupling between the dimensionality reduction and the supervised learning may thus seem unjustifiable. 
+LASSO (\S\ref{sec:lasso}) is a possible remedy to this matter. 
+PLS is a different remedy, motivated by PCAR.
+In PLS, we marry the ERM problem of OLS and PCA.
+The $m$'th PLS combination of $X$'s solves \citep[Eq.3.64]{hastie_elements_2003}
+\begin{align}
+\label{eq:pls}
+	\max_{\normII{\al_m}=1, \al_m S \al_l=0 \text{ for } l=1,\dots,m-1 } \set{\rho^2(y, X \al_m) Var(X \al_m) }.
+\end{align}
+We can thus conclude that PLS embeds $X$ in a linear subspace which aims at balancing a compact description of $X$ (the variance term), and a good prediction of $y$ (the correlation term).
+
+
+
+
+
+\subsection{Canonical Correlation Analysis (CCA)}
+\label{sec:cca}
+
+We next consider the case of vector valued $\y$, with $\dimy$ entries. 
+This is the case of predicting several values at once.
+If these values are unrelated, the problem amounts to solving several separate learning problems.
+If these values are related, there may be an accuracy gain by solving them together.
+
+For an intuition to the reason that pooling problems together may be beneficial, consider the case of $\dimy$ repeated measures of the same outcome. We would clearly want to somehow pool these measures together when learning a predictor.
+
+The concept of vector valued outcomes is not new in the statistical literature. 
+Indeed, this is precisely the topic of interest in the vast literature on Multivariate Analysis of Variance (MANOVA, e.g. \cite{anderson_introduction_2003}).
+CCA focuses on a particular aspect of MANOVA: learning the relation between some low dimensional representations of $\x$ and $\y$.
+
+
+[TODOTODO]
+
+
+\subsection{Reduced Rank Regression (RRR)}
+\label{sec:reduced_rank_regression}
 [TODO]
-
-
 
 
 

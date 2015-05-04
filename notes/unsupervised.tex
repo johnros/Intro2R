@@ -4,6 +4,8 @@
 \label{sec:unsupervised}
 
 
+\section{Introduction to Unsupervised Learning}
+
 Unlike Supervised Learning, in Unsupervised Learning there is no outcome variable. 
 There is thus no notion of ``right'' and ``wrong''. 
 We merely want to learn the joint distribution of the data, $x \in \featureS$, and represent it in some way we can understand. 
@@ -62,6 +64,93 @@ Exceptions do exist. PCA (\S\ref{sec:pca}) for instance, can take $\similaritys$
 
 
 
+% % % Density Estimation % % % % 
+\section{Density Estimation}
+\label{sec:density_estimation}
+
+We now aim at the possibly hardest target in unsupervised learning- estimating $\dist(x)$.
+As previously stated, learning $\dist$ is of interest for itself, but can also serve for classification (\S\ref{sec:generative}), for detecting high density regions (\S\ref{sec:high_density}), and for clustering (\S\ref{sec:cluster_analysis}).
+
+
+
+
+\subsection{Parametric Density Estimation}
+If a parametric generative model can be assumed, this collapses to the parameter estimation problem in the classical statistical literature (\S\ref{sec:estimation}). Maximum Likelihood estimation being a particularly attractive approach, but certainly not the only one.
+If a parametric model cannot be assumed, we fall into the realm of non-parametric methods. 
+As we saw for supervised learning, these typically rely on pooling information from neighbourhoods of $\featureS$.
+
+
+
+\subsection{Kernel Density Estimation}
+\label{sec:kernel_density}
+
+Much like the Kernel Regression regression, a \naive estimator is the moving average.
+A natural generalization, in the spirit of the Nadaraya-Watson smoother (Eq.(\ref{eq:nadaraya_watson})) is the \emph{Parzen} estimate:\marginnote{Parzen Estimate}
+\begin{align}
+\label{eq:parzen}
+	\estim{\pdf}(x):=\frac{1}{n \lambda} \sum_{i=1}^n \kernel_\lambda(x,x_i).
+\end{align}
+
+\begin{remark}
+If you have been convinced by the use of KNN (\S\ref{sec:knn}) for regression (or classification), there is no reason not to use it for density estimation. It will keep offering the same pros and cons as in KNN regression (or classification).
+\end{remark}
+
+As previously stated, these methods may fail when $x$ are high dimensional. We thus recur to other methods.
+
+
+
+\subsection{Graphical Models}
+\label{sec:graphical_models}
+
+Graphical models are graphs that represent joint distributions\footnote{Unlike \emph{graph data}, where the graph is the data itself, and not a distribution.}
+For our purposes, we discuss only \emph{undirected graphical models}, also known as \emph{Markov random fields}, or \emph{Markov networks}.
+The reason these models are interesting, and particularly for the purpose of density estimation, is that missing edges in a graphical model represents conditional independencies between random variables. 
+If the graph structure can be assumed, and hopefully has many missing edges, then the dimension of the density estimation problem can be reduced. 
+
+In the cases the graph structure cannot be assumed, then our goal becomes the learning of the graph structure from the data. I.e., learning the (conditional) independencies between the variables. For a multivariate Gaussian distribution, this amounts to estimating the covariance, while imposing some sparsity assumption. 
+An important fact in this regard is that in the multivariate Gaussian case, missing edges in the graphical model, mean zero entries in the inverse covariance matrix. This fact sets the bridge between learning a the structure of a graphical model, and (sparse) covariance estimation.
+
+\begin{remark}[Restricted Bolzmann Machine]
+In this context it is also worth mentioning the Restricted Boltzmann Machine (RBM), which is a multivariate distribution with particular class of graphical structure, motivated from Neural Networks. \marginnote{Restricted Bolzmann Machine}
+\end{remark}
+
+
+For a more detailed review of Graphical Models, see Chapters 17 and 20 in \cite{wasserman_all_2004}. 
+
+
+
+
+
+
+% % % % High density regions % % % % %
+\section{High Density Regions}
+\label{sec:high_density}
+
+When data is high dimensional a full blown density estimation may be statistically and computationally impractical.
+We can still, however, aim at detecting regions in $\featureS$ with high probability (which would have been trivial have we had a density estimate).
+
+Once high density regions have been detected, they could be assigned to clusters. Then again, assigning to clusters is typically an easier problem which can be solved directly (see \S\ref{sec:cluster_analysis}).
+
+
+
+\subsection{Association Rules}
+\label{sec:association}
+Association rules, or \emph{market basket analysis}, or \emph{affinity analysis}, can be seen as approximating the joint distribution with a region-wise constant function (Eq.~\ref{eq:decision_list}).\marginnote{Market Basket Analysis}
+Put differently, we want to capture high density regions of the joint distribution of $x$ with by approximating it with a decision-list (not tree).
+Learning a decision-list is a computationally impractical problem in general. Association rules are thus typically learned over binary feature spaces $\featureS$, using heuristic optimization schemes.
+
+This type of problems typically occurs in sales analysis, where vendors seek for combinations of products that tend to sell jointly (so that can design the store better, or discount product bundles).
+
+The \emph{Aprioiri} algorithm \cite{agraval_fast_1994}, is an example of such a heuristic search for high density combinations.\marginnote{Apriori Algorithm}
+
+
+
+
+
+
+
+
+% % % % % Clustering % % % % % %
 
 \section{Cluster Analysis}
 \label{sec:cluster_analysis}
@@ -209,93 +298,6 @@ The idea of the spectral decomposition, i.e. diagonalization, of similarity meas
 The idea of clustering in a low dimensional representation of the data is a powerful one. 
 Spectral clustering bundles the embedding and the clustering together, but the stages can be decoupled. Any dimensionality reduction technique can be followed by a clustering technique.
 SOMs (\S\ref{sec:som}) should be noted as a technique where the dimensionality reduction and the clustering \emph{cannot} be decoupled. Indeed, in SOMs, the dimensionality reduction is driven explicitly by the clustering performance.  
-
-
-
-
-
-
-
-\section{High Density Regions}
-\label{sec:high_density}
-
-When data is high dimensional a full blown density estimation may be statistically and computationally impractical.
-We can still, however, aim at detecting regions in $\featureS$ with high probability (which would have been trivial have we had a density estimate).
-
-Once high density regions have been detected, they could be assigned to clusters. Then again, assigning to clusters is typically an easier problem which can be solved directly (see \S\ref{sec:cluster_analysis}).
-
-
-
-\subsection{Association Rules}
-\label{sec:association}
-Association rules, or \emph{market basket analysis}, or \emph{affinity analysis}, can be seen as approximating the joint distribution with a region-wise constant function (Eq.~\ref{eq:decision_list}).\marginnote{Market Basket Analysis}
-Put differently, we want to capture high density regions of the joint distribution of $x$ with by approximating it with a decision-list (not tree).
-Learning a decision-list is a computationally impractical problem in general. Association rules are thus typically learned over binary feature spaces $\featureS$, using heuristic optimization schemes.
-
-This type of problems typically occurs in sales analysis, where vendors seek for combinations of products that tend to sell jointly (so that can design the store better, or discount product bundles).
-
-The \emph{Aprioiri} algorithm \cite{agraval_fast_1994}, is an example of such a heuristic search for high density combinations.\marginnote{Apriori Algorithm}
-
-
-
-
-
-
-% % % Density Estimation % % % % 
-\section{Density Estimation}
-\label{sec:density_estimation}
-
-We now aim at the possibly hardest target in unsupervised learning- estimating $\dist(x)$.
-As previously stated, learning $\dist$ is of interest for itself, but can also serve for classification (\S\ref{sec:generative}), for detecting high density regions (\S\ref{sec:high_density}), and for clustering (\S\ref{sec:cluster_analysis}).
-
-
-
-
-\subsection{Parametric Density Estimation}
-If a parametric generative model can be assumed, this collapses to the parameter estimation problem in the classical statistical literature (\S\ref{sec:estimation}). Maximum Likelihood estimation being a particularly attractive approach, but certainly not the only one.
-If a parametric model cannot be assumed, we fall into the realm of non-parametric methods. 
-As we saw for supervised learning, these typically rely on pooling information from neighbourhoods of $\featureS$.
-
-
-
-\subsection{Kernel Density Estimation}
-\label{sec:kernel_density}
-
-Much like the Kernel Regression regression, a \naive estimator is the moving average.
-A natural generalization, in the spirit of the Nadaraya-Watson smoother (Eq.(\ref{eq:nadaraya_watson})) is the \emph{Parzen} estimate:\marginnote{Parzen Estimate}
-\begin{align}
-\label{eq:parzen}
-	\estim{\pdf}(x):=\frac{1}{n \lambda} \sum_{i=1}^n \kernel_\lambda(x,x_i).
-\end{align}
-
-\begin{remark}
-If you have been convinced by the use of KNN (\S\ref{sec:knn}) for regression (or classification), there is no reason not to use it for density estimation. It will keep offering the same pros and cons as in KNN regression (or classification).
-\end{remark}
-
-As previously stated, these methods may fail when $x$ are high dimensional. We thus recur to other methods.
-
-
-
-\subsection{Graphical Models}
-\label{sec:graphical_models}
-
-Graphical models are graphs that represent joint distributions\footnote{Unlike \emph{graph data}, where the graph is the data itself, and not a distribution.}
-For our purposes, we discuss only \emph{undirected graphical models}, also known as \emph{Markov random fields}, or \emph{Markov networks}.
-The reason these models are interesting, and particularly for the purpose of density estimation, is that missing edges in a graphical model represents conditional independencies between random variables. 
-If the graph structure can be assumed, and hopefully has many missing edges, then the dimension of the density estimation problem can be reduced. 
-
-In the cases the graph structure cannot be assumed, then our goal becomes the learning of the graph structure from the data. I.e., learning the (conditional) independencies between the variables. For a multivariate Gaussian distribution, this amounts to estimating the covariance, while imposing some sparsity assumption. 
-An important fact in this regard is that in the multivariate Gaussian case, missing edges in the graphical model, mean zero entries in the inverse covariance matrix. This fact sets the bridge between learning a the structure of a graphical model, and (sparse) covariance estimation.
-
-\begin{remark}[Restricted Bolzmann Machine]
-In this context it is also worth mentioning the Restricted Boltzmann Machine (RBM), which is a multivariate distribution with particular class of graphical structure, motivated from Neural Networks. \marginnote{Restricted Bolzmann Machine}
-\end{remark}
-
-
-For a more detailed review of Graphical Models, see Chapters 17 and 20 in \cite{wasserman_all_2004}. 
-
-
-
 
 
 

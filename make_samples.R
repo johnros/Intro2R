@@ -20,7 +20,6 @@ prostate.test <- prostate %>%
   select(-train)
 y.train <- prostate.train$lcavol
 X.train <- prostate.train %>% select(-lcavol) %>% as.matrix
-View(X.train)
 y.test <- prostate.test$lcavol 
 X.test <- prostate.test %>% select(-lcavol) %>% as.matrix
 
