@@ -13,17 +13,25 @@ Well, maybe ``merely'' is not the right word, as learning the joint distribution
 
 Describing the data via it's joint distribution is the pinnacle, but would require many samples if $x$ has a high dimension (by high we mean $p>3$!). For higher dimensions we need to set more modest goals, which vary according to the purpose of the analysis.
 
-The different goals of unsupervised learning can be
+The different tasks in unsupervised learning are
 \begin{enumerate}
 \item \textbf{Density Estimation}: Estimate $\dist(x)$.
-\item \textbf{High density regions}: Find feature combinations which tend to concentrate, hopefully, because the belong to homogenous and interpretable subgroups.
-\item \textbf{Low dimensional representation}: Find a low dimensional representation of the joint distribution. This allows the learning from realistic sample sizes, and analysis by, e.g., interpretable parameters and visualization.
+
+\item \textbf{High density regions}: 
+Find feature combinations which tend to concentrate, hopefully, because the belong to homogenous and interpretable subgroups.
+
+\item \textbf{Low dimensional representation}: 
+Find a low dimensional representation of the joint distribution. This allows the learning from realistic sample sizes, and analysis by, e.g., interpretable parameters and visualization.
 Since this also serves in supervised learning, it is discussed with more generality in Appendix~\ref{apx:dim_reduce}.
-\item \textbf{Cluster}: Assign observation to homogenous groups. In particular, the particular features of an observation are no longer of interest, once it has been assigned to a cluster.
+
+\item \textbf{Cluster}: 
+Assign observation to homogenous groups, i.e., clusters.
+Alternatively, assign not only observations, but also unobserved values. I.e., learn a \emph{clustering function}.
 \end{enumerate}
 
 
-When thinking of machine learning the means to automate decision processes, then unsupervised learning should be seen as a per-processing stage before a supervised learning stage. Dimensionality methods in particular server to represent the data in a more compact way, thus alleviating the computational burden of supervised learning. 
+When thinking of machine learning as the means to automate decision processes, then unsupervised learning is typically as a pre-processing stage before a supervised learning. 
+Dimensionality methods in particular serve to represent the data in a more compact way, thus alleviating the computational burden of supervised learning. 
 Many of the methods discussed below stem from statistical literature, or signal processing literature, and were originally motivated as visualization tools. Clearly when aiming at visualization it is implied that a human is involved in the data analysis, and it is not fully automated. 
 
 \begin{remark}[Relation to Supervised Classification]
@@ -54,7 +62,7 @@ No approach dominates the other.
 
 \item Data reconstruction or space reconstruction:
 Methods taking $\similaritys$ inputs, return an embedding. They thus apply only to the observed points.
-Methods taking $\featureS$ typically return an embedding \emph{function}. The result can thus effortlessly be applied to new points. Put differently, they embed the hole $\featureS$ into $\manifold$ and not only $X$. 
+Methods taking $\featureS$ typically return an embedding \emph{function}. The result can thus effortlessly be applied to new points. Put differently, they embed the whole $\featureS$ into $\manifold$ and not only $X$. 
 Exceptions do exist. PCA (\S\ref{sec:pca}) for instance, can take $\similaritys$ and return an embedding function.
 \end{enumerate}
 \end{remark}
