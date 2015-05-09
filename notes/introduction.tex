@@ -1,0 +1,76 @@
+\chapter{Introduction}
+
+
+This text is intended to collect many machine learning methods and algorithms, present then, and organize them.
+The treatment of the different concepts attempts to be as intuitive as possible, and mathematics is presented only when unavoidable, or when adding special insight.
+
+Extra effort has been put into organizing the methods and algorithms along some fundamental building blocks, which are now briefly presented.
+
+\begin{description}
+
+\item[The learning problem]
+The first distinction between the different methods is along the tasks they perform. 
+These include Supervised Learning (\S\ref{sec:supervised}) and Unsupervised Learning (\S\ref{sec:unsupervised}).
+Within each of these, we find several sub-problems: 
+	\begin{description}
+	\item[Supervised Learning] Includes classification tasks, and regression tasks. The first, predicting a categorical outcome, and the latter, a continuous outcome.
+	\item[Unsupervised Learning] Includes the learning of the data generating distribution, or related tasks such as detecting high density regions and clustering.
+	\end{description}
+
+As we will see, not all learning tasks fall into these categories. Collaborative Filtering (\S\ref{sec:collaborative_filtering}) is an example of a learning task that is neither. It is a missing data imputation task.
+
+\item[An optimization problem vs. an algorithm]
+Both supervised and unsupervised learning methods can be classified as either an explicit algorithm, or as an optimization problem, agnostic to the optimization algorithm used to solve it.
+
+\item[Dimension Reduction]
+Both supervised and unsupervised learning methods can include a dimensionality reduction stage. 
+This can be motivated by the need to reduce computational complexity, to apply low-dimensional algorithms down the road, to allow a visualization of the data, or simply to allow some human tractable interpretation of the data.
+This is discussed in Appendix~\ref{apx:dim_reduce}.
+
+We can further stratify dimensionality reduction methods along these lines:
+	\begin{description}
+	\item[Linear-Space vs. Non-Linear-Space Embeddings] 
+	When reducing the dimension of the data, it can be mapped (embedded) into a linear subspace of the original space, or a non linear one.
+	\item[Linear vs. Non-Linear Space Embeddings]
+	Not to be confused with the previous item. 
+	The dimensionality reduction can be a linear operation on the data or a non-linear one.
+	\item[Learnign an Embedding vs. Learning an Embedding Function]
+	When learning a mapping to a lower dimensional space, we can map the original data points (an embedding), or learn a mapping of the whole data space (an embedding function).
+	\end{description}
+
+\item[Kernel Trick]
+Both supervised and unsupervised learning methods can include a ``kernel trick''. 
+This will happen when we wish to learn complex functions of the data, but keep computations quick.
+The kernel trick is applicable to methods that do not need the whole data, but rather, only some measure of similarity between the points. 
+The idea is that many complicated functions, are merely linear combinations of the distances to other points.
+This is further elaborated in Appendix~\ref{apx:rkhs}.
+
+\item[Generative vs. Discriminative Models]
+Both supervised and unsupervised learning methods can benefit from an assumption on the data generating process, i.e., the sampling distribution.
+Generative models as those where we assume this process. 
+Discriminative models, which appear in supervised learning, we do not assume the data generating process, but merely the nature of the relation between features and outcome.
+
+\item[Feature based vs. Graph Based]
+Unsupervised learning tasks can be classified to those that require the full features of the data, and those who require only some measure of similarity between data points. As such, the latter methods can be seen as graph based methods, where the similarities are represented as a graph.
+
+\end{description}
+
+
+
+\paragraph{Fully Automated Processes?}
+The machine learning literature draws heavily from the statistical literature. 
+You should bear in mind that the ultimate goal of machine learning, is replacing a ``hard-coded'' algorithm, which externalizes the programmer's knowledge, into a self teaching algorithm. 
+It may thus seem that problems like visualization do not belong in the realm of machine learning, as they are not completely automated.
+This is not completely accurate because, while we want the \emph{application} stage of an algorithm to be automated, we can sometimes allow for a human to be involved in the \emph{learning} stage. 
+
+
+\paragraph{Notation}
+The notation conventions used in this text have been collected in Appendix \ref{apx:notation}.
+
+\paragraph{Sources}
+This text draws from \cite{hastie_elements_2003} and \cite{shalev-shwartz_understanding_2014}.
+The former is freely available online.
+For a softer introduction, with more hands-on examples, see \cite{james_introduction_2013}, also freely available online.
+All books are very well written and strongly recommended.
+More references can be found in the Bibliography (Appendix \ref{sec:bibliography}).
+
