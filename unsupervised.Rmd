@@ -5,14 +5,68 @@ date: "April 12, 2015"
 output: html_document
 ---
 
-# PCA
 
-# K-means
+# Learning Distributions 
 
+## Gaussian Density Estimation
 
-
-# Association rules
+## Association rules
 install.packages('arules')
 library(arules)
 
 example(apriori)
+
+
+# Dimensionality Reduction
+
+## PCA
+
+## sPCA
+
+## Random Projections 
+
+## MDS
+
+## Isomap
+
+## LLE
+
+## LocalMDS
+
+## Principal Curves & Surfaces
+
+
+
+
+
+# Latent Space Generative Models
+
+## FA
+
+## ICA
+
+## Exploratory Projection Pursuit
+
+## Generative Topographic Map
+
+## Mixture
+
+## HMM
+
+
+
+# Clustering:
+
+## K-means
+
+## K-medoids
+
+## Hirarchial
+
+### Agglomerative
+
+### Divisive
+
+## Self Organizing Maps
+
+## Spectral Clustering
