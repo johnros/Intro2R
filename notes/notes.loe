@@ -41,13 +41,14 @@
 \contentsline {remark}{\numberline {5.4.5}Remark\thmtformatoptarg {The Non-Linearity of Isomap}}{54}{remark.5.4.5}
 \contentsline {remark}{\numberline {5.5.1}Remark\thmtformatoptarg {Non Linear Dimensionality Reduction}}{55}{remark.5.5.1}
 \contentsline {remark}{\numberline {5.5.2}Remark\thmtformatoptarg {Information Bottleneck and ICA}}{57}{remark.5.5.2}
+\contentsline {example}{\numberline {5.6.1}Example\thmtformatoptarg {Intelligence Measure (g-factor)}}{58}{example.5.6.1}
+\contentsline {example}{\numberline {5.6.2}Example\thmtformatoptarg {Face Rotations}}{58}{example.5.6.2}
 \contentsline {remark}{\numberline {5.6.1}Remark\thmtformatoptarg {Identifiability in PCA}}{58}{remark.5.6.1}
 \contentsline {remark}{\numberline {5.6.2}Remark\thmtformatoptarg {Non Linear FA}}{59}{remark.5.6.2}
 \contentsline {remark}{\numberline {5.6.3}Remark\thmtformatoptarg {ICA and FA}}{60}{remark.5.6.3}
-\contentsline {example}{\numberline {5.6.1}Example\thmtformatoptarg {Intelligence Measure (g-factor)}}{61}{example.5.6.1}
-\contentsline {remark}{\numberline {5.6.4}Remark\thmtformatoptarg {Projection Pursuit and ICA}}{61}{remark.5.6.4}
+\contentsline {remark}{\numberline {5.6.4}Remark\thmtformatoptarg {Projection Pursuit and ICA}}{62}{remark.5.6.4}
 \contentsline {remark}{\numberline {5.6.5}Remark\thmtformatoptarg {Exploratory Projection Pursuit and ICA}}{62}{remark.5.6.5}
-\contentsline {remark}{\numberline {5.6.6}Remark\thmtformatoptarg {Finite Mixture Distributions}}{62}{remark.5.6.6}
+\contentsline {remark}{\numberline {5.6.6}Remark\thmtformatoptarg {Finite Mixture Distributions}}{63}{remark.5.6.6}
 \contentsline {remark}{\numberline {5.6.7}Remark\thmtformatoptarg {Mixtures And the Expectation Maximization Algorithm (EM)}}{63}{remark.5.6.7}
 \contentsline {remark}{\numberline {5.6.8}Remark\thmtformatoptarg {Mixtures For Clustering}}{63}{remark.5.6.8}
 \contentsline {remark}{\numberline {5.6.9}Remark\thmtformatoptarg {Mixture in Supervise Learning}}{63}{remark.5.6.9}

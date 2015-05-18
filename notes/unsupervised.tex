@@ -656,6 +656,34 @@ The fundamental idea of latent space generative models is that while the data ge
 \label{sec:factor_analysis}
 \id{dim reduce}{optimization}{$X$}{embedding function}{}{}
 
+Examples \ref{eg:intelligence} and \ref{eg:face_rotations} motivate factor analysis, and many other latent space generative models in this section.
+
+\begin{example}[Intelligence Measure (g-factor)]
+\label{eg:intelligence}
+
+Assume respondents answer $p$ questions: $x_i \in \reals^p$. 
+Also assume, their responses are some linear function $\loadings \in \reals^p$ of a single attribute, $s_i$. 
+We can think of $s_i$ as the subject's ``intelligence''.
+We thus have 
+\begin{align}
+	x_i = s_i A + \varepsilon_i
+\end{align}
+We now seek a single linear combination of answers, a projection $u \in \reals^p$, which helps us visualize, understand, and possibly cluster individuals. 
+By assumption, $x_i u = s_i \loadings u + \varepsilon_i u$.
+For any $u$ that is orthogonal to $\loadings$ then $\loadings u$ will vanish and the index $x_i u$ is dominated by $\varepsilon_i u$, also close to zero. Moreover, $\varepsilon_i u$ will probably look Gaussian due to the CLT.
+For projections $u$ that are similar to $\loadings$, then $\loadings u$ will be large and the different $x_i u$'s will spread nicely on a line, since it amplifies $s_i$.
+
+\end{example}
+
+
+
+\begin{example}[Face Rotations]
+\label{eg:face_rotations}
+[TODO]
+\end{example}
+
+
+
 
 Factor Analysis is solved very similarly to PCA (\S\ref{sec:pca}), so that the two are often confused. 
 FA, however, stems from a rather different motivation than PCA.
@@ -760,11 +788,10 @@ For ease of presentation we present a simple setup, which can be considerably ge
 In this setup, we will first analyze the population problem, i.e., in terms of random variables. 
 We thus replace the data $X$, with the random vector $\x$, and afterwards consider implementation for finite samples. 
 \begin{itemize}
-\item $\x=\loadings \latent$, implying that $\x$ is \emph{linear} in the latent components, and the latent space is of dimension $\rank=p$.
+\item $\x=\loadings \latent$, implying that $\x$ is \emph{linear} in the latent components, and the latent space is of dimension $\rank=p$. It follows that $s=\loadings'X$.
 \item $\x$ has been pre-whitented, so that $\cov{\x}=I$.
 \item Distance between distributions are measured using the Kullback-Leibler divergence (KL): $\kl{\x}{\latent}$.
 \end{itemize}
-This setup thus implies that the latent factors can be recovered by applying the inverse mixing: $\latent=\loadings'\x$.
 
 The optimization problem in this simple ICA is to find an orthogonal matrix $\loadings$, for which:
 (i) the components of $\loadings'\x$ are independent;
@@ -772,16 +799,16 @@ The optimization problem in this simple ICA is to find an orthogonal matrix $\lo
 Formally: 
 \begin{align}
 \label{eq:ica_optimization}
-	\argmin{\loadings \text{ orthogonal} \;; \loadings'\x \text{ independent}}{\kl{\loadings'\x}{\x}}
+	\argmin{\loadings \text{ orthogonal} \;; \loadings'\x \text{ independent}}{\kl{\loadings'\x}{\x}}.
 \end{align}
-where $\ortho$ is a space of orthogonal matrices. 
 
-By enforcing the independence constraint in Eq.(\ref{eq:ica_optimization}), and due to the properties of the KL divergence, we get the following optimization problem:
+
+By enforcing the independence constraint in Eq.(\ref{eq:ica_optimization}), and due to the properties of the KL divergence, Eq.(\ref{eq:ica_optimization}) is equivalent to
 \begin{align}
 \label{eq:ica_optimization2}
 	\argmin{\loadings \text{ orthogonal}}{\sum_{j=1}^{\rank} \entropy(\loadings_j\x)- \entropy(\x)}
 \end{align}
-where $\entropy$ denotes the Entropy (Definition \ref{def:entropy}).
+where $\entropy(\x)$ denotes the Entropy of the random variable $\x$ (Definition \ref{def:entropy}).
 Now, $\entropy(\x)$ is obviously fixed, so we need to minimize $\entropy(\loadings_j\x)$. 
 A classical result in information theory, is that the Gaussian distribution has the maximal entropy. 
 Minimizing $\entropy(\loadings_j\x)$ can thus be interpreted as finding a matrix $\loadings$ such that its columns return random variables, $\loadings_j\x$, that are as \emph{non-Gaussian} as possible.
@@ -796,25 +823,11 @@ The different implementations of ICA, indeed look for a matrix $\loadings$ which
 \subsection{Exploratory Projection Pursuit}
 \label{sec:exploratpory_ppr}
 
-The fundamental idea of Exploratory Projection Pursuit, first presented in \cite{friedman_projection_1974}, is that if the data were pure noise in some high dimension, then almost any projection will look the same. 
+\id{dim reduce}{algorithm}{$X$}{embedding function}{}{}
+
+The fundamental idea of Exploratory Projection Pursuit, first presented in \cite{friedman_projection_1974}, is that if the data were pure noise in some high dimension, then almost any projection will look like Gaussian noise. 
 If, however, the data were not pure noise, then projections in the direction of the signal, would show structure. 
 
-\begin{example}[Intelligence Measure (g-factor)]
-\label{eg:intelligence}
-
-Assume respondents answer $p$ questions: $x_i \in \reals^p$. 
-Also assume, their responses are some linear function $\loadings \in \reals^p$ of a single attribute, $s_i$. 
-We can think of $s_i$ as the subject's ``intelligence''.
-We thus have 
-\begin{align}
-	x_i = s_i A + \varepsilon_i
-\end{align}
-We now seek a single linear combination of answers, a projection $u \in \reals^p$, which helps us visualize, understand, and possibly cluster individuals. 
-By assumption, $x_i u = s_i \loadings u + \varepsilon_i u$.
-For any $u$ that is orthogonal to $\loadings$ then $\loadings u$ will vanish and the index $x_i u$ is dominated by $\varepsilon_i u$, also close to zero. Moreover, $\varepsilon_i u$ will probably look Gaussian due to the CLT.
-For projections $u$ that are similar to $\loadings$, then $\loadings u$ will be large and the different $x_i u$'s will spread nicely on a line, since it amplifies $s_i$.
-
-\end{example}
 
 
 \begin{remark}[Projection Pursuit and ICA]
