@@ -668,11 +668,6 @@ We thus have
 \begin{align}
 	x_i = s_i A + \varepsilon_i
 \end{align}
-We now seek a single linear combination of answers, a projection $u \in \reals^p$, which helps us visualize, understand, and possibly cluster individuals. 
-By assumption, $x_i u = s_i \loadings u + \varepsilon_i u$.
-For any $u$ that is orthogonal to $\loadings$ then $\loadings u$ will vanish and the index $x_i u$ is dominated by $\varepsilon_i u$, also close to zero. Moreover, $\varepsilon_i u$ will probably look Gaussian due to the CLT.
-For projections $u$ that are similar to $\loadings$, then $\loadings u$ will be large and the different $x_i u$'s will spread nicely on a line, since it amplifies $s_i$.
-
 \end{example}
 
 
@@ -825,13 +820,23 @@ The different implementations of ICA, indeed look for a matrix $\loadings$ which
 
 \id{dim reduce}{algorithm}{$X$}{embedding function}{}{}
 
+\begin{example}[Intelligence Factor Continued]
+\label{eg:intelligence_factor_continued}
+Returning to the intelligence score example (\ref{eg:intelligence}).
+We seek a single linear combination of answers, a projection $u \in \reals^p$, which helps us visualize, understand, and possibly cluster individuals. 
+By assumption, $x_i u = s_i \loadings u + \varepsilon_i u$.
+For any $u$ that is orthogonal to $\loadings$ then $\loadings u$ will vanish and the index $x_i u$ is dominated by $\varepsilon_i u$, also close to zero. Moreover, $\varepsilon_i u$ will probably look Gaussian due to the CLT.
+For projections $u$ that are similar to $\loadings$, then $\loadings u$ will be large and the different $x_i u$'s will spread nicely on a line, since $\loadings u$ amplifies $s_i$.
+\end{example}
+
+
 The fundamental idea of Exploratory Projection Pursuit, first presented in \cite{friedman_projection_1974}, is that if the data were pure noise in some high dimension, then almost any projection will look like Gaussian noise. 
 If, however, the data were not pure noise, then projections in the direction of the signal, would show structure. 
 
 
 
 \begin{remark}[Projection Pursuit and ICA]
-From the Example~\ref{eg:intelligence} we note that $x_i u$ will look Gaussian for all rotations, $u$, that do not capture signal.
+From the Example~\ref{eg:intelligence_factor_continued} we note that $x_i u$ will look Gaussian for all rotations, $u$, that do not capture signal.
 This observation motivated \citet{friedman_projection_1974} to find $u$'s so that they depart from Gaussianity. 
 It turns out that the ICA problem (\S\ref{sec:ica}), while having a different motivation, also culminates in finding rotations that maximally depart from Gaussianity.
 For this, both ICA and Exploratory Projection Pursuit, can be seen as similar solutions to the problem of finding informative rotations in factor analysis (\S\ref{sec:factor_analysis}).
