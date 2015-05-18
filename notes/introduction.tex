@@ -1,5 +1,5 @@
 \chapter{Introduction}
-
+\label{sec:introduction}
 
 This text is intended to collect many machine learning methods and algorithms, present then, and organize them.
 The treatment of the different concepts attempts to be as intuitive as possible, and mathematics is presented only when unavoidable, or when adding special insight.
@@ -9,11 +9,13 @@ Extra effort has been put into organizing the methods and algorithms along some 
 \begin{description}
 
 \item[The learning problem]
-The first distinction between the different methods is along the tasks they perform. 
-These include Supervised Learning (\S\ref{sec:supervised}) and Unsupervised Learning (\S\ref{sec:unsupervised}).
-Within each of these, we find several sub-problems: 
+The first distinction between the different methods is along the tasks they perform, which closely corresponds to the type of data at hand. 
+This includes Supervised Learning (\S\ref{sec:supervised}) and Unsupervised Learning (\S\ref{sec:unsupervised}).
+Within each, we find several sub-tasks: 
 	\begin{description}
+	
 	\item[Supervised Learning] Includes classification tasks, and regression tasks. The first, predicting a categorical outcome, and the latter, a continuous outcome.
+	
 	\item[Unsupervised Learning] Includes the learning of the data generating distribution, or related tasks such as detecting high density regions and clustering.
 	\end{description}
 
@@ -31,10 +33,12 @@ We can further stratify dimensionality reduction methods along these lines:
 	\begin{description}
 	\item[Linear-Space vs. Non-Linear-Space Embeddings] 
 	When reducing the dimension of the data, it can be mapped (embedded) into a linear subspace of the original space, or a non linear one.
+	
 	\item[Linear vs. Non-Linear Space Embeddings]
 	Not to be confused with the previous item. 
 	The dimensionality reduction can be a linear operation on the data or a non-linear one.
-	\item[Learnign an Embedding vs. Learning an Embedding Function]
+	
+	\item[Learning an Embedding vs. Learning an Embedding Function]
 	When learning a mapping to a lower dimensional space, we can map the original data points (an embedding), or learn a mapping of the whole data space (an embedding function).
 	\end{description}
 
@@ -52,6 +56,9 @@ Discriminative models, which appear in supervised learning, we do not assume the
 
 \item[Feature based vs. Graph Based]
 Unsupervised learning tasks can be classified to those that require the full features of the data, and those who require only some measure of similarity between data points. As such, the latter methods can be seen as graph based methods, where the similarities are represented as a graph.
+
+\item[Fully Observed vs. Latent Space Models]
+Both supervised and unsupervised learning methods can include unobservable, i.e. latent, variables.
 
 \end{description}
 

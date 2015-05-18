@@ -90,6 +90,18 @@ This view suggests the intuition that the regularization introduced by $J(\hyp)$
 \section{Kernel Generalization of Other Methods}
 [TODO: Sec 18.5.2]
 
+
+
+
+
+
+% % % % % % % % % The Spectral Trick % % % % % % %
+
+\chapter{The Spectral Trick}
+\label{apx:spectral}
+[TODO]
+
+
 % % % % % % % % Generative models % % % % % % % %
 
 \chapter{Generative Models}
@@ -110,13 +122,16 @@ Learning the distribution of $x$ withing each class, allows to a simple classifi
 
 
 
+
+
 % % % % % % % % % Dimensionality Reduction % % % % % % %
 
 \chapter{Dimensionality Reduction}
 \label{apx:dim_reduce}
 
-Dimensionality reduction is a useful concept in both supervised and unsupervised learning. 
-It allows to represent high dimensional data in a lower dimension. This allows the visualization of the data in a human-tractable dimension, the application of low-dimensional algorithms, and the reduction of computational burden when using the data for supervised learning. 
+Dimensionality reduction is a useful concept for both supervised and unsupervised learning. 
+It allows to represent high dimensional data in a lower dimension. 
+This allows the visualization of the data in a human-tractable dimension, the application of low-dimensional algorithms, and the reduction of computational burden when using the data for supervised learning. 
 
 The fundamental idea behind dimensionality reduction is that while $\featureS$ may be high dimensional, thus $\dist(x)$ hard to learn, there is hope that $\x$ does not really vary in the whole space. 
 If the mass of $\dist(x)$ is concentrated around some low dimensional manifold $\manifold$, then the original problem might be approximated to learning the distribution of the projection $\dist(X \project \manifold)$ on $\manifold$. 
@@ -126,18 +141,48 @@ Dimensionality reduction also reduces the memory required to represent the data.
 A similar reasoning justifies dimensionality reduction in supervised learning. 
 While $\dist(x)$ might vary in the whole $\featureS$, but there might be only few directions which carry information on $y$. Learning $\dist(y|x)$ can thus be well approximated by $\dist(y|x \project \manifold)$.
 
-As was first observed in the context of PCA (\S\ref{sec:pca}), for many types of embeddings, i.e., for many target manifolds and reconstruction errors, we do not really need the original data $X$, but rather only a graph of similarities (or dissimilarities) between data points. 
-As we see in the unsupervised learning section (\S\ref{sec:unsupervised}), many dimensionality reduction techniques stem from the \emph{graph mebedding} and \emph{graph drawing} literature. As such, they only require similarity (dissimilarity) matrices as inputs. 
+As was first observed in the context of PCA (\S\ref{sec:pca}), for many types of embeddings, i.e., for many target manifolds and reconstruction errors, we do not really need the original data $X$, but rather only a graph of similarities between data points ($\similaritys$). 
+This allow the dimensionality reduction theory to borrow from \emph{graph embedding} and \emph{graph drawing} literature. 
 
 
-\begin{remark}
-The subspace $\manifold$, which approximates $\dist(x)$ may differ than the one that approximates $\dist(y|x)$. Despite this, it is still quite common for a supervised learning problem to be preceded by an unsupervised dimensionality reduction stage.
-\end{remark}
+The different dimensionality methods can be stratified along these lines:
+We can further stratify dimensionality reduction methods along these lines:
+	\begin{description}
+	\item[Linear-Space vs. Non-Linear-Space Embeddings] 
+	When reducing the dimension of $X$, it can be mapped (embedded) into a linear subspace, $\manifold \subset \featureS$, or a non-linear $\manifold$.
+	
+	\item[Linear vs. Non-Linear Space Embeddings]
+	Not to be confused with the previous item. 
+	The dimensionality reducing mapping, $X \project \manifold$, can be a linear operation on the data or a non-linear one.
+	
+	\item[Learning an Embedding vs. Learning an Embedding Function]
+	When learning a mapping to a lower dimensional space, we can map the original data points (an embedding), or learn a mapping of the whole data space (an embedding function).
+	\end{description}
+
+
+
+\section{Dimensionality Reduction in Supervised Learning}
+Dimensionality reduction is often performed before supervised learning to keep computational complexity low. 
+It is sometimes performed on $X$ while ignoring $y$ (e.g. PCA Regression in \S\ref{sec:pca_regression}), and sometimes as part of the supervised learning (e.g. PLS in \S\ref{sec:pls}).
+
+From a statistical view-point, it is preferable to solve the supervised learning and dimensionality reduction simultaneously. This is because the subspace $\manifold$, which approximates $\dist(x)$ may differ than the one that approximates $\dist(y|x)$. 
+From a computational view-point, however, it may be preferable to decouple the stages.
+
+
 
 
 \section{Graph Drawing}
 [TODO]
 
+
+
+
+
+% % % % % % % % % Latent Variables % % % % % % %
+
+\chapter{Latent Variables}
+\label{apx:latent}
+[TODO]
 
 
 

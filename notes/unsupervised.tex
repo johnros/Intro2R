@@ -6,23 +6,16 @@
 
 \section{Introduction to Unsupervised Learning}
 
-Unlike Supervised Learning, in Unsupervised Learning there is no outcome variable. 
-There is thus no notion of ``right'' and ``wrong''. 
-We merely want to learn the joint distribution of the data, $x \in \featureS$, and represent it in some way we can understand. 
-Well, maybe ``merely'' is not the right word, as learning the joint distribution of the data means that instead of learning the relation between a set $x$ and another, $y$, we now try to learn the relation between all pairs of variables in $x$, which is clearly more challenging. 
-
-Describing the data via it's joint distribution is the pinnacle, but would require many samples if $x$ has a high dimension (by high we mean $p>3$!). For higher dimensions we need to set more modest goals, which vary according to the purpose of the analysis.
-
-The different tasks in unsupervised learning are
+Unlike Supervised Learning, in Unsupervised Learning there is no outcome variable $y$.
+Unsupervised learning is thus not a task per-se, but rather a learning setup, which may include many different tasks:
 \begin{enumerate}
 \item \textbf{Density Estimation}: Estimate $\dist(x)$.
 
-\item \textbf{High density regions}: 
+\item \textbf{High Density Regions}: 
 Find feature combinations which tend to concentrate, hopefully, because the belong to homogenous and interpretable subgroups.
 
-\item \textbf{Low dimensional representation}: 
-Find a low dimensional representation of the joint distribution. This allows the learning from realistic sample sizes, and analysis by, e.g., interpretable parameters and visualization.
-Since this also serves in supervised learning, it is discussed with more generality in Appendix~\ref{apx:dim_reduce}.
+\item \textbf{Visualize}: 
+Visually inspect the data. 
 
 \item \textbf{Cluster}: 
 Assign observation to homogenous groups, i.e., clusters.
@@ -31,23 +24,15 @@ Alternatively, assign not only observations, but also unobserved values. I.e., l
 
 
 When thinking of machine learning as the means to automate decision processes, then unsupervised learning is typically as a pre-processing stage before a supervised learning. 
-Dimensionality methods in particular serve to represent the data in a more compact way, thus alleviating the computational burden of supervised learning. 
-Many of the methods discussed below stem from statistical literature, or signal processing literature, and were originally motivated as visualization tools. Clearly when aiming at visualization it is implied that a human is involved in the data analysis, and it is not fully automated. 
 
-\begin{remark}[Relation to Supervised Classification]
-Learning the joint data distribution, i.e., density estimation, is not only a goal for itself, but can serve for classification. 
-The full data generating distribution, in the context of \emph{supervised} learning is called the \emph{generative model}.\marginnote{Generative Model}
-See Appendix \ref{apx:generative_concept} for the usage of the estimated generative model for classification.
-\end{remark}
+We will see that the building blocks presented in the introduction (\S\ref{sec:introduction}) will make an appearance in practically every task and very algorithm. Namely, dimensionaly reduction (Appendix~\ref{apx:dim_reduce}), the kernel trick (Appendix~\ref{apx:rkhs}), the spectral trick (Apendix~\ref{apx:spectral}) and generative approaches (Appendix~\ref{apx:generative_concept}).
 
 
-\begin{remark}[Unsupervised Learning in the ERM framework]
-Many unsupervised learning problems, can be cast in the ERM framework.
-This has not been done in the current version of our text due to both time constraints, and compatibility with the referenced literature.
-\end{remark}
 
 
-\begin{remark}[Graph Method or Feature Methods?]
+
+
+\paragraph{Graph Method or Feature Methods?}
 As we will see, some methods only require a similarity graph ($\similaritys$), while other require the underlying features ($X$).
 What is better?
 Well, there is no single answer to the question.
@@ -65,9 +50,16 @@ Methods taking $\similaritys$ inputs, return an embedding. They thus apply only 
 Methods taking $\featureS$ typically return an embedding \emph{function}. The result can thus effortlessly be applied to new points. Put differently, they embed the whole $\featureS$ into $\manifold$ and not only $X$. 
 Exceptions do exist. PCA (\S\ref{sec:pca}) for instance, can take $\similaritys$ and return an embedding function.
 \end{enumerate}
+
+
+
+
+
+\begin{remark}[Unsupervised Learning in the ERM framework]
+Many unsupervised learning problems, can be cast in the ERM framework.
+We currently do not call it ERM, but essentially every optimization problem we will see can be thought of as the minimization of some loss, over some hypothesis class.
+This has not been done in the current version of our text due to both time constraints, and compatibility with the referenced literature.
 \end{remark}
-
-
 
 
 
@@ -111,12 +103,25 @@ As previously stated, these methods may fail when $x$ are high dimensional. We t
 \label{sec:graphical_models}
 
 Graphical models are graphs that represent joint distributions\footnote{Unlike \emph{graph data}, where the graph is the data itself, and not a distribution.}
-For our purposes, we discuss only \emph{undirected graphical models}, also known as \emph{Markov random fields}, or \emph{Markov networks}.
+For our purposes, we discuss only \emph{undirected graphical models}, also known as \emph{Markov random fields}, or \emph{Markov networks}.\marginnote{Markov Random Field}
 The reason these models are interesting, and particularly for the purpose of density estimation, is that missing edges in a graphical model represents conditional independencies between random variables. 
-If the graph structure can be assumed, and hopefully has many missing edges, then the dimension of the density estimation problem can be reduced. 
+If the graph structure can be assumed, and hopefully has many missing edges, then the dimension of the density estimation problem is considerably reduced. 
+
+\begin{example}[First Order Univariate Markov Process]
+Consider a Gaussian random vector $\x \sim \gauss{\mu, \Sigma}\in \reals^p$.
+To see how the graphical model, i.e. the Markov assumption, helps us with the estimation let's count the number of estimated parameters.
+Without any further assumptions, there are $p$ parameters in $\mu$ and $p(p+1)/2$ parameters in $\Sigma$ to estimate.
+This corresponds to a fully connected graph of the distribution.
+If, however, we can assume a first order Markov structure, implying that the graph of the distribution is merely a chain, there are less parameters to estimate: $p$ parameters in $\mu$ and $p+(p-1)$ parameters in $\Sigma^{-1}$. All other entries in $\Sigma^{-1}$ vanish.
+Say $p=10$, then the first order graphical model has $29$ parameters, compared to $65$ in the fully connected graphical model.
+
+
+\end{example}
+
 
 In the cases the graph structure cannot be assumed, then our goal becomes the learning of the graph structure from the data. I.e., learning the (conditional) independencies between the variables. For a multivariate Gaussian distribution, this amounts to estimating the covariance, while imposing some sparsity assumption. 
-An important fact in this regard is that in the multivariate Gaussian case, missing edges in the graphical model, mean zero entries in the inverse covariance matrix. This fact sets the bridge between learning a the structure of a graphical model, and (sparse) covariance estimation.
+An important fact in this regard is that in the multivariate Gaussian case, missing edges in the graphical model, mean zero entries in the inverse covariance matrix. This fact sets the bridge between learning the structure of a graphical model, and (sparse) covariance estimation.
+
 
 \begin{remark}[Restricted Bolzmann Machine]
 In this context it is also worth mentioning the Restricted Boltzmann Machine (RBM), which is a multivariate distribution with particular class of graphical structure, motivated from Neural Networks. \marginnote{Restricted Bolzmann Machine}
@@ -158,156 +163,6 @@ The \emph{Aprioiri} algorithm \cite{agraval_fast_1994}, is an example of such a 
 
 
 
-% % % % % Clustering % % % % % %
-
-\section{Cluster Analysis}
-\label{sec:cluster_analysis}
-
-In cluster analysis, we aim at assigning observations to (hopefully) homogenous and meaningful clusters. 
-
-Groups identified are called \emph{clusters}, so that these methods are known as \emph{cluster analysis}, or \emph{data segmentation} methods.
-
-Cluster analysis is typically easier than learning a joint distribution (\S\ref{sec:density_estimation}) or even detecting high density regions (\S\ref{sec:high_density}). 
-We will see that for cluster analysis, we don't need the actual features $X$; as it will turn out, many methods only require some notion of distance between the points, and not their actual features. 
-For this reason, clustering is intimately related to graph, or \emph{network}\footnote{A graph describes a yes/no relation. A network is a weighted graph, which not only describes the existence of a relation, but also its strength.} partitioning problems.
-
-
-
-\subsection{K-Means Clustering}
-\label{sec:kmeans}
-The goal behind K-means clustering is finding a representative point for each of K clusters, and assign each (unlabelled) data point to one of these clusters. As each cluster has a representative point, this is also a \emph{prototype method}.\marginnote{Prototype Methods}.
-The clusters are defined so that they minimize the average distance between all points to the center of the cluster.
-
-K-means clustering requires the raw features $X$ as inputs, and not only a similarity graph. This is evident when examining Algorithm~\ref{algo:kmeans}.
-
-In K-means, the clusters are first defined, and then similarities computed. This is thus a \emph{top-down} method.\marginnote{Top Down Clustering}
-
-\begin{algorithm}[H]
-\caption{K-Means}
-\label{algo:kmeans}
-\begin{algorithmic}
-\State Choose the number of clusters $K$.
-\State Arbitrarily assign points to clusters.
-\While {Clusters keep changing}
-	\State Compute the cluster centers as the average of their points.
-	\State Assign each point to its closest cluster center (in Euclidean distance).
-\EndWhile
-\State \Return Cluster assignments and means.
-\end{algorithmic}
-\end{algorithm}
-
-
-
-
-
-\subsection{K-Medoids Clustering}
-\label{sec:k_medoids}
-
-
-If a Euclidean distance is inappropriate for a particular $\featureS$, or that robustness to corrupt observations is required, or that we wish to constrain the cluster centers to be actual observations, then the \emph{K-Medoids} algorithm is an adaptation of K-means that allows this.
-
-\begin{algorithm}[H]
-\caption{K-Medoids}
-\begin{algorithmic}
-\State Choose a similarity metric $\similarity(x_i,x_j)$.
-\State Choose the number of clusters $K$.
-\State Arbitrarily assign points to clusters.
-\While {Clusters keep changing}
-	\State Within each cluster, set the center as the data point that minimizes the sum of distances to other points in the cluster.
-	\State Assign each point to its closest cluster center (in $\similarity(x_i,x_j)$ distance).
-\EndWhile
-\State \Return Cluster assignments and centers.
-\end{algorithmic}
-\end{algorithm}
-
-
-See Section 14.3.10 in \cite{hastie_elements_2003}.
-
-
-
-
-
-
-
-
-\subsection{Hierarchical Clustering}
-\label{sec:hierarchical}
-
-These algorithms take similarity (dissimilarity) graphs as inputs.
-Hierarchical clustering is a class of greedy graph-partitioning algorithms. 
-Being hierarchical by design, they have the attractive property that the evolution of the clustering can be presented with a dendogram (\S\ref{sec:dendogram}).  
-Unlike k-means, the method is the algorithm itself and cannot be cast as an optimization (ERM) problem.
-Also, it does not require an a-priori choice of the number of cluster.
-
-For more on hierarchical clustering see Section 14.3.12 in \cite{hastie_elements_2003}.
-
-Two main sub-classes of algorithms can be identified: \emph{agglomerative}, and \emph{divisive}.
-\subsubsection{Agglomerative Clustering}
-Agglomerative clustering algorithms are bottom-up algorithm which build clusters by joining smaller clusters. 
-To decide which clusters are joined at each iteration some measure of closeness between clusters is required. 
-\begin{description}
-\item[Single Linkage] Cluster distance is defined by the distance between the two \textbf{closest} members.
-\item[Complete Linkage] Cluster distance is defined by the distance between the two \textbf{farthest} members.
-\item[Group Average] Cluster distance is defined by the \textbf{average} distance between members.
-\end{description}
-
-
-\subsubsection{Divisive Clustering}
-Divisive clustering algorithms are top-down algorithm which build clusters by splitting larger clusters. 
-There are several way to divide clusters. All amount to considering some homogeneity measure on the set of all possible divisions. As this is typically computationally intense, greedy algorithms can be employed.
-
-
-
-
-
-
-
-
-
-
-
-
-\subsection{Self Organizing Maps (SOM)}
-\label{sec:som}
-SOMs, also known as \emph{Kohonen maps}, and \emph{self organizing feature maps} (SOFM), and \emph{constrained topological map}. 
-They are a dimensionality reduction method, which driven by the quality of clustering.
-Unlike many similarity based dimensionality reduction methods, it requires the original features $X$, and not only a similarity graph. \marginnote{Kohonen Map}
-
-SOMs is an algorithm. It cannot be cast as an optimization problem. 
-It can be seen as the marriage of K-means clustering (\S\ref{sec:kmeans}) with a non-linear space embedding (\S\ref{sec:dim_reduce_nonlinear}).
-
-
-
-For more on SOMs see Section 14.4 in \cite{hastie_elements_2003}. 
-
-
-
-
-\subsection{Spectral Clustering}
-\label{sec:spectral_clustering}
-
-Spectral clustering is tailored for situations where \naive similarity measures $\similaritys$, such as the empirical covariances used in PCA, fail to capture the true notion of distances in the data, as it lay in some non convex set. 
-
-For some intuition, let $X$ be $n$ images of facial expressions of the same individual. It would be quite miraculous if the Euclidean distance were to capture the true notion of distance between facial expressions. 
-
-Spectral clustering can be decomposed into the following building blocks:
-\begin{enumerate}
-\item Compute the similarity graph $\similaritys$, using some \emph{local} measure of similarity.
-\item Convert the similarity graph $\similaritys$ to a dissimilarity graph $\dissimilaritys$ called the \emph{graph-laplacian}.\marginnote{Graph Laplacian}
-\item Embed the data in a low dimensional linear space using a spectral decomposition (\`a-la PCA) of the graph-laplacian.
-\item Employ clustering techniques such as K-means (\S\ref{sec:kmeans}) on the low dimensional representation.
-\end{enumerate}
-
-The idea of using \emph{local} measures of similarity re-appears in several dimensionality reduction techniques such as LocalMDS (\S\ref{sec:localMDS}), Isomap (\S\ref{sec:isomap}) and LLE (\S\ref{sec:lle}).
-Perhaps the most popular method is that of \emph{mutual K-nearest-neighbor graph}.\marginnote{Mutual K-Nearest-Neighbor Graph}
-
-The idea of the spectral decomposition, i.e. diagonalization, of similarity measures is not a new one, and already appears in the solution to the PCA problem (\S\ref{sec:pca}). In PCA, the solution is given by using the empirical covariances as similarities. 
-
-The idea of clustering in a low dimensional representation of the data is a powerful one. 
-Spectral clustering bundles the embedding and the clustering together, but the stages can be decoupled. Any dimensionality reduction technique can be followed by a clustering technique.
-SOMs (\S\ref{sec:som}) should be noted as a technique where the dimensionality reduction and the clustering \emph{cannot} be decoupled. Indeed, in SOMs, the dimensionality reduction is driven explicitly by the clustering performance.  
-
-
 
 
 
@@ -321,24 +176,19 @@ SOMs (\S\ref{sec:som}) should be noted as a technique where the dimensionality r
 \section{Linear-Space Embeddings}
 \label{sec:dim_reduce_linear}
 
+Linear space embeddings are a class of dimensionality reduction techniques that map the data $X$ into a lower dimensional \emph{linear} space $\manifold$. 
+The mapping itself, $\hyp: \featureS \to \manifold$ can be linear or non linear.
+We denote the low dimensional representation of the data by $\hat{X}:=\hyp(X) \in \manifold$.
 
 The idea of ERM and Inductive Bias also applies to unsupervised learning.
-If $\hyp(x)$ is low dimensional representation of $x$, mapping it to a ``simple'' manifold $\manifold$, we would seek some $\hyp$ that does not incur too much loss, on average. I.e., we seek to minimize $\risk(\hyp)$.
-
+We seek some $\hyp$ that does not incur too much loss, on average. I.e., we seek to minimize $\risk(\hyp)$.
 As usual, we do not have access to the data generating process of $x$, so we typically content ourselves with the empirical risk minimization.
 In the context of unsupervised learing, the empirical risk is known as the \emph{reconstruction error}.\marginnote{Reconstruction Error}
 
-The building blocks of a supervised learning problem are: 
-(i) the loss function $\loss$,
-(ii) the hypothesis class $\hypclass$, 
-(iii) a regularization level, and
-(iv) the optimization scheme.
-In unsupervised learning, we have similar building blocks. We still have some loss function, regularized or not, penalizing for the poor reconstruction of the data. We can still solve an ERM problem, or replace the optimization by some other learning algorithm. The main difference is in that instead of some low dimensional mapping $\hyp:x \mapsto \estim{y}$, we learn a mapping  $\hyp:x \mapsto \estim{x}$.
-
-
 For a general discussion of the idea of dimensionality reduction see Appendix~\ref{apx:dim_reduce}.
 
-Many dimensionality reduction methods, if not all, take inspiration from the origins of PCA. It is thus strongly recommended to read the PCA section (\S\ref{sec:pca}) before proceeding.
+Many dimensionality reduction methods, if not all, take inspiration from the origins of PCA. 
+It is thus strongly recommended to read the PCA section (\S\ref{sec:pca}) before proceeding.
 
 \begin{remark}[Interpreting ``Linear'']
 \label{remark:linear}
@@ -346,10 +196,11 @@ Many dimensionality reduction methods, if not all, take inspiration from the ori
 \end{remark}
 
 
-\begin{remark}[Dimensionality Reduction and Latent Space Generative Models]
- The methods in this section allow us to approximate the data in a lower dimension. 
- They take $X$ as inputs, and return an approximated $X$. 
- If we seek to interpret the parameters/coordinates of our data in its low dimensional representation we need to be cautious as it is probably not unique. For this purpose, see the Latent Space Generative Models Section (\S\ref{sec:latent_space}).
+\begin{remark}[Interpreting the Low Dimensional Representation]
+I we are not only interested in a compressed representation of our data, but also in assigning some intuitive meaning to this compressed representation, we need to be cautious. 
+An example of the difficulties that may arise try comparing the PCA problem (\S\ref{sec:pca}) with the factor analysis problem (\S\ref{sec:factor_analysis}).
+For interpretation purposes, it may be preferable, in the spirit of statistical inference, to assume some interpretable generative model and approach the dimensionality reduction as a statistical inference problem.
+This is the theme of the Latent Space Generative Models section (\S\ref{sec:latent_space}).
 \end{remark}
 
 
@@ -357,6 +208,8 @@ Many dimensionality reduction methods, if not all, take inspiration from the ori
 
 \subsection{Principal Components Analysis (PCA)}
 \label{sec:pca}
+\id{dim reduce}{optimization}{$\similaritys$}{embedding function}{}{}
+
 
 PCA is such a basic technique, it has been rediscovered and renamed independently in many fields. 
 It can be found under the names of \emph{discrete Karhunen–Loève Transform; Hotteling Transform; Proper Orthogonal Decomposition (POD); Eckart–Young Theorem; Schmidt–Mirsky Theorem;  Empirical Orthogonal Functions; Empirical Eigenfunction Decomposition;  Empirical Component Analysis;  Quasi-Harmonic Modes;  Spectral Decomposition;  Empirical Modal Analysis;} and possibly more\footnote{Wikipedia: \url{http://en.wikipedia.org/wiki/Principal_component_analysis} }.
@@ -369,7 +222,7 @@ This is why, physicians use the Body Mass Index (BMI) as an indicator of size, i
 Assume you now wish to give each individual a size score, that is a linear combination of height and weight: PCA does just that. It returns the linear combination that has the most variability, i.e., the combination which best distinguishes between individuals. 
 
 The variance maximizing motivation above was the one that guided Hotelling \citep{hotelling_analysis_1933}.
-About $30$ years before him, Karl Pearson \citep{pearson_liii._1901} derived the same procedure with a different motivation in mind. Pearson was also trying to give each individual a score. He did not care about variance maximization, however. He simply wanted a small set of coordinates in some (linear) space that approximates the original features well. As it turns out, the best linear-space approximation of $X$ is also the variance maximizing one. Pearson and Hotelling thus arrived to the same solution, with different motivations. This matter is revisited in Section 
+About $30$ years before him, Karl Pearson \citep{pearson_liii._1901} derived the same procedure with a different motivation in mind. Pearson was also trying to give each individual a score. He did not care about variance maximization, however. He simply wanted a small set of coordinates in some (linear) space that approximates the original features well. As it turns out, the best linear-space approximation of $X$ is also the variance maximizing one. Pearson and Hotelling thus arrived to the same solution, with different motivations. 
 
 
 
@@ -697,12 +550,15 @@ They are discussed in Appendix~\ref{apx:rkhs}.
 
 
 \subsection{Self Organizing Maps (SOM)}
-SOMs, already discussed in Section~\ref{sec:som}, are a non-linear-subspace dimensionality reduction method, aimed at good clustering. 
+SOMs, are a non-linear-subspace dimensionality reduction method, aimed at good clustering. 
 It is non-linear because the algorithm (which cannot be cast as an ERM problem) returns an embedding into a non-linear manifold.
+More details in Section~\ref{sec:som}.
 
 
 
 \subsection{Principal Curves and Surfaces}
+\id{dim. reduce}{algo.}{$X$}{parametric curve or surface}{self consistency}{}
+
 Principal curves (or surfaces), is an algorithm. It cannot be cast as an optimization problem.
 Being a non-linear space embedding method, the algorithm iterates until it returns a curve of a surface.
 In the curve case, it will return a curve with the \emph{self consistency} property. I.e., a curve with a path that is the average of all it's closest data points.\marginnote{Self Consisntecy}
@@ -719,12 +575,20 @@ It is highly uncommon to approximate the data with surfaces (manifolds) with a d
 
 \subsection{Local Linear Embedding (LLE)}
 \label{sec:lle}
+\id{dim. reduce}{algo.}{$\similaritys$}{data embedding}{local distance}{}
+
 
 LLE aims at finding linear subspaces that are good approximations of small neighbourhoods of the whole data $X$.
 It is similar in spirit to Isomap (\S\ref{sec:isomap}) and LocalMDS (\S\ref{sec:localMDS}).
 It differs, however, in the way similarities are computed, and in the way embeddings are performed. 
 In particular, as the name may suggest, LLE performs local embeddings to linear subspaces. The resulting approximating manifold $\manifold$, being the ``stitching'' of many linear spaces, is ultimately non linear.
 
+
+
+
+\subsection{Auto Encoders}
+\label{sec:auto_encoders}
+[TODO]
 
 
 
@@ -760,6 +624,13 @@ In particular, as the name may suggest, LLE performs local embeddings to linear 
 
 
 
+
+
+
+
+
+
+
 %%%%%%%%% Generative Models %%%%%%%%%%%
 
 
@@ -777,12 +648,14 @@ The simplification of the generative model from its original high-dimension allo
 (ii) \emph{Formulate} the density estimation problem as a low dimensional problem, we can actually hope to solve, even when the data itself is very high dimensional.
 (iii) \emph{Visualize} the data. 
 
-The fundamental idea is that while the data generating distribution may have a complicated form, when we condition on the unobserved variable, the distribution greatly simplifies. 
+The fundamental idea of latent space generative models is that while the data generating distribution may have a complicated form, when we condition on the unobserved variable, the distribution greatly simplifies. 
 
 
 
 \subsection{Factor Analysis (FA)}
 \label{sec:factor_analysis}
+\id{dim reduce}{optimization}{$X$}{embedding function}{}{}
+
 
 Factor Analysis is solved very similarly to PCA (\S\ref{sec:pca}), so that the two are often confused. 
 FA, however, stems from a rather different motivation than PCA.
@@ -798,13 +671,13 @@ The generative model is thus
 Assuming a generative distribution on $\latent$ and $\varepsilon$, we may try to estimate $\loadings \latent$ by maximum likelihood.
 Recovering the particular latent attributes $\latent$ from $\estim{\loadings\latent}$ is still impossible as there are infinitely many such solutions. To see this, consider an orthogonal \emph{rotation} matrix $\rotation$ ($\rotation' \rotation=I$). For each such $\rotation$: $ \loadings \latent=\loadings \rotation' \rotation \latent = \loadings^* \latent^*$.
 
-The choice of $\rotation$ changes the interpretation of the latent attributes. This is why many researchers find FA an unsatisfactory inference tool.
+The arbitrary choice of $\rotation$ changes the interpretation of the latent attributes. This is why many researchers find FA an unsatisfactory inference tool.
 
 \begin{remark}[Identifiability in PCA]
 	The non-uniqueness (non-identifiability) of the FA solution under variable rotation is never mentioned in the PCA context. Why is this?
-	This is because the methods have different purposes. 
+	This is because the methods solve different problems. Indeed, the PCA problem has no such ambiguity. 
 	Generative latent variables, as in FA, are only defined up to rotations. They are thus not unique. 
-	Combinations with maximal variance, as in PCA, are unique. There is no room for rotations.
+	Combinations with maximal variance, or series of linear-hyperspaces, as in PCA, are unique. There is no room for rotations.
 \end{remark}
 
 
@@ -813,7 +686,7 @@ The choice of $\rotation$ changes the interpretation of the latent attributes. T
 \begin{itemize}
 \item \textbf{Factors}: The unobserved attributes $\latent$. Not to be confused with the \emph{principal components} in the context of PCA.
 \item \textbf{Loadings}: The $\loadings$ matrix; the contribution of each attribute to the observed $X$.
-\item \textbf{Rotation}: An orthogonal re-combination of the latent attributes $\latent$ and loadings, which changes the interpretation of the result.
+\item \textbf{Rotation}: An arbitrary orthogonal re-combination of the latent attributes $\latent$ and loadings, which changes the interpretation of the result.
 \end{itemize}
 
 
@@ -822,19 +695,33 @@ For an full exposition, and a discussion of the differences with PCA, see \cite{
 
 
 
+\paragraph{Rotations}
+\begin{itemize}
+\item \textbf{Varimax}: By far the most popular rotation. Attempts to construct factors that are similar to the original variables, thus facilitating interpretation. This can be seen as a "soft" approach to sPCA (\S\ref{sec:spca}).
+\item \textbf{Quartimax rotation}: Seeks a minimal number of factors to explain each variable. May thus result factors that are uninterpretable, since they all rely on the same variables.
+\item \textbf{Equimax rotation}: A compromise between Varimax and Quartimax. 
+\item \textbf{Direct oblimin rotation}: Relaxes the requirement of the factors to be uncorrelated, so that they may be similar to the original variables; even more so than in varimax. This facilitates the interpretability of the factors. 
+\item \textbf{Promax rotation}: A computationally efficient approximation of oblimin.
+\end{itemize}
+
+
+
 \begin{remark}[Non Linear FA]
-The FA method presented herein deals with features that are linear in the latent factors. 
-It is obviously possible to generalize the framework to deal with non-linear functions of the latent factors. 
+The FA method presented herein deals with features, $X$, that are linear in the latent factors, $\latent$. 
+It is obviously possible to generalize the framework to deal with non-linear functions of the latent factors: $X=g(S)$. 
 This practice is, however, quite uncommon.
 \end{remark}
 
 
 \paragraph{Mathematics of FA}
+[TODO]
+
 
 
 
 \subsection{Independent Component Analysis (ICA)}
 \label{sec:ica}
+\id{dim reduce}{meta problem}{$X$}{embedding function}{}{}
 
 ICA is a family of latent space models as it assumes data is generated as some function of the latent variables $\latent$. 
 In many cases this function is assumed to be linear in $\latent$ so that ICA is compared, if not confused, with PCA or FA. 
@@ -913,7 +800,7 @@ The different implementations of ICA, indeed look for a matrix $\loadings$ which
 The fundamental idea of Exploratory Projection Pursuit, first presented in \cite{friedman_projection_1974}, is that if the data were pure noise in some high dimension, then almost any projection will look the same. 
 If, however, the data were not pure noise, then projections in the direction of the signal, would show structure. 
 
-\begin{example}[Intelligence Measure]
+\begin{example}[Intelligence Measure (g-factor)]
 \label{eg:intelligence}
 
 Assume respondents answer $p$ questions: $x_i \in \reals^p$. 
@@ -1087,5 +974,186 @@ For a review of random graph models see \cite{goldenberg_survey_2010}.
 \begin{remark}[Relation to Spectral Clustering]
 [TODO]
 \end{remark}
+
+
+% % % % % Clustering % % % % % %
+
+\section{Cluster Analysis}
+\label{sec:cluster_analysis}
+
+In cluster analysis, or \emph{data segmentation}, we aim at assigning observations to (hopefully) homogenous and meaningful clusters. 
+We may also consider the more ambitious goal of finding not only clusters, but a \emph{clustering function}: a mapping between $\featureS$ to clusters (and not only between $X$ to clusters).
+
+Cluster analysis is typically easier than learning a joint distribution (\S\ref{sec:density_estimation}) or even detecting high density regions (\S\ref{sec:high_density}). 
+
+We will see that for cluster analysis, we don't always need the actual features $X$; it will turn out that many methods only require the pair-wise similarities ($\similaritys$). 
+For this reason, clustering is intimately related to graph, or \emph{network}\footnote{A graph describes a yes/no relation. A network is a weighted graph, which not only describes the existence of a relation, but also its strength.} partitioning problems.
+
+
+
+\subsection{K-Means Clustering}
+\label{sec:kmeans}
+
+\id{Clustering}{Algorithm}{$X, K$}{Data Clustering}{--}{--}
+
+
+The goal behind K-means clustering algorithm is finding a representative point for each of K clusters, and assign each data point to one of these clusters. 
+As each cluster has a representative point, this is also a \emph{prototype method}.\marginnote{Prototype Methods}.
+The clusters are defined so that they minimize the average distance between all points to the center of the cluster.
+
+K-means clustering requires the raw features $X$ as inputs, and not only a similarity graph. 
+This is evident when examining Algorithm~\ref{algo:kmeans}.
+
+In K-means, the clusters are first defined, and then similarities computed. This is thus a \emph{top-down} method.\marginnote{Top Down Clustering}
+
+\begin{algorithm}[H]
+\caption{K-Means}
+\label{algo:kmeans}
+\begin{algorithmic}
+\State Choose the number of clusters $K$.
+\State Arbitrarily assign points to clusters.
+\While {Clusters keep changing}
+	\State Compute the cluster centers as the average of their points.
+	\State Assign each point to its closest cluster center (in Euclidean distance).
+\EndWhile
+\State \Return Cluster assignments and means.
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{remark}[The population equivalent of K-means]
+You may wonder- what population quantity is K-means actually estimating?
+The estimand of K-means is known as the \emph{K principal points}.\marginnote{Principal Points}
+Principal points are points which are \emph{self consistent}, i.e., they are the mean of their neighbourhood. 
+\end{remark}
+
+
+
+
+\subsection{K-Medoids Clustering}
+\label{sec:k_medoids}
+
+\id{Clustering}{Algorithm}{$\similaritys, K$}{Data Clustering}{--}{--}
+
+
+If a Euclidean distance is inappropriate for a particular $\featureS$, or that robustness to corrupt observations is required, or that we wish to constrain the cluster centers to be actual observations, then the \emph{K-Medoids} algorithm is an adaptation of K-means that allows this.
+
+\begin{algorithm}[H]
+\caption{K-Medoids}
+\begin{algorithmic}
+\State Given a similarity graph $\similaritys$.
+\State Choose the number of clusters $K$.
+\State Arbitrarily assign points to clusters.
+\While {Clusters keep changing}
+	\State Within each cluster, set the center as the data point that minimizes the sum of distances to other points in the cluster.
+	\State Assign each point to its closest cluster center (in $\similarity(x_i,x_j)$ distance).
+\EndWhile
+\State \Return Cluster assignments and centers.
+\end{algorithmic}
+\end{algorithm}
+
+
+See Section 14.3.10 in \cite{hastie_elements_2003}.
+
+
+
+
+
+
+
+
+\subsection{Hierarchical Clustering}
+\label{sec:hierarchical}
+
+\id{Clustering}{Algorithm}{$\similaritys$}{Data Clustering}{--}{--}
+
+
+These algorithms take similarity (dissimilarity) graphs as inputs.
+Hierarchical clustering is a class of greedy graph-partitioning algorithms. 
+Being hierarchical by design, they have the attractive property that the evolution of the clustering can be presented with a dendogram (\S\ref{sec:dendogram}).  
+Unlike k-means, the method is the algorithm itself and cannot be cast as an optimization (ERM) problem.
+Also, it does not require an a-priori choice of the number of cluster.
+
+For more on hierarchical clustering see Section 14.3.12 in \cite{hastie_elements_2003}.
+
+Two main sub-classes of algorithms can be identified: \emph{agglomerative}, and \emph{divisive}.
+\subsubsection{Agglomerative Clustering}
+Agglomerative clustering algorithms are bottom-up algorithm which build clusters by joining smaller clusters. 
+To decide which clusters are joined at each iteration some measure of closeness between clusters is required. 
+\begin{description}
+\item[Single Linkage] Cluster distance is defined by the distance between the two \textbf{closest} members.
+\item[Complete Linkage] Cluster distance is defined by the distance between the two \textbf{farthest} members.
+\item[Group Average] Cluster distance is defined by the \textbf{average} distance between members.
+\end{description}
+
+
+\subsubsection{Divisive Clustering}
+Divisive clustering algorithms are top-down algorithm which build clusters by splitting larger clusters. 
+There are several way to divide clusters. All amount to considering some homogeneity measure on the set of all possible divisions. As this is typically computationally intense, greedy algorithms can be employed.
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Self Organizing Maps (SOM)}
+\label{sec:som}
+
+\id{Clustering}{Algorithm}{$X$}{Data Clustering, Visualization}{Dim. Reduce}{--}
+
+
+SOMs, also known as \emph{Kohonen maps}, and \emph{self organizing feature maps} (SOFM), and \emph{constrained topological map}. 
+They are dimensionality reduction methods driven by the quality of clustering.
+Unlike many similarity based dimensionality reduction methods, it requires the original features $X$, and not only a similarity graph $\similaritys$. \marginnote{Kohonen Map}
+
+SOMs is an algorithm. It cannot be cast as an optimization problem. 
+It can be seen as the marriage of K-means clustering (\S\ref{sec:kmeans}) with a non-linear space embedding (\S\ref{sec:dim_reduce_nonlinear}).
+
+
+
+For more on SOMs see Section 14.4 in \cite{hastie_elements_2003}. 
+
+
+
+
+\subsection{Spectral Clustering}
+\label{sec:spectral_clustering}
+
+\id{Clustering}{Meta-Algorithm}{$\similaritys$}{Data Clustering}{Spectral Trick}{--}
+
+
+Spectral clustering is tailored for situations where \naive similarity measures $\similaritys$, such as the empirical covariances used in PCA, fail to capture the true notion of distances in the data, as it lay in some non convex set. 
+
+For some intuition, let $X$ be $n$ images of facial expressions of the same individual. It would be quite miraculous if the Euclidean distance were to capture the true notion of distance between facial expressions. 
+
+Spectral clustering implies following (meta-)algorithm:
+\begin{algorithm}[H]
+\caption{Spectral Clustering}
+\begin{algorithmic}
+\State Compute a similarity graph, $\similaritys$ with some \emph{local} similarity measure.
+\State Convert the similarity graph $\similaritys$ to a dissimilarity graph $\dissimilaritys$ called the \emph{graph-laplacian}.\marginnote{Graph Laplacian}
+\State Use the spectral trick (\S\ref{apx:spectral}) to reduce the dimension of the data.
+\State Cluster data (say, with K-means, \S\ref{sec:kmeans} ) in the low-dimension representation. 
+\State \Return Low dimensional data representation and cluster assignments. 
+\end{algorithmic}
+\end{algorithm}
+
+
+
+The idea of using \emph{local} measures of similarity re-appears in several dimensionality reduction techniques such as LocalMDS (\S\ref{sec:localMDS}), Isomap (\S\ref{sec:isomap}) and LLE (\S\ref{sec:lle}).
+Perhaps the most popular method is that of \emph{mutual K-nearest-neighbor graph}.\marginnote{Mutual K-Nearest-Neighbor Graph}
+
+The spectral trick (Appendix \ref{apx:spectral}) is not a new one, and is motivated by the solution to the PCA problem (\S\ref{sec:pca}). In PCA, the solution is given by using the empirical covariances as similarities. 
+
+The idea of clustering in a low dimensional representation of the data is a powerful one. 
+Spectral clustering is a bundle of an embedding and clustering. 
+These two, however, can be decoupled: just perform your favourite dimensionality reduction then followed by your favourite clustering technique.
+SOMs (\S\ref{sec:som}), and exploratory projection pursuit (\S\ref{sec:exploratpory_ppr}) should be noted as techniques where the dimensionality reduction and the clustering \emph{cannot} be decoupled. Indeed, in both the dimensionality reduction is driven explicitly by the clustering performance.  
 
 
