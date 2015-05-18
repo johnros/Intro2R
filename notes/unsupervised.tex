@@ -861,9 +861,9 @@ For this, both ICA and Exploratory Projection Pursuit, can be seen as similar so
 
 
 
-\subsection{Mixtures}
+\subsection{Finite Mixtures}
 
-\id{arg1}{arg2}{arg3}{arg4}{arg5}{arg6}
+\id{many}{generative model}{$X$}{estimates}{}{}
 
 A very simply, perhaps the simplest, class of latent variable generative models, is that of Finite Mixtures. 
 In a finite mixture, the fundamental assumption is that the observed data is sampled from $K$ unobserved classes. Each class, having some simple joint distribution. 
@@ -899,7 +899,7 @@ Even though convergence to an optimum is not guaranteed, it is by far the most p
 
 
 \begin{remark}[Mixtures For Clustering]
-Because the output of learning a mixture, is a density like Eq.(\ref{eq:mixture}), a learnt mixture can easily serve for clustering by a simple application of Bayes rule. Simple assign an observation to the cluster with highest (posterior) probability:
+Because the output of learning a mixture, is a density like Eq.(\ref{eq:mixture}), a learnt mixture can easily serve for clustering by a simple application of Bayes rule. Simply assign an observation to the cluster with highest (posterior) probability:
 \begin{align}
 \label{eq:mixture_posterior}
 	\prob{x \in k|x}=\frac{\pi_k \pdf_k(x)}{\pdf(x)}
@@ -930,7 +930,7 @@ Assuming the transition between states follows a \emph{Markov process}, i.e., th
 
 The second, is as a generalization of the Graphical Models (\S\ref{sec:graphical_models}). 
 This generalization is known a \emph{latent space graphical model} (\S\ref{sec:latent_graphical}). 
-In this case, the Markov property does not describe the process of transition between states, but rather a property of the conditional distribution in each state ($\pdf_k(x)$). 
+In this case, the Markov property does not describe the process of transition between states, but rather the Markov field property of the conditional distribution in each state, $\pdf_k(x)$. 
 
 
 
@@ -940,7 +940,7 @@ In this case, the Markov property does not describe the process of transition be
 
 The idea of simplifying a complicated distribution by conditioning on some latent variable can be compounded with the idea of a graphical model (\S\ref{sec:graphical_models}). 
 Put differently, the generative model can be a simple graphical model when conditioned on some latent variable.
-We do not pursue this avenue further, and refer the reader to Section 17.4.2 in \cite{hastie_elements_2003}.
+See Section 17.4.2 in \cite{hastie_elements_2003} for more details.
 
 
 
@@ -948,7 +948,7 @@ We do not pursue this avenue further, and refer the reader to Section 17.4.2 in 
 
 \subsection{Matrix Factorization}
 \label{sec:matrix_factorization}
-[TODO]
+[TODO- is it generative?]
 
 
 
@@ -957,9 +957,12 @@ We do not pursue this avenue further, and refer the reader to Section 17.4.2 in 
 \section{Random Graph Models}
 \label{sec:random_graphs}
 
-There are several occasions in which our date does not consist of the classical features $X$, but rather directly given as a similarity (dissimilarity) graph. This can happen when the data itself is a graph, such as social networks, communication networks, protein interactions networks, etc. It may also be the case that the original data is indeed given as features, which was used to compute a similarity (dissimilarity) graph. Indeed, We have already seen that for the purpose of clustering, we only need some proximity graph between observations, and not the whole features. 
+There are several occasions in which our date does not consist of the classical features $X$, but rather directly given as a similarity graph $\similaritys$. This can happen when the data itself is a graph, such as social networks, communication networks, protein interactions networks, etc. 
+It may also be the case that the original data is indeed given as features, then used to compute a similarity graph. 
 
-Random Graphs are a class of \emph{generative models}, but unlike other generative methods, the model does not specify a distribution over the features, but rather a distribution over the proximity measures.
+In those occasion where the data is actually $\similaritys$, we may still want to cluster observations, visualize, etc.
+
+Random Graphs are a class of \emph{generative models}, but unlike other generative methods, the model does not specify a distribution over the features, but rather, a distribution over proximity measures.
 For this, it is  intimately related to \emph{random graph} and \emph{random matrix} theory.
 
 For a review of random graph models see \cite{goldenberg_survey_2010}.
@@ -1169,6 +1172,6 @@ The spectral trick (Appendix \ref{apx:spectral}) is not a new one, and is motiva
 The idea of clustering in a low dimensional representation of the data is a powerful one. 
 Spectral clustering is a bundle of an embedding and clustering. 
 These two, however, can be decoupled: just perform your favourite dimensionality reduction then followed by your favourite clustering technique.
-SOMs (\S\ref{sec:som}), and exploratory projection pursuit (\S\ref{sec:exploratpory_ppr}) should be noted as techniques where the dimensionality reduction and the clustering \emph{cannot} be decoupled. Indeed, in both the dimensionality reduction is driven explicitly by the clustering performance.  
+SOMs (\S\ref{sec:som}), and exploratory projection pursuit (\S\ref{sec:exploratpory_ppr}) should be noted as techniques where the dimensionality reduction and the clustering \emph{cannot} be decoupled. In both, the dimensionality reduction is driven explicitly by the clustering performance.  
 
 
