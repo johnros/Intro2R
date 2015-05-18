@@ -723,19 +723,20 @@ This practice is, however, quite uncommon.
 \label{sec:ica}
 \id{dim reduce}{meta problem}{$X$}{embedding function}{}{}
 
-ICA is a family of latent space models as it assumes data is generated as some function of the latent variables $\latent$. 
-In many cases this function is assumed to be linear in $\latent$ so that ICA is compared, if not confused, with PCA or FA. 
-In its most popular form, $X$ is assume to be a \emph{linear} function of the latent independent components.
+ICA is a family of latent space models-- a meta-method.
+It assumes data is generated as some function of the latent variables $\latent$. 
+In many cases this function is assumed to be linear in $\latent$ so that ICA is compared, if not confused, with PCA and even more so with FA. 
+In its most popular form, $X$ is assume to be a \emph{linear} function of the latent independent components: $X=\loadings \latent$.
 
 The fundamental idea of ICA is that $\latent$ has a joint distribution of \emph{independent} variables. 
 This is a stronger assumption that the typical FA assumption where the distribution of $\latent$ is merely assumed to be uncorrelated. 
-This independence assumption solves the the non-uniquness of the latent attributes in FA (\S\ref{sec:factor_analysis}).
+This independence assumption solves the the non-uniquness of $\latent$ in FA (\S\ref{sec:factor_analysis}).
 
 Two assumptions distinguish ICA from FA, allowing the identification of $\latent$: 
 (i) The latent variables are \textbf{not} Gaussian distributed.
 (ii) The latent variables are statistically \emph{independent}.
 
-Being a generative model, estimation of $\latent$ can then be done using maximum likelihood, or an information theoretic criterion called \emph{infomax}.\marginnote{Infomax}
+Being a generative model, estimation of $\latent$ can then be done using maximum likelihood, or other estimation principles. A popular information theoretic estimation principle is \emph{infomax}.\marginnote{Infomax}
 
 
 
@@ -746,7 +747,6 @@ Recovering $\latent$ is thus recovering the original signals mixing in the recor
 \begin{remark}[ICA and FA]
 The solutions to the (linear) ICA problem can ultimately be seen as a solution to the FA problem with a particular rotation $\rotation$ implied by the independence assumption.
 Put differently, the formulation of the (linear) ICA problem, implies a unique rotation. 
-This illustrated in the mathematics of ICA below
 \end{remark}
 
 For a general discussion of ICA see \cite{jolliffe_principal_2002}.
@@ -756,10 +756,9 @@ For a detailed review of ICA see \cite{hyvarinen_independent_2000}.
 
 
 \paragraph{Mathematics of ICA}
-We will first analyze the population problem, i.e., in terms of random variables. 
-We thus replace the data $X$, with the random vector $\x$.
-We will then take the intuition from the population problem, and apply it to the observed data.
-We also consider the simplest case where:
+For ease of presentation we present a simple setup, which can be considerably generalized. 
+In this setup, we will first analyze the population problem, i.e., in terms of random variables. 
+We thus replace the data $X$, with the random vector $\x$, and afterwards consider implementation for finite samples. 
 \begin{itemize}
 \item $\x=\loadings \latent$, implying that $\x$ is \emph{linear} in the latent components, and the latent space is of dimension $\rank=p$.
 \item $\x$ has been pre-whitented, so that $\cov{\x}=I$.
