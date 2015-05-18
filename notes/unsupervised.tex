@@ -862,6 +862,9 @@ For this, both ICA and Exploratory Projection Pursuit, can be seen as similar so
 
 
 \subsection{Mixtures}
+
+\id{arg1}{arg2}{arg3}{arg4}{arg5}{arg6}
+
 A very simply, perhaps the simplest, class of latent variable generative models, is that of Finite Mixtures. 
 In a finite mixture, the fundamental assumption is that the observed data is sampled from $K$ unobserved classes. Each class, having some simple joint distribution. 
 Being unobserved, we cannot directly learn the conditional simple distributions, without somehow learning the class assignments. 
@@ -880,7 +883,7 @@ where $\pi_k$ is the probability of class $k$.
 \begin{remark}[Finite Mixture Distributions]
 While very simple to understand, mixture distributions are an unpleasant probabilistic creature. 
 Because the probability mass (or density) function is additive in the underlying mixing components, is has a very challenging functional form.
-For instance- the likelihood problem with be non-convex with multiple local extrema, so that numerical optimization schemes are not guaranteed to converge.
+For instance- the likelihood problem will be non-convex with multiple local extrema, so that numerical optimization schemes are not guaranteed to converge.
 It may also be the case that the likelihood is unbounded, so that the local extrema are not a global extrema, complicating our attempts at maximum likelihood estimation. 
 Hypothesis testing for the number of mixing components is also very challenging as classical statistical theory assumptions do not apply.
 \end{remark}
@@ -890,7 +893,7 @@ Hypothesis testing for the number of mixing components is also very challenging 
 As previously stated, the likelihood function of mixtures is typically non convex. 
 It's optimization is typically done with a numerical algorithm called the Expectation Maximization (EM) algorithm.
 Roughly speaking, the idea behind the EM, is that in each iteration observations are assigned to classes, the simple conditional distributions learned, then reasigned using the learnt parameters, etc.\ until convergence.
-Even though convergence to an optimum is not guaranteed, it is by far the most popular framework for learning mixtures.
+Even though convergence to an optimum is not guaranteed, it is by far the most popular algorithm for learning mixtures.
 \end{remark}
 
 

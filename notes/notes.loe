@@ -56,6 +56,7 @@
 \contentsline {remark}{\numberline {5.8.1}Remark\thmtformatoptarg {The population equivalent of K-means}}{66}{remark.5.8.1}
 \addvspace {10\p@ }
 \contentsline {remark}{\numberline {6.3.1}Remark\thmtformatoptarg {Collaborative Filtering and Other Supervised Learning Methods}}{71}{remark.6.3.1}
-\contentsline {definition}{\numberline {F.1}Definition\thmtformatoptarg {Entropy}}{81}{definition.F.1}
-\contentsline {definition}{\numberline {F.2}Definition\thmtformatoptarg {Mutual Information}}{81}{definition.F.2}
-\contentsline {definition}{\numberline {F.3}Definition\thmtformatoptarg {Kullback\IeC {\textendash }Leibler Divergence}}{81}{definition.F.3}
+\addvspace {10\p@ }
+\contentsline {definition}{\numberline {G.1}Definition\thmtformatoptarg {Entropy}}{81}{definition.G.1}
+\contentsline {definition}{\numberline {G.2}Definition\thmtformatoptarg {Mutual Information}}{81}{definition.G.2}
+\contentsline {definition}{\numberline {G.3}Definition\thmtformatoptarg {Kullback\IeC {\textendash }Leibler Divergence}}{81}{definition.G.3}
