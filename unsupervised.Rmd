@@ -9,31 +9,90 @@ output: html_document
 # Learning Distributions 
 
 ## Gaussian Density Estimation
+```{r}
+# Sample from a multivariate Gaussian:
+## Generate a covariance matrix
+library(bayesm)
+p <- 10
+Sigma <- rwishart(nu = 10, V = diag(p))$W
+
+# Sample from a multivariate Gaussian:
+library(mvtnorm)
+n <- 1e3
+means <- 1:p
+X <- rmvnorm(n = n, sigma = Sigma, mean = means)
+dim(X)
+
+# Estiamte parameters and compare to truth:
+estim.means <- colMeans(X) # recall truth is (10,...,10)
+plot(estim.means~means); abline(0,1, lty=2)
+
+estim.cov <- cov(X)
+errors <- Sigma-cov.estim
+levelplot(errors)
+
+# Now try the same while playing with n and p.
+```
+
+## Non parametric density estimation
+There is nothing that will even try dimensions higher than 6.
+See [here](http://vita.had.co.nz/papers/density-estimation.pdf) for a review.
+
 
 ## Association rules
-install.packages('arules')
+```{r association rules}
+# install.packages('arules')
 library(arules)
 
 example(apriori)
+```
 
 
 # Dimensionality Reduction
 
 ## PCA
+```{r PCA}
+
+```
 
 ## sPCA
+```{r sPCA}
+
+```
+
 
 ## Random Projections 
+```{r Random Projections}
+
+```
+
 
 ## MDS
+```{r MDS}
+
+```
+
 
 ## Isomap
+```{r Isomap}
+
+```
+
 
 ## LLE
+```{r LLE}
+
+```
 
 ## LocalMDS
+```{r Local MDS}
+
+```
 
 ## Principal Curves & Surfaces
+```{r Principla curves}
+
+```
 
 
 
@@ -42,31 +101,105 @@ example(apriori)
 # Latent Space Generative Models
 
 ## FA
+```{r factor analysis}
+
+```
 
 ## ICA
+```{r ICA}
+install.packages('fastICA')
+library(fastICA)
+
+```
+
+
 
 ## Exploratory Projection Pursuit
+```{r exploratory projection pursuit}
+install.packages('REPPlab')
+library(REPPlab) % will require the `rJava` package
+
+```
 
 ## Generative Topographic Map
+[TODO]
 
-## Mixture
+## Finite Mixture
+```{r mixtures}
+install.packages('mixtools')
+library(mixtools)
+
+```
+Read [this](http://www.stat.cmu.edu/~cshalizi/uADA/12/lectures/ch20.pdf) for more information.
+
 
 ## HMM
+```{r}
+# install.packages('HiddenMarkov')
+library(HiddenMarkov)
+
+
+```
 
 
 
 # Clustering:
 
 ## K-means
+```{r}
+kmeans()
+
+```
+
+## Kmeans++
+```{r kmeans++}
+kmpp <- function(X, k) {
+  n <- nrow(X)
+  C <- numeric(k)
+  C[1] <- sample(1:n, 1)
+  
+  for (i in 2:k) {
+    dm <- distmat(X, X[C, ])
+    pr <- apply(dm, 1, min); pr[C] <- 0
+    C[i] <- sample(1:n, 1, prob = pr)
+  }
+  
+  kmeans(X, X[C, ])
+}
+```
+
 
 ## K-medoids
+```{r k-medoids}
+library(cluster)
+pam()
+```
 
 ## Hirarchial
+```{r}
+hclust()
 
-### Agglomerative
+# install.packages('cluster')
+library(cluster)
+agnes()
 
-### Divisive
+```
+
 
 ## Self Organizing Maps
+```{r SOM}
+# install.packages('som')
+library(som)
+
+```
+
+
 
 ## Spectral Clustering
+```{r}
+# install.packages('kernlab')
+library(kernlab)
+
+specc()
+```
+
