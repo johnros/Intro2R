@@ -235,8 +235,11 @@ Here are some terms needed to understand PCA outputs:
 \item \textbf{Principal Components}:  The linear combinations of the features, which best separate between observations. In our example- the ``bigness'' index of each individual. The first components captures the most variance, the second components, the second most-variance, etc. In terms of $\manifold$, the principal components are an orthogonal basis for $\manifold$.
 \item \textbf{Scores}: Synonymous to Principal Components.
 \item \textbf{Loadings}: The weights of each data point in each principal component. In our example, the importance of the height and weight in constructing the ``bigness'' score.
+\item \textbf{Scree Plot}: A simple plot visualizing the eigen value versus the component's number. 
 \end{itemize}
 
+
+[TODO: add scree plot]
 
 \subsubsection{Intuition}
 \label{sec:pca_intuition}
@@ -1105,12 +1108,14 @@ To decide which clusters are joined at each iteration some measure of closeness 
 \end{description}
 
 
+[TODO: add plot of agglomerative clustering]
+
 \subsubsection{Divisive Clustering}
 Divisive clustering algorithms are top-down algorithm which build clusters by splitting larger clusters. 
 There are several way to divide clusters. All amount to considering some homogeneity measure on the set of all possible divisions. As this is typically computationally intense, greedy algorithms can be employed.
 
 
-
+[TODO: add plot of divisive clustering]
 
 
 
