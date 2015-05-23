@@ -156,6 +156,15 @@ This type of problems typically occurs in sales analysis, where vendors seek for
 
 The \emph{Aprioiri} algorithm \cite{agraval_fast_1994}, is an example of such a heuristic search for high density combinations.\marginnote{Apriori Algorithm}
 
+\paragraph{Terminology}
+The following terms relate to the discussion of rules of the type ``if $A$ then $B$''. Example, ``if beer then diapers''.
+\begin{itemize}
+\item \textbf{Antecedent \& Consequent}: For a rule ``if $A$ then $B$'', or $A \Rightarrow B$, $A$ is the antecedent and $B$ is the consequent.
+\item \textbf{Support}: The empirical probability of an event/item, $\supp{A}:=\sum \indicator{A \in \sample}/n$.
+\item \textbf{Confidence}: $\conf{A}{B}:=\frac{\supp{A \union B}}{\supp A}$. A strong rule has confidence close to $1$, meaning the rule applies with almost certainty.
+\item \textbf{Lift}: $\lift{A}{B}:=\frac{\supp{A \union B}}{\supp A \supp B}$. A strong rule has a large lift, meaning the items typically come in combos.
+\item \textbf{Conviction}: $\convic{A}{B}:=\frac{1-\supp{B}}{1-\conf{A}{B}}$. It can be interpreted as the probability of a rule to make a wrong prediction.
+\end{itemize}
 
 
 
