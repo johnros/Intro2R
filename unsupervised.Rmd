@@ -5,6 +5,25 @@ date: "April 12, 2015"
 output: html_document
 ---
 
+Some utility functions:
+```{r utility}
+l2 <- function(x) x^2 %>% sum %>% sqrt 
+l1 <- function(x) abs(x) %>% sum  
+MSE <- function(x) x^2 %>% mean 
+
+# Matrix norms:
+frobenius <- function(A) norm(A, type="F")
+spectral <- function(A) norm(A, type="2")
+```
+
+
+__Note__: `foo::bar` means that function `foo` is part of the `bar` package. 
+With this syntax, there is no need to load (`library`) the package.
+If a line does not run, you may need to install the package: `install.packages('bar')`.
+Sadly, RStudio currently does not autocomplete function arguments when using the `::` syntax.
+
+
+
 
 # Learning Distributions 
 
@@ -12,26 +31,59 @@ output: html_document
 ```{r}
 # Sample from a multivariate Gaussian:
 ## Generate a covariance matrix
-library(bayesm)
 p <- 10
-Sigma <- rwishart(nu = 10, V = diag(p))$W
-
+Sigma <- bayesm::rwishart(nu = 100, V = diag(p))$W
+lattice::levelplot(Sigma)
 # Sample from a multivariate Gaussian:
-library(mvtnorm)
 n <- 1e3
 means <- 1:p
-X <- rmvnorm(n = n, sigma = Sigma, mean = means)
-dim(X)
+X1 <- mvtnorm::rmvnorm(n = n, sigma = Sigma, mean = means)
+dim(X1)
 
 # Estiamte parameters and compare to truth:
-estim.means <- colMeans(X) # recall truth is (10,...,10)
+estim.means <- colMeans(X1) # recall truth is (10,...,10)
 plot(estim.means~means); abline(0,1, lty=2)
 
-estim.cov <- cov(X)
-errors <- Sigma-cov.estim
-levelplot(errors)
+estim.cov <- cov(X1)
+estim.cov.errors <- Sigma - estim.cov
+lattice::levelplot(estim.cov.errors)
+
+plot(estim.cov~Sigma); abline(0,1, lty=2)
+
+frobenius(estim.cov.errors)
 
 # Now try the same while playing with n and p.
+```
+
+
+
+Other covariance estimators (robust, fast,...)
+```{r covariances}
+# Robust covariance
+estim.cov.1 <- MASS::cov.rob(X1)$cov
+estim.cov.errors.1 <- Sigma - estim.cov.1
+lattice::levelplot(estim.cov.errors.1)
+frobenius(estim.cov.errors.1)
+
+# Nearest neighbour cleaning of outliers
+estim.cov.2 <- covRobust::cov.nnve(X1)$cov
+estim.cov.errors.2 <- Sigma - estim.cov.2
+lattice::levelplot(estim.cov.errors.2)
+frobenius(estim.cov.errors.2)
+
+
+# Regularized covariance estimation
+estim.cov.3 <- robustbase::covMcd(X1)$cov
+estim.cov.errors.3 <- Sigma - estim.cov.3
+lattice::levelplot(estim.cov.errors.3)
+frobenius(estim.cov.errors.3)
+
+
+# Another robust covariance estimator
+estim.cov.4 <- robustbase::covComed(X1)$cov
+estim.cov.errors.4 <- Sigma - estim.cov.4
+lattice::levelplot(estim.cov.errors.4)
+frobenius(estim.cov.errors.4)
 ```
 
 ## Non parametric density estimation
@@ -40,24 +92,78 @@ See [here](http://vita.had.co.nz/papers/density-estimation.pdf) for a review.
 
 
 ## Association rules
-```{r association rules}
-# install.packages('arules')
-library(arules)
+Note: Visualization examples are taken from the arulesViz [vignette](http://cran.r-project.org/web/packages/arulesViz/vignettes/arulesViz.pdf)
 
-example(apriori)
+```{r association rules}
+library(arules)
+data("Groceries")
+inspect(Groceries[1:2])
+summary(Groceries)
+
+rules <- apriori(Groceries, parameter = list(support=0.001, confidence=0.5))
+summary(rules)
+rules %>% sort(by='lift') %>% head %>% inspect
+
+
+# Select a subset of rules
+rule.subset <- subset(rules, subset = rhs %pin% "yogurt")
+inspect(rule.subset)
+
+# Visualize rules:
+library(arulesViz)
+plot(rules)
+
+subrules <- rules[quality(rules)$confidence > 0.8]
+plot(subrules, method="matrix", measure="lift", control=list(reorder=TRUE))
+plot(subrules, method="matrix", measure=c("lift", "confidence"), control=list(reorder=TRUE))
+
+plot(subrules, method="grouped")
+plot(rules, method="grouped", control=list(k=50))
+
+subrules2 <- head(sort(rules, by="lift"), 10)
+plot(subrules2, method="graph", control=list(type="items"))
+plot(subrules2, method="graph")
+
+# Export rules graph to use with other software:
+# saveAsGraph(head(sort(rules, by="lift"),1000), file="rules.graphml")
+
+rule.1 <- rules[1] 
+inspect(rule.1)
+plot(rule.1, method="doubledecker", data = Groceries)
 ```
+
+See also the `prim.box` function in the `prim` package for more algorithms to learn association rules
+
 
 
 # Dimensionality Reduction
 
 ## PCA
 ```{r PCA}
+prcomp() # preferred over princomp()
+
+
+# For fast solutions:
+gmodels::fast.prcomp()
 
 ```
+
+Principal tensor analysis:
+```{r PTA}
+PTAk::PTAk()
+```
+
+
 
 ## sPCA
 ```{r sPCA}
 
+```
+
+
+## kPCA
+```{r kPCA}
+kernlab::kpca()
 ```
 
 
@@ -69,7 +175,10 @@ example(apriori)
 
 ## MDS
 ```{r MDS}
+stats::cmdscale()
 
+MASS::sammon()
+MASS::isoMDS()
 ```
 
 
@@ -107,8 +216,7 @@ example(apriori)
 
 ## ICA
 ```{r ICA}
-install.packages('fastICA')
-library(fastICA)
+fastICA::fastICA() # Also performs projection pursuit
 
 ```
 
@@ -145,14 +253,23 @@ library(HiddenMarkov)
 
 # Clustering:
 
+Generate clusters:
+```{r generate clusters}
+X <- clusterGeneration::genRandomClust(numClust=2)
+
+clusterGeneration::viewClusters(X, cl=2)
+```
+
+
+
 ## K-means
-```{r}
-kmeans()
+```{r kmeans}
+stats::kmeans()
 
 ```
 
 ## Kmeans++
-```{r kmeans++}
+```{r kmeansPP}
 kmpp <- function(X, k) {
   n <- nrow(X)
   C <- numeric(k)
@@ -170,9 +287,11 @@ kmpp <- function(X, k) {
 
 
 ## K-medoids
-```{r k-medoids}
-library(cluster)
-pam()
+```{r kmedoids}
+cluster::pam()
+
+# Many other similarity measures:
+proxy::dist()
 ```
 
 ## Hirarchial
@@ -187,10 +306,15 @@ agnes()
 
 
 ## Self Organizing Maps
+You may note the similar function names. This is why the `::` syntax is very useful.
 ```{r SOM}
 # install.packages('som')
 library(som)
+som::som()
 
+kohonen::som()
+
+class::SOM()
 ```
 
 
