@@ -139,14 +139,130 @@ See also the `prim.box` function in the `prim` package for more algorithms to le
 # Dimensionality Reduction
 
 ## PCA
-```{r PCA}
-prcomp() # preferred over princomp()
+Note: example is a blend from [Gaston Sanchez](http://gastonsanchez.com/blog/how-to/2012/06/17/PCA-in-R.html) and [Georgia's Geography dept.](http://geog.uoregon.edu/GeogR/topics/pca.html).
 
 
-# For fast solutions:
-gmodels::fast.prcomp()
+Get some data
+```{r PCA data}
+?USArrests
+
+plot(USArrests) # basic plot
+corrplot::corrplot(cor(USArrests), method = "ellipse") # slightly fancier
+
+
+# As a correaltion graph
+cor.1 <- cor(USArrests)
+qgraph::qgraph(cor.1) 
+qgraph::qgraph(cor.1, layout = "spring", posCol = "darkgreen", negCol = "darkmagenta")
 
 ```
+
+
+```{r PCA}
+USArrests.1 <- USArrests[,-3] %>% scale
+pca1  <-  prcomp(USArrests.1, scale. = TRUE)
+
+(pca1$rotation) # loadings
+
+# Now score the states:
+pca1$x %>% extract(,1) %>% sort %>% head 
+
+```
+Interpretation:
+
+- PC1 seems to capture overall crime rate.
+- PC2 seems distinguish between sexual and non-sexual crimes
+
+
+
+Projecting on first two PCs:
+```{r visualizing PCA}
+library(ggplot2) # for graphing
+
+pcs  <-  as.data.frame(pca1$x)
+ggplot(data = pcs, aes(x = PC1, y = PC2, label = rownames(pcs))) +
+  geom_hline(yintercept = 0, colour = "gray65") +
+  geom_vline(xintercept = 0, colour = "gray65") +
+  geom_text(colour = "tomato", alpha = 0.8, size = 4) +
+  ggtitle("PCA plot of USA States - Crime Rates")
+```
+
+
+The bi-Plot
+```{r biplot}
+biplot(pca1) #ugly!
+
+
+# library(devtools)
+# install_github("vqv/ggbiplot")
+ggbiplot::ggbiplot(pca1, labels =  rownames(USArrests.1)) # better!
+```
+
+
+The scree-plot
+```{r screeplot}
+ggbiplot::ggscreeplot(pca1)
+```
+So clearly the main differentiation 
+
+
+Visualize the scoring as a projection of the states' attributes onto the factors.
+```{r}
+# get parameters of component lines (after Everitt & Rabe-Hesketh)
+load <- pca1$rotation
+slope <- load[2, ]/load[1, ]
+mn <- apply(USArrests.1, 2, mean)
+intcpt <- mn[2] - (slope * mn[1])
+
+# scatter plot with the two new axes added
+dpar(pty = "s")  # square plotting frame
+USArrests.2 <- USArrests[,1:2] %>%  scale
+xlim <- range(USArrests.2)  # overall min, max
+plot(USArrests.2, xlim = xlim, ylim = xlim, pch = 16, col = "purple")  # both axes same length
+abline(intcpt[1], slope[1], lwd = 2)  # first component solid line
+abline(intcpt[2], slope[2], lwd = 2, lty = 2)  # second component dashed
+legend("right", legend = c("PC 1", "PC 2"), lty = c(1, 2), lwd = 2, cex = 1)
+
+# projections of points onto PCA 1
+y1 <- intcpt[1] + slope[1] * USArrests.2[, 1]
+x1 <- (USArrests.1[, 2] - intcpt[1])/slope[1]
+y2 <- (y1 + USArrests.1[, 2])/2
+x2 <- (x1 + USArrests.1[, 1])/2
+segments(USArrests.1[, 1], USArrests.1[, 2], x2, y2, lwd = 2, col = "purple")
+```
+
+
+Visualize the loadings:
+```{r}
+# install.packages('GPArotation')
+pca.qgraph <- qgraph::qgraph.pca(USArrests.1, factors = 2, rotation = "varimax")
+plot(pca.qgraph)
+
+qgraph::qgraph(pca.qgraph, posCol = "darkgreen", layout = "spring", negCol = "darkmagenta", 
+    edge.width = 2, arrows = FALSE)
+    ```
+
+
+
+
+More implementations of PCA:
+```{r}
+# FAST solutions:
+gmodels::fast.prcomp()
+
+# More detail in output:
+FactoMineR::PCA()
+
+# For flexibility in algorithms and visualization:
+ade4::dudi.pca()
+
+# Another one...
+install.packages('amap')
+amap::acp()
+
+```
+
+
 
 Principal tensor analysis:
 ```{r PTA}
@@ -211,7 +327,7 @@ MASS::isoMDS()
 
 ## FA
 ```{r factor analysis}
-
+psych::principal()
 ```
 
 ## ICA
