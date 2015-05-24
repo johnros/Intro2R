@@ -523,25 +523,39 @@ table(predict=hmm.predict.state, true=hmm.true.state)
 
 
 # Clustering:
+Some tutorials on clustering with R can be found in 
 
-Generate clusters:
-```{r generate clusters}
-X <- clusterGeneration::genRandomClust(numClust=2)
-
-clusterGeneration::viewClusters(X, cl=2)
-```
+- [David Hitchcock](http://people.stat.sc.edu/Hitchcock/chapter6_R_examples.txt).
+- [QuickR](http://www.statmethods.net/advstats/cluster.html).
+- University of California, Riverside, [Institute of Integrative Genome Biology](http://manuals.bioinformatics.ucr.edu/home/R_BioCondManual#TOC-Clustering-and-Data-Mining-in-R).
+- [Phil Spector's](http://www.stat.berkeley.edu/~s133/Cluster2a.html) class notes from Berkeley Stats dept.
+- Michigan state university's [Laboratory for Dynamic Synthetic Vegephenomenology](http://ecology.msu.montana.edu/labdsv/R/labs/lab13/lab13.html).
 
 
 
 ## K-Means
+The following code is an adaptation from [David Hitchcock](http://people.stat.sc.edu/Hitchcock/chapter6_R_examples.txt).
 ```{r kmeans}
-stats::kmeans()
+k <- 2
+kmeans.1 <- stats::kmeans(USArrests.1, centers = k)
+kmeans.1$cluster # cluster asignments
 
+# Visualize using scatter plots of the original features
+pairs(USArrests.1, panel=function(x,y) text(x,y,kmeans.1$cluster))
+
+# Visualize using scatter plots of the original features
+plot(pca1$x[,1], pca1$x[,2], xlab="PC 1", ylab="PC 2", type ='n', lwd=2)
+text(pca1$x[,1], pca1$x[,2], labels=rownames(USArrests.1), cex=0.7, lwd=2, col=kmeans.1$cluster)
 ```
 
+
 ## K-Means++
+Recall that K-Means++ is a smart initialization for K-Means.
+The following code is taken from the [r-help](https://stat.ethz.ch/pipermail/r-help/2012-January/300051.html) mailing list.
 ```{r kmeansPP}
 kmpp <- function(X, k) {
+  require('pracma')
+  
   n <- nrow(X)
   C <- numeric(k)
   C[1] <- sample(1:n, 1)
@@ -554,27 +568,77 @@ kmpp <- function(X, k) {
   
   kmeans(X, X[C, ])
 }
+
+# Examine output:
+kmeans.2 <- kmpp(USArrests.1, k)
+kmeans.2$cluster
 ```
 
 
 ## K-Medoids
 ```{r kmedoids}
-cluster::pam()
 
-# Many other similarity measures:
-proxy::dist()
+kmed.1 <- cluster::pam(x= state.disimilarity, k=2)
+kmed.1$clustering
+
+plot(pca1$x[,1], pca1$x[,2], xlab="PC 1", ylab="PC 2", type ='n', lwd=2)
+text(pca1$x[,1], pca1$x[,2], labels=rownames(USArrests.1), cex=0.7, lwd=2, col=kmed.1$cluster)
 ```
+Many other similarity measures can be found in `proxy::dist()`.
 
 
 ## Hirarchial Clustering
 ```{r}
-hclust()
+# Single linkage:
+hirar.1 <- hclust(state.disimilarity, method='single')
+plot(hirar.1, labels=rownames(USArrests.1), ylab="Distance")
 
+# Complete linkage:
+hirar.2 <- hclust(state.disimilarity, method='complete')
+plot(hirar.2, labels=rownames(USArrests.1), ylab="Distance")
+
+# Average linkage:
+hirar.3 <- hclust(state.disimilarity, method='average')
+plot(hirar.3, labels=rownames(USArrests.1), ylab="Distance")
+
+# Fixing the number of clusters:
+cut.2.2 <- cutree(hirar.2, k=2)
+cut.2.2     # printing the "clustering vector"
+
+# Suppose we preferred a 5-cluster solution:
+cut.2.5 <- cutree(hirar.2, k=5)
+cut.2.5   # printing the "clustering vector"
+```
+
+Visualizing clusters:
+```{r}
+# Visualize using scatter plots of the original features
+pairs(USArrests.1, panel=function(x,y) text(x,y,cut.2.5))
+
+# Visualize in the PC plane:
+plot(pca1$x[,1], pca1$x[,2], xlab="PC 1", ylab="PC 2", type ='n', lwd=2)
+text(pca1$x[,1], pca1$x[,2], labels=rownames(USArrests.1), cex=0.7, lwd=2, col=cut.2.5)
+```
+
+
+
+
+```{r}
 # install.packages('cluster')
 library(cluster)
 agnes()
 
 ```
+
+
+## QT Clustering
+[TODO]
+See [here](http://manuals.bioinformatics.ucr.edu/home/R_BioCondManual#TOC-Clustering-and-Data-Mining-in-R)]
+
+
+## Fuzzy Clustering
+[TODO]
+See [here](But see [here](http://manuals.bioinformatics.ucr.edu/home/R_BioCondManual#TOC-Clustering-and-Data-Mining-in-R)])
 
 
 ## Self Organizing Maps (SOMs)
@@ -597,5 +661,48 @@ class::SOM()
 library(kernlab)
 
 kernlab::specc()
+```
+
+
+
+
+## Model based (generative) clustering
+```{r}
+library(mclust)
+mclust.1 <- Mclust(USArrests.1)
+summary(mclust.1)
+
+# By default, the generative Gaussian distributions considered are:
+# "EII": spherical, equal volume 
+# "VII": spherical, unequal volume 
+# "EEI": diagonal, equal volume and shape
+# "VEI": diagonal, varying volume, equal shape
+# "EVI": diagonal, equal volume, varying shape 
+# "VVI": diagonal, varying volume and shape 
+# "EEE": ellipsoidal, equal volume, shape, and orientation 
+# "EEV": ellipsoidal, equal volume and equal shape
+# "VEV": ellipsoidal, equal shape 
+# "VVV": ellipsoidal, varying volume, shape, and orientation  
+
+# Plotting the BIC values (which is possible for generative methods)
+plot(mclust.1, data=USArrests, what="BIC")
+# The best solution is VEI with 3 clusters.
+
+# The clustering:
+mclust.1$classification
+
+# This gives the probabilities of belonging to each cluster for every object:
+round(mclust.1$z,2)
+```
+
+
+Visualizing the clusters:
+```{r}
+# Visualize using scatter plots of the original features
+pairs(USArrests.1, panel=function(x,y) text(x, y, mclust.1$classification))
+
+# Visualize in the PC plane:
+plot(pca1$x[,1], pca1$x[,2], xlab="PC 1", ylab="PC 2", type ='n', lwd=2)
+text(pca1$x[,1], pca1$x[,2], labels=rownames(USArrests.1), cex=0.7, lwd=2, col=mclust.1$classification)
 ```
 
