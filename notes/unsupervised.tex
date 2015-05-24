@@ -160,7 +160,7 @@ The \emph{Aprioiri} algorithm \cite{agraval_fast_1994}, is an example of such a 
 The following terms relate to the discussion of rules of the type ``if $A$ then $B$''. Example, ``if beer then diapers''.
 \begin{itemize}
 \item \textbf{Antecedent \& Consequent}: For a rule ``if $A$ then $B$'', or $A \Rightarrow B$, $A$ is the antecedent and $B$ is the consequent.
-\item \textbf{Support}: The empirical probability of an event/item, $\supp{A}:=\sum \indicator{A \in \sample}/n$.
+\item \textbf{Support}: The empirical probability of an item, $\supp{A}:=\sum \indicator{A \in \sample}/n$. The support of \emph{a rule}, is the support of the item combination: $\supp{A \Rightarrow B}:=\sum \indicator{A \union B \in \sample}/n$.
 \item \textbf{Confidence}: $\conf{A}{B}:=\frac{\supp{A \union B}}{\supp A}$. A strong rule has confidence close to $1$, meaning the rule applies with almost certainty.
 \item \textbf{Lift}: $\lift{A}{B}:=\frac{\supp{A \union B}}{\supp A \supp B}$. A strong rule has a large lift, meaning the items typically come in combos.
 \item \textbf{Conviction}: $\convic{A}{B}:=\frac{1-\supp{B}}{1-\conf{A}{B}}$. It can be interpreted as the probability of a rule to make a wrong prediction.
@@ -244,11 +244,20 @@ Here are some terms needed to understand PCA outputs:
 \item \textbf{Principal Components}:  The linear combinations of the features, which best separate between observations. In our example- the ``bigness'' index of each individual. The first components captures the most variance, the second components, the second most-variance, etc. In terms of $\manifold$, the principal components are an orthogonal basis for $\manifold$.
 \item \textbf{Scores}: Synonymous to Principal Components.
 \item \textbf{Loadings}: The weights of each data point in each principal component. In our example, the importance of the height and weight in constructing the ``bigness'' score.
-\item \textbf{Scree Plot}: A simple plot visualizing the eigen value versus the component's number. 
 \end{itemize}
 
 
-[TODO: add scree plot]
+\subsubsection{Scree Plot}
+\label{sec:scree_plot}
+[TODO]
+
+
+
+\subsubsection{Bi Plot}
+\label{sec:bi_plot}
+[TODO]
+
+
 
 \subsubsection{Intuition}
 \label{sec:pca_intuition}
@@ -1060,13 +1069,14 @@ Principal points are points which are \emph{self consistent}, i.e., they are the
 
 
 
-\subsection{K-Medoids Clustering}
+\subsection{K-Medoids Clustering (PAM)}
 \label{sec:k_medoids}
 
 \id{Clustering}{Algorithm}{$\similaritys, K$}{Data Clustering}{--}{--}
 
 
 If a Euclidean distance is inappropriate for a particular $\featureS$, or that robustness to corrupt observations is required, or that we wish to constrain the cluster centers to be actual observations, then the \emph{K-Medoids} algorithm is an adaptation of K-means that allows this.
+It is also known under the name \emph{partition around medoids}, or PAM, clustering.\marginnote{PAM clustering}
 
 \begin{algorithm}[H]
 \caption{K-Medoids}
@@ -1088,7 +1098,9 @@ See Section 14.3.10 in \cite{hastie_elements_2003}.
 
 
 
-
+\subsection{Quality Threshold Clustering (QT)}
+[TODO]
+\label{sec:qt_clustering}
 
 
 
@@ -1129,7 +1141,9 @@ There are several way to divide clusters. All amount to considering some homogen
 
 
 
-
+\subsection{Fuzzy Clustering}
+\label{sec:fuzzy_clustering}
+[TODO]
 
 
 

@@ -156,6 +156,20 @@ Bootstrap model selection:
 ```
 
 
+Partial least squares and principal components:
+```{r PLS}
+pls::plsr()
+pls::pcr()
+```
+
+Canonical correlation analyis:
+```{r CCA}
+cancor()
+
+# Kernel based robust version
+kernlab::kcca()
+```
+
 
 
 ## OLS Classification
