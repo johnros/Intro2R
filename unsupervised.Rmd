@@ -644,9 +644,11 @@ See [here](But see [here](http://manuals.bioinformatics.ucr.edu/home/R_BioCondMa
 ## Self Organizing Maps (SOMs)
 The following is adapted from [Shane Lynn](http://shanelynn.ie/index.php/self-organising-maps-for-customer-segmentation-using-r/).
 More details in [this paper](http://www.jstatsoft.org/v21/i05/paper).
+If you want hexagons instead of circles, see [this](http://stackoverflow.com/questions/19858729/r-package-kohonen-how-to-plot-hexagons-instead-of-circles-as-in-matlab-som-too).
 ```{r SOM}
 library(kohonen)
-som.1 <- som(USArrests.1, grid = somgrid(6, 6, "hexagonal"))
+som.1 <- som(USArrests.1, grid = somgrid(5, 5, "hexagonal"))
+
 
 # Visualize the clusters:
 pretty_palette <- c('#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2')
