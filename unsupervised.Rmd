@@ -20,7 +20,10 @@ spectral <- function(A) norm(A, type="2")
 __Note__: `foo::bar` means that function `foo` is part of the `bar` package. 
 With this syntax, there is no need to load (`library`) the package.
 If a line does not run, you may need to install the package: `install.packages('bar')`.
-Sadly, RStudio currently does not autocomplete function arguments when using the `::` syntax.
+Packages that are install from sources other than CRAN (like github or bioconductor) will include a commented installation line.
+
+__Note__:RStudio currently does not autocomplete function arguments when using the `::` syntax.
+
 
 
 
@@ -201,9 +204,11 @@ ggbiplot::ggbiplot(pca1, labels =  rownames(USArrests.1)) # better!
 
 The scree-plot
 ```{r screeplot}
+screeplot(pca1)
+
 ggbiplot::ggscreeplot(pca1)
 ```
-So clearly the main differentiation 
+So clearly the main differentiation is along the first component, which captures the overall crime level in each state (and not a particular type of crime).
 
 
 Visualize the scoring as a projection of the states' attributes onto the factors.
@@ -240,7 +245,7 @@ plot(pca.qgraph)
 
 qgraph::qgraph(pca.qgraph, posCol = "darkgreen", layout = "spring", negCol = "darkmagenta", 
     edge.width = 2, arrows = FALSE)
-    ```
+```
 
 
 
@@ -257,9 +262,7 @@ FactoMineR::PCA()
 ade4::dudi.pca()
 
 # Another one...
-install.packages('amap')
 amap::acp()
-
 ```
 
 
@@ -273,50 +276,119 @@ PTAk::PTAk()
 
 ## sPCA
 ```{r sPCA}
+library(elasticnet)
+state.similarity <- MASS::cov.rob(USArrests.1)$cov
 
+spca1 <- elasticnet::spca(state.similarity, K=2,type="Gram",sparse="penalty",trace=TRUE, para=c(0.06,0.16))
+spca1$loadings
 ```
 
 
 ## kPCA
+[TODO]
 ```{r kPCA}
 kernlab::kpca()
 ```
 
 
 ## Random Projections 
+[TODO]
 ```{r Random Projections}
 
 ```
 
 
 ## MDS
+Classical MDS
 ```{r MDS}
-stats::cmdscale()
+# We first need a dissimarity matrix/graph:
+state.disimilarity <- dist(USArrests.1)
 
-MASS::sammon()
-MASS::isoMDS()
+mds.1 <- stats::cmdscale(state.disimilarity)
+
+plot(mds.1, pch = 19)
+abline(h=0, v=0, lty=2)
+text(mds.1, pos = 4, labels = rownames(USArrests.2))
+
+# Compare with two PCA (first two PCs):
+points(pca1$x[,1:2], col='red', pch=19, cex=0.5)
+# So classical MDS with Euclidean distance, is the same as PCA on two dimensions!
+```
+Note: Also see the `cluster::daisy` for more dissimilarity measures.
+
+Let's try other strain functions.
+
+Sammon's strain: 
+```{r Sammon MDS}
+mds.2 <- MASS::sammon(state.disimilarity)
+plot(mds.2$points, pch = 19)
+abline(h=0, v=0, lty=2)
+text(mds.2$points, pos = 4, labels = rownames(USArrests.2))
+
+# Compare with two PCA (first two PCs):
+arrows(x0 = mds.2$points[,1], y0 = mds.2$points[,2], x1 = pca1$x[,1], y1 = pca1$x[,2], col='red', pch=19, cex=0.5)
+# So Sammon's MDS with Euclidean distance, is *not* the same as PCA on two dimensions.
+```
+
+
+Kruskal's strain:
+```{r isoMDS}
+mds.3 <- MASS::isoMDS(state.disimilarity)
+plot(mds.3$points, pch = 19)
+abline(h=0, v=0, lty=2)
+text(mds.3$points, pos = 4, labels = rownames(USArrests.2))
+
+# Compare with two PCA (first two PCs):
+arrows(x0 = mds.3$points[,1], y0 = mds.3$points[,2], x1 = pca1$x[,1], y1 = pca1$x[,2], col='red', pch=19, cex=0.5)
+# So Kruskal's MDS with Euclidean distance, is *not* the same as PCA on two dimensions.
 ```
 
 
 ## Isomap
 ```{r Isomap}
+# Installing the package:
+# source("http://bioconductor.org/biocLite.R")
+# biocLite("RDRToolbox")
+isomap.1 <- RDRToolbox::Isomap(USArrests.1)
 
+plot(isomap.1$dim2)
+abline(h=0, v=0, lty=2)
+text(isomap.1$dim2, pos = 4, labels = rownames(USArrests.2))
+
+
+# Compare with two PCA (first two PCs):
+arrows(x0 = isomap.1$dim2[,1], y0 = isomap.1$dim2[,2], x1 = pca1$x[,1], y1 = pca1$x[,2], col='red', pch=19, cex=0.5)
 ```
 
 
-## LLE
+## Local Linear Embedding (LLE)
 ```{r LLE}
+lle.1 <- RDRToolbox::LLE(USArrests.1, k=3)
 
+plot(lle.1)
+abline(h=0, v=0, lty=2)
+text(lle.1, pos = 4, labels = rownames(USArrests.2))
+
+
+# Compare with two PCA (first two PCs):
+arrows(x0 = lle.1[,1], y0 = lle.1[,2], x1 = pca1$x[,1], y1 = pca1$x[,2], col='red', pch=19, cex=0.5)
 ```
+Well, LLE (with 3 neighbors) clearly disagrees with PCA. Why is this?
+
 
 ## LocalMDS
-```{r Local MDS}
+The only package I found is `localmds` in [here](https://github.com/hadley/localmds/blob/master/R/localmds.r). 
+It is currently under active development so I am still waiting a stable version.
 
-```
 
 ## Principal Curves & Surfaces
 ```{r Principla curves}
+princurve.1 <- princurve::principal.curve(USArrests.1, plot=TRUE)
+princurve.1$s
 
+points(princurve.1) # Projections of data on principal curve
+whiskers <- function(from, to) segments(from[, 1], from[, 2], to[, 1], to[, 2])
+whiskers(USArrests.1, princurve.1$s)
 ```
 
 
@@ -325,14 +397,50 @@ MASS::isoMDS()
 
 # Latent Space Generative Models
 
-## FA
+## Factor Analysis (FA)
+
+No rotation
 ```{r factor analysis}
 psych::principal()
+
+
+fa.1 <- psych::principal(USArrests.1, nfactors = 2, rotate = "none")
+fa.1
+summary(fa.1)
+biplot(fa.1, labels =  rownames(USArrests.1)) 
+ggbiplot::ggbiplot(fa.1, labels =  rownames(USArrests.1))  # will not work
+
+# Numeric comparison with PCA:
+fa.1$loadings
+pca1$rotation
+
+# Graph comparison: loadings encoded in colors
+qgraph::qgraph(fa.1)
+qgraph::qgraph(pca.qgraph) # for comparison
+
+
+# Geometric coherent graph comparison: loadings encoded in distances and colors
+qgraph::qgraph(fa.1)
+qgraph::qgraph(pca.qgraph) # for comparison
 ```
 
-## ICA
+
+Varimax rotation
+```{r}
+fa.2 <- psych::principal(USArrests.1, nfactors = 2, rotate = "varimax")
+
+fa.2$loadings
+fa.1$loadings
+pca1$rotation
+```
+Notice the rotation has changed the interpretation of the factors.
+
+
+## Independant component analysis (ICA)
 ```{r ICA}
 fastICA::fastICA() # Also performs projection pursuit
+
+
 
 ```
 
@@ -345,8 +453,10 @@ library(REPPlab) % will require the `rJava` package
 
 ```
 
-## Generative Topographic Map
+## Generative Topographic Map (GTP)
 [TODO]
+
+
 
 ## Finite Mixture
 ```{r mixtures}
@@ -357,12 +467,10 @@ library(mixtools)
 Read [this](http://www.stat.cmu.edu/~cshalizi/uADA/12/lectures/ch20.pdf) for more information.
 
 
-## HMM
+## Hidden Markov Model (HMM)
 ```{r}
 # install.packages('HiddenMarkov')
 library(HiddenMarkov)
-
-
 ```
 
 
@@ -378,13 +486,13 @@ clusterGeneration::viewClusters(X, cl=2)
 
 
 
-## K-means
+## K-Means
 ```{r kmeans}
 stats::kmeans()
 
 ```
 
-## Kmeans++
+## K-Means++
 ```{r kmeansPP}
 kmpp <- function(X, k) {
   n <- nrow(X)
@@ -402,7 +510,7 @@ kmpp <- function(X, k) {
 ```
 
 
-## K-medoids
+## K-Medoids
 ```{r kmedoids}
 cluster::pam()
 
@@ -410,7 +518,8 @@ cluster::pam()
 proxy::dist()
 ```
 
-## Hirarchial
+
+## Hirarchial Clustering
 ```{r}
 hclust()
 
@@ -421,7 +530,7 @@ agnes()
 ```
 
 
-## Self Organizing Maps
+## Self Organizing Maps (SOMs)
 You may note the similar function names. This is why the `::` syntax is very useful.
 ```{r SOM}
 # install.packages('som')
@@ -440,6 +549,6 @@ class::SOM()
 # install.packages('kernlab')
 library(kernlab)
 
-specc()
+kernlab::specc()
 ```
 
