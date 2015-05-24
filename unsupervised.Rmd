@@ -642,16 +642,24 @@ See [here](But see [here](http://manuals.bioinformatics.ucr.edu/home/R_BioCondMa
 
 
 ## Self Organizing Maps (SOMs)
-You may note the similar function names. This is why the `::` syntax is very useful.
+The following is adapted from [Shane Lynn](http://shanelynn.ie/index.php/self-organising-maps-for-customer-segmentation-using-r/).
+More details in [this paper](http://www.jstatsoft.org/v21/i05/paper).
 ```{r SOM}
-# install.packages('som')
-library(som)
-som::som()
+library(kohonen)
+som.1 <- som(USArrests.1, grid = somgrid(6, 6, "hexagonal"))
 
-kohonen::som()
+# Visualize the clusters:
+pretty_palette <- c('#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2')
+som.1.cluster <- cutree(hclust(dist(som.1$codes)), 5)
+plot(som.1, type="mapping", bgcol = pretty_palette[som.1.cluster], main = "Clusters") 
+add.cluster.boundaries(som.1, som.1.cluster)
 
-class::SOM()
+# [TODO: add more examples]
 ```
+
+Other implementations can be found in `som::som()` and `class::SOM()` but `kohonen` seems the most complete and well documented.
+
+__Note__: many functions are called `som`. Be careful when loading packages, and make use of the  `::` syntax.
 
 
 
