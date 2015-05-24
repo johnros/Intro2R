@@ -401,14 +401,10 @@ whiskers(USArrests.1, princurve.1$s)
 
 No rotation
 ```{r factor analysis}
-psych::principal()
-
-
 fa.1 <- psych::principal(USArrests.1, nfactors = 2, rotate = "none")
 fa.1
 summary(fa.1)
 biplot(fa.1, labels =  rownames(USArrests.1)) 
-ggbiplot::ggbiplot(fa.1, labels =  rownames(USArrests.1))  # will not work
 
 # Numeric comparison with PCA:
 fa.1$loadings
@@ -438,19 +434,24 @@ Notice the rotation has changed the interpretation of the factors.
 
 ## Independant component analysis (ICA)
 ```{r ICA}
-fastICA::fastICA() # Also performs projection pursuit
+
+ica.1 <- fastICA::fastICA(USArrests.1, n.com=2) # Also performs projection pursuit
 
 
+plot(ica.1$S)
+abline(h=0, v=0, lty=2)
+text(ica.1$S, pos = 4, labels = rownames(USArrests.1))
 
+# Compare with two PCA (first two PCs):
+arrows(x0 = ica.1$S[,1], y0 = ica.1$S[,2], x1 = pca1$x[,2], y1 = pca1$x[,1], col='red', pch=19, cex=0.5)
 ```
 
 
 
 ## Exploratory Projection Pursuit
 ```{r exploratory projection pursuit}
-install.packages('REPPlab')
-library(REPPlab) % will require the `rJava` package
-
+epp.1 <- REPPlab::EPPlab(USArrests.1)
+plot(epp.1)
 ```
 
 ## Generative Topographic Map (GTP)
@@ -463,14 +464,60 @@ library(REPPlab) % will require the `rJava` package
 install.packages('mixtools')
 library(mixtools)
 
+# Generate data:
+# Note that component-wise independence is assumed.
+k <- 2
+mix.p <- 4
+mix.probs <- rep(1/k,k)
+mix.means <- seq(1,k*mix.p) %>% matrix(nrow = k, ncol = mix.p)
+mix.sigma <- rep(1,k*p) %>% matrix(nrow = k, ncol = mix.p)
+x.mix <- mixtools::rmvnormmix(n=n, lambda =mix.probs, mu=mix.means, sigma = mix.sigma)
+x.mix %>% dim
+
+# Non parametric fit (initializing with true means)
+mix.1 <- mixtools::npEM(x.mix, mu0 = mix.means, verb = TRUE)
+plot(mix.1)
+
+# Fit assuming the Gaussian distribution:
+matrix2list <- function(x) split(x, rep(1:ncol(x), each = nrow(x)))
+mix.means.list <- matrix2list(t(mix.means))
+
+mix.2 <- mixtools::mvnormalmixEM(x.mix, k=2, mu=mix.means.list, verb = TRUE, epsilon = 1e-1)
+summary(mix.2)
 ```
-Read [this](http://www.stat.cmu.edu/~cshalizi/uADA/12/lectures/ch20.pdf) for more information.
+Read [this](http://www.stat.cmu.edu/~cshalizi/uADA/12/lectures/ch20.pdf) for more information on Finite mixtures.
 
 
 ## Hidden Markov Model (HMM)
 ```{r}
-# install.packages('HiddenMarkov')
+# Note: the HiddenMarkov::foo() syntax will not work with this function. We thus load it.
 library(HiddenMarkov)
+
+# Generate data:
+(hmm.transition <- matrix(c(1/2, 1/2,   0, 1/3, 1/3, 1/3, 0, 1/2, 1/2), byrow=TRUE, nrow=3))
+hmm.probs <- rep(1,3)/3
+hmm.distribution <- 'norm'
+hmm.params <- list(mean=c(1, 6, 3), sd=c(0.2, 0.2, 0.2))
+x <- dthmm(x = NULL, Pi = hmm.transition, delta = hmm.probs, distn = hmm.distribution, pm = hmm.params)
+x <- simulate(x, nsim=n)
+plot(x$x)
+# Can you guess when states were changed?
+
+# Let's make this harder:
+hmm.params <- list(mean=c(1, 6, 3), sd=rep(2,3))
+x <- dthmm(NULL, hmm.transition, hmm.probs, hmm.distribution, hmm.params)
+x <- simulate(x, nsim=n)
+plot(x$x)
+
+
+# Estimate parameters:
+y <- BaumWelch(x)
+summary(y)
+
+# Compare with truth:
+hmm.true.state <- x$y
+hmm.predict.state <- Viterbi(y)
+table(predict=hmm.predict.state, true=hmm.true.state)
 ```
 
 
