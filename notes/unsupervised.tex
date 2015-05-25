@@ -444,6 +444,9 @@ The embedding is merely the assigning of each point to a location in some lower 
 The assignment is driven by a \emph{stress function} which penalizes for the average distortion created by the embedding.
 The different types of MDSs, such as \emph{Classical MDS}, and \emph{Sammon Mappings}, differ in the stress function driving the embedding.
 
+Sadly, MDS may scale poorly to large dissimilarity matrices, and the optimization may converge to a local minimum.
+Being a data embedding, and not an embedding function, when new data points are made available, the embedding will have to be re-learned.
+
 For more on MDS see Section 14.8 in \cite{hastie_elements_2003} or \cite{borg_modern_2005}.
 
 
@@ -1151,19 +1154,42 @@ There are several way to divide clusters. All amount to considering some homogen
 \subsection{Self Organizing Maps (SOM)}
 \label{sec:som}
 
-\id{Clustering}{Algorithm}{$X$}{Data Clustering, Visualization}{Dim. Reduce}{--}
+\id{Clustering}{Algorithm}{$X$}{Embedding function}{Dim. Reduce}{--}
 
 
 SOMs, also known as \emph{Kohonen maps}, and \emph{self organizing feature maps} (SOFM), and \emph{constrained topological map}. 
 They are dimensionality reduction methods driven by the quality of clustering.
+If compared to MDS (\S\ref{sec:mds}), we can say that MDS tries to preserve the geometry of the data (i.e. distances) when embedding and SOMs try to conserve the topology (i.e. neighbours).
+This is an advantage when clustering, but a disadvantage with visualizing. 
+
 Unlike many similarity based dimensionality reduction methods, it requires the original features $X$, and not only a similarity graph $\similaritys$. \marginnote{Kohonen Map}
 
-SOMs is an algorithm. It cannot be cast as an optimization problem. 
-It can be seen as the marriage of K-means clustering (\S\ref{sec:kmeans}) with a non-linear space embedding (\S\ref{sec:dim_reduce_nonlinear}).
+SOMs is an algorithm. It cannot be cast as an optimization problem. [TODO: verify]
+It can be seen as the marriage of K-means clustering (\S\ref{sec:kmeans}) with a non-linear space embedding (\S\ref{sec:dim_reduce_nonlinear}). 
+The surface approximating the data is a polygon mesh: typically a rectangle grid or a hexagon grid.
+The ``dimension`` of the surface is governed by the density of the grid.
+
+SOMs have the advantage that they learn an embedding function. Having learned an approximating surface, new data points can easily be embedded.
+SOMs are also very efficient algorithmically, so that they may applied to very large data sets.
+
+Note that SOMs can also be used for supervised learning. Either as a feature pre-processing stage, or in the actual learning.
+Using SOMs as a feature pre-processing stage, may be known as \emph{counter-propagation network} [TODO: add reference ``kohonen: Self- and Super-organizing Maps in R``.]\marginnote{Counter-Propagation Network}
 
 
+\paragraph{Terminology}
+Some SOM related terms:
+\begin{itemize}
+\item \textbf{Codebook}: A parametrization of the approximating surface (grid). Uses a two-integer index for each neighbourhood.
+\item \textbf{Segments plot}: A plot enabling the localization of the codebook units (approximating polygons) in the original space. Shows the coordinate of the unit's average.
+\item \textbf{Counts plot}: Depicts the number of data points in each grid element.
+\item \textbf{Quality plot}: Depicts the (average) distance between the a grid-element's centre and the associated data points. Smaller distances mean better approximations.
+\item \textbf{Neighbour Distance Plot}: Depicts the (average) distance between the a grid-element and its immediate neighbours. Larger distances mean clearer clustering. Also known as \emph{U-matrix plot}.\marginnote{U-Matrix Plot}
+\item \textbf{Property Plot}: Depicts the (average) value of a particular variable in the original space.
+
+\end{itemize}
 
 For more on SOMs see Section 14.4 in \cite{hastie_elements_2003}. 
+
 
 
 

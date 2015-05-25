@@ -647,19 +647,40 @@ More details in [this paper](http://www.jstatsoft.org/v21/i05/paper).
 If you want hexagons instead of circles, see [this](http://stackoverflow.com/questions/19858729/r-package-kohonen-how-to-plot-hexagons-instead-of-circles-as-in-matlab-som-too).
 ```{r SOM}
 library(kohonen)
-som.1 <- som(USArrests.1, grid = somgrid(5, 5, "hexagonal"))
+som.1 <- som(USArrests.1, grid = somgrid(6, 6, "hexagonal"))
+```
+
+Visuzlize results:
+```{r}
+# Segments plot:
+plot(som.1)
+
+# Counts plot:
+plot(som.1, type='counts')
+
+# Neighbours Distance plot:
+plot(som.1, type='dist.neighbours')
+
+# Quality  plot:
+plot(som.1, type='quality')
 
 
-# Visualize the clusters:
+# 
+property.plot <- function(k) plot(som.1, type='property', property = som.1$codes[,k], main = colnames(som.1$codes)[k])
+property.plot(1)
+property.plot(2)
+property.plot(3)
+
+
+# Clustering:
 pretty_palette <- c('#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2')
 som.1.cluster <- cutree(hclust(dist(som.1$codes)), 5)
 plot(som.1, type="mapping", bgcol = pretty_palette[som.1.cluster], main = "Clusters") 
 add.cluster.boundaries(som.1, som.1.cluster)
-
-# [TODO: add more examples]
 ```
+For fancy visualization of `kohonen` SOMs, see [Seth Spielman's](https://github.com/geoss/som_visualization_r) code.
 
-Other implementations can be found in `som::som()` and `class::SOM()` but `kohonen` seems the most complete and well documented.
+Other SOM implementations can be found in `som::som()` and `class::SOM()` but `kohonen` seems the most complete and well documented.
 
 __Note__: many functions are called `som`. Be careful when loading packages, and make use of the  `::` syntax.
 
