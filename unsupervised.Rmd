@@ -174,12 +174,11 @@ corrplot::corrplot(cor(USArrests), method = "ellipse") # slightly fancier
 cor.1 <- cor(USArrests)
 qgraph::qgraph(cor.1) 
 qgraph::qgraph(cor.1, layout = "spring", posCol = "darkgreen", negCol = "darkmagenta")
-
 ```
 
 
 ```{r PCA}
-USArrests.1 <- USArrests[,-3] %>% scale
+USArrests.1 <- USArrests[,-3] %>% scale # note the scaling, which is required by some functions down the road...
 pca1  <-  prcomp(USArrests.1, scale. = TRUE)
 
 (pca1$rotation) # loadings
