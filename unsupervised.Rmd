@@ -327,7 +327,7 @@ mds.1 <- stats::cmdscale(state.disimilarity)
 
 plot(mds.1, pch = 19)
 abline(h=0, v=0, lty=2)
-text(mds.1, pos = 4, labels = rownames(USArrests.2))
+text(mds.1, pos = 4, labels = rownames(USArrests.2), col = 'tomato')
 
 # Compare with two PCA (first two PCs):
 points(pca1$x[,1:2], col='red', pch=19, cex=0.5)
@@ -335,7 +335,8 @@ points(pca1$x[,1:2], col='red', pch=19, cex=0.5)
 ```
 Note: Also see the `cluster::daisy` for more dissimilarity measures.
 
-Let's try other strain functions.
+
+Let's try other strain functions for MDS.
 
 Sammon's strain: 
 ```{r Sammon MDS}
