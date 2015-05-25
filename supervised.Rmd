@@ -318,10 +318,10 @@ MSE( predict(svm.2, newdata = prostate.test)- prostate.test$lcavol)
 # install.packages('mgcv')
 library(mgcv)
 form.1 <- lcavol~ s(lweight)+ s(age)+s(lbph)+s(svi)+s(lcp)+s(gleason)+s(pgg45)+s(lpsa)
-gam.1 <- gam(form.1, data = prostate.train)
+gam.1 <- gam(form.1, data = prostate.train) # the model is too rich. let's select a variable subset
 
-sort(abs(coef(ridge.1)), decreasing = TRUE)
-form.2 <- lcavol~  s(lweight)+ s(age)+s(lbph)+s(lcp)+s(pgg45)+s(lpsa)
+ridge.1 %>% coef %>% abs %>% sort(decreasing = TRUE) # select the most promising coefficients (a very arbitrary practice)
+form.2 <- lcavol~  s(lweight)+ s(age)+s(lbph)+s(lcp)+s(pgg45)+s(lpsa) # keep only promising coefficients in model
 gam.2 <- gam(form.2, data = prostate.train)
 
 # Train error:
