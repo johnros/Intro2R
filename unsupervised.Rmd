@@ -179,19 +179,22 @@ qgraph::qgraph(cor.1, layout = "spring", posCol = "darkgreen", negCol = "darkmag
 
 ```{r PCA}
 USArrests.1 <- USArrests[,-3] %>% scale # note the scaling, which is required by some functions down the road...
-pca1  <-  prcomp(USArrests.1, scale. = TRUE)
+pca1  <-  prcomp(USArrests.1, scale. = TRUE) # The main workhorse.
 
-(pca1$rotation) # loadings
+pca1$rotation # loadings
 
 # Now score the states:
-pca1$x %>% extract(,1) %>% sort %>% head 
+USArrests.1[pca1$x %>% extract(,1) %>% which.max,] # Fewest arrests
+USArrests.1[pca1$x %>% extract(,1) %>% which.min,] # Most arrests
 
+pca1$x %>% extract(,1) %>% sort %>% head 
+pca1$x %>% extract(,1) %>% sort %>% tail
 ```
 Interpretation:
 
 - PC1 seems to capture overall crime rate.
 - PC2 seems distinguish between sexual and non-sexual crimes
-
+- North Dakota is the most "arrestful" state. Florida is the least.
 
 
 Projecting on first two PCs:
@@ -202,7 +205,7 @@ pcs  <-  as.data.frame(pca1$x)
 ggplot(data = pcs, aes(x = PC1, y = PC2, label = rownames(pcs))) +
   geom_hline(yintercept = 0, colour = "gray65") +
   geom_vline(xintercept = 0, colour = "gray65") +
-  geom_text(colour = "tomato", alpha = 0.8, size = 4) +
+  geom_text(colour = "red", alpha = 0.8, size = 6) +
   ggtitle("PCA plot of USA States - Crime Rates")
 ```
 
@@ -210,7 +213,6 @@ ggplot(data = pcs, aes(x = PC1, y = PC2, label = rownames(pcs))) +
 The bi-Plot
 ```{r biplot}
 biplot(pca1) #ugly!
-
 
 # library(devtools)
 # install_github("vqv/ggbiplot")
@@ -253,7 +255,7 @@ segments(USArrests.1[, 1], USArrests.1[, 2], x2, y2, lwd = 2, col = "purple")
 ```
 
 
-Visualize the loadings:
+Visualize the loadings (ok... we are already doing factor analysis without noticing...)
 ```{r}
 # install.packages('GPArotation')
 pca.qgraph <- qgraph::qgraph.pca(USArrests.1, factors = 2, rotation = "varimax")
