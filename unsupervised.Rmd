@@ -94,6 +94,13 @@ There is nothing that will even try dimensions higher than 6.
 See [here](http://vita.had.co.nz/papers/density-estimation.pdf) for a review.
 
 
+
+## Graphical Models
+[TODO]
+See R's graphical modeling [task view](http://cran.r-project.org/web/views/gR.html).
+
+
+
 ## Association rules
 Note: Visualization examples are taken from the arulesViz [vignette](http://cran.r-project.org/web/packages/arulesViz/vignettes/arulesViz.pdf)
 
@@ -268,6 +275,7 @@ amap::acp()
 
 
 Principal tensor analysis:
+[TODO]
 ```{r PTA}
 PTAk::PTAk()
 ```
@@ -276,7 +284,7 @@ PTAk::PTAk()
 
 ## sPCA
 ```{r sPCA}
-library(elasticnet)
+# Compute similarity graph
 state.similarity <- MASS::cov.rob(USArrests.1)$cov
 
 spca1 <- elasticnet::spca(state.similarity, K=2,type="Gram",sparse="penalty",trace=TRUE, para=c(0.06,0.16))
@@ -577,7 +585,6 @@ kmeans.2$cluster
 
 ## K-Medoids
 ```{r kmedoids}
-
 kmed.1 <- cluster::pam(x= state.disimilarity, k=2)
 kmed.1$clustering
 
@@ -586,6 +593,8 @@ text(pca1$x[,1], pca1$x[,2], labels=rownames(USArrests.1), cex=0.7, lwd=2, col=k
 ```
 Many other similarity measures can be found in `proxy::dist()`.
 See `cluster::clara()` for a massive-data implementation of PAM.
+
+
 
 ## Hirarchial Clustering
 ```{r}
