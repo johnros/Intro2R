@@ -37,6 +37,7 @@ __Note__:RStudio currently does not autocomplete function arguments when using t
 p <- 10
 Sigma <- bayesm::rwishart(nu = 100, V = diag(p))$W
 lattice::levelplot(Sigma)
+
 # Sample from a multivariate Gaussian:
 n <- 1e3
 means <- 1:p
@@ -48,10 +49,11 @@ estim.means <- colMeans(X1) # recall truth is (10,...,10)
 plot(estim.means~means); abline(0,1, lty=2)
 
 estim.cov <- cov(X1)
+plot(estim.cov~Sigma); abline(0,1, lty=2)
+
 estim.cov.errors <- Sigma - estim.cov
 lattice::levelplot(estim.cov.errors)
-
-plot(estim.cov~Sigma); abline(0,1, lty=2)
+lattice::levelplot(estim.cov.errors/Sigma) # percentage error
 
 frobenius(estim.cov.errors)
 
@@ -66,7 +68,10 @@ Other covariance estimators (robust, fast,...)
 estim.cov.1 <- MASS::cov.rob(X1)$cov
 estim.cov.errors.1 <- Sigma - estim.cov.1
 lattice::levelplot(estim.cov.errors.1)
+lattice::levelplot(estim.cov.errors.1/Sigma) # percentage error
+
 frobenius(estim.cov.errors.1)
+
 
 # Nearest neighbour cleaning of outliers
 estim.cov.2 <- covRobust::cov.nnve(X1)$cov
@@ -110,9 +115,14 @@ data("Groceries")
 inspect(Groceries[1:2])
 summary(Groceries)
 
-rules <- apriori(Groceries, parameter = list(support=0.001, confidence=0.5))
+rules <- arules::apriori(Groceries, parameter = list(support=0.001, confidence=0.5))
 summary(rules)
 rules %>% sort(by='lift') %>% head %>% inspect
+
+# For a rule {A => B} we denote:
+# support: P(A AND B)
+# confidence: P(B|A)
+# lift: P(B|A)/P(B)
 
 
 # Select a subset of rules
