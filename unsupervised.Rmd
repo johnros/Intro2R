@@ -585,7 +585,7 @@ plot(pca1$x[,1], pca1$x[,2], xlab="PC 1", ylab="PC 2", type ='n', lwd=2)
 text(pca1$x[,1], pca1$x[,2], labels=rownames(USArrests.1), cex=0.7, lwd=2, col=kmed.1$cluster)
 ```
 Many other similarity measures can be found in `proxy::dist()`.
-
+See `cluster::clara()` for a massive-data implementation of PAM.
 
 ## Hirarchial Clustering
 ```{r}
