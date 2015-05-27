@@ -1,4 +1,23 @@
 
+@article{breiman_random_2001,
+	title = {Random {Forests}},
+	volume = {45},
+	issn = {0885-6125, 1573-0565},
+	url = {http://link.springer.com/article/10.1023/A%3A1010933404324},
+	doi = {10.1023/A:1010933404324},
+	abstract = {Random forests are a combination of tree predictors such that each tree depends on the values of a random vector sampled independently and with the same distribution for all trees in the forest. The generalization error for forests converges a.s. to a limit as the number of trees in the forest becomes large. The generalization error of a forest of tree classifiers depends on the strength of the individual trees in the forest and the correlation between them. Using a random selection of features to split each node yields error rates that compare favorably to Adaboost (Y. Freund \& R. Schapire, Machine Learning: Proceedings of the Thirteenth International conference, ***, 148–156), but are more robust with respect to noise. Internal estimates monitor error, strength, and correlation and these are used to show the response to increasing the number of features used in the splitting. Internal estimates are also used to measure variable importance. These ideas are also applicable to regression.},
+	language = {en},
+	number = {1},
+	urldate = {2015-05-27},
+	journal = {Machine Learning},
+	author = {Breiman, Leo},
+	month = oct,
+	year = {2001},
+	keywords = {Artificial Intelligence (incl. Robotics), Automation and Robotics, classification, Computing Methodologies, ensemble, Language Translation and Linguistics, regression, Simulation and Modeling},
+	pages = {5--32},
+	file = {Full Text PDF:/home/johnros/.zotero/zotero/66g0wvis.default/zotero/storage/P5EA2P9T/Breiman - 2001 - Random Forests.pdf:application/pdf;Snapshot:/home/johnros/.zotero/zotero/66g0wvis.default/zotero/storage/I3M6FIU4/A1010933404324.html:text/html}
+}
+
 @book{vaart_asymptotic_1998,
 	address = {Cambridge, UK ; New York, NY, USA},
 	title = {Asymptotic {Statistics}},
@@ -287,6 +306,40 @@ TECHNOMETRICS "[This] is a vast and complex book. Generally, it concentrates on 
 	file = {All Of Statistics [Wasserman].pdf:/home/johnros/.zotero/zotero/66g0wvis.default/zotero/storage/R7TU8M27/All Of Statistics [Wasserman].pdf:application/pdf}
 }
 
+@article{fernandez-delgado_we_2014,
+	title = {Do {We} {Need} {Hundreds} of {Classifiers} to {Solve} {Real} {World} {Classification} {Problems}?},
+	volume = {15},
+	issn = {1532-4435},
+	url = {http://dl.acm.org/citation.cfm?id=2627435.2697065},
+	abstract = {We evaluate 179 classifiers arising from 17 families (discriminant analysis, Bayesian, neural networks, support vector machines, decision trees, rule-based classifiers, boosting, bagging, stacking, random forests and other ensembles, generalized linear models, nearest-neighbors, partial least squares and principal component regression, logistic and multinomial regression, multiple adaptive regression splines and other methods), implemented in Weka, R (with and without the caret package), C and Matlab, including all the relevant classifiers available today. We use 121 data sets, which represent the whole UCI data base (excluding the large-scale problems) and other own real problems, in order to achieve significant conclusions about the classifier behavior, not dependent on the data set collection. The classifiers most likely to be the bests are the random forest (RF) versions, the best of which (implemented in R and accessed via caret) achieves 94.1\% of the maximum accuracy overcoming 90\% in the 84.3\% of the data sets. However, the difference is not statistically significant with the second best, the SVM with Gaussian kernel implemented in C using LibSVM, which achieves 92.3\% of the maximum accuracy. A few models are clearly better than the remaining ones: random forest, SVM with Gaussian and polynomial kernels, extreme learning machine with Gaussian kernel, C5.0 and avNNet (a committee of multi-layer perceptrons implemented in R with the caret package). The random forest is clearly the best family of classifiers (3 out of 5 bests classifiers are RF), followed by SVM (4 classifiers in the top-10), neural networks and boosting ensembles (5 and 3 members in the top-20, respectively).},
+	number = {1},
+	urldate = {2015-05-27},
+	journal = {J. Mach. Learn. Res.},
+	author = {Fernández-Delgado, Manuel and Cernadas, Eva and Barro, Senén and Amorim, Dinani},
+	month = jan,
+	year = {2014},
+	keywords = {Bayesian classifiers, classification, decision trees, discriminant analysis, ensembles, generalized linear models, logistic and multinomial regression, multiple adaptive regression splines, nearest-neighbors, neural networks, partial least squares and principal component regression, random forest, rule-based classifiers, support vector machine, UCI data base},
+	pages = {3133--3181},
+	file = {ACM Full Text PDF:/home/johnros/.zotero/zotero/66g0wvis.default/zotero/storage/AN2BW3VN/Fernández-Delgado et al. - 2014 - Do We Need Hundreds of Classifiers to Solve Real W.pdf:application/pdf}
+}
+
+@article{rodriguez_rotation_2006,
+	title = {Rotation {Forest}: {A} {New} {Classifier} {Ensemble} {Method}},
+	volume = {28},
+	issn = {0162-8828},
+	shorttitle = {Rotation {Forest}},
+	doi = {10.1109/TPAMI.2006.211},
+	abstract = {We propose a method for generating classifier ensembles based on feature extraction. To create the training data for a base classifier, the feature set is randomly split into K subsets (K is a parameter of the algorithm) and principal component analysis (PCA) is applied to each subset. All principal components are retained in order to preserve the variability information in the data. Thus, K axis rotations take place to form the new features for a base classifier. The idea of the rotation approach is to encourage simultaneously individual accuracy and diversity within the ensemble. Diversity is promoted through the feature extraction for each base classifier. Decision trees were chosen here because they are sensitive to rotation of the feature axes, hence the name "forest". Accuracy is sought by keeping all principal components and also using the whole data set to train each base classifier. Using WEKA, we examined the rotation forest ensemble on a random selection of 33 benchmark data sets from the UCI repository and compared it with bagging, AdaBoost, and random forest. The results were favorable to rotation forest and prompted an investigation into diversity-accuracy landscape of the ensemble models. Diversity-error diagrams revealed that rotation forest ensembles construct individual classifiers which are more accurate than these in AdaBoost and random forest, and more diverse than these in bagging, sometimes more accurate as well},
+	number = {10},
+	journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+	author = {Rodriguez, J.J. and Kuncheva, L.I. and Alonso, C.J.},
+	month = oct,
+	year = {2006},
+	keywords = {AdaBoost, Algorithms, Artificial Intelligence, Bagging, Classification tree analysis, classifier ensemble method, Classifier ensembles, Cluster Analysis, Computer Simulation, Computer Society, decision trees, diversity-accuracy landscape, feature extraction, Information Storage and Retrieval, kappa-error diagrams., machine learning, Models, Statistical, Numerical Analysis, Computer-Assisted, pattern classification, pattern recognition, Pattern Recognition, Automated, pca, principal component analysis, random forest, Reproducibility of Results, rotation forest, Sensitivity and Specificity, Training data, Voting},
+	pages = {1619--1630},
+	file = {IEEE Xplore Abstract Record:/home/johnros/.zotero/zotero/66g0wvis.default/zotero/storage/5UMGXZ56/abs_all.html:text/html;IEEE Xplore Full Text PDF:/home/johnros/.zotero/zotero/66g0wvis.default/zotero/storage/RQK2TJN8/Rodriguez et al. - 2006 - Rotation Forest A New Classifier Ensemble Method.pdf:application/pdf}
+}
+
 @book{wahba_spline_1990,
 	title = {Spline {Models} for {Observational} {Data}},
 	isbn = {9781611970128},
@@ -526,4 +579,43 @@ TECHNOMETRICS "[This] is a vast and complex book. Generally, it concentrates on 
 	author = {Anderson, T. W.},
 	month = jul,
 	year = {2003}
+}
+
+@article{friedman_exploratory_1987,
+	title = {Exploratory {Projection} {Pursuit}},
+	volume = {82},
+	copyright = {Copyright © 1987 American Statistical Association},
+	issn = {0162-1459},
+	url = {http://www.jstor.org/stable/2289161},
+	doi = {10.2307/2289161},
+	abstract = {A new projection pursuit algorithm for exploring multivariate data is presented that has both statistical and computational advantages over previous methods. A number of practical issues concerning its application are addressed. A connection to multivariate density estimation is established, and its properties are investigated through simulation studies and application to real data. The goal of exploratory projection pursuit is to use the data to find low- (one-, two-, or three-) dimensional projections that provide the most revealing views of the full-dimensional data. With these views the human gift for pattern recognition can be applied to help discover effects that may not have been anticipated in advance. Since linear effects are directly captured by the covariance structure of the variable pairs (which are straightforward to estimate) the emphasis here is on the discovery of nonlinear effects such as clustering or other general nonlinear associations among the variables. Although arbitrary nonlinear effects are impossible to parameterize in full generality, they are easily recognized when presented in a low-dimensional visual representation of the data density. Projection pursuit assigns a numerical index to every projection that is a functional of the projected data density. The intent of this index is to capture the degree of nonlinear structuring present in the projected distribution. The pursuit consists of maximizing this index with respect to the parameters defining the projection. Since it is unlikely that there is only one interesting view of a multivariate data set, this procedure is iterated to find further revealing projections. After each maximizing projection has been found, a transformation is applied to the data that removes the structure present in the solution projection while preserving the multivariate structure that is not captured by it. The projection pursuit algorithm is then applied to these transformed data to find additional views that may yield further insight. This projection pursuit algorithm has potential advantages over other dimensionality reduction methods that are commonly used for data exploration. It focuses directly on the "interestingness" of a projection rather than indirectly through the interpoint distances. This allows it to be unaffected by the scale and (linear) correlational structure of the data, helping it to overcome the "curse of dimensionality" that tends to plague methods based on multidimensional scaling, parametric mapping, cluster analysis, and principal components.},
+	number = {397},
+	urldate = {2015-05-07},
+	journal = {Journal of the American Statistical Association},
+	author = {Friedman, Jerome H.},
+	month = mar,
+	year = {1987},
+	pages = {249--266},
+	file = {JSTOR Full Text PDF:/home/johnros/.zotero/zotero/66g0wvis.default/zotero/storage/N65RMHK9/Friedman - 1987 - Exploratory Projection Pursuit.pdf:application/pdf}
+}
+
+@article{diaconis_asymptotics_1984,
+	title = {Asymptotics of {Graphical} {Projection} {Pursuit}},
+	volume = {12},
+	issn = {0090-5364, 2168-8966},
+	url = {http://projecteuclid.org/euclid.aos/1176346703},
+	doi = {10.1214/aos/1176346703},
+	abstract = {Mathematical tools are developed for describing low-dimensional projections of high-dimensional data. Theorems are given to show that under suitable conditions, most projections are approximately Gaussian.},
+	language = {EN},
+	number = {3},
+	urldate = {2015-05-07},
+	journal = {The Annals of Statistics},
+	author = {Diaconis, Persi and Freedman, David},
+	month = sep,
+	year = {1984},
+	mrnumber = {MR751274},
+	zmnumber = {0559.62002},
+	keywords = {62-07, empirical characteristic function, graphical methods, Projection pursuit, Projections, random probabilities},
+	pages = {793--815},
+	file = {Snapshot:/home/johnros/.zotero/zotero/66g0wvis.default/zotero/storage/T96JP69Z/1176346703.html:text/html}
 }

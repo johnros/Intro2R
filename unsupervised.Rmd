@@ -45,7 +45,7 @@ X1 <- mvtnorm::rmvnorm(n = n, sigma = Sigma, mean = means)
 dim(X1)
 
 # Estiamte parameters and compare to truth:
-estim.means <- colMeans(X1) # recall truth is (10,...,10)
+estim.means <- colMeans(X1) # recall truth is (1,...,10)
 plot(estim.means~means); abline(0,1, lty=2)
 
 estim.cov <- cov(X1)
@@ -117,12 +117,12 @@ summary(Groceries)
 
 rules <- arules::apriori(Groceries, parameter = list(support=0.001, confidence=0.5))
 summary(rules)
-rules %>% sort(by='lift') %>% head %>% inspect
+rules %>% sort(by='lift') %>% head(2) %>% inspect
 
 # For a rule {A => B} we denote:
 # support: P(A AND B)
 # confidence: P(B|A)
-# lift: P(B|A)/P(B)
+# lift: P(A,B)/[P(B)P(A)]
 
 
 # Select a subset of rules
@@ -184,8 +184,12 @@ pca1  <-  prcomp(USArrests.1, scale. = TRUE) # The main workhorse.
 pca1$rotation # loadings
 
 # Now score the states:
-USArrests.1[pca1$x %>% extract(,1) %>% which.max,] # Fewest arrests
-USArrests.1[pca1$x %>% extract(,1) %>% which.min,] # Most arrests
+USArrests.1[
+  pca1$x %>% extract(,1) %>% which.max
+  ,] # Fewest arrests
+USArrests.1[
+  pca1$x %>% extract(,1) %>% which.min
+  ,] # Most arrests
 
 pca1$x %>% extract(,1) %>% sort %>% head 
 pca1$x %>% extract(,1) %>% sort %>% tail
@@ -481,7 +485,6 @@ plot(epp.1)
 
 ## Finite Mixture
 ```{r mixtures}
-install.packages('mixtools')
 library(mixtools)
 
 # Generate data:
@@ -527,7 +530,7 @@ plot(x$x)
 hmm.params <- list(mean=c(1, 6, 3), sd=rep(2,3))
 x <- dthmm(NULL, hmm.transition, hmm.probs, hmm.distribution, hmm.params)
 x <- simulate(x, nsim=n)
-plot(x$x)
+plot(x$x, type='h')
 
 
 # Estimate parameters:

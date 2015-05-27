@@ -391,6 +391,7 @@ missclassification(confusion.test)
 
 # CART
 
+
 ## Regression
 ```{r Tree regression}
 library(rpart)
@@ -418,6 +419,19 @@ missclassification(confusion.train)
 (confusion.test <- table(prediction=.predictions.test, truth=spam.test$spam))
 missclassification(confusion.test)
 ```
+
+
+
+
+# Random Forest
+TODO
+
+# Rotation Forest
+TODO
+
+
+
+
 
 # Smoothing Splines
 I will demonstrate the method with a single predictor, so that we can visualize the smoothing that has been performed:

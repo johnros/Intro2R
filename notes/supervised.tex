@@ -339,8 +339,9 @@ Regularization is done by the choice of $M$ which is called the \emph{tree depth
 As $\hyp(x)$ is defined over indicator functions, CARTs have no difficulty to deal with categorical variables and even missing values, on top of the more standard continuous predictors. More on the many advantages of CARTs can be found in the references.
 
 \paragraph{Optimization}
-As searching over all possible partitions of the $x$'s to optimize $\set{R_m}_{m=1}^M$ is computationally impossible, optimization is done is a greedy fashion, by splitting on each variable $x_j$ at a time.
-The problem presented in Eq.~\ref{eq:decision_list} is actually a decision \emph{list}. It is the nature of the optimization that makes the solution a decision \emph{tree}.\marginnote{Decision List}
+As searching over all possible partitions of the $x$'s to optimize $\set{R_m}_{m=1}^M$ is computationally impossible, optimization is done is a greedy fashion, by splitting on each variable $x_j$ at a time.\marginnote{Decision List}
+The problem presented in Eq.~\ref{eq:decision_list} is actually a decision \emph{list}. It is the nature of the optimization that makes the solution a decision \emph{tree}.
+Notable fitting algorithms are CART, ID3, C4.5, CHAID, and MARS.\marginnote{C4.5, ID3}
 
 
 \paragraph{Loss Functions}
@@ -368,9 +369,56 @@ As CARTs are essentially decision trees, they can typically viewed as a hirarchy
 This type of visualization if called a \emph{dendogram}.\marginnote{Dendogram}
 
 
-\section{Random Forrests}
+
+
+
+\subsection{Random Forests}
 \label{sec:random_forrest}
-[TODO]
+Trees are vecy flexible hypothesis classes. 
+They thus have small bias but large variance.
+Bagging (\S\ref{sec:bagging}) trees will reduce this variance by averaging trees from different bootstrap samples. 
+Alas, the variance (thus the MSE) of bagged trees is lower bounded by the fact the trees use the same variables, and are thus correlated. 
+To remedy this, \citep{breiman_random_2001} proposed to fit trees to bootstrapped samples, using only a random subset of variables. This de-correlates between the trees, this allowing a reduction in the variances of the trees (thus their MSE).
+
+At the time of writing, random forests are possibly the best out-of-the-box supervised learning method out there \citep{fernandez-delgado_we_2014}.
+
+\begin{algorithm}[H]
+\caption{Random Forest}
+\begin{algorithmic}
+\For {$\bootstrap \in 1,\dots,\bootstraps$}
+	\State $\sample^\bootstrap \gets$ $n$ randomly selected observations, with replacement, from the original data.
+	\State $\sample^\bootstrap_\rank \gets$ $\rank$ randomly selected variables from $\sample^\bootstrap$.
+    \State $\estim{\hyp}^{\bootstrap} \gets$ a tree learned with  $\sample^\bootstrap_\rank$.
+\EndFor
+\State \Return the the average prediction for $x$ over $\estim{\hyp}^{\bootstrap}$ .
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+
+\subsection{Rotation Forest}
+\label{sec:rotation_forest}
+
+Rotation forests can be seen as the coupling between PCA and random forests. 
+This is achieved by performing PCA on a random subset of variables in each bootstrap sample before fitting a tree \citep{rodriguez_rotation_2006}.
+
+\begin{algorithm}[H]
+\caption{Rotation Forest}
+\begin{algorithmic}
+\For {$\bootstrap \in 1,\dots,\bootstraps$}
+	\State $\sample^\bootstrap \gets$ $n$ randomly selected observations, with replacement, from the original data.
+	\State $\sample^\bootstrap_\rank \gets$ $\rank$ randomly selected variables from $\sample^\bootstrap$.
+	\State $\sample^\bootstrap_{\rank,\perp} \gets$ the principal components of $\sample^\bootstrap_\rank$.
+    \State $\estim{\hyp}^{\bootstrap} \gets$ a tree learned with  $\sample^\bootstrap_{\rank,\perp}$.
+\EndFor
+\State \Return the the average prediction for $x$ over $\estim{\hyp}^{\bootstrap}$ .
+\end{algorithmic}
+\end{algorithm}
+
+
+
 
 
 
@@ -801,11 +849,12 @@ Here is  stacking example for a continuous $y$:
 
 
 \subsection{Bootstrap Averaging (Bagging)}
+\label{sec:bagging}
 
 Generates bootstrap samples and averages the learned predictors (see Algorithm~\ref{algo:bagging}). 
 While seemingly completely frequentist, the Bootstrap average can be seen as an estimator of the posterior mean for some non-parametric prior.
 
-A \emph{random forrest} is such an algorithm, when CARTs are fitted and averaged. \marginnote{Random Forrest}
+A \emph{random forrest} (\S\ref{sec:random_forrest}) is such an algorithm, when CARTs are fitted and averaged.
 
 
 \begin{algorithm}[H]
