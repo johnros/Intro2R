@@ -3,12 +3,12 @@
 \contentsline {algorithm}{\numberline {3}{\ignorespaces Forward Search}}{32}{algorithm.3}
 \contentsline {algorithm}{\numberline {4}{\ignorespaces PCA Regression}}{33}{algorithm.4}
 \contentsline {algorithm}{\numberline {5}{\ignorespaces Commitee Methods}}{36}{algorithm.5}
-\contentsline {algorithm}{\numberline {6}{\ignorespaces Model Averaging}}{36}{algorithm.6}
+\contentsline {algorithm}{\numberline {6}{\ignorespaces Model Averaging}}{37}{algorithm.6}
 \contentsline {algorithm}{\numberline {7}{\ignorespaces Stacking}}{37}{algorithm.7}
-\contentsline {algorithm}{\numberline {8}{\ignorespaces Bagging}}{37}{algorithm.8}
-\contentsline {algorithm}{\numberline {9}{\ignorespaces Jackknife}}{42}{algorithm.9}
-\contentsline {algorithm}{\numberline {10}{\ignorespaces Cross Validation}}{42}{algorithm.10}
-\contentsline {algorithm}{\numberline {11}{\ignorespaces Bootstrap}}{43}{algorithm.11}
-\contentsline {algorithm}{\numberline {12}{\ignorespaces K-Means}}{68}{algorithm.12}
-\contentsline {algorithm}{\numberline {13}{\ignorespaces K-Medoids}}{69}{algorithm.13}
-\contentsline {algorithm}{\numberline {14}{\ignorespaces Spectral Clustering}}{72}{algorithm.14}
+\contentsline {algorithm}{\numberline {8}{\ignorespaces Bagging}}{38}{algorithm.8}
+\contentsline {algorithm}{\numberline {9}{\ignorespaces Jackknife}}{43}{algorithm.9}
+\contentsline {algorithm}{\numberline {10}{\ignorespaces Cross Validation}}{43}{algorithm.10}
+\contentsline {algorithm}{\numberline {11}{\ignorespaces Bootstrap}}{44}{algorithm.11}
+\contentsline {algorithm}{\numberline {12}{\ignorespaces K-Means}}{69}{algorithm.12}
+\contentsline {algorithm}{\numberline {13}{\ignorespaces K-Medoids}}{70}{algorithm.13}
+\contentsline {algorithm}{\numberline {14}{\ignorespaces Spectral Clustering}}{73}{algorithm.14}
