@@ -31,7 +31,7 @@ __Note__:RStudio currently does not autocomplete function arguments when using t
 # Learning Distributions 
 
 ## Gaussian Density Estimation
-```{r}
+```{r generate data}
 # Sample from a multivariate Gaussian:
 ## Generate a covariance matrix
 p <- 10
@@ -177,8 +177,13 @@ qgraph::qgraph(cor.1, layout = "spring", posCol = "darkgreen", negCol = "darkmag
 ```
 
 
+```{r prepare data}
+USArrests.1 <- USArrests[,-3] %>% scale # note the scaling, which is required by some
+```
+
+
 ```{r PCA}
-USArrests.1 <- USArrests[,-3] %>% scale # note the scaling, which is required by some functions down the road...
+# functions down the road...
 pca1  <-  prcomp(USArrests.1, scale. = TRUE) # The main workhorse.
 
 pca1$rotation # loadings
@@ -234,7 +239,7 @@ So clearly the main differentiation is along the first component, which captures
 
 
 Visualize the scoring as a projection of the states' attributes onto the factors.
-```{r}
+```{r visualize contributions to factors}
 # get parameters of component lines (after Everitt & Rabe-Hesketh)
 load <- pca1$rotation
 slope <- load[2, ]/load[1, ]
@@ -260,7 +265,7 @@ segments(USArrests.1[, 1], USArrests.1[, 2], x2, y2, lwd = 2, col = "purple")
 
 
 Visualize the loadings (ok... we are already doing factor analysis without noticing...)
-```{r}
+```{r visualize PCA}
 # install.packages('GPArotation')
 pca.qgraph <- qgraph::qgraph.pca(USArrests.1, factors = 2, rotation = "varimax")
 plot(pca.qgraph)
@@ -273,7 +278,7 @@ qgraph::qgraph(pca.qgraph, posCol = "darkgreen", layout = "spring", negCol = "da
 
 
 More implementations of PCA:
-```{r}
+```{r many PCA implementations}
 # FAST solutions:
 gmodels::fast.prcomp()
 
@@ -424,7 +429,7 @@ whiskers(USArrests.1, princurve.1$s)
 ## Factor Analysis (FA)
 
 No rotation
-```{r factor analysis}
+```{r FA}
 fa.1 <- psych::principal(USArrests.1, nfactors = 2, rotate = "none")
 fa.1
 summary(fa.1)
@@ -446,7 +451,7 @@ qgraph::qgraph(pca.qgraph) # for comparison
 
 
 Varimax rotation
-```{r}
+```{r varimax}
 fa.2 <- psych::principal(USArrests.1, nfactors = 2, rotate = "varimax")
 
 fa.2$loadings
@@ -612,7 +617,7 @@ See `cluster::clara()` for a massive-data implementation of PAM.
 
 
 ## Hirarchial Clustering
-```{r}
+```{r Hirarchial Clustering}
 # Single linkage:
 hirar.1 <- hclust(state.disimilarity, method='single')
 plot(hirar.1, labels=rownames(USArrests.1), ylab="Distance")
@@ -635,7 +640,7 @@ cut.2.5   # printing the "clustering vector"
 ```
 
 Visualizing clusters:
-```{r}
+```{r visualize clusters}
 # Visualize using scatter plots of the original features
 pairs(USArrests.1, panel=function(x,y) text(x,y,cut.2.5))
 
@@ -647,11 +652,10 @@ text(pca1$x[,1], pca1$x[,2], labels=rownames(USArrests.1), cex=0.7, lwd=2, col=c
 
 
 
-```{r}
+```{r agnes}
 # install.packages('cluster')
 library(cluster)
 agnes()
-
 ```
 
 
@@ -669,13 +673,14 @@ See [here](But see [here](http://manuals.bioinformatics.ucr.edu/home/R_BioCondMa
 The following is adapted from [Shane Lynn](http://shanelynn.ie/index.php/self-organising-maps-for-customer-segmentation-using-r/).
 More details in [this paper](http://www.jstatsoft.org/v21/i05/paper).
 If you want hexagons instead of circles, see [this](http://stackoverflow.com/questions/19858729/r-package-kohonen-how-to-plot-hexagons-instead-of-circles-as-in-matlab-som-too).
-```{r SOM}
+```{r som}
 library(kohonen)
 som.1 <- som(USArrests.1, grid = somgrid(6, 6, "hexagonal"))
 ```
 
 Visuzlize results:
-```{r}
+We may need [this figure](notes/art/som_simulation.png) in mind when interpreting SOM:
+```{r som}
 # Segments plot:
 plot(som.1)
 
@@ -711,7 +716,7 @@ __Note__: many functions are called `som`. Be careful when loading packages, and
 
 
 ## Spectral Clustering
-```{r}
+```{r spectral clustering}
 # install.packages('kernlab')
 library(kernlab)
 
@@ -722,7 +727,7 @@ kernlab::specc()
 
 
 ## Model based (generative) clustering
-```{r}
+```{r generative clustering}
 library(mclust)
 mclust.1 <- Mclust(USArrests.1)
 summary(mclust.1)
@@ -752,7 +757,7 @@ round(mclust.1$z,2)
 
 
 Visualizing the clusters:
-```{r}
+```{r visualize generative clustering}
 # Visualize using scatter plots of the original features
 pairs(USArrests.1, panel=function(x,y) text(x, y, mclust.1$classification))
 
