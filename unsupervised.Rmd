@@ -675,7 +675,7 @@ More details in [this paper](http://www.jstatsoft.org/v21/i05/paper).
 If you want hexagons instead of circles, see [this](http://stackoverflow.com/questions/19858729/r-package-kohonen-how-to-plot-hexagons-instead-of-circles-as-in-matlab-som-too).
 ```{r som}
 library(kohonen)
-som.1 <- som(USArrests.1, grid = somgrid(6, 6, "hexagonal"))
+som.1 <- kohonen::som(USArrests.1, grid = somgrid(6, 6, "hexagonal"))
 ```
 
 Visuzlize results:
@@ -687,11 +687,13 @@ plot(som.1)
 # Counts plot:
 plot(som.1, type='counts')
 
+# Quality  plot:
+plot(som.1, type='quality')
+
+
 # Neighbours Distance plot:
 plot(som.1, type='dist.neighbours')
 
-# Quality  plot:
-plot(som.1, type='quality')
 
 
 # 

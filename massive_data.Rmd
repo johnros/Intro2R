@@ -14,7 +14,6 @@ opts_chunk$set(cache=TRUE)
 ```
 
 # Introduction
-
 When analyzing data, you may encounter several resource constraints:
 
 - Hard Disk Space: your data might not fit your HD. This matter is not discussed in this text.
@@ -40,7 +39,7 @@ In order to diagnose the resource limit you are encoutering, make sure you alway
 2. Swap files:
   - NEVER use swap file.
 3. R releases memory only when needed, not when possible ("lazy" release).
-4. Don't count on R returning RAM to the operating system. Restart R if FACEBOOK slows down. 
+4. Don't count on R returning RAM to the operating system (at least in Linux). Restart R if FACEBOOK slows down. 
 5. When you want to go pro- read [Hadley's memory usage guide](http://adv-r.had.co.nz/memory.html)
 
 
@@ -52,10 +51,9 @@ Inspiration from [here](http://www.r-bloggers.com/bigglm-on-your-big-data-set-in
 
 
 Download a fat data file:
-
 ```{r download_data}
-download.file("http://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/BSAPUFS/Downloads/2010_Carrier_PUF.zip", "2010_Carrier_PUF.zip")
-unzip(zipfile="2010_Carrier_PUF.zip")
+# download.file("http://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/BSAPUFS/Downloads/2010_Carrier_PUF.zip", "2010_Carrier_PUF.zip")
+# unzip(zipfile="2010_Carrier_PUF.zip")
 ```
 
 `data.table` package is much more efficient than `read.table' functions. 
@@ -63,20 +61,25 @@ You should also consider the `readr` [package ](https://github.com/hadley/readr)
 ```{r import_data}
 # install.packages('data.table')
 library(data.table)
+
 data <- data.table::fread(input = "2010_BSA_Carrier_PUF.csv", 
                    sep = ',',
                    header=TRUE)
 
+
+read.csv("2010_BSA_Carrier_PUF.csv")
+
+
+
 library(magrittr) % # for piping syntax
-data %>% 
-  setnames(c("sex", "age", "diagnose", "healthcare.procedure", "typeofservice", "service.count", "provider.type", "servicesprocessed", "place.served", "payment", "carrierline.count"))
+.names <- c("sex", "age", "diagnose", "healthcare.procedure", "typeofservice", "service.count", "provider.type", "servicesprocessed", "place.served", "payment", "carrierline.count")
+data %>% setnames(.names)
 ```
 
 Now verify the size of your data in memory:
 ```{r}
 object.size(data)
 # But I prefer pryr:
-install.packages('pryr')
 pryr::object_size(data)
 ```
 
@@ -94,7 +97,7 @@ prof <- lineprof::lineprof(
   glm(payment ~ sex + age + place.served, data = data)
   )
 lineprof::shine(prof)
-```
+````
 
 
 
@@ -115,9 +118,9 @@ To demonstrate the problem, I would have set `copies <- 10`.
 ```{r artificial_scale}
 copies <- 2
 data.2 <- do.call(rbind, lapply(1:copies, function(x) data) )
-data.2 %>% dim
-data %>% object_size
-data.2 %>% object_size
+system.time(data.2 %>% dim)
+pryr::object_size(data)
+pryr::object_size(data.2)
 ```
 
 
@@ -185,8 +188,8 @@ X.2<-as(x,"sparseMatrix") %>% t # Makes sparse dummy matrix
 dim(X.1)
 dim(X.2)
 
-object_size(X.1)
-object_size(X.2)
+pryr::object_size(X.1)
+pryr::object_size(X.2)
 ```
 
 
@@ -233,8 +236,8 @@ data.ffdf <- laf_to_ffdf(laf = .dat)
 ```
 Notice the minimial RAM allocation:
 ```{r}
-object_size(data)
-object_size(data.ffdf)
+pryr::object_size(data)
+pryr::object_size(data.ffdf)
 ```
 
 
@@ -244,7 +247,7 @@ Caution: `base` functions are unaware of `ff`.
 Adapted algorithms are required...
 ```{r}
 data$age %>% table
-data.ffdf$age %>% table.ff
+ffbase:::table.ff(data.ffdf$age) 
 ```
 
 
@@ -270,11 +273,10 @@ copies <- 2e1
 data.2.ffdf <- do.call(rbind, lapply(1:copies, function(x) data.ffdf) )
 
 # Actual size:
-(sum(.rambytes[vmode(data.2.ffdf)]) * (nrow(data.2.ffdf) * 9.31322575 * 10^(-10))) %>%
-  round(4)  %>%
-  cat('Size in GB ',.)
+cat('Size in GB ',sum(.rambytes[vmode(data.2.ffdf)]) * (nrow(data.2.ffdf) * 9.31322575 * 10^(-10)))
+  
 # In memory:
-object_size(data.2.ffdf)
+pryr::object_size(data.2.ffdf)
 ```
 
 
@@ -301,3 +303,16 @@ I do not know if there are `ff` versions of `LiblineaR` or `RSofia`.
 If you find out, let me know.
 
 
+
+
+
+# Parallelation
+
+## Parallelized learning
+[TODO]
+
+## Parallelized simulation
+[TODO]
+
+## Distributed Graph algorithms
+[TODO]
