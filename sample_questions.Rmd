@@ -1,0 +1,200 @@
+---
+title: "Questions"
+author: "Jonathan Rosenblatt"
+date: "June 1, 2015"
+output:
+  pdf_document:
+    toc: no
+  html_document:
+    toc: no
+---
+
+# Sample Questions
+```{r preamble, cache=TRUE, echo=FALSE, results='hide'}
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(magrittr)) # for piping
+suppressPackageStartupMessages(library(plyr))
+
+suppressPackageStartupMessages(library(dplyr)) # for handeling data frames
+
+.iris <- iris[,1:4] %>% scale
+.iris.y <- iris$Species=='virginica'
+.iris.dissimilarity <- dist(.iris)
+
+suppressPackageStartupMessages(library(arules)) 
+data("Groceries")
+rules <- apriori(Groceries, parameter = list(support=0.001, confidence=0.5))
+
+l2 <- function(x) x^2 %>% sum %>% sqrt 
+l1 <- function(x) abs(x) %>% sum  
+MSE <- function(x) x^2 %>% mean 
+missclassification <- function(tab) sum(tab[c(2,3)])/sum(tab)
+
+
+suppressPackageStartupMessages(library(ElemStatLearn)) # for data
+data("prostate")
+data("spam")
+
+
+
+
+# Continous outcome:
+prostate.train <- prostate %>% 
+  filter(train) %>% 
+  select(-train)
+prostate.test <- prostate %>% 
+  filter(!train) %>% 
+  select(-train)
+y.train <- prostate.train$lcavol
+X.train <- prostate.train %>% select(-lcavol) %>% as.matrix
+y.test <- prostate.test$lcavol
+X.test <- prostate.test %>% select(-lcavol) %>% as.matrix
+
+
+
+# Categorical outcome:
+n <- nrow(spam)
+
+train.prop <- 0.66
+train.ind <- c(TRUE,FALSE) %>%  
+  sample(size = n, prob = c(train.prop,1-train.prop), replace=TRUE)
+spam.train <- spam[train.ind,]
+spam.test <- spam[!train.ind,]
+
+y.train.spam <- spam.train$spam
+X.train.spam <- spam.train %>% select(-spam) %>% as.matrix
+y.test.spam <- spam.test$spam
+X.test.spam <- spam.test %>% select(-spam) %>% as.matrix
+
+spam.dummy <- spam %>% mutate(spam=as.numeric(spam=='spam'))
+spam.train.dummy <- spam.dummy[train.ind,]
+spam.test.dummy <- spam.dummy[!train.ind,]
+
+suppressPackageStartupMessages(library(glmnet))
+lasso.1 <- glmnet(x=X.train, y=y.train, alpha = 1)
+
+```
+
+
+
+1. Based on the following Biplot... \newline
+    ```{r, echo=FALSE, eval=TRUE, fig.width = 6, fig.height = 4 }
+pca <- prcomp(.iris)
+ggbiplot::ggbiplot(pca) # better!
+```
+    a. How many variables were in the original data?
+    a. What original variables are captured by the first principal component?
+    a. What original variables are captured by the second principal component?
+    a. How many groups/clusters do you see in the data?
+1. 
+    ```{r, eval=FALSE}
+n <- 100
+p <- 10
+X <- rnorm(n*p) %>% matrix(ncol = p, nrow=n)
+sigma <- 1e1
+epsilon <- rnorm(n, mean = 0, sd = sigma)
+y <- X %*% beta + epsilon
+```
+    a. What does the code do?
+    a. What is the dimension of `beta`?
+    a. Can I fit a neural network to the data? Explain.
+1. How does the graphical model alleviate the parameter dimensionality problem? 
+1. What is the difference between FA and ICA.
+1. What is the cutoff of OLS classification with -1,3 encoding.
+1. Name three clustering methods. Explain them.
+1. You want to cluster individuals based on their LinkedIn acquaintances: name an algorithm you __cannot__ use. 
+1. 
+    ```{r Cross Validation, eval=FALSE}
+hmmm <- 10
+ahhh <- sample(1:5, nrow(data), replace = TRUE)
+that <- NULL
+
+for (yup in 1:hmmm){
+  wow <- data[ahhh!=yup,]
+  arrrg <-  data[ahhh==yup,] 
+  ok <- lm(y~. ,data = wow)
+  nice <- predict(ok, newdata=arrrg)
+  good <-  nice - arrrg$y
+  that <- c(that, good)
+}
+
+MSE(that)
+```
+    a. What is the method implemented in the code?
+    a. What problem does the method solve?
+1. 
+    ```{r, eval=FALSE}
+y1 <- prcomp(.iris, scale. = TRUE) 
+y2 <- y1$x[,1:2]
+y3 <- glm(.iris.y~y2)
+```
+    a. Knowing that `.iris.y` is a two-level categorical variable, what does the code do?
+    a. What could be a motivation for the proposed method?
+1. 
+    ```{r, eval=FALSE}
+y1 <- prcomp(.iris, scale. = TRUE) 
+y2 <- y1$x[,1:2]
+y3 <- kmeans(y2,3)
+```
+    a. What does the code do?
+    a. What can be the motivation for the proposed method?
+1. Two scientists claim to have found two unobservable movie attributes, that drive viewers' satisfaction in the Netflix data (movie ratings data). They both used the same data and factor analysis. One claims the factors are the "action factor" and "drama factor". The other claims it is "comedy factor" and the "animation factor". Try to resolve the situation with your knowledge of factor analysis.
+1. 
+$argmin_\beta \{ \frac{1}{n}\sum_i (y_i-x_i\beta)^2 + \lambda/2 \Vert\beta\Vert_2^2 \}$
+    a. What is the name of the problem above?
+    a. Does the solution enjoy the sparsity property?
+    a. What is the regularization parameter? Name two methods for choosing it.
+1. For the purpose of interpreting the predictor, would you prefer the CART or the NNET? Explain.
+1. In order to estimate the covariance matrix in a Gaussian  graphical model: should I estimate it directly or via its inverse? Explain.
+1. Describe a method for selecting the number of mixing components in a mixture model using train-test samples.
+1. Describe the stages of an algorithm to simulate $n$ samples from a two-state hidden Markov model. Assume you can generate data from Bernoulli and Gaussian distributions.
+1. What assumption in ICA solves the FA rotation problem?
+1. What is the LASSO ERM problem? Write the formula.
+1. What is the OLS ERM problem? Write the formula.
+1. What is the ridge ERM problem? Write the formula.
+1. Name two algorithms for unbiased estimation of the population risk $R(\theta)$.
+1. Name two unbiased estimators of the in-sample--prediction-error:
+$\bar{R}(f):=\frac{1}{n} \sum_i E_Y[l(Y,f(x_i))]$.
+1. Suggest an algorithm to choose the number of principal components using cross validation. Write in pseudo-code.
+1. Can the principal components in the PCA problem be estimated using maximum likelihood? Explain.
+1. What can the logistic regression estimate that the SVM cannot?
+1. Can any function be approximated using the LASSO? Put differently- does the LASSO have the Universal Approximator property?
+1. Write the Bernoulli likelihood loss function. To what type of $y$ does it apply? What class of `R` objects holds this data type?
+1. Name two methods for dimensionality reduction in supervised learning. Explain each briefly.
+1. Here is some pseudo-code:
+    - Set $M$ candidate learning algorithms.
+    - For $m \in 1,\dots,M$, do
+        - $\hat{f}^m(x) :=$ the predictor learned with the $m$'th algorithm.
+    - EndFor
+    - Set $\bar{f}(x) :=\frac{1}{M} \sum_{m=1}^M \hat{f}^m(x)$. 
+    - Return $\bar{f}(x)$.
+    a. What is the name of the method above? 
+    a. What is the problem the method is designed to solve?
+    a. Suggest an improvement to the method.
+1. How many parameters need to be estimated to learn a multivariate Gaussian distribution where $p=15$. How does a graphical model help with this problem?
+1.  
+    ```{r, cache=TRUE, echo=FALSE}
+rules %>% sort(by='lift') %>% head(1) %>% inspect()
+```
+    a. What method will return this output? 
+    a. Interpret the output.
+1. One researcher applied k-means clustering on the first two PCs. Another applied k-medoids on the output of classical MDS with Euclidean distances. Can the clusters differ? Explain.
+1. Suggest a method to visualize a social network. Explain.
+1. A researcher wishes to cluster songs (not the lyrics. the actual audio files). Suggest two methods that will allow this and discuss their possible advantages and disadvantages.
+1. What is the difference between "complete" and "single" linkage in agglomerative clustering?
+1. $(X'X+\lambda I)^{-1}X'y$. This is the solution to what problem? 
+1. What will happen if we try to learn an empirical risk minimizer with no inductive bias? What is the name of the phenomenon?
+1. Name two justifications for the regularization term in LASSO regression. How do we know predictions can only improve with a small regularization?
+1. What method learns a hypothesis in the class $f(x)= \sum_{m=1}^M c_m I_{\{x \in R_m  \}}$.
+    a. What is the name of the hypothesis class? 
+    a. Name a particularly desirable property of this class (and thus- of the method)
+1. If I am using the Deviance likelihood as a loss function-- what type is my predicted variable?
+1. Having learned a mixture distribution $p(x)=\sum_{k=1}^k \pi_k p_k(x)$; how can I use it for clustering?
+1. Why can't we produce a bi-plot for MDS while we can for PCA?
+1. What is the difference between a Streaming Algorithm, and a Batch-Algorithm.
+1. Why is prediction an easier task than classical statistical inference (from the Estimation course)?
+1. What are the two historical motivations underlying PCA?
+1. We saw that for the PCA problem, it suffice to know only the correlations between variables $X'X$. Why does it not suffice for OLS?
+1. In what course did you cover methods for unsupervised learning of a parametric generative model? Name two learning methods?
+
+

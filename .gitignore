@@ -40,6 +40,7 @@ AmitClass
 
 # Other
 test_*
-sample_questions*
 2010*
 Questions
+sample_questions_cache/
+sample_questions_files/
