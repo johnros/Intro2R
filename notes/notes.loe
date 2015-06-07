@@ -33,7 +33,7 @@
 \contentsline {remark}{\numberline {5.2.1}Remark}{47}{remark.5.2.1}
 \contentsline {example}{\numberline {5.2.1}Example\thmtformatoptarg {First Order Univariate Markov Process}}{47}{example.5.2.1}
 \contentsline {remark}{\numberline {5.2.2}Remark\thmtformatoptarg {Restricted Bolzmann Machine}}{48}{remark.5.2.2}
-\contentsline {remark}{\numberline {5.4.1}Remark\thmtformatoptarg {Interpreting ``Linear''}}{49}{remark.5.4.1}
+\contentsline {remark}{\numberline {5.4.1}Remark\thmtformatoptarg {Interpreting ``Linear''}}{50}{remark.5.4.1}
 \contentsline {remark}{\numberline {5.4.2}Remark\thmtformatoptarg {Interpreting the Low Dimensional Representation}}{50}{remark.5.4.2}
 \contentsline {definition}{\numberline {5.1}Definition\thmtformatoptarg {SVD}}{54}{definition.5.1}
 \contentsline {remark}{\numberline {5.4.3}Remark\thmtformatoptarg {Classical and Least Squares MDS}}{57}{remark.5.4.3}
@@ -55,8 +55,11 @@
 \contentsline {remark}{\numberline {5.7.1}Remark\thmtformatoptarg {Relation to Spectral Clustering}}{68}{remark.5.7.1}
 \contentsline {remark}{\numberline {5.8.1}Remark\thmtformatoptarg {The population equivalent of K-means}}{69}{remark.5.8.1}
 \addvspace {10\p@ }
-\contentsline {remark}{\numberline {6.3.1}Remark\thmtformatoptarg {Collaborative Filtering and Other Supervised Learning Methods}}{76}{remark.6.3.1}
+\contentsline {remark}{\numberline {6.2.1}Remark\thmtformatoptarg {Collaborative Filtering and Other Supervised Learning Methods}}{76}{remark.6.2.1}
+\contentsline {remark}{\numberline {6.2.2}Remark\thmtformatoptarg {Matrix Norm Notation}}{77}{remark.6.2.2}
+\contentsline {remark}{\numberline {6.2.3}Remark\thmtformatoptarg {Matrix Factorization and Factor Analysis}}{77}{remark.6.2.3}
+\contentsline {remark}{\numberline {6.2.4}Remark\thmtformatoptarg {Temporal Dynamics and Tensor Factorization}}{77}{remark.6.2.4}
 \addvspace {10\p@ }
-\contentsline {definition}{\numberline {G.1}Definition\thmtformatoptarg {Entropy}}{86}{definition.G.1}
-\contentsline {definition}{\numberline {G.2}Definition\thmtformatoptarg {Mutual Information}}{86}{definition.G.2}
-\contentsline {definition}{\numberline {G.3}Definition\thmtformatoptarg {Kullback\IeC {\textendash }Leibler Divergence}}{86}{definition.G.3}
+\contentsline {definition}{\numberline {G.1}Definition\thmtformatoptarg {Entropy}}{88}{definition.G.1}
+\contentsline {definition}{\numberline {G.2}Definition\thmtformatoptarg {Mutual Information}}{88}{definition.G.2}
+\contentsline {definition}{\numberline {G.3}Definition\thmtformatoptarg {Kullback\IeC {\textendash }Leibler Divergence}}{88}{definition.G.3}

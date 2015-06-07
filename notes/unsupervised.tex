@@ -103,8 +103,12 @@ As previously stated, these methods may fail when $x$ are high dimensional. We t
 \label{sec:graphical_models}
 
 Graphical models are graphs that represent joint distributions\footnote{Unlike \emph{graph data}, where the graph is the data itself, and not a distribution.}
-For our purposes, we discuss only \emph{undirected graphical models}, also known as \emph{Markov random fields}, or \emph{Markov networks}.\marginnote{Markov Random Field}
-The reason these models are interesting, and particularly for the purpose of density estimation, is that missing edges in a graphical model represents conditional independencies between random variables. 
+The graph representation can be via a \emph{directed} or \emph{undirected} graph.
+
+\subsubsection{Undirected Graphical Model}
+Also known as \emph{Markov random fields}, or \emph{Markov networks}.\marginnote{Markov Random Field}
+
+These models are interesting, particularly for the purpose of density estimation, since missing edges in a graphical model represents conditional independencies between random variables. 
 If the graph structure can be assumed, and hopefully has many missing edges, then the dimension of the density estimation problem is considerably reduced. 
 
 \begin{example}[First Order Univariate Markov Process]
@@ -114,8 +118,6 @@ Without any further assumptions, there are $p$ parameters in $\mu$ and $p(p+1)/2
 This corresponds to a fully connected graph of the distribution.
 If, however, we can assume a first order Markov structure, implying that the graph of the distribution is merely a chain, there are less parameters to estimate: $p$ parameters in $\mu$ and $p+(p-1)$ parameters in $\Sigma^{-1}$. All other entries in $\Sigma^{-1}$ vanish.
 Say $p=10$, then the first order graphical model has $29$ parameters, compared to $65$ in the fully connected graphical model.
-
-
 \end{example}
 
 
@@ -131,6 +133,11 @@ In this context it is also worth mentioning the Restricted Boltzmann Machine (RB
 For a more detailed review of Graphical Models, see Chapters 17 and 20 in \cite{wasserman_all_2004}. 
 
 
+
+\subsubsection{Directed Acyclic Graphical Models}
+Also known as \emph{Bayesian network}, \emph{Bayes network}, \emph{belief network}, and \emph{Bayes(ian) model}.\marginnote{Bayes Net}
+
+[TODO]
 
 
 

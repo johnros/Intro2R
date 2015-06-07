@@ -1,29 +1,31 @@
-\chapter{Recommender Systems and Collaborative Filtering}
-\label{sec:collaborative_filtering}
+\chapter{Recommender Systems}
+\label{sec:recomender_systems}
 
 
 % % % % recommender systems % % % % % % %
-\section{Recommender Systems}
 
 A recommender system is a software that, as the name suggests, gives recommendations to the user. 
 Notable examples include Book recommendations by Amazon, and film recommendations by Netflix.
 The two main approaches to recommender systems include \emph{content filtering} and \emph{collaborative filtering}.
 
+Two nice introductions to recommender systems can be found in \citet{koren_matrix_2009} and \citet{su_survey_2009}.
 
 
 % % % % Content filtering % % % % % %
 \section{Content Filtering}
+\label{sec:content_filtering}
 
-In content filtering, the system is assume to have some backround information on the user (say, because he logged in), and uses
+In content filtering, the system is assumed to have some background information on the user (say, because he logged in), and uses
 this information to give him recommendations.
 The recommendation in this case, is approached as a supervised learning problem: 
-the system learns to predict a product's rating ($y$) based on the user's features ($x$).
+the system learns to predict a product's rating based on the user's features.
 It then computes the rating for many candidate products and recommends a set with high predicted ratings.
 
 
 
-% % % % colaborative filtering % % % % %
+% % % % collaborative filtering % % % % %
 \section{Collaborative Filtering}
+\label{sec:collaborative_filtering}
 
 Unlike content filtering, in \emph{collaborative filtering}, there is no external information on the user or the products, besides the ratings of other users. 
 The term collaborative filtering, was coined by the authors of the first such system-- Tapestry \citep{goldberg_using_1992}. 
@@ -32,6 +34,7 @@ Collaborative filtering can be approached as a supervised learning problem, or a
 It is essentially a \emph{missing data} problem.\marginnote{Missing Data}
 To see this consider a matrix of rankings, $\rankings$ where the $i,j$'th entry, $\ranking_{i,j}$, is the ranking of user $i$ movie $j$. 
 Predicting $\ranking_{i,j'}$, i.e., the ranking of a currently unseen movie, is essentially an imputation of a missing value.
+It is exceptionally challenging however, as in typical applications there is much more missing data than observed data.
 
 
 The two main approaches to collaborative filtering include \emph{neighbourhood methods}, and \emph{latent factor models} \cite{koren_matrix_2009}.
@@ -42,7 +45,7 @@ If someone similar to individual $i$ has seen movie $j'$, then $i$ should have a
 
 The notion of using the neighbourhood of a data point is not a new one. We have seen it being used for supervised learning in kernel regression (\S\ref{sec:kernel}) and KNN (\S\ref{sec:knn}).
 
-Neighbourhood methods for collaborative filtering, or missing data imputation in general, can thus be seen as supervised learning problems, and solved in the same way.
+Neighbourhood methods for collaborative filtering, or missing data imputation in general, can thus be seen as a non-parametric approach to supervised learning problems, and solved in the same way.
 
 
 \begin{remark}[Collaborative Filtering and Other Supervised Learning Methods]
@@ -55,10 +58,78 @@ methods are merely the most popular.
 \subsubsection{Latent Factor Models}
 The latent factor approach to collaborative filtering rests on the assumption that the rankings are a function of some latent user attributes and latent movie attributes. 
 This idea is not a new one, as we have seen it in the context of unsupervised learning in factor analysis (FA) (\S\ref{sec:factor_analysis}), independent component analysis (ICA) (\S\ref{sec:ica}), and other latent space generative models.
-From the relation between FA and PCA, it should also come as no surprise that collaborative filtering can also be viewed as a matrix approximation problem. 
-When approximating the rankings matrix ($\rankings$) with some simple manifold $\manifold$, en-passant, we also impute the missing entries in $\rankings$.
+We thus see that collaborative filtering, and missing data imputation in general, can be approached as an unsupervised learning problem. 
 
-We now see that collaborative filtering, and missing data imputation in general, can also be approached as an unsupervised learning problem. 
+As we will soon see, just like the FA problem (\S\ref{sec:factor_analysis}), the latent factor model implies that the data arises as a multiplication of matrices. This is why, this approach is more commonly known as the \emph{matrix factorization} approach collaborative filtering.\marginnote{Matrix Facorization}
+We will present several matrix factorization problem in the ERM framework.
+Note, however, that while stating the optimization problem requires only basic math and imagination, actually solving them is far from trivial. In fact, if you try arbitrarily changing the basic ERM problems below with your favourite loss function and generative model, you will probably find the problem to be computationally unsolvable. 
+
+Having movie ratings in mind, the simplest collaborative filtering ERM problem is 
+\begin{align}
+\label{eq:matrix_factorization}
+	\argmin{\latentn,\loadings}{\sum_{i,j \in \kappa} (\rankings_{i,j} - \latentn_j' \loadings_i)^2 + \lambda (\normII{\latentn_j}^2+ \normII{\loadings_i}^2)},
+\end{align}
+where $\latentn_j$ is the latent properties of movie $j$, 
+$\loadings_i$ is the importance of a movies properties to viewer $i$,
+and summation is performed over $\kappa$, which is the set of movies and user which actually have a rating.
+As usual, the regularization $\lambda$ can be chosen with a cross-validation approach (\S\ref{sec:cv}), or the other unbiased risk estimation methods in Chapter~\ref{sec:desicion_theory}.
+
+\begin{remark}[Matrix Norm Notation]
+We could write Eq.(\ref{eq:matrix_factorization}) using matrix norms, but we would then need to define multiplications with missing values. This is not hard to do, but I rather avoid it right now.
+\end{remark}
+
+\begin{remark}[Matrix Factorization and Factor Analysis]
+On the face of it, the matrix factorization problem in Eq.(\ref{eq:matrix_factorization}) seems very similar to the FA problem in Eq.(\ref{eq:factor}) with squared error loss.
+The reason we do not encounter the rotation invariance property in the solution to Eq.(\ref{eq:matrix_factorization}) is due to the $l_2$ regularization term 
+\end{remark}
+
+We can now complicate the matrix factorization problem a little further.
+We account for personal effects, movie effects, and time-varying preferences.
+The implied ERM problem is 
+\begin{align}
+\label{eq:matrix_factorization_comlicated}
+	\argmin{\latentn,\loadings, b_i, b_j}{
+		\sum_{i,j,t \in \kappa} (\rankings_{i,j}(t) - b_i(t) - b_j- \latentn_j' \loadings_i(t))^2 + \lambda (\normII{\latentn_j}^2+ \normII{\loadings_i(t)}^2 + b_i(t)^2 + b_j^2 )
+	},
+\end{align}
+$\loadings_i(t)$ is the importance of a movies properties to viewer $i$ at period $t$,
+$b_j$ is an average appreciation of movie $j$~\footnote{A marketing effect?},
+$b_i(t)$ is the average appreciation of viewer $i$~\footnote{A mood effect?},
+and summation is performed over $\kappa$, which is the set of times, movies, and users, which actually have a rating.
+
+\begin{remark}[Temporal Dynamics and Tensor Factorization]
+When introducing a temporal dimension, the rating can not longer be presented as a matrix.
+Eq.(\ref{eq:matrix_factorization_comlicated}) can thus no longer be seen as a \emph{matrix} factorization problem.
+Indeed, this is a \emph{tensor} factorization problem.
+\end{remark}
+
+
+
+
+% % % % Hybrid methods % % % %
+\section{Hybrid Filtering}
+After introducing the ideas of content filtering (\S\ref{sec:content_filtering}) and collaborative filtering (\S\ref{sec:collaborative_filtering}), why not marry the two?
+\emph{Hybrid filtering} is the idea of imputing the missing data, thus making recommendations, using both a viewer's attributes, and other viewers' preferences.
+
+A simple version of the implied ERM problem is 
+\begin{align}
+\label{eq:hybrid_filtering}
+	\argmin{\latentn,\loadings, \hyp}{\sum_{i,j \in \kappa} (\rankings_{i,j} - \latentn_j' \loadings_i - \hyp(x_i) )^2 + \lambda (\normII{\latentn_j}^2 + \normII{\loadings_i}^2+ J(\hyp)) },
+\end{align}
+where $\hyp(x_i)$ is the effect of the attributes of viewer $i$ to his preferences, and $J(\hyp)$ is some regularization for the predictor's complexity.
+
+
+\section{Recommender Systems Terminology}
+
+Since the recommender systems literature did not stem from the statistical learning literature, it typically uses different terminology for very similar, if not identical, concepts.
+Here is a partial list of some common terms:
+
+\begin{itemize}
+\item \textbf{Content Based Filtering}: A supervised learning approach to recommendations. 
+\item \textbf{Collaborative Filtering}: A missing data imputation approach to recommendations.
+\item \textbf{Memory Based Filtering}: A non parametric (neighbourhood) approach (\S\ref{sec:non_erm}) to collaborative filtering.
+\item \textbf{Model Based Filtering}: A latent space generative model approach (\S\ref{sec:latent_space}) to collaborative filtering.
+\end{itemize}
 
 
 
