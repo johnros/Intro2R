@@ -1,0 +1,55 @@
+---
+title: "Graphics"
+author: "Jonathan Rosenblatt"
+date: "June 7, 2015"
+output: html_document
+---
+
+The scripts producing the graphics in the class notes.
+
+
+# Imputing missing data
+Create complete data
+```{r create}
+n <- 20
+noise <- rnorm(n*2) %>% matrix(ncol=2) 
+signal <- outer(rexp(n,1/2),c(1,1)) %>% scale
+x <- signal + noise 
+plot(signal)
+points(x, pch=19)
+arrows(x0=signal[,1], y0=signal[,2], x1=x[,1], y1=x[,2], col='darkgrey')
+```
+
+Then censor some points
+```{r censor}
+censoring.ind <- cbind(1:n, sample(c(NA,1,2), n, replace=TRUE, prob = c(2,1,1)))
+x.censored <- x
+x.censored[censoring.ind] <- NA
+points(x.censored, col='red', pch=19) # Observed points
+```
+
+So this is what we know
+```{r}
+x.censored.1.ind <- (censoring.ind[,2]==1) %>% sapply(isTRUE)
+x.censored.2.ind <- (censoring.ind[,2]==2) %>% sapply(isTRUE)
+# plot(x.censored)
+abline(h=x.censored[x.censored.1.ind,2], lty=2)
+abline(v=x.censored[x.censored.2.ind,1], lty=2)
+```
+
+Let's try to impute using factor analysis:
+[TODO]
+```{r}
+library(psych)
+fa.1 <-fa(x.censored)
+fa.1$scores
+predict(fa.1, data=x.censored)
+pcs <- prcomp(~x.censored, retx=TRUE)  # note that the forumla syntax allows the dealing with missing values.
+pcs.predict <- x.censored %*% pcs$rotation[,1]
+points(pcs.predict, col='green', pch=19)
+
+```
+
+
+
+
