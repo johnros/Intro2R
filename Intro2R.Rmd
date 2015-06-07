@@ -7,17 +7,17 @@ output: html_document
 ---
 # R Basics
 
-Tips for this introction:
+Tips for this introduction:
 - If you are working alone, consider starting with "An Introduction to R" here:
 http://cran.r-project.org/manuals.html 
 - Make sure you use RStudio.
-- ctrl+return to run lines from editor.
+- Ctrl+return to run lines from editor.
 - alt+shift+k for RStudio keyboard shortcuts.
-- ctrl+alt+j to navigate between sections
-- tab for autocompletion
-- ctrl+1 to skip to editor. 
-- ctrl+2 to skip to console.
-- ctrl+8 to skip to the environment list.
+- Ctrl+alt+j to navigate between sections
+- tab for auto-completion
+- Ctrl+1 to skip to editor. 
+- Ctrl+2 to skip to console.
+- Ctrl+8 to skip to the environment list.
 - Folding:
   - alt+l collapse chunk.
   - alt+shift+l unfold chunk.
@@ -75,7 +75,7 @@ help.start()
 
 
 ## Variable asignment:
-Asignments into a variable named "x":
+Assignments into a variable named "x":
 ```{r}
 x = rbinom(n=1000, size=10, prob=0.5) # Works. Bad style.
 x <- rbinom(n=1000, size=10, prob=0.5) # Asignments into a variable named "x"
@@ -235,14 +235,14 @@ frame1[1, 2]
 frame1[2, 1]     						
 ```
 
-Exctract _column_ by index:
+Extract _column_ by index:
 ```{r}
 frame1[1, ]      						
 frame1[,1] %>% t
 frame1[,1] %>% t %>% dim
 ```
 
-Exctract column by name:
+Extract column by name:
 ```{r}
 names(frame1)   						
 frame1[, 'sin']
@@ -266,7 +266,7 @@ subset(frame1, select= c(2,0))
 
 Sanity conservation notice!
 Always think if you want to extract a vector or a frame:
-- Note the difference between `[]` and `[[]]` exctraction!
+- Note the difference between `[]` and `[[]]` extraction!
 - Note the difference between `frame[,1]` and `frame[1]`.
 ```{r}
 a <- frame1[1]
@@ -282,7 +282,7 @@ b[1]
 More about extraction: http://adv-r.had.co.nz/Subsetting.html
 
 ### dplyr package 
-`dplyr` makes the manupilation of data.frames a breeze.
+`dplyr` makes the manipulation of data.frames a breeze.
 It is very fast, and straightforward to use.
 
 Install the package:
@@ -424,7 +424,7 @@ Leaving dplyr for now...
 
 ## Data Import and export 
 
-__Note__: The [readr](https://github.com/hadley/readr) packge facilitates and accelerates data importing. This section should be updated to use it.
+__Note__: The [readr](https://github.com/hadley/readr) package facilitates and accelerates data importing. This section should be updated to use it.
 
 For a complete review see:
 http://cran.r-project.org/doc/manuals/R-data.html
@@ -464,11 +464,11 @@ View(my.data)
 __Note__: Under MS Windows(R) you might want need '\\\' instead of '/'
 
 ### Imprt .txt files 
-Tries to guess the seperator
+Tries to guess the separator
 ```{r, eval=FALSE}
 my.data<- read.table(file='C:\\Documents and Settings\\Jonathan\\My Documents\\...') #
 ```
-Specifies the seperator explicitly
+Specifies the separator explicitly
 ```{r, eval=FALSE}
 my.data<- read.delim(file='C:\\Documents and Settings\\Jonathan\\My Documents\\...') 
 ```
@@ -531,7 +531,7 @@ length(tirgul1)
 ```
 
 R can be object oriented (read about S3 and S4 if interested).
-See how `summary()` behaves differely on different object classes:
+See how `summary()` behaves differently on different object classes:
 ```{r}
 class(tirgul1[, 1]); class(tirgul1[, 2]); class(tirgul1[, 3]); class(tirgul1[, 4])
 summary(tirgul1)
@@ -642,7 +642,7 @@ ls(pattern='[0-9]') # Search using regular expressions
 ls(pattern='[A-Z]')
 ```
 
-ctrl+8 in RStudio.
+Ctrl+8 in RStudio.
 
 
 
@@ -684,7 +684,7 @@ boxplot(sample1)
 
 
 
-Several different visualisations:
+Several different visualizations:
 ```{r}
 sample2<-rnorm(1000)     
 stem(sample2)          
@@ -758,7 +758,7 @@ plot(density(age[!males]), main='Female', xlim=c(9,26)) ; rug(age[!males])
 
 
 ## Integer data 
-Integer data will most certainly produce overlaps if plotted. Either add jitter, or treat as discrete.
+Integer data will most certainly produce overlaps if plotted. Either add hitter, or treat as discrete.
 ```{r}
 r.age<-round(age)
 plot(density(r.age))
@@ -776,7 +776,7 @@ rug(jitter(r.age))
 2D data can be in either _wide_ or _long_ format. 
 Most R functions are designed for long formats. 
 Let's start by trying to plot in the wide format.
-Notice each dosage is plotted seperately (yes, I could have looped).
+Notice each dosage is plotted separately (yes, I could have looped).
 ```{r}
 wide.data<-data.frame(id=1:4, age=c(40,50,60,50), dose1=c(1,2,1,2),dose2=c(2,1,2,1), dose4=c(3,3,3,3))
 wide.data
@@ -787,7 +787,7 @@ points(dose4~age, data=wide.data, pch=3)
 ```
 
 
-Ploting in long format is much easier. 
+Plotting in long format is much easier. 
 I will first convert the data manually.
 ```{r}
 (dose.type<-c(
@@ -1083,7 +1083,7 @@ lm(z~., xyz) # Did we exctract the correct coefficients?
 
 
 # Date handeling 
-See the `lubridate` package and manuel [here](http://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html).
+See the `lubridate` package and manual [here](http://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html).
 
 
 # String handelind 

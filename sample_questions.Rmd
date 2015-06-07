@@ -3,9 +3,9 @@ title: "Questions"
 author: "Jonathan Rosenblatt"
 date: "June 1, 2015"
 output:
-  pdf_document:
-    toc: no
   html_document:
+    toc: no
+  pdf_document:
     toc: no
 ---
 
