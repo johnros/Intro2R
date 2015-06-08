@@ -26,10 +26,7 @@ censoring.ind <- cbind(1:n, sample(c(NA,1,2), n, replace=TRUE, prob = c(2,1,1)))
 x.censored <- x
 x.censored[censoring.ind] <- NA
 points(x.censored, col='red', pch=19) # Observed points
-```
-
-So this is what we know
-```{r}
+#So this is what we know
 x.censored.1.ind <- (censoring.ind[,2]==1) %>% sapply(isTRUE)
 x.censored.2.ind <- (censoring.ind[,2]==2) %>% sapply(isTRUE)
 # plot(x.censored)
@@ -37,17 +34,15 @@ abline(h=x.censored[x.censored.1.ind,2], lty=2)
 abline(v=x.censored[x.censored.2.ind,1], lty=2)
 ```
 
-Let's try to impute using factor analysis:
-[TODO]
-```{r}
-library(psych)
-fa.1 <-fa(x.censored)
-fa.1$scores
-predict(fa.1, data=x.censored)
-pcs <- prcomp(~x.censored, retx=TRUE)  # note that the forumla syntax allows the dealing with missing values.
-pcs.predict <- x.censored %*% pcs$rotation[,1]
-points(pcs.predict, col='green', pch=19)
 
+Let's try to impute using a 1D linear space embedding and reconstruction:
+```{r}
+x.censored.clean <- x.censored %>% na.omit
+svd.1 <- x.censored.clean  %>% svd
+d.2 <- diag(svd.1$d)
+d.2[2,2] <- 0
+x.censored.reduced <- svd.1$u %*% d.2 %*% t(svd.1$v)
+points(x.censored.reduced, col='green', pch=19)
 ```
 
 
