@@ -52,6 +52,54 @@ Exceptions do exist. PCA (\S\ref{sec:pca}) for instance, can take $\similaritys$
 \end{enumerate}
 
 
+\paragraph{Similarity Measures}
+An important question when discussing graph methods, is the choice of the similarity measure/metric.
+
+Interestingly, many feature-based methods implicitly some underlying similarity measure in $\featureS$.
+This is typically the Euclidean metric, which is implied every time $X'X$ appears in the solution of the problem. Examples include PCA (\S\ref{sec:pca}), OLS (\S\ref{sec:ols}) and ridge regression (\S\ref{sec:ridge}).
+
+Graph based methods, cannot possibly imply a distance metric, as the take it as an input.
+Common similarity (or dissimilarity) metrics, besides the obvious Euclidean one, include:
+\begin{enumerate}
+\item \textbf{Correlation Coefficient} Another obvious similarity measure is Pearson's correlation coefficient: the inner product of two variables in z-score scale. Clearly, one may consider different correlations, such as Spearman's (the correlation between the ranks).
+
+\item \textbf{Mahalanobis Distance} Very similar to the Euclidean distance, but accounts for correlations in variables. In an extreme case, if all the variables are perfect copies of others, the Euclidean distance may be very large, but the Mahalanobis Distance will account for this and will not increase. 
+Formally, the Mahalanobis Distance defines an inner product in vector spaces.
+
+\item \textbf{Cosine Similarity} Essentially the same as the Pearson correlation but without centring the variables. 
+The cosine \emph{distance} is $1$ minus the cosine \emph{similarity}.
+
+\item \textbf{Jaccard Index} Is a metric in set spaces. It is computed as the ratio of joint elements to the total number of elements. Being a set distance, it is very general, and can be applied to strings, by ignoring the ordering of the characters and treating them as sets.
+A variation of the index is also applied on strings of same length. As such, it can be viewed as a normalized Hamming Distance.
+
+\item \textbf{Hamming Distance} Is a metric in string spaces. The Hamming distance between two strings of equal length is the number of disagreeing elements. Put differently, it is the number of changes to one string that will convert it to the other.
+
+\item \textbf{Sørensen–Dice Coefficient}  Is a metric in set spaces. Very similar to the Jaccard Index. Also known as the \emph{Dice Coefficient}.
+
+\item \textbf{Czekanowski's Binary Index}  The same as Sørensen–Dice Coefficient applied on binary strings.
+
+\item \textbf{Tanimoto coefficient} A wide class of coefficients. May refer to practically anyone of the measures presented here.
+
+\item \textbf{Ochiai coefficient} Very similar to the cosine similarity when applied to bit vectors.
+Also know as the \emph{Ochiai-Barkman coefficient}, or \emph{Otsuka-Ochiai coefficient}.
+
+\item \textbf{Simple Matching Coefficient} Is metric in set space. It is half the  Sørensen–Dice Coefficient.
+
+\item \textbf{Tversky Index} A generalization of the Sørensen–Dice Coefficient.
+
+\item \textbf{Levenshtein Distance} Is a metric in string space. The strings need not be of the same length. It is a count of the number of insertions, deletions and substitutions required to transform one string to another. 
+
+\item \textbf{Edit Distance} The same as the Levenshtein Distance.
+
+\item \textbf{Damerau–Levenshtein Distance} A generalization of the Levenshtein Distance which also allows transportation as an elementary operation. 
+
+\item \textbf{Most Frequent k} Is a metric in string space. It counts the number of agreeing elements in the most frequent k elements in each string.
+
+
+\end{enumerate}
+
+For many more distances in string space, see \url{https://en.wikipedia.org/wiki/String_metric}.
+
 
 
 
@@ -977,6 +1025,9 @@ In this case, the Markov property does not describe the process of transition be
 
 The idea of simplifying a complicated distribution by conditioning on some latent variable can be compounded with the idea of a graphical model (\S\ref{sec:graphical_models}). 
 Put differently, the generative model can be a simple graphical model when conditioned on some latent variable.
+
+Topic modeling (i.e., document classification) using \emph{latent dirichlet allocation} (LDA), and  \emph{Probabilistic Latent Semantic Indexing} (PLSI), are examples of such latent space graphical models, where the topic is a latent variable, and word distributions are a graphical model conditioned on the topic.\marginnote{Topic Modeling}
+
 See Section 17.4.2 in \cite{hastie_elements_2003} for more details.
 
 
@@ -1142,10 +1193,12 @@ To decide which clusters are joined at each iteration some measure of closeness 
 \item[Single Linkage] Cluster distance is defined by the distance between the two \textbf{closest} members.
 \item[Complete Linkage] Cluster distance is defined by the distance between the two \textbf{farthest} members.
 \item[Group Average] Cluster distance is defined by the \textbf{average} distance between members.
+\item[Group Median] Like Group Average, only using the median.
+\item[Ward's Method] [TODO]
+\item[Centroid Linkage] [TODO]
 \end{description}
 
-
-[TODO: add plot of agglomerative clustering]
+\bigskip
 
 \subsubsection{Divisive Clustering}
 Divisive clustering algorithms are top-down algorithm which build clusters by splitting larger clusters. 

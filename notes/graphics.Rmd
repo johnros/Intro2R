@@ -15,7 +15,8 @@ n <- 20
 noise <- rnorm(n*2) %>% matrix(ncol=2) 
 signal <- outer(rexp(n,1/2),c(1,1)) %>% scale
 x <- signal + noise 
-plot(signal)
+x.range <- 1.1* range(x[,1]); y.range <- 1.1* range(x[,2])
+plot(signal, xlab='Movie 1', ylab='Movie 2', xlim = x.range, ylim = y.range)
 points(x, pch=19)
 arrows(x0=signal[,1], y0=signal[,2], x1=x[,1], y1=x[,2], col='darkgrey')
 ```
@@ -43,7 +44,11 @@ d.2 <- diag(svd.1$d)
 d.2[2,2] <- 0
 x.censored.reduced <- svd.1$u %*% d.2 %*% t(svd.1$v)
 points(x.censored.reduced, col='green', pch=19)
+lm.1 <- lm(x.censored.reduced[,2]~x.censored.reduced[,1])
+abline(lm.1, col='darkgreen')
 ```
+
+
 
 
 

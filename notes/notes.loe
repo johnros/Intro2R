@@ -29,37 +29,37 @@
 \addvspace {10\p@ }
 \contentsline {remark}{\numberline {4.2.1}Remark}{42}{remark.4.2.1}
 \addvspace {10\p@ }
-\contentsline {remark}{\numberline {5.1.1}Remark\thmtformatoptarg {Unsupervised Learning in the ERM framework}}{46}{remark.5.1.1}
-\contentsline {remark}{\numberline {5.2.1}Remark}{47}{remark.5.2.1}
-\contentsline {example}{\numberline {5.2.1}Example\thmtformatoptarg {First Order Univariate Markov Process}}{47}{example.5.2.1}
-\contentsline {remark}{\numberline {5.2.2}Remark\thmtformatoptarg {Restricted Bolzmann Machine}}{48}{remark.5.2.2}
-\contentsline {remark}{\numberline {5.4.1}Remark\thmtformatoptarg {Interpreting ``Linear''}}{50}{remark.5.4.1}
-\contentsline {remark}{\numberline {5.4.2}Remark\thmtformatoptarg {Interpreting the Low Dimensional Representation}}{50}{remark.5.4.2}
-\contentsline {definition}{\numberline {5.1}Definition\thmtformatoptarg {SVD}}{54}{definition.5.1}
-\contentsline {remark}{\numberline {5.4.3}Remark\thmtformatoptarg {Classical and Least Squares MDS}}{57}{remark.5.4.3}
-\contentsline {remark}{\numberline {5.4.4}Remark\thmtformatoptarg {The Non-Linearity of Local MDS}}{57}{remark.5.4.4}
-\contentsline {remark}{\numberline {5.4.5}Remark\thmtformatoptarg {The Non-Linearity of Isomap}}{58}{remark.5.4.5}
-\contentsline {remark}{\numberline {5.5.1}Remark\thmtformatoptarg {Non Linear Dimensionality Reduction}}{58}{remark.5.5.1}
-\contentsline {remark}{\numberline {5.5.2}Remark\thmtformatoptarg {Information Bottleneck and ICA}}{60}{remark.5.5.2}
-\contentsline {example}{\numberline {5.6.1}Example\thmtformatoptarg {Intelligence Measure (g-factor)}}{61}{example.5.6.1}
-\contentsline {example}{\numberline {5.6.2}Example\thmtformatoptarg {Face Rotations}}{61}{example.5.6.2}
-\contentsline {remark}{\numberline {5.6.1}Remark\thmtformatoptarg {Identifiability in PCA}}{61}{remark.5.6.1}
-\contentsline {remark}{\numberline {5.6.2}Remark\thmtformatoptarg {Non Linear FA}}{62}{remark.5.6.2}
-\contentsline {remark}{\numberline {5.6.3}Remark\thmtformatoptarg {ICA and FA}}{63}{remark.5.6.3}
-\contentsline {example}{\numberline {5.6.3}Example\thmtformatoptarg {Intelligence Factor Continued}}{64}{example.5.6.3}
-\contentsline {remark}{\numberline {5.6.4}Remark\thmtformatoptarg {Projection Pursuit and ICA}}{64}{remark.5.6.4}
-\contentsline {remark}{\numberline {5.6.5}Remark\thmtformatoptarg {Finite Mixture Distributions}}{65}{remark.5.6.5}
-\contentsline {remark}{\numberline {5.6.6}Remark\thmtformatoptarg {Mixtures And the Expectation Maximization Algorithm (EM)}}{66}{remark.5.6.6}
-\contentsline {remark}{\numberline {5.6.7}Remark\thmtformatoptarg {Mixtures For Clustering}}{66}{remark.5.6.7}
-\contentsline {remark}{\numberline {5.6.8}Remark\thmtformatoptarg {Mixture in Supervise Learning}}{66}{remark.5.6.8}
-\contentsline {remark}{\numberline {5.7.1}Remark\thmtformatoptarg {Relation to Spectral Clustering}}{68}{remark.5.7.1}
-\contentsline {remark}{\numberline {5.8.1}Remark\thmtformatoptarg {The population equivalent of K-means}}{69}{remark.5.8.1}
+\contentsline {remark}{\numberline {5.1.1}Remark\thmtformatoptarg {Unsupervised Learning in the ERM framework}}{48}{remark.5.1.1}
+\contentsline {remark}{\numberline {5.2.1}Remark}{48}{remark.5.2.1}
+\contentsline {example}{\numberline {5.2.1}Example\thmtformatoptarg {First Order Univariate Markov Process}}{49}{example.5.2.1}
+\contentsline {remark}{\numberline {5.2.2}Remark\thmtformatoptarg {Restricted Bolzmann Machine}}{49}{remark.5.2.2}
+\contentsline {remark}{\numberline {5.4.1}Remark\thmtformatoptarg {Interpreting ``Linear''}}{51}{remark.5.4.1}
+\contentsline {remark}{\numberline {5.4.2}Remark\thmtformatoptarg {Interpreting the Low Dimensional Representation}}{51}{remark.5.4.2}
+\contentsline {definition}{\numberline {5.1}Definition\thmtformatoptarg {SVD}}{56}{definition.5.1}
+\contentsline {remark}{\numberline {5.4.3}Remark\thmtformatoptarg {Classical and Least Squares MDS}}{59}{remark.5.4.3}
+\contentsline {remark}{\numberline {5.4.4}Remark\thmtformatoptarg {The Non-Linearity of Local MDS}}{59}{remark.5.4.4}
+\contentsline {remark}{\numberline {5.4.5}Remark\thmtformatoptarg {The Non-Linearity of Isomap}}{60}{remark.5.4.5}
+\contentsline {remark}{\numberline {5.5.1}Remark\thmtformatoptarg {Non Linear Dimensionality Reduction}}{60}{remark.5.5.1}
+\contentsline {remark}{\numberline {5.5.2}Remark\thmtformatoptarg {Information Bottleneck and ICA}}{62}{remark.5.5.2}
+\contentsline {example}{\numberline {5.6.1}Example\thmtformatoptarg {Intelligence Measure (g-factor)}}{63}{example.5.6.1}
+\contentsline {example}{\numberline {5.6.2}Example\thmtformatoptarg {Face Rotations}}{63}{example.5.6.2}
+\contentsline {remark}{\numberline {5.6.1}Remark\thmtformatoptarg {Identifiability in PCA}}{63}{remark.5.6.1}
+\contentsline {remark}{\numberline {5.6.2}Remark\thmtformatoptarg {Non Linear FA}}{64}{remark.5.6.2}
+\contentsline {remark}{\numberline {5.6.3}Remark\thmtformatoptarg {ICA and FA}}{65}{remark.5.6.3}
+\contentsline {example}{\numberline {5.6.3}Example\thmtformatoptarg {Intelligence Factor Continued}}{66}{example.5.6.3}
+\contentsline {remark}{\numberline {5.6.4}Remark\thmtformatoptarg {Projection Pursuit and ICA}}{66}{remark.5.6.4}
+\contentsline {remark}{\numberline {5.6.5}Remark\thmtformatoptarg {Finite Mixture Distributions}}{67}{remark.5.6.5}
+\contentsline {remark}{\numberline {5.6.6}Remark\thmtformatoptarg {Mixtures And the Expectation Maximization Algorithm (EM)}}{68}{remark.5.6.6}
+\contentsline {remark}{\numberline {5.6.7}Remark\thmtformatoptarg {Mixtures For Clustering}}{68}{remark.5.6.7}
+\contentsline {remark}{\numberline {5.6.8}Remark\thmtformatoptarg {Mixture in Supervise Learning}}{68}{remark.5.6.8}
+\contentsline {remark}{\numberline {5.7.1}Remark\thmtformatoptarg {Relation to Spectral Clustering}}{70}{remark.5.7.1}
+\contentsline {remark}{\numberline {5.8.1}Remark\thmtformatoptarg {The population equivalent of K-means}}{71}{remark.5.8.1}
 \addvspace {10\p@ }
-\contentsline {remark}{\numberline {6.2.1}Remark\thmtformatoptarg {Collaborative Filtering and Other Supervised Learning Methods}}{76}{remark.6.2.1}
-\contentsline {remark}{\numberline {6.2.2}Remark\thmtformatoptarg {Matrix Norm Notation}}{77}{remark.6.2.2}
-\contentsline {remark}{\numberline {6.2.3}Remark\thmtformatoptarg {Matrix Factorization and Factor Analysis}}{77}{remark.6.2.3}
-\contentsline {remark}{\numberline {6.2.4}Remark\thmtformatoptarg {Temporal Dynamics and Tensor Factorization}}{77}{remark.6.2.4}
+\contentsline {remark}{\numberline {6.2.1}Remark\thmtformatoptarg {Collaborative Filtering and Other Supervised Learning Methods}}{78}{remark.6.2.1}
+\contentsline {remark}{\numberline {6.2.2}Remark\thmtformatoptarg {Matrix Norm Notation}}{79}{remark.6.2.2}
+\contentsline {remark}{\numberline {6.2.3}Remark\thmtformatoptarg {Matrix Factorization and Factor Analysis}}{79}{remark.6.2.3}
+\contentsline {remark}{\numberline {6.2.4}Remark\thmtformatoptarg {Temporal Dynamics and Tensor Factorization}}{79}{remark.6.2.4}
 \addvspace {10\p@ }
-\contentsline {definition}{\numberline {G.1}Definition\thmtformatoptarg {Entropy}}{88}{definition.G.1}
-\contentsline {definition}{\numberline {G.2}Definition\thmtformatoptarg {Mutual Information}}{88}{definition.G.2}
-\contentsline {definition}{\numberline {G.3}Definition\thmtformatoptarg {Kullback\IeC {\textendash }Leibler Divergence}}{88}{definition.G.3}
+\contentsline {definition}{\numberline {G.1}Definition\thmtformatoptarg {Entropy}}{90}{definition.G.1}
+\contentsline {definition}{\numberline {G.2}Definition\thmtformatoptarg {Mutual Information}}{90}{definition.G.2}
+\contentsline {definition}{\numberline {G.3}Definition\thmtformatoptarg {Kullback\IeC {\textendash }Leibler Divergence}}{90}{definition.G.3}

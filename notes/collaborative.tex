@@ -74,6 +74,12 @@ $\loadings_i$ is the importance of a movies properties to viewer $i$,
 and summation is performed over $\kappa$, which is the set of movies and user which actually have a rating.
 As usual, the regularization $\lambda$ can be chosen with a cross-validation approach (\S\ref{sec:cv}), or the other unbiased risk estimation methods in Chapter~\ref{sec:desicion_theory}.
 
+It may seem quite miraculous that by assuming a lower dimensional generative model, one may impute missing values.
+The following figures try to suggest an intuition.
+[TODO: add figures]
+
+
+
 \begin{remark}[Matrix Norm Notation]
 We could write Eq.(\ref{eq:matrix_factorization}) using matrix norms, but we would then need to define multiplications with missing values. This is not hard to do, but I rather avoid it right now.
 \end{remark}
@@ -101,6 +107,8 @@ and summation is performed over $\kappa$, which is the set of times, movies, and
 When introducing a temporal dimension, the rating can not longer be presented as a matrix.
 Eq.(\ref{eq:matrix_factorization_comlicated}) can thus no longer be seen as a \emph{matrix} factorization problem.
 Indeed, this is a \emph{tensor} factorization problem.
+Tensor factorization is currently much less advanced than matrix factorization theory. Moreover, the numerical libraries the implement tensor factorization are much less developed than existing matrix algebra libraries \citet{lorica_lets_????}.
+This is why, IMHO, authors prefer to deal with tensors by stacking and kronecker products, rather then treating them as the tensors they are.
 \end{remark}
 
 
