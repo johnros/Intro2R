@@ -39,4 +39,5 @@ Recommended time-table:
     - Discussion: Why were you successful/unsuccessful? What other ideas would you have liked to try? What were the major challenges? 
   - Code should be added in appendices. 
     4. Feel free to use the courses forums for questions. Especially regarding the use of Kaggle and R. Make sure however, that you do not share your solutions. 
+    5. Any non trivial choices you made in the project need to be justified: tell me "why", not only "what".
     
