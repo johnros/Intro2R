@@ -27,6 +27,9 @@ Recommended time-table:
 2. You can do so in pairs, or trios.
 3. By the end of the course you will need to submit to me a report documenting the process.
   - No longer than 8 pages (not including appendices).
+  - Submitted by mail which includes:
+    - A PDF file with the report. 
+    - Author names and IDs.
   - Should contain the sections:
     - Background: Some background on the competition. 
     - Scoring: The scoring criterion in the competition. What loss function with what data?
@@ -34,5 +37,6 @@ Recommended time-table:
     - Algorithms: Which learning algorithms did you try?
     - Results: What score did you achieve? What was your ranking in the competition?
     - Discussion: Why were you successful/unsuccessful? What other ideas would you have liked to try? What were the major challenges? 
+  - Code should be added in appendices. 
     4. Feel free to use the courses forums for questions. Especially regarding the use of Kaggle and R. Make sure however, that you do not share your solutions. 
     
