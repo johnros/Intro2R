@@ -14,7 +14,6 @@ output:
 suppressPackageStartupMessages(library(knitr))
 suppressPackageStartupMessages(library(magrittr)) # for piping
 suppressPackageStartupMessages(library(plyr))
-
 suppressPackageStartupMessages(library(dplyr)) # for handeling data frames
 
 .iris <- iris[,1:4] %>% scale

@@ -359,6 +359,7 @@ As $\hyp(x)$ is defined over indicator functions, CARTs have no difficulty to de
 As searching over all possible partitions of the $x$'s to optimize $\set{R_m}_{m=1}^M$ is computationally impossible, optimization is done is a greedy fashion, by splitting on each variable $x_j$ at a time.\marginnote{Decision List}
 The problem presented in Eq.~\ref{eq:decision_list} is actually a decision \emph{list}. It is the nature of the optimization that makes the solution a decision \emph{tree}.
 Notable fitting algorithms are CART, ID3, C4.5, CHAID, and MARS.\marginnote{C4.5, ID3}
+A more recent fitting algorithm, with a statistical flavor, is that of \emph{conditional inference trees}.[TODO: ref]. 
 
 
 \paragraph{Loss Functions}
@@ -369,6 +370,7 @@ One can use either a misclassification error, the multinomial likelihood (knows 
 
 \paragraph{Universal Approximator}
 Like many other hypothesis classes, CART's $\hypclass$ can approximate any function, with large enough $M$.
+
 
 \paragraph{A Personal Note}
 While CARTs are very rich hypothesis classes, and easily interpretable, I have poor personal experience with them. 
